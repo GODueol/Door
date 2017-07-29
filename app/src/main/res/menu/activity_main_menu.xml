@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <item
+        android:id="@+id/people_menu"
+        android:orderInCategory="100"
+        android:title="People"
+        android:showAsAction="never">
+    <menu>
+    <item
+        android:id="@+id/find_map"
+        android:orderInCategory="100"
+        android:title="@string/find_map"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/find_id"
+        android:orderInCategory="100"
+        android:title="@string/find_id"
+        app:showAsAction="never"/>
+    </menu>
+    </item>
+
+    <item
+        android:id="@+id/board_menu"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="Board" >
+        <menu>
+            <item
+                android:id="@+id/find_text"
+                android:orderInCategory="100"
+                android:showAsAction="never"
+                android:title="Find Text"/>
+        </menu>
+    </item>
+
+    <item
+        android:id="@+id/club_menu"
+        android:orderInCategory="100"
+        android:title="Club"
+        android:showAsAction="never">
+        <menu>
+            <item
+                android:id="@+id/club_create"
+                android:orderInCategory="100"
+                android:title="Create"
+                app:showAsAction="never" />
+
+            <item
+                android:id="@+id/club_filter"
+                android:orderInCategory="100"
+                android:title="Filter"
+                app:showAsAction="never"/>
+        </menu>
+    </item>
+
+</menu>

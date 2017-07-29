@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name"></string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="find_map">Find MAP</string>
+    <string name="find_id">Find ID</string>
+
+    <string name="Join_this_club">Join</string>
+
+    <string-array name="titles_tab">
+        <item>People</item>
+        <item>Board</item>
+        <item>Club</item>
+    </string-array>
+
+    <!-- Action Bar action items -->
+    <string name="action_refresh">Refresh</string>
+    <string name="action_help">Help</string>
+    <string name="action_check_updates">Check for Updates</string>
+
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyB-mygQUvLyweQ0iqidaYy10DVrkE5Fmbw</string>
+
+</resources>
+

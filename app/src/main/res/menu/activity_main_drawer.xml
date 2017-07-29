@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group
+        android:id="@+id/menu_top"
+        android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/nav_People"
+            android:icon="@drawable/people"
+            android:title="People" />
+        <item
+            android:id="@+id/nav_mycore"
+            android:icon="@drawable/core"
+            android:title="My Core" />
+        <item
+            android:id="@+id/nav_message"
+            android:icon="@drawable/message"
+            android:title="Message" />
+        <item
+            android:id="@+id/nav_friends"
+            android:icon="@drawable/friends"
+            android:title="Friends" />
+
+    </group>
+
+    <!--<group-->
+        <!--android:id="@+id/menu_bottom"-->
+        <!--android:checkableBehavior="none">-->
+    <group
+        android:id="@+id/menu_top2"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_setting"
+            android:icon="@drawable/setting"
+            android:title="Setting" />
+
+    <!--</group>-->
+
+
+
+        <item
+            android:id="@+id/nav_coreplus"
+            android:title="Core+"
+            />
+    </group>
+
+</menu>

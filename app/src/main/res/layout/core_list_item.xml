@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    android:background="@android:color/white">
+
+    <com.example.kwoncheolhyeok.core.PeopleFragment.SquareImageView
+        android:id="@+id/core_pic"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:src="@drawable/o"
+        android:scaleType="centerCrop"
+    />
+
+    <TextView
+        android:id="@+id/core_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/core_pic"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="10dp"
+        android:text="ChangRim"
+        android:textStyle="bold"
+        />
+
+    <TextView
+        android:id="@+id/core_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="2017.01.17 16:33"
+        android:textSize="10dp"
+        android:layout_alignBaseline="@+id/core_id"
+        android:layout_alignBottom="@+id/core_id"
+        android:layout_alignRight="@+id/section_line1"
+        android:layout_alignEnd="@+id/section_line1" />
+
+    <View
+        android:id="@+id/section_line1"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dip"
+        android:layout_toRightOf="@+id/core_pic"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="3dp"
+        android:background="#BDBDBD"
+        android:layout_below="@+id/core_id"
+       ></View>
+
+    <TextView
+        android:id="@+id/core_contents"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/section_line1"
+        android:layout_toRightOf="@+id/core_pic"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:text="안녕하세요 반갑습니다"
+        />
+
+    <ImageView
+        android:id="@+id/core_img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/core_pic"
+        android:layout_margin="10dp"
+        android:layout_centerHorizontal="true"
+        />
+
+    <View
+        android:id="@+id/section_line2"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dip"
+        android:layout_below="@+id/core_img"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:background="#BDBDBD"
+        ></View>
+
+    <com.like.LikeButton
+        android:id="@+id/core_heart_btn"
+        android:layout_below="@+id/section_line2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        app:icon_size="15dp"
+        app:anim_scale_factor="2.5"
+        app:icon_type="heart" />
+
+    <View
+        android:id="@+id/section_line3"
+        android:layout_width="match_parent"
+        android:layout_height="1dip"
+        android:layout_below="@+id/core_heart_btn"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:background="#BDBDBD"
+        ></View>
+
+
+
+</RelativeLayout>
+

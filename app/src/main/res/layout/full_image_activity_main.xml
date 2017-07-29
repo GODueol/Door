@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:id="@+id/full_main_layout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".PeopleFragment.FullImageActivity"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FFFFFF"
+        android:elevation="6dp"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/title"/>
+    </android.support.v7.widget.Toolbar>
+
+    <ImageView
+        android:id="@+id/full_image_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/toolbar" />
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/pager1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar"
+        >
+    </android.support.v4.view.ViewPager>
+
+    <!--fullimage 안쪽 내용 xml 디자인-->
+
+
+
+    <LinearLayout
+        android:id="@+id/image_four"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true">
+
+        <com.example.kwoncheolhyeok.core.PeopleFragment.SquareImageView
+            android:id="@+id/image1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/e"
+            android:scaleType="centerCrop"
+            />
+
+        <com.example.kwoncheolhyeok.core.PeopleFragment.SquareImageView
+            android:id="@+id/image2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/p"
+            android:scaleType="centerCrop"
+            />
+
+        <com.example.kwoncheolhyeok.core.PeopleFragment.SquareImageView
+            android:id="@+id/image3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/t"
+            android:scaleType="centerCrop"
+            />
+
+        <com.example.kwoncheolhyeok.core.PeopleFragment.SquareImageView
+            android:id="@+id/image4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/r"
+            android:scaleType="centerCrop"
+            />
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="158dp"
+        android:layout_above="@+id/image_four"
+        android:background="#55000000"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+       >
+
+        <TextView
+            android:id="@+id/text_introduce"
+            android:layout_width="match_parent"
+            android:layout_height="110dp"
+            android:paddingTop="5dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:layout_alignParentBottom="true"
+            android:text="Introduce place"
+            android:textColor="@android:color/white"
+            />
+        <!-- 글자수 제한 : android:maxLength="198" -->
+
+        <TextView
+            android:id="@+id/text_physical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/text_introduce"
+            android:paddingTop="5dp"
+            android:paddingLeft="10dp"
+            android:text="26 / 172 / 67 / Standard"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"
+            />
+        
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dip"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="4dp"
+            android:background="@android:color/white"
+            android:layout_below="@+id/text_physical"
+            ></View>
+
+        <TextView
+            android:id="@+id/text_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/text_physical"
+            android:paddingTop="5dp"
+            android:paddingLeft="10dp"
+            android:text="Kwon Cheol Hyeok"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"
+            />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_alignParentRight="true"
+            android:paddingTop="13dp"
+            android:paddingRight="10dp">
+
+            <ImageView
+                android:id="@+id/pic_open"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/pic_open"/>
+            <ImageView
+                android:id="@+id/message_white"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginLeft="20dp"
+                android:src="@drawable/message_white"/>
+            <ImageView
+                android:id="@+id/add_friends"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginLeft="20dp"
+                android:src="@drawable/add_friends" />
+            <ImageView
+                android:id="@+id/block_friends"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginLeft="20dp"
+                android:src="@drawable/block_friends"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="25dp"
+        android:layout_below="@+id/toolbar"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/shape"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        >
+
+            <TextView
+                android:id="@+id/btn_core2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="24"
+                android:layout_marginRight="72dp"
+                android:textSize="15.5dp"
+                android:textColor="@android:color/white"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:gravity="right"
+                />
+
+            <TextView
+            android:id="@+id/btn_core"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="CORE"
+            android:layout_marginRight="28dp"
+            android:textSize="15.5dp"
+            android:textColor="@android:color/white"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+            <ImageView
+                android:id="@+id/core_enter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:icon="@android:drawable/ic_media_play"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginRight="8.5dp"
+                android:src="@drawable/core_enter"
+                />
+
+            <TextView
+                android:id="@+id/distance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0.0"
+                android:textSize="15.5dp"
+                android:textColor="@android:color/white"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:gravity="right"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+
+                />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="km"
+            android:textSize="15.5dp"
+            android:textColor="@android:color/white"
+            android:layout_alignBaseline="@+id/distance"
+            android:layout_alignBottom="@+id/distance"
+            android:layout_toRightOf="@+id/distance"
+            android:layout_toEndOf="@+id/distance" />
+
+        <TextView
+            android:id="@+id/login_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="16.08.25 16:34"
+            android:textSize="15.5dp"
+            android:textColor="@android:color/white"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="90dp"
+            />
+
+    </RelativeLayout>
+
+
+    <!--<Button-->
+        <!--android:id="@+id/btn_core"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="26dp"-->
+        <!--android:text="core"-->
+        <!--android:textSize="15.5dp"-->
+        <!--android:background="#000000"-->
+        <!--android:textColor="#FFFFFF"-->
+        <!--android:layout_alignParentRight="true"/>-->
+
+</RelativeLayout>
