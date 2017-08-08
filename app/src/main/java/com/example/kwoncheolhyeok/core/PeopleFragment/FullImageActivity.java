@@ -1,9 +1,6 @@
 package com.example.kwoncheolhyeok.core.PeopleFragment;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -15,12 +12,10 @@ import android.widget.TextView;
 
 import com.example.kwoncheolhyeok.core.CorePage.CoreActivity;
 import com.example.kwoncheolhyeok.core.PeopleFragment.FullImage_4_ViewPager.FullImage_4_Activity;
-import com.example.kwoncheolhyeok.core.PeopleFragment.FullImage_4_ViewPager.page_1;
 import com.example.kwoncheolhyeok.core.R;
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.appindexing.Thing;
-import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.firebase.appindexing.Action;
+import com.google.firebase.appindexing.FirebaseUserActions;
+import com.google.firebase.appindexing.builders.Actions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +26,6 @@ public class FullImageActivity extends AppCompatActivity {
     int position;
     Toolbar toolbar = null;
 
-    private GoogleApiClient client;
 
     TextView coretext,coretext2 = null;
     ImageView coreenter = null;
@@ -143,12 +137,6 @@ public class FullImageActivity extends AppCompatActivity {
         });
 
 
-
-
-
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
-
-
     }
 
 
@@ -163,43 +151,25 @@ public class FullImageActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-    public Action getIndexApiAction() {
-        Thing object = new Thing.Builder()
-                .setName("FullImage Page") // TODO: Define a title for the content shown.
-                // TODO: Make sure this auto-generated URL is correct.
-                .setUrl(Uri.parse("http://[ENTER-YOUR-URL-HERE]"))
-                .build();
-        return new Action.Builder(Action.TYPE_VIEW)
-                .setObject(object)
-                .setActionStatus(Action.STATUS_TYPE_COMPLETED)
-                .build();
+    public Action getAction() {
+        return Actions.newView("FullImage Page", "http://[ENTER-YOUR-URL-HERE]");
     }
 
-
     @Override
-    public void onStart() {
+    protected void onStart() {
         super.onStart();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client.connect();
-        AppIndex.AppIndexApi.start(client, getIndexApiAction());
+   /* If you’re logging an action on an item that has already been added to the index,
+   you don’t have to add the following update line. See
+   https://firebase.google.com/docs/app-indexing/android/personal-content#update-the-index for
+   adding content to the index */
+        //FirebaseAppIndex.getInstance().update(getIndexable());
+        FirebaseUserActions.getInstance().start(getAction());
     }
 
     @Override
-    public void onStop() {
+    protected void onStop() {
+        FirebaseUserActions.getInstance().end(getAction());
         super.onStop();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        AppIndex.AppIndexApi.end(client, getIndexApiAction());
-        client.disconnect();
     }
-
-    ;
 
 }

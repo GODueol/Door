@@ -1,11 +1,12 @@
 apply plugin: 'com.android.application'
 
+
 android {
     compileSdkVersion 24
-    buildToolsVersion "24.0.1"
+    buildToolsVersion '25.0.0'
 
     defaultConfig {
-        applicationId "com.example.kwoncheolhyeok.core"
+        applicationId "com.kwoncheolhyeok.core"
         minSdkVersion 14
         targetSdkVersion 24
         versionCode 1
@@ -26,8 +27,11 @@ dependencies {
     compile 'com.android.support:design:24.2.0'
     compile 'com.android.support:appcompat-v7:+'
     compile files('libs/universal-image-loader-1.2.1.jar')
-    compile 'com.google.android.gms:play-services-appindexing:8.4.0'
     compile 'com.jakewharton:butterknife:7.0.1'
-    compile 'com.google.android.gms:play-services-maps:8.4.0'
     compile project(':heartbutton_library')
+    compile 'com.google.firebase:firebase-auth:10.2.6'
+    compile 'com.google.firebase:firebase-appindexing:10.2.6'
+    //compile 'com.google.android.gms:play-services-appindexing:10.2.6'
 }
+apply plugin: 'com.google.gms.google-services'
+
