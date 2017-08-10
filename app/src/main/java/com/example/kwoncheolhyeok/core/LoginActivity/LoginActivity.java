@@ -3,6 +3,7 @@ package com.example.kwoncheolhyeok.core.LoginActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -13,6 +14,11 @@ import android.widget.Toast;
 
 import com.example.kwoncheolhyeok.core.Activity.MainActivity;
 import com.example.kwoncheolhyeok.core.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -20,6 +26,9 @@ import butterknife.ButterKnife;
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
     private static final int REQUEST_SIGNUP = 0;
+
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
 
     @Bind(R.id.input_email)
     EditText _emailText;
@@ -42,10 +51,10 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 //일단 설정한 로그인 액션
-                Intent i = new Intent(LoginActivity.this, MainActivity.class);
-                startActivityForResult(i, 0);
+                //Intent i = new Intent(LoginActivity.this, MainActivity.class);
+                //startActivityForResult(i, 0);
 
-//              login();
+              login();
             }
         });
 
@@ -56,19 +65,39 @@ public class LoginActivity extends AppCompatActivity {
                 // Start the Signup activity
                 Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
                 startActivityForResult(intent, REQUEST_SIGNUP);
+
                 finish();
                 overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
             }
         });
+
+        mAuth = FirebaseAuth.getInstance();
+
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    // User is signed in
+                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+                } else {
+                    // User is signed out
+                    Log.d(TAG, "onAuthStateChanged:signed_out");
+                }
+                // ...
+            }
+        };
     }
 
     public void login() {
         Log.d(TAG, "Login");
 
+        /*
         if (!validate()) {
             onLoginFailed();
             return;
         }
+        */
 
         _loginButton.setEnabled(false);
 
@@ -83,6 +112,28 @@ public class LoginActivity extends AppCompatActivity {
 
         // TODO: Implement your own authentication logic here.
 
+        // firebase login
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
+
+                        // If sign in fails, display a message to the user. If sign in succeeds
+                        // the auth state listener will be notified and logic to handle the
+                        // signed in user can be handled in the listener.
+                        if (!task.isSuccessful()) {
+                            Log.w(TAG, "signInWithEmail:failed", task.getException());
+                            Toast.makeText(getBaseContext(), "auth_failed",
+                                    Toast.LENGTH_SHORT).show();
+                            onLoginFailed();
+                        } else {
+                            onLoginSuccess();
+                        }
+                        progressDialog.dismiss();
+                    }
+                });
+/*
         new android.os.Handler().postDelayed(
                 new Runnable() {
                     public void run() {
@@ -92,6 +143,7 @@ public class LoginActivity extends AppCompatActivity {
                         progressDialog.dismiss();
                     }
                 }, 3000);
+        */
     }
 
 
@@ -115,7 +167,10 @@ public class LoginActivity extends AppCompatActivity {
 
     public void onLoginSuccess() {
         _loginButton.setEnabled(true);
-        finish();
+//        finish();
+
+        Intent i = new Intent(LoginActivity.this, MainActivity.class);
+        startActivityForResult(i, 0);
     }
 
     public void onLoginFailed() {
@@ -145,5 +200,19 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         return valid;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mAuth.addAuthStateListener(mAuthListener);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
     }
 }
