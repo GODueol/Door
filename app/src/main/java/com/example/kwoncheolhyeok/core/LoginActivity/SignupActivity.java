@@ -123,13 +123,13 @@ public class SignupActivity extends AppCompatActivity {
     public void signup() {
         Log.d(TAG, "Signup");
 
-/*
+
 
         if (!validate()) {
             onSignupFailed();
             return;
         }
-*/
+
 
         _signupButton.setEnabled(false);
 
@@ -213,52 +213,38 @@ public class SignupActivity extends AppCompatActivity {
         String Weight = _weightText.getText().toString();
 
         if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            _emailText.setError("enter a valid email address");
+            Toast.makeText(getBaseContext(), "enter a valid email address", Toast.LENGTH_SHORT).show();
             valid = false;
-        } else {
-            _emailText.setError(null);
         }
 
-        if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
-            _passwordText.setError("between 4 and 10 alphanumeric characters");
+        else if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
+            Toast.makeText(getBaseContext(), "between 4 and 10 alphanumeric characters", Toast.LENGTH_SHORT).show();
             valid = false;
-        } else {
-            _passwordText.setError(null);
         }
 
-        if (reEnterPassword.isEmpty() || reEnterPassword.length() < 4 || reEnterPassword.length() > 10 || !(reEnterPassword.equals(password))) {
-            _reEnterPasswordText.setError("Password Do not match");
+        else if (reEnterPassword.isEmpty() || reEnterPassword.length() < 4 || reEnterPassword.length() > 10 || !(reEnterPassword.equals(password))) {
+            Toast.makeText(getBaseContext(), "Password Do not match", Toast.LENGTH_SHORT).show();
             valid = false;
-        } else {
-            _reEnterPasswordText.setError(null);
         }
 
-        if (ID.isEmpty() || ID.length() < 3) {
-            _IDText.setError("at least 3 characters");
+        else if (ID.isEmpty() || ID.length() < 3) {
+            Toast.makeText(getBaseContext(), "at least 3 characters", Toast.LENGTH_SHORT).show();
             valid = false;
-        } else {
-            _IDText.setError(null);
         }
 
-        if (Age.isEmpty() || Age.length()!=2){
-            _ageText.setError("Write your correct age");
+        else if (Age.isEmpty() || Age.length()!=2){
+            Toast.makeText(getBaseContext(), "Write your correct age", Toast.LENGTH_SHORT).show();
             valid=false;
-        }else{
-            _ageText.setError(null);
         }
 
-        if (Height.isEmpty() || Height.length()!=3){
-            _heightText.setError("Write your correct height");
+        else if (Height.isEmpty() || Height.length()!=3){
+            Toast.makeText(getBaseContext(), "Write your correct height", Toast.LENGTH_SHORT).show();
             valid=false;
-        }else{
-            _heightText.setError(null);
         }
 
-        if (Weight.isEmpty() || Weight.length()!=2 || Weight.length()!=3){
-            _weightText.setError("Write your correct age");
+        else if (Weight.isEmpty() || Weight.length()!=2 || Weight.length()!=3){
+            Toast.makeText(getBaseContext(), "Write your correct age", Toast.LENGTH_SHORT).show();
             valid=false;
-        }else{
-            _weightText.setError(null);
         }
 
         return valid;

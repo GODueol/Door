@@ -212,17 +212,13 @@ public class LoginActivity extends AppCompatActivity {
         String password = _passwordText.getText().toString();
 
         if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            _emailText.setError("enter a valid email address");
+//            _emailText.setError("enter a valid email address");
+            Toast.makeText(getBaseContext(), "enter a valid email address", Toast.LENGTH_SHORT).show();
             valid = false;
-        } else {
-            _emailText.setError(null);
-        }
-
-        if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
-            _passwordText.setError("between 4 and 10 alphanumeric characters");
+        } else if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
+//            _passwordText.setError("between 4 and 10 alphanumeric characters");
+            Toast.makeText(getBaseContext(), "between 4 and 10 alphanumeric characters", Toast.LENGTH_SHORT).show();
             valid = false;
-        } else {
-            _passwordText.setError(null);
         }
 
         return valid;

@@ -66,7 +66,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 //        numberpicker1.setTextColorResource(R.color.colorPrimary);
 
         numberpicker2 = (NumberPicker) findViewById(R.id.numberPicker2);
-        numberpicker2.setMinValue(150);
+        numberpicker2.setMinValue(100);
         numberpicker2.setMaxValue(200);
         numberpicker2.setValue(175);
         numberpicker2.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
