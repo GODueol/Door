@@ -233,7 +233,7 @@ public class SignupActivity extends AppCompatActivity {
         }
 
         else if (Age.isEmpty() || Age.length()!=2){
-            Toast.makeText(getBaseContext(), "Write your correct age", Toast.LENGTH_SHORT).show(); int a = Age.length();
+            Toast.makeText(getBaseContext(), "Write your correct age", Toast.LENGTH_SHORT).show();
             valid=false;
         }
 
