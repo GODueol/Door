@@ -12,10 +12,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
+import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.R;
+import com.example.kwoncheolhyeok.core.Util.DataContainer;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 
 public class ProfileModifyActivity extends AppCompatActivity implements NumberPicker.OnValueChangeListener{
@@ -29,6 +35,9 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
     static Dialog d;
     private TextView min_age_filter , max_age_filter, min_height_filter, max_height_filter , min_weight_filter, max_weight_filter, min_bodytype_filter, max_bodytype_filter;
 
+    @Bind(R.id.modify_id)
+    EditText _idText;
+
     final String[] values = {"Underweight_0", "Skinny_1", "Standard_2", "Muscular_3", "Overweight_4"};
 
 
@@ -36,6 +45,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.profile_modify_activity_main);
+        ButterKnife.bind(this);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -47,7 +57,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 
         numberpicker1 = (NumberPicker) findViewById(R.id.numberPicker1);
         numberpicker1.setMinValue(19);
-        numberpicker1.setMaxValue(100);
+        numberpicker1.setMaxValue(200);
         numberpicker1.setValue(25);
         numberpicker1.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
         numberpicker1.setWrapSelectorWheel(false);
@@ -142,6 +152,14 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
                 show4();
             }
         });
+
+
+        // 개인정보 Setting
+        User user = DataContainer.getInstance().getUser();
+        _idText.setText(user.getId());
+        numberpicker1.setValue(Integer.valueOf(user.getAge()));
+        numberpicker2.setValue(Integer.valueOf(user.getHeight()));
+        numberpicker3.setValue(Integer.valueOf(user.getWeight()));
 
     }
 

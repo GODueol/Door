@@ -13,12 +13,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.kwoncheolhyeok.core.Activity.MainActivity;
+import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.R;
+import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -26,8 +34,15 @@ import butterknife.ButterKnife;
 public class SignupActivity extends AppCompatActivity {
     private static final String TAG = "SignupActivity";
 
+    // auth
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
+
+    // database
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    DatabaseReference userRef = database.getReference("users");
+
+    User mUser;
 
     @Bind(R.id.input_email)
     EditText _emailText;
@@ -88,11 +103,19 @@ public class SignupActivity extends AppCompatActivity {
                 if (user != null) {
                     // User is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
-                } else {
+
+                    // 선택 정보 입력
+                    // Write a message to the database
+                    userRef.child(user.getUid()).setValue(mUser);    // 파이어베이스 저장
+                    DataContainer.getInstance().setUser(mUser);  // 로컬 저장
+
+                    onSignupSuccess();
+
+                }
+                else {
                     // User is signed out
                     Log.d(TAG, "onAuthStateChanged:signed_out");
                 }
-                // ...
             }
         };
     }
@@ -116,14 +139,14 @@ public class SignupActivity extends AppCompatActivity {
         progressDialog.setMessage("Creating Account...");
         progressDialog.show();
 
-        String email = _emailText.getText().toString();
+        final String email = _emailText.getText().toString();
         String password = _passwordText.getText().toString();
         String reEnterPassword = _reEnterPasswordText.getText().toString();
-        String id = _IDText.getText().toString();
-        String age = _ageText.getText().toString();
-        String height = _heightText.getText().toString();
-        String weight = _weightText.getText().toString();
-
+        final String id = _IDText.getText().toString();
+        final String age = _ageText.getText().toString();
+        final String height = _heightText.getText().toString();
+        final String weight = _weightText.getText().toString();
+        mUser = new User(email,id,age,height,weight);
 
         // TODO: Implement your own signup logic here.
 
@@ -141,11 +164,9 @@ public class SignupActivity extends AppCompatActivity {
                             Toast.makeText(getBaseContext(), task.getException().getMessage(),
                                     Toast.LENGTH_SHORT).show();
                             onSignupFailed();
-                        } else {
-                            onSignupSuccess();
                         }
+
                         progressDialog.dismiss();
-                        // ...
                     }
                 });
 

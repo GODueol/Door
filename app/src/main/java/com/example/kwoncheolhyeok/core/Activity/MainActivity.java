@@ -16,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.kwoncheolhyeok.core.BoardActivity.TabFragment2;
 import com.example.kwoncheolhyeok.core.ClubActivity.Club_Filter_Activity;
@@ -24,6 +25,8 @@ import com.example.kwoncheolhyeok.core.FriendsActivity.FriednsActivity;
 import com.example.kwoncheolhyeok.core.MessageActivity.MessageActivity;
 import com.example.kwoncheolhyeok.core.ProfileModifyActivity.ProfileModifyActivity;
 import com.example.kwoncheolhyeok.core.R;
+import com.example.kwoncheolhyeok.core.Util.DataContainer;
+import com.google.firebase.auth.FirebaseAuth;
 
 
 public class MainActivity extends AppCompatActivity
@@ -117,6 +120,9 @@ public class MainActivity extends AppCompatActivity
              }
          });
 
+         // 이메일 Set
+         TextView emailText = (TextView) headerview.findViewById(R.id.textView);
+         emailText.setText(DataContainer.getInstance().getUser().getEmail());
 
      }
 
@@ -194,6 +200,9 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_setting) {
 
+        } else if (id == R.id.nav_logout) {
+            FirebaseAuth.getInstance().signOut();
+            onBackPressed();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

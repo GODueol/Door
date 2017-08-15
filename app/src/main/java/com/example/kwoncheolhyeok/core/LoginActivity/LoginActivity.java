@@ -13,12 +13,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.kwoncheolhyeok.core.Activity.MainActivity;
+import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.R;
+import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -27,8 +34,13 @@ public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
     private static final int REQUEST_SIGNUP = 0;
 
+    // auth
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
+
+    // database
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    DatabaseReference userRef = database.getReference("users");
 
     @Bind(R.id.input_email)
     EditText _emailText;
@@ -80,11 +92,27 @@ public class LoginActivity extends AppCompatActivity {
                 if (user != null) {
                     // User is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+
+                    // user 정보 읽어오기
+                    userRef.child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            User user = dataSnapshot.getValue(User.class);
+                            DataContainer.getInstance().setUser(user);
+                            onLoginSuccess();
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
                 } else {
                     // User is signed out
                     Log.d(TAG, "onAuthStateChanged:signed_out");
                 }
-                // ...
             }
         };
     }
@@ -92,12 +120,10 @@ public class LoginActivity extends AppCompatActivity {
     public void login() {
         Log.d(TAG, "Login");
 
-        /*
         if (!validate()) {
             onLoginFailed();
             return;
         }
-        */
 
         _loginButton.setEnabled(false);
 
@@ -129,8 +155,6 @@ public class LoginActivity extends AppCompatActivity {
                             Toast.makeText(getBaseContext(), task.getException().getMessage(),
                                     Toast.LENGTH_SHORT).show();
                             onLoginFailed();
-                        } else {
-                            onLoginSuccess();
                         }
                         progressDialog.dismiss();
                     }
