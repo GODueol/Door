@@ -233,7 +233,7 @@ public class SignupActivity extends AppCompatActivity {
         }
 
         else if (Age.isEmpty() || Age.length()!=2){
-            Toast.makeText(getBaseContext(), "Write your correct age", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getBaseContext(), "Write your correct age", Toast.LENGTH_SHORT).show(); int a = Age.length();
             valid=false;
         }
 
@@ -242,8 +242,8 @@ public class SignupActivity extends AppCompatActivity {
             valid=false;
         }
 
-        else if (Weight.isEmpty() || Weight.length()!=2 || Weight.length()!=3){
-            Toast.makeText(getBaseContext(), "Write your correct age", Toast.LENGTH_SHORT).show();
+        else if (Weight.isEmpty() || Weight.length()!=2){
+            Toast.makeText(getBaseContext(), "Write your correct weight", Toast.LENGTH_SHORT).show();
             valid=false;
         }
 
