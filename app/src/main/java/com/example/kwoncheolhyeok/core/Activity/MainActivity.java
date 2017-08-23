@@ -1,7 +1,10 @@
 package com.example.kwoncheolhyeok.core.Activity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ScaleDrawable;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -53,16 +56,9 @@ public class MainActivity extends AppCompatActivity
          toolbar = (Toolbar) findViewById(R.id.toolbar);
          setSupportActionBar(toolbar);
 
-//         getActionBar().setDisplayHomeAsUpEnabled(true);
-//         toolbar.setNavigationIcon(R.drawable.backicon);
-//
-//         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-//             @Override
-//             public void onClick(View view) {
-//                 ChattingActivity.this.finish();
-//
-//             }
-//         });
+         Drawable drawable = ResourcesCompat.getDrawable(getResources(),R.drawable.icon,getTheme());
+         Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
+         Drawable d = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 85, 85, true));
 
          toggle = new ActionBarDrawerToggle(
                 this,
@@ -72,12 +68,8 @@ public class MainActivity extends AppCompatActivity
                  R.string.navigation_drawer_close);
          drawer.setDrawerListener(toggle);
          toggle.syncState();
-
          toggle.setDrawerIndicatorEnabled(false);
-
-         final Drawable drawable = ResourcesCompat.getDrawable(getResources(),R.drawable.icon,getTheme());
-
-         toggle.setHomeAsUpIndicator(drawable);
+         toggle.setHomeAsUpIndicator(d);
          toggle.setToolbarNavigationClickListener(new View.OnClickListener() {
              @Override
              public void onClick(View v) {

@@ -16,10 +16,11 @@
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light" >
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:scaleType="centerCrop"
             android:layout_gravity="center"
-            android:src="@drawable/message_toolbar"/>
+            android:src="@drawable/nav_message"/>
     </android.support.v7.widget.Toolbar>
 
     <LinearLayout

@@ -15,11 +15,12 @@
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light" >
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <ImageButton
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:scaleType="centerCrop"
             android:layout_gravity="center"
-            android:src="@drawable/friends_toolbar"/>
+            android:background="@drawable/nav_friends"/>
     </android.support.v7.widget.Toolbar>
 
 

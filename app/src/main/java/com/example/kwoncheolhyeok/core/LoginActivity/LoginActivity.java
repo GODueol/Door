@@ -47,7 +47,7 @@ public class LoginActivity extends AppCompatActivity {
     @Bind(R.id.input_password)
     EditText _passwordText;
     @Bind(R.id.btn_login)
-    Button _loginButton;
+    TextView _loginButton;
     @Bind(R.id.link_signup)
     TextView _signupLink;
     
@@ -130,7 +130,7 @@ public class LoginActivity extends AppCompatActivity {
         final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this,
                 R.style.AppTheme_Dark_Dialog);
         progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("Authenticating...");
+        progressDialog.setMessage("로그인 중입니다.");
         progressDialog.show();
 
         String email = _emailText.getText().toString();
