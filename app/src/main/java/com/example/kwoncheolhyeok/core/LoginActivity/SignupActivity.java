@@ -213,37 +213,37 @@ public class SignupActivity extends AppCompatActivity {
         String Weight = _weightText.getText().toString();
 
         if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            Toast.makeText(getBaseContext(), "enter a valid email address", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getBaseContext(), "올바른 이메일 양식으로 작성해주세요.", Toast.LENGTH_SHORT).show();
             valid = false;
         }
 
         else if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
-            Toast.makeText(getBaseContext(), "between 4 and 10 alphanumeric characters", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getBaseContext(), "비밀번호는 4자리 이상 10자리 이하로 설정해주세요.", Toast.LENGTH_SHORT).show();
             valid = false;
         }
 
         else if (reEnterPassword.isEmpty() || reEnterPassword.length() < 4 || reEnterPassword.length() > 10 || !(reEnterPassword.equals(password))) {
-            Toast.makeText(getBaseContext(), "Password Do not match", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getBaseContext(), "패스워드가 일치하지 않습니다.", Toast.LENGTH_SHORT).show();
             valid = false;
         }
 
         else if (ID.isEmpty() || ID.length() < 3) {
-            Toast.makeText(getBaseContext(), "at least 3 characters", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getBaseContext(), "최소 세자리 이상의 아이디로 작성해주세요.", Toast.LENGTH_SHORT).show();
             valid = false;
         }
 
         else if (Age.isEmpty() || Age.length()!=2){
-            Toast.makeText(getBaseContext(), "Write your correct age", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getBaseContext(), "올바른 나이를 작성해주세요.", Toast.LENGTH_SHORT).show();
             valid=false;
         }
 
         else if (Height.isEmpty() || Height.length()!=3){
-            Toast.makeText(getBaseContext(), "Write your correct height", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getBaseContext(), "올바른 키를 작성해 주세요.", Toast.LENGTH_SHORT).show();
             valid=false;
         }
 
         else if (Weight.isEmpty() || Weight.length()!=2){
-            Toast.makeText(getBaseContext(), "Write your correct weight", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getBaseContext(), "올바른 몸무게로 작성해주세요.", Toast.LENGTH_SHORT).show();
             valid=false;
         }
 
