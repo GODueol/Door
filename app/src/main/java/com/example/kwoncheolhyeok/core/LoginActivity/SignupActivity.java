@@ -90,6 +90,8 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
 
 
         bodytype = (EditText) findViewById(R.id.input_bodytype);
+        bodytype.setFocusable(false);
+        bodytype.setClickable(false);
         bodytype.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
