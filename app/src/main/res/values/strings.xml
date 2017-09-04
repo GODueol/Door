@@ -21,5 +21,11 @@
 
     <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyB-mygQUvLyweQ0iqidaYy10DVrkE5Fmbw</string>
 
+    <string name="underweight">underweight</string>
+    <string name="skinny">skinny</string>
+    <string name="standard">standard</string>
+    <string name="muscular">muscular</string>
+    <string name="overweight">overweight</string>
+
 </resources>
 

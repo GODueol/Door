@@ -5,11 +5,17 @@
     android:layout_height="fill_parent"
     android:fitsSystemWindows="true">
 
+    <RelativeLayout
+        android:id="@+id/sign_up_layout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
     <LinearLayout
+        android:id="@+id/sign_up_layout2"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="56dp"
+        android:paddingTop="15dp"
         android:paddingLeft="24dp"
         android:paddingRight="24dp">
 
@@ -24,6 +30,7 @@
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:theme="@style/TextLabel2"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp">
             <EditText android:id="@+id/input_email"
@@ -38,6 +45,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
+            android:theme="@style/TextLabel2"
             android:layout_marginBottom="5dp">
             <EditText android:id="@+id/input_password"
                 android:layout_width="match_parent"
@@ -51,6 +59,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
+            android:theme="@style/TextLabel2"
             android:layout_marginBottom="5dp">
             <EditText android:id="@+id/input_reEnterPassword"
                 android:layout_width="match_parent"
@@ -64,6 +73,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
+            android:theme="@style/TextLabel2"
             android:layout_marginBottom="5dp">
             <EditText android:id="@+id/input_id"
                 android:layout_width="match_parent"
@@ -78,6 +88,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
+            android:theme="@style/TextLabel2"
             android:layout_marginBottom="5dp">
 
             <EditText android:id="@+id/input_age"
@@ -92,6 +103,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
+            android:theme="@style/TextLabel2"
             android:layout_marginBottom="5dp">
 
             <EditText android:id="@+id/input_height"
@@ -106,6 +118,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
+            android:theme="@style/TextLabel2"
             android:layout_marginBottom="5dp">
 
             <EditText android:id="@+id/input_weight"
@@ -115,24 +128,44 @@
                 android:hint="Weight" />
         </android.support.design.widget.TextInputLayout>
 
-        <!-- weight -->
-        <android.support.design.widget.TextInputLayout
+    </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/sign_up_layout3"
+            android:layout_below="@+id/sign_up_layout2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp">
+            android:paddingLeft="24dp"
+            android:paddingRight="24dp">
 
-            <EditText android:id="@+id/body_type"
+            <!-- bodytype -->
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="number"
-                android:hint="Weight" />
-        </android.support.design.widget.TextInputLayout>
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:theme="@style/TextLabel2"
+                >
+
+                <EditText
+                    android:id="@+id/input_bodytype"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Bodytype"
+                    android:text="한번 더 누르세요."
+                    android:inputType="textPersonName"
+                    />
+            </android.support.design.widget.TextInputLayout>
+
+
+        </RelativeLayout>
+
 
 
         <!-- Signup Button -->
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/btn_signup"
+            android:layout_below="@+id/sign_up_layout3"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
@@ -141,7 +174,9 @@
             android:background="@android:color/transparent"
             android:text="Create Account"/>
 
-        <TextView android:id="@+id/link_login"
+        <TextView
+            android:id="@+id/link_login"
+            android:layout_below="@+id/btn_signup"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
@@ -149,5 +184,6 @@
             android:gravity="center"
             android:textSize="16dip"/>
 
-    </LinearLayout>
+    </RelativeLayout>
+
 </ScrollView>

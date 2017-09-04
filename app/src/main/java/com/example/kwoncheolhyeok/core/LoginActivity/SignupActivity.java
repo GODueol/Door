@@ -1,19 +1,27 @@
 package com.example.kwoncheolhyeok.core.LoginActivity;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ExpandableListView;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.kwoncheolhyeok.core.Activity.MainActivity;
 import com.example.kwoncheolhyeok.core.Entity.User;
+import com.example.kwoncheolhyeok.core.ProfileModifyActivity.ProfileModifyActivity;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -21,17 +29,16 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class SignupActivity extends AppCompatActivity {
+public class SignupActivity extends AppCompatActivity implements NumberPicker.OnValueChangeListener {
     private static final String TAG = "SignupActivity";
 
     // auth
@@ -70,12 +77,25 @@ public class SignupActivity extends AppCompatActivity {
 
     @Bind(R.id.link_login)
     TextView _loginLink;
-    
+
+    static Dialog d;
+    private EditText bodytype;
+    final String[] values = {"Underweight", "Skinny", "Standard", "Muscular", "Overweight"};
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_signup_activity);
         ButterKnife.bind(this);
+
+
+        bodytype = (EditText) findViewById(R.id.input_bodytype);
+        bodytype.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                show4();
+            }
+        });
 
         _signupButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -119,6 +139,57 @@ public class SignupActivity extends AppCompatActivity {
             }
         };
     }
+
+
+    public void show4() {
+
+        final Dialog d = new Dialog(SignupActivity.this);
+        d.setContentView(R.layout.login_signup_bodytype_dialog);
+
+        // Dialog 사이즈 조절 하기
+        ViewGroup.LayoutParams params = d.getWindow().getAttributes();
+        params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        d.getWindow().setAttributes((android.view.WindowManager.LayoutParams) params);
+
+        d.show();
+
+        TextView b1 = (TextView) d.findViewById(R.id.button1);
+        TextView b2 = (TextView) d.findViewById(R.id.button2);
+
+        final NumberPicker np = (NumberPicker) d.findViewById(R.id.numberPicker1);
+
+        np.setMinValue(0); //from array first value
+        np.setMaxValue(values.length - 1); //to array last value
+        np.setValue(values.length - 3);
+        np.setDisplayedValues(values);
+        np.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+        np.setWrapSelectorWheel(false);
+        np.setOnValueChangedListener((NumberPicker.OnValueChangeListener) this);
+
+
+        b1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Value 위치 값을 숫자가 아닌 해당 텍스트로 가져옴
+                int pos = np.getValue();
+                bodytype.setText(values[pos]); //set the value to textview
+                d.dismiss();
+
+            }
+        });
+
+        b2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                d.dismiss();
+            }
+        });
+        d.show();
+    }
+
+
+
 
     public void signup() {
         Log.d(TAG, "Signup");
@@ -184,6 +255,8 @@ public class SignupActivity extends AppCompatActivity {
         */
 
     }
+
+
 
 
     public void onSignupSuccess() {
@@ -263,4 +336,11 @@ public class SignupActivity extends AppCompatActivity {
             mAuth.removeAuthStateListener(mAuthListener);
         }
     }
+
+    //implements 부분 구현
+    @Override
+    public void onValueChange(NumberPicker numberPicker, int oldVal, int newVal) {
+        Log.i("value is", "" + newVal);
+    }
+
 }

@@ -530,7 +530,7 @@
                 android:layout_alignParentRight="true"
                 android:text="min"
                 android:textColor="@color/text_white"
-                android:layout_marginRight="80dp"
+                android:layout_marginRight="110dp"
                 />
 
             <TextView
@@ -539,7 +539,7 @@
                 android:layout_alignParentRight="true"
                 android:text="~"
                 android:textColor="@color/text_white"
-                android:layout_marginRight="59dp"
+                android:layout_marginRight="97dp"
                 />
 
             <TextView

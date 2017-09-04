@@ -38,7 +38,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
     @Bind(R.id.modify_id)
     EditText _idText;
 
-    final String[] values = {"Underweight_0", "Skinny_1", "Standard_2", "Muscular_3", "Overweight_4"};
+    final String[] values = {"Underweight", "Skinny", "Standard", "Muscular", "Overweight"};
 
 
     @Override
@@ -383,9 +383,12 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         b1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                min_bodytype_filter.setText(String.valueOf(np.getValue())); //set the value to textview
+                int pos = np.getValue();
+                int pos2 = np2.getValue();
+
+                min_bodytype_filter.setText(values[pos]); //set the value to textview
                 d.dismiss();
-                max_bodytype_filter.setText(String.valueOf(np2.getValue())); //set the value to textview
+                max_bodytype_filter.setText(values[pos2]); //set the value to textview
                 d.dismiss();
             }
         });
