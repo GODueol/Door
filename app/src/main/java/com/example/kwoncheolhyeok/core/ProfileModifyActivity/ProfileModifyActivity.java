@@ -1,10 +1,17 @@
 package com.example.kwoncheolhyeok.core.ProfileModifyActivity;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -13,9 +20,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
+import com.example.kwoncheolhyeok.core.Camera.LoadPicture;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
@@ -38,8 +47,27 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
     @Bind(R.id.modify_id)
     EditText _idText;
 
+    @Bind(R.id.image1)
+    ImageView profilePic1;
+
+    @Bind(R.id.image2)
+    ImageView profilePic2;
+
+    @Bind(R.id.image3)
+    ImageView profilePic3;
+
+    @Bind(R.id.image4)
+    ImageView profilePic4;
+
     final String[] values = {"Underweight", "Skinny", "Standard", "Muscular", "Overweight"};
 
+    // 카메라관련 인자
+    private static final int REQUEST_TAKE_PHOTO = 1;
+    private static final int REQUEST_GALLERY = 2;
+    private static final int REQUEST_CODE_PROFILE_IMAGE_CROP = 3;
+    private Uri outputFileUri;
+    private LoadPicture loadPicture;
+    private ImageView modifingPic;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -161,7 +189,24 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         numberpicker2.setValue(Integer.valueOf(user.getHeight()));
         numberpicker3.setValue(Integer.valueOf(user.getWeight()));
 
+        loadPicture = new LoadPicture(this, this);
+
+        // Get Picture
+        View.OnClickListener onProfilePicClickListener = new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                modifingPic = (ImageView) v;
+                loadPicture.onGallery();
+            }
+        };
+        profilePic1.setOnClickListener(onProfilePicClickListener);
+        profilePic2.setOnClickListener(onProfilePicClickListener);
+        profilePic3.setOnClickListener(onProfilePicClickListener);
+        profilePic4.setOnClickListener(onProfilePicClickListener);
+
     }
+
 
     // 넘버씨커 디바이더 색 바꾸기
     private void setDividerColor(NumberPicker numberpicker, int color) {
@@ -402,8 +447,6 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         d.show();
     }
 
-
-
     //     뒤로가기 버튼 기능
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -414,6 +457,25 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK) {
+            if (requestCode == REQUEST_GALLERY) {
+                outputFileUri = data.getData();
+                showImage(loadPicture.drawFile(outputFileUri));
+            }
+        }
+    }
+
+    private void showImage(Bitmap bitmap) {
+        Drawable bitmapDrawable = new BitmapDrawable(getResources(), bitmap);
+
+        modifingPic.setImageDrawable(bitmapDrawable);
+//        mProductListener.ProductTabMessageToParent(bitmapDrawable);
     }
 
 //    @Override
