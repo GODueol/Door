@@ -160,17 +160,7 @@ public class LoginActivity extends AppCompatActivity {
 
                     }
                 });
-/*
-        new android.os.Handler().postDelayed(
-                new Runnable() {
-                    public void run() {
-                        // On complete call either onLoginSuccess or onLoginFailed
-                        onLoginSuccess();
-                        // onLoginFailed();
-                        progressDialog.dismiss();
-                    }
-                }, 3000);
-        */
+
     }
 
 
