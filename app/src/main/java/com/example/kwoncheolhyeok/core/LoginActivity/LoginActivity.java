@@ -37,6 +37,7 @@ public class LoginActivity extends AppCompatActivity {
     // auth
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
+    private ProgressDialog progressDialog;
 
     // database
     FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -127,7 +128,7 @@ public class LoginActivity extends AppCompatActivity {
 
         _loginButton.setEnabled(false);
 
-        final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this,
+        progressDialog = new ProgressDialog(LoginActivity.this,
                 R.style.AppTheme_Dark_Dialog);
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage("로그인 중입니다.");
@@ -156,7 +157,7 @@ public class LoginActivity extends AppCompatActivity {
                                     Toast.LENGTH_SHORT).show();
                             onLoginFailed();
                         }
-                        progressDialog.dismiss();
+
                     }
                 });
 /*
@@ -197,12 +198,14 @@ public class LoginActivity extends AppCompatActivity {
 
         Intent i = new Intent(LoginActivity.this, MainActivity.class);
         startActivityForResult(i, 0);
+        if(progressDialog != null) progressDialog.dismiss();
     }
 
     public void onLoginFailed() {
         //Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
 
         _loginButton.setEnabled(true);
+        if(progressDialog != null) progressDialog.dismiss();
     }
 
     public boolean validate() {
