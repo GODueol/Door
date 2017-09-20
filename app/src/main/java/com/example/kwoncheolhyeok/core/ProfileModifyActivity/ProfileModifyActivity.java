@@ -12,9 +12,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.R;
@@ -31,6 +34,11 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
     NumberPicker numberpicker2 = null;
     NumberPicker numberpicker3 = null;
     NumberPicker numberpicker4 = null;
+
+    ToggleButton lock1 = null;
+    ToggleButton lock2 = null;
+    ToggleButton lock3 = null;
+    ToggleButton lock4 = null;
 
     static Dialog d;
     private TextView min_age_filter , max_age_filter, min_height_filter, max_height_filter , min_weight_filter, max_weight_filter, min_bodytype_filter, max_bodytype_filter;
@@ -53,6 +61,18 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //액션바 아이콘을 업 네비게이션 형태로 표시합니다.
         getSupportActionBar().setDisplayShowHomeEnabled(true); //홈 아이콘을 숨김처리합니다.
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
+
+//        lock1 = (ToggleButton) findViewById(R.id.lock1);
+//        lock1.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View arg0) {
+//                if(lock1.isChecked()){
+//                    Toast.makeText(new ProfileModifyActivity(), "1번 사진이 잠김", Toast.LENGTH_SHORT).show();
+//                }
+//                else
+//                {Toast.makeText(new ProfileModifyActivity(), "1번 사진이 열림", Toast.LENGTH_SHORT).show();}
+//                }
+//        });
 
 
         numberpicker1 = (NumberPicker) findViewById(R.id.numberPicker1);
