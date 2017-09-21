@@ -106,15 +106,16 @@
             android:layout_weight="1"
             >
 
-            <ToggleButton
+            //1번 이미지는 잠글 수 없음:메인사진에 무조건 한장은 등록되게
+            <Button
                 android:id="@+id/lock1"
                 android:layout_width="45dp"
                 android:layout_height="45dp"
                 android:background="@drawable/check"
+                android:visibility="invisible"
+                android:clickable="false"
                 android:focusable="false"
                 android:focusableInTouchMode="false"
-                android:textOff=""
-                android:textOn=""
                 android:layout_centerInParent="true"
                 />
         </RelativeLayout>

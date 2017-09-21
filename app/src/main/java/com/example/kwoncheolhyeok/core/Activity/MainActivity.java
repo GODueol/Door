@@ -57,8 +57,11 @@ public class MainActivity extends AppCompatActivity
          setSupportActionBar(toolbar);
 
          Drawable drawable = ResourcesCompat.getDrawable(getResources(),R.drawable.icon,getTheme());
+         Drawable drawable2 = ResourcesCompat.getDrawable(getResources(),R.drawable.icon2,getTheme());
          Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
-         Drawable d = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 85, 85, true));
+         Bitmap bitmap2 = ((BitmapDrawable) drawable2).getBitmap();
+         final Drawable icon_open = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 85, 85, true));
+         final Drawable icon_close = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap2, 85, 85, true));
 
          toggle = new ActionBarDrawerToggle(
                 this,
@@ -69,13 +72,17 @@ public class MainActivity extends AppCompatActivity
          drawer.setDrawerListener(toggle);
          toggle.syncState();
          toggle.setDrawerIndicatorEnabled(false);
-         toggle.setHomeAsUpIndicator(d);
+         toggle.setHomeAsUpIndicator(icon_open);
          toggle.setToolbarNavigationClickListener(new View.OnClickListener() {
              @Override
              public void onClick(View v) {
                  if (drawer.isDrawerVisible(GravityCompat.START)) {
+                     //드로워 열었을 때 아이콘
+                     toggle.setHomeAsUpIndicator(icon_open);
                      drawer.closeDrawer(GravityCompat.START);
                  } else {
+                     //드로워 다시 닫혔을 때 아이콘
+                     toggle.setHomeAsUpIndicator(icon_close);
                      drawer.openDrawer(GravityCompat.START);
                  }
              }
