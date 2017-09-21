@@ -100,35 +100,83 @@
         android:weightSum="4"
         >
 
-        <ImageView
-            android:id="@+id/lock1"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/picture_lock"
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
+            >
+
+            <ToggleButton
+                android:id="@+id/lock1"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:background="@drawable/check"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:textOff=""
+                android:textOn=""
+                android:layout_centerInParent="true"
+                />
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            >
+        <ToggleButton
+            android:id="@+id/lock2"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:background="@drawable/check"
+            android:textOn=""
+            android:textOff=""
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:layout_centerInParent="true"
             />
 
-        <ImageView
-            android:id="@+id/lock2"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/picture_lock"
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            />
-        <ImageView
+            >
+        <ToggleButton
             android:id="@+id/lock3"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/picture_unlock"
-            android:layout_weight="1"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:background="@drawable/check"
+            android:textOn=""
+            android:textOff=""
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:layout_centerInParent="true"
             />
-        <ImageView
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            >
+        <ToggleButton
             android:id="@+id/lock4"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/picture_lock"
-            android:layout_weight="1"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:background="@drawable/check"
+            android:textOn=""
+            android:textOff=""
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:layout_centerInParent="true"
             />
+
+        </RelativeLayout>
+
+
     </LinearLayout>
 
     <LinearLayout
@@ -139,7 +187,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/unlock_lock_four"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="7dp"
         >
         <com.example.kwoncheolhyeok.core.PeopleFragment.SquareImageView
             android:id="@+id/image1"
