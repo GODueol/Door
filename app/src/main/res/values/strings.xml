@@ -19,7 +19,6 @@
     <string name="action_help">Help</string>
     <string name="action_check_updates">Check for Updates</string>
 
-    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyB-mygQUvLyweQ0iqidaYy10DVrkE5Fmbw</string>
 
     <string name="underweight">underweight</string>
     <string name="skinny">skinny</string>

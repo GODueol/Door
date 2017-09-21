@@ -69,37 +69,7 @@ public class FullImageActivity extends AppCompatActivity {
         //해당 썸네일을 클릭했을 때 그 이미지가 나올 수 있게 해줌
         viewpager.setCurrentItem(position);
 
-//        // 코어 버튼 눌렀을 때 CoreActivity로 들어감
-//        coretext = (TextView) findViewById(R.id.btn_core);
-//        coretext.setOnClickListener(new View.OnClickListener() {
-//            public void onClick(View arg0) {
-//                Intent myIntent = new Intent(FullImageActivity.this,
-//                        CoreActivity.class);
-//                startActivity(myIntent);
-//            }
-//        });
-//
-//        // 코어 버튼 눌렀을 때 CoreActivity로 들어감
-//        coretext2 = (TextView) findViewById(R.id.btn_core2);
-//        coretext2.setOnClickListener(new View.OnClickListener() {
-//            public void onClick(View arg0) {
-//                Intent myIntent = new Intent(FullImageActivity.this,
-//                        CoreActivity.class);
-//                startActivity(myIntent);
-//            }
-//        });
-//
-//        // 코어 버튼 눌렀을 때 CoreActivity로 들어감
-//        coreenter = (ImageView) findViewById(R.id.core_enter);
-//        coreenter.setOnClickListener(new View.OnClickListener() {
-//            public void onClick(View arg0) {
-//                Intent myIntent = new Intent(FullImageActivity.this,
-//                        CoreActivity.class);
-//                startActivity(myIntent);
-//            }
-//        });
-
-        //메인화면에서 각 선택 레이아웃 클릭시 해당 액티비티로 이동
+        //개인 화면에서 코어 액티비티로 넘어감
         core_enter =(RelativeLayout)findViewById(R.id.core_enter_layout);
         core_enter.setOnClickListener(new View.OnClickListener(){
             @Override

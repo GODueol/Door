@@ -1,14 +1,22 @@
 package com.example.kwoncheolhyeok.core.LoginActivity;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -128,10 +136,12 @@ public class LoginActivity extends AppCompatActivity {
 
         _loginButton.setEnabled(false);
 
-        progressDialog = new ProgressDialog(LoginActivity.this,
-                R.style.AppTheme_Dark_Dialog);
+        //프로그레스 다이얼로그 이미지만 센터에서 돌아가게
+        progressDialog = new ProgressDialog(LoginActivity.this,R.style.MyTheme);
         progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("로그인 중입니다.");
+        progressDialog.setProgressStyle(android.R.style.Widget_ProgressBar_Small);
+        progressDialog.setIndeterminateDrawable(getResources().getDrawable(R.drawable.progress_dialog_icon_drawable_animation));
+        progressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         progressDialog.show();
 
         String email = _emailText.getText().toString();

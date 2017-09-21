@@ -14,8 +14,8 @@ import android.support.v4.content.CursorLoader;
 /**
  * Created by juyeol on 2017-07-04.
  * 얻어낸 가상의? Uri를 가지고 기기내부의 실제 경로를 가져옴
- * (버전별)
- */
+        * (버전별)
+        */
 
 public class RealPathUtil {
 

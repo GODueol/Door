@@ -8,6 +8,7 @@
     <color name="grey">#f7f7f7</color>
     <color name="message_color">#BBDEF2</color>
 
+    <color name="transparent">#00000000</color>
     <!--Fab button color-->
     <color name="ColorPrimary">#ff2570ba</color>
 

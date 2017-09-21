@@ -23,12 +23,12 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_maps_key" />
+            android:value="AIzaSyB-mygQUvLyweQ0iqidaYy10DVrkE5Fmbw"
+            />
 
         <activity
             android:name=".LoginActivity.LoginActivity"
             android:theme="@style/AppTheme.NoActionBar"
-            android:parentActivityName=".Activity.MainActivity"
             android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait"
             >
