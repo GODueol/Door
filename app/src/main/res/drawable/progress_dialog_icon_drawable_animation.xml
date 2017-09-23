@@ -11,5 +11,4 @@
     <item android:drawable="@drawable/ani_icon9" android:duration="60" />
     <item android:drawable="@drawable/ani_icon10" android:duration="60" />
 
-
 </animation-list>

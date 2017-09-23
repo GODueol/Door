@@ -18,6 +18,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -54,6 +56,7 @@ public class MainActivity extends AppCompatActivity
          // (Main View)네비게이션바 관련
          drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
          toolbar = (Toolbar) findViewById(R.id.toolbar);
+
          setSupportActionBar(toolbar);
 
          Drawable drawable = ResourcesCompat.getDrawable(getResources(),R.drawable.icon,getTheme());

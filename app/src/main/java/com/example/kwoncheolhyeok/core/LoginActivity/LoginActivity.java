@@ -107,9 +107,16 @@ public class LoginActivity extends AppCompatActivity {
 
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            User user = dataSnapshot.getValue(User.class);
-                            DataContainer.getInstance().setUser(user);
-                            onLoginSuccess();
+                            // 눈쨔의 예상
+                            try{
+                                User user = dataSnapshot.getValue(User.class);
+                                if(user == null) throw new Exception();
+                                DataContainer.getInstance().setUser(user);
+                                onLoginSuccess();
+
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
                         }
 
                         @Override
