@@ -72,6 +72,9 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
     @Bind(R.id.input_weight)
     EditText _weightText;
 
+    @Bind(R.id.input_bodytype)
+    EditText _bodyType;
+
     @Bind(R.id.btn_signup)
     Button _signupButton;
 
@@ -242,10 +245,16 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
     }
 
     private void startProgressDialog() {
-        progressDialog = new ProgressDialog(SignupActivity.this, R.style.AppTheme_Dark_Dialog);
+
+        //프로그레스 다이얼로그 이미지만 센터에서 돌아가게
+        progressDialog = new ProgressDialog(SignupActivity.this,R.style.MyTheme);
         progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("Creating Account...");
+        progressDialog.setProgressStyle(android.R.style.Widget_ProgressBar_Small);
+        progressDialog.setIndeterminateDrawable(getResources().getDrawable(R.drawable.progress_dialog_icon_drawable_animation));
+        progressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         progressDialog.show();
+
+
     }
 
 
@@ -271,24 +280,25 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
         String Age = _ageText.getText().toString();
         String Height = _heightText.getText().toString();
         String Weight = _weightText.getText().toString();
+        String Bodytype = _bodyType.getText().toString();
 
         if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             Toast.makeText(getBaseContext(), "올바른 이메일 양식으로 작성해주세요.", Toast.LENGTH_SHORT).show();
             valid = false;
         }
 
-        else if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
-            Toast.makeText(getBaseContext(), "비밀번호는 4자리 이상 10자리 이하로 설정해주세요.", Toast.LENGTH_SHORT).show();
+        else if (password.isEmpty() || password.length() < 6 || password.length() > 12) {
+            Toast.makeText(getBaseContext(), "비밀번호는 6자리 이상 12자리 이하로 설정해주세요.", Toast.LENGTH_SHORT).show();
             valid = false;
         }
 
-        else if (reEnterPassword.isEmpty() || reEnterPassword.length() < 4 || reEnterPassword.length() > 10 || !(reEnterPassword.equals(password))) {
+        else if (reEnterPassword.isEmpty() || reEnterPassword.length() < 6 || reEnterPassword.length() > 12 || !(reEnterPassword.equals(password))) {
             Toast.makeText(getBaseContext(), "패스워드가 일치하지 않습니다.", Toast.LENGTH_SHORT).show();
             valid = false;
         }
 
-        else if (ID.isEmpty() || ID.length() < 3) {
-            Toast.makeText(getBaseContext(), "최소 세자리 이상의 아이디로 작성해주세요.", Toast.LENGTH_SHORT).show();
+        else if (ID.isEmpty() || ID.length() < 2) {
+            Toast.makeText(getBaseContext(), "두 자리 이상의 아이디로 작성해주세요.", Toast.LENGTH_SHORT).show();
             valid = false;
         }
 
@@ -302,13 +312,20 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
             valid=false;
         }
 
-        else if (Weight.isEmpty() || Weight.length()!=2){
+        else if (Weight.isEmpty() || Weight.length()<2 || Weight.length()>3){
             Toast.makeText(getBaseContext(), "올바른 몸무게로 작성해주세요.", Toast.LENGTH_SHORT).show();
+            valid=false;
+        }
+
+        else if (Bodytype.isEmpty()){
+            Toast.makeText(getBaseContext(), "바디타입을 설정해주세요.", Toast.LENGTH_SHORT).show();
             valid=false;
         }
 
         return valid;
     }
+
+
 
     @Override
     public void onStart() {
