@@ -1,7 +1,6 @@
 package com.example.kwoncheolhyeok.core.ProfileModifyActivity;
 
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -11,26 +10,23 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.example.kwoncheolhyeok.core.Camera.LoadPicture;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
+
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -486,9 +482,19 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_GALLERY) {
                 outputFileUri = data.getData();
+
+                // 서버에 Upload
+                uploadPic(outputFileUri);
+
+                // 로컬에 출력
                 showImage(loadPicture.drawFile(outputFileUri));
             }
         }
+    }
+
+    private void uploadPic(Uri outputFileUri) {
+//        FirebaseStorage storage = FirebaseStorage.getInstance();
+
     }
 
     private void showImage(Bitmap bitmap) {

@@ -43,7 +43,7 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
 
     // auth
     private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
+    ProgressDialog progressDialog;
 
     // database
     FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -71,9 +71,6 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
 
     @Bind(R.id.input_weight)
     EditText _weightText;
-
-    @Bind(R.id.input_bodytype)
-    EditText _bodytype;
 
     @Bind(R.id.btn_signup)
     Button _signupButton;
@@ -121,28 +118,25 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
         });
 
         mAuth = FirebaseAuth.getInstance();
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    // User is signed in
-                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+    }
 
-                    // 선택 정보 입력
-                    // Write a message to the database
-                    userRef.child(user.getUid()).setValue(mUser);    // 파이어베이스 저장
-                    DataContainer.getInstance().setUser(mUser);  // 로컬 저장
+    private void setUserInfo(FirebaseUser user) {
+        if (user != null) {
+            // User is signed in
+            Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
 
-                    onSignupSuccess();
+            // 선택 정보 입력
+            // Write a message to the database
+            userRef.child(user.getUid()).setValue(mUser);    // 파이어베이스 저장
+            DataContainer.getInstance().setUser(mUser);  // 로컬 저장
 
-                }
-                else {
-                    // User is signed out
-                    Log.d(TAG, "onAuthStateChanged:signed_out");
-                }
-            }
-        };
+            onSignupSuccess();
+
+        }
+        else {
+            // User is signed out
+            Log.d(TAG, "onAuthStateChanged:signed_out");
+        }
     }
 
 
@@ -209,15 +203,7 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
 
         _signupButton.setEnabled(false);
 
-
-        //프로그레스 다이얼로그 이미지만 센터에서 돌아가게
-        final ProgressDialog progressDialog = new ProgressDialog(SignupActivity.this,R.style.MyTheme);
-        progressDialog.setIndeterminate(true);
-        progressDialog.setProgressStyle(android.R.style.Widget_ProgressBar_Small);
-        progressDialog.setIndeterminateDrawable(getResources().getDrawable(R.drawable.progress_dialog_icon_drawable_animation));
-        progressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        progressDialog.show();
-
+        startProgressDialog();
 
         final String email = _emailText.getText().toString();
         String password = _passwordText.getText().toString();
@@ -226,7 +212,6 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
         final String age = _ageText.getText().toString();
         final String height = _heightText.getText().toString();
         final String weight = _weightText.getText().toString();
-
         mUser = new User(email,id,age,height,weight);
 
         // TODO: Implement your own signup logic here.
@@ -241,7 +226,11 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
                         // If sign in fails, display a message to the user. If sign in succeeds
                         // the auth state listener will be notified and logic to handle the
                         // signed in user can be handled in the listener.
-                        if (!task.isSuccessful()) {
+
+                        if (task.isSuccessful()) {
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            setUserInfo(user);
+                        } else {
                             Toast.makeText(getBaseContext(), task.getException().getMessage(),
                                     Toast.LENGTH_SHORT).show();
                             onSignupFailed();
@@ -250,30 +239,18 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
                         progressDialog.dismiss();
                     }
                 });
-
-        /*
-        new android.os.Handler().postDelayed(
-                new Runnable() {
-                    public void run() {
-                        // On complete call either onSignupSuccess or onSignupFailed
-                        // depending on success
-                        onSignupSuccess();
-                        // onSignupFailed();
-                        progressDialog.dismiss();
-                    }
-                }, 3000);
-        */
-
     }
 
-
+    private void startProgressDialog() {
+        progressDialog = new ProgressDialog(SignupActivity.this, R.style.AppTheme_Dark_Dialog);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage("Creating Account...");
+        progressDialog.show();
+    }
 
 
     public void onSignupSuccess() {
         _signupButton.setEnabled(true);
-//        setResult(RESULT_OK, null);
-//        finish();
-
         Intent i = new Intent(this, MainActivity.class);
         startActivityForResult(i, 0);
     }
@@ -294,30 +271,24 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
         String Age = _ageText.getText().toString();
         String Height = _heightText.getText().toString();
         String Weight = _weightText.getText().toString();
-        String Bodytype = _bodytype.getText().toString();
 
         if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             Toast.makeText(getBaseContext(), "올바른 이메일 양식으로 작성해주세요.", Toast.LENGTH_SHORT).show();
             valid = false;
         }
 
-        else if (password.isEmpty() || password.length() < 4 || password.length() > 12) {
-            Toast.makeText(getBaseContext(), "비밀번호는 4자리 이상 12자리 이하로 설정해주세요.", Toast.LENGTH_SHORT).show();
+        else if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
+            Toast.makeText(getBaseContext(), "비밀번호는 4자리 이상 10자리 이하로 설정해주세요.", Toast.LENGTH_SHORT).show();
             valid = false;
         }
 
-        else if (reEnterPassword.isEmpty() || reEnterPassword.length() < 4 || reEnterPassword.length() > 12 || !(reEnterPassword.equals(password))) {
+        else if (reEnterPassword.isEmpty() || reEnterPassword.length() < 4 || reEnterPassword.length() > 10 || !(reEnterPassword.equals(password))) {
             Toast.makeText(getBaseContext(), "패스워드가 일치하지 않습니다.", Toast.LENGTH_SHORT).show();
             valid = false;
         }
 
-        else if (ID.isEmpty() || ID.length() < 2) {
-            Toast.makeText(getBaseContext(), "두 자리 이상의 아이디로 작성해주세요.", Toast.LENGTH_SHORT).show();
-            valid = false;
-        }
-
-        else if (ID.length()>8){
-            Toast.makeText(getBaseContext(), "아이디가 너무 길어요.", Toast.LENGTH_SHORT).show();
+        else if (ID.isEmpty() || ID.length() < 3) {
+            Toast.makeText(getBaseContext(), "최소 세자리 이상의 아이디로 작성해주세요.", Toast.LENGTH_SHORT).show();
             valid = false;
         }
 
@@ -331,13 +302,8 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
             valid=false;
         }
 
-        else if (Weight.isEmpty() || Weight.length()<2 || Weight.length()>3) {
+        else if (Weight.isEmpty() || Weight.length()!=2){
             Toast.makeText(getBaseContext(), "올바른 몸무게로 작성해주세요.", Toast.LENGTH_SHORT).show();
-            valid=false;
-        }
-
-        else if (Bodytype.isEmpty()){
-            Toast.makeText(getBaseContext(), "바디타입을 설정해주세요.", Toast.LENGTH_SHORT).show();
             valid=false;
         }
 
@@ -347,15 +313,11 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
     @Override
     public void onStart() {
         super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (mAuthListener != null) {
-            mAuth.removeAuthStateListener(mAuthListener);
-        }
     }
 
     //implements 부분 구현

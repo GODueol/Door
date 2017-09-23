@@ -13,9 +13,9 @@ import android.widget.Toast;
 
 import com.example.kwoncheolhyeok.core.Util.setPermission;
 import com.gun0912.tedpermission.PermissionListener;
+
 import java.io.IOException;
 import java.util.ArrayList;
-import static com.example.kwoncheolhyeok.core.R.anim.scale_up;
 
 /**
  * Created by juyeol on 2017-07-05.
@@ -95,7 +95,7 @@ public class LoadPicture {
         intent = new Intent("com.android.camera.action.CROP");
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-        intent.putExtra("scale_up", scale_up);
+//        intent.putExtra("scale_up", true);
         intent.putExtra("outputX", PROFILE_IMAGE_OUTPUT_X);
         intent.putExtra("outputY", PROFILE_IMAGE_OUTPUT_Y);
         intent.putExtra("aspectX", PROFILE_IMAGE_ASPECT_X);
