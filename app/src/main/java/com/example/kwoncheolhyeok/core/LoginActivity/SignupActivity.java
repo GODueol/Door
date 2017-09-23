@@ -43,7 +43,7 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
 
     // auth
     private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
+    ProgressDialog progressDialog;
 
     // database
     FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -118,28 +118,25 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
         });
 
         mAuth = FirebaseAuth.getInstance();
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    // User is signed in
-                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+    }
 
-                    // 선택 정보 입력
-                    // Write a message to the database
-                    userRef.child(user.getUid()).setValue(mUser);    // 파이어베이스 저장
-                    DataContainer.getInstance().setUser(mUser);  // 로컬 저장
+    private void setUserInfo(FirebaseUser user) {
+        if (user != null) {
+            // User is signed in
+            Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
 
-                    onSignupSuccess();
+            // 선택 정보 입력
+            // Write a message to the database
+            userRef.child(user.getUid()).setValue(mUser);    // 파이어베이스 저장
+            DataContainer.getInstance().setUser(mUser);  // 로컬 저장
 
-                }
-                else {
-                    // User is signed out
-                    Log.d(TAG, "onAuthStateChanged:signed_out");
-                }
-            }
-        };
+            onSignupSuccess();
+
+        }
+        else {
+            // User is signed out
+            Log.d(TAG, "onAuthStateChanged:signed_out");
+        }
     }
 
 
@@ -206,11 +203,7 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
 
         _signupButton.setEnabled(false);
 
-        final ProgressDialog progressDialog = new ProgressDialog(SignupActivity.this,
-                R.style.AppTheme_Dark_Dialog);
-        progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("Creating Account...");
-        progressDialog.show();
+        startProgressDialog();
 
         final String email = _emailText.getText().toString();
         String password = _passwordText.getText().toString();
@@ -233,7 +226,11 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
                         // If sign in fails, display a message to the user. If sign in succeeds
                         // the auth state listener will be notified and logic to handle the
                         // signed in user can be handled in the listener.
-                        if (!task.isSuccessful()) {
+
+                        if (task.isSuccessful()) {
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            setUserInfo(user);
+                        } else {
                             Toast.makeText(getBaseContext(), task.getException().getMessage(),
                                     Toast.LENGTH_SHORT).show();
                             onSignupFailed();
@@ -242,30 +239,18 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
                         progressDialog.dismiss();
                     }
                 });
-
-        /*
-        new android.os.Handler().postDelayed(
-                new Runnable() {
-                    public void run() {
-                        // On complete call either onSignupSuccess or onSignupFailed
-                        // depending on success
-                        onSignupSuccess();
-                        // onSignupFailed();
-                        progressDialog.dismiss();
-                    }
-                }, 3000);
-        */
-
     }
 
-
+    private void startProgressDialog() {
+        progressDialog = new ProgressDialog(SignupActivity.this, R.style.AppTheme_Dark_Dialog);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage("Creating Account...");
+        progressDialog.show();
+    }
 
 
     public void onSignupSuccess() {
         _signupButton.setEnabled(true);
-//        setResult(RESULT_OK, null);
-//        finish();
-
         Intent i = new Intent(this, MainActivity.class);
         startActivityForResult(i, 0);
     }
@@ -328,15 +313,11 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
     @Override
     public void onStart() {
         super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (mAuthListener != null) {
-            mAuth.removeAuthStateListener(mAuthListener);
-        }
     }
 
     //implements 부분 구현
