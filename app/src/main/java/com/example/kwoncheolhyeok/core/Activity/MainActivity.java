@@ -30,6 +30,7 @@ import com.example.kwoncheolhyeok.core.FriendsActivity.FriednsActivity;
 import com.example.kwoncheolhyeok.core.MessageActivity.MessageActivity;
 import com.example.kwoncheolhyeok.core.ProfileModifyActivity.ProfileModifyActivity;
 import com.example.kwoncheolhyeok.core.R;
+import com.example.kwoncheolhyeok.core.Util.CloseActivityHandler;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -45,6 +46,7 @@ public class MainActivity extends AppCompatActivity
     ViewPager viewPager = null;
     TabLayout tabLayout = null;
 
+    private CloseActivityHandler closeActivityHandler;
 
      @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,6 +128,8 @@ public class MainActivity extends AppCompatActivity
          TextView emailText = (TextView) headerview.findViewById(R.id.textView);
          emailText.setText(DataContainer.getInstance().getUser().getEmail());
 
+         closeActivityHandler = new CloseActivityHandler(this);
+
      }
 
 
@@ -135,7 +139,8 @@ public class MainActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+//            super.onBackPressed();
+            closeActivityHandler.onBackPressed();
         }
     }
 
