@@ -44,7 +44,6 @@ public class LoginActivity extends AppCompatActivity {
 
     // auth
     private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
     private ProgressDialog progressDialog;
 
     // database
@@ -70,11 +69,6 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-
-                //일단 설정한 로그인 액션
-                //Intent i = new Intent(LoginActivity.this, MainActivity.class);
-                //startActivityForResult(i, 0);
-
               login();
             }
         });
@@ -93,41 +87,10 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         mAuth = FirebaseAuth.getInstance();
-
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    // User is signed in
-                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
-
-                    // user 정보 읽어오기
-                    userRef.child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            User user = dataSnapshot.getValue(User.class);
-                            DataContainer.getInstance().setUser(user);
-                            onLoginSuccess();
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
-                    });
-
-                } else {
-                    // User is signed out
-                    Log.d(TAG, "onAuthStateChanged:signed_out");
-                }
-            }
-        };
     }
 
     public void login() {
-        Log.d(TAG, "Login");
+        Log.d(TAG, "Login Start");
 
         if (!validate()) {
             onLoginFailed();
@@ -136,13 +99,7 @@ public class LoginActivity extends AppCompatActivity {
 
         _loginButton.setEnabled(false);
 
-        //프로그레스 다이얼로그 이미지만 센터에서 돌아가게
-        progressDialog = new ProgressDialog(LoginActivity.this,R.style.MyTheme);
-        progressDialog.setIndeterminate(true);
-        progressDialog.setProgressStyle(android.R.style.Widget_ProgressBar_Small);
-        progressDialog.setIndeterminateDrawable(getResources().getDrawable(R.drawable.progress_dialog_icon_drawable_animation));
-        progressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        progressDialog.show();
+        startProgressDialog();
 
         String email = _emailText.getText().toString();
         String password = _passwordText.getText().toString();
@@ -160,7 +117,12 @@ public class LoginActivity extends AppCompatActivity {
                         // the auth state listener will be notified and logic to handle the
                         // signed in user can be handled in the listener.
 
-                        if (!task.isSuccessful()) {
+                        if (task.isSuccessful()) {
+                            FirebaseUser user = mAuth.getCurrentUser();
+
+                            getUserInfo(user);
+
+                        } else {
                             Log.w(TAG, "signInWithEmail:failed", task.getException());
 
                             Toast.makeText(getBaseContext(), task.getException().getMessage(),
@@ -171,6 +133,46 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 });
 
+    }
+
+    private void startProgressDialog() {
+        //프로그레스 다이얼로그 이미지만 센터에서 돌아가게
+        progressDialog = new ProgressDialog(LoginActivity.this, R.style.MyTheme);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setProgressStyle(android.R.style.Widget_ProgressBar_Small);
+        progressDialog.setIndeterminateDrawable(getResources().getDrawable(R.drawable.progress_dialog_icon_drawable_animation));
+        progressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        progressDialog.show();
+    }
+
+    private void getUserInfo(FirebaseUser user) {
+        if (user != null) {
+
+            startProgressDialog();
+
+            // User is signed in
+            Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+
+            // user 정보 읽어오기
+            userRef.child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    User user = dataSnapshot.getValue(User.class);
+                    DataContainer.getInstance().setUser(user);
+                    onLoginSuccess();
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+        } else {
+            // User is signed out
+            Log.d(TAG, "onAuthStateChanged:signed_out");
+        }
     }
 
 
@@ -230,14 +232,12 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        getUserInfo(currentUser);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (mAuthListener != null) {
-            mAuth.removeAuthStateListener(mAuthListener);
-        }
     }
 }

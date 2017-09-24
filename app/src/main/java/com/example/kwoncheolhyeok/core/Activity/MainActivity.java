@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         tabLayout.setupWithViewPager(viewPager);
 
-        getSupportFragmentManager().beginTransaction().add(R.id.container,new TabFragment2()).commit();
+//        getSupportFragmentManager().beginTransaction().add(R.id.container,new TabFragment2()).commit();
 
         //네비게이션 뷰 내의 프로필 사진 클릭시 프로필 편집
         View headerview = navigationView.getHeaderView(0);
