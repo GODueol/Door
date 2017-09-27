@@ -15,7 +15,7 @@ public class CloseActivityHandler {
     private long backKeyPressedTime = 0;
     private Toast toast;
     private Activity activity;
-    private final int time = 4000;  // 기다리는 시간
+    private final int time = 2000;  // 기다리는 시간
 
     public CloseActivityHandler(Activity context) {
         this.activity = context;
@@ -36,7 +36,7 @@ public class CloseActivityHandler {
 
     public void showGuide() {
         toast = Toast.makeText(activity,
-                "\'뒤로\'버튼을 "+time/1000+"초 내에 한번 더 누르시면 종료됩니다.", Toast.LENGTH_SHORT);
+                "한번 더 누르면 종료됩니다.", Toast.LENGTH_SHORT);
         toast.show();
     }
 }

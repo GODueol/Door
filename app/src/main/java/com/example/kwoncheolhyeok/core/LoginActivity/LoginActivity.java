@@ -64,7 +64,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_activity);
         ButterKnife.bind(this);
-        
+
         _loginButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -89,6 +89,7 @@ public class LoginActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
     }
 
+
     public void login() {
         Log.d(TAG, "Login Start");
 
@@ -103,8 +104,6 @@ public class LoginActivity extends AppCompatActivity {
 
         String email = _emailText.getText().toString();
         String password = _passwordText.getText().toString();
-
-        // TODO: Implement your own authentication logic here.
 
         // firebase login
         mAuth.signInWithEmailAndPassword(email, password)
