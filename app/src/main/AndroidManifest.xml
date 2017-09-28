@@ -29,6 +29,7 @@
         <activity
             android:name=".Activity.IntroActivity"
             android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"
             >
         <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

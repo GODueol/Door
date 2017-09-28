@@ -217,11 +217,11 @@ public class LoginActivity extends AppCompatActivity {
 
         if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
 //            _emailText.setError("enter a valid email address");
-            Toast.makeText(getBaseContext(), "올바른 이메일 양식으로 작성해주세요.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getBaseContext(), "이메일이 틀렸습니다.", Toast.LENGTH_SHORT).show();
             valid = false;
         } else if (password.isEmpty() || password.length() < 6 || password.length() > 12) {
 //            _passwordText.setError("between 6 and 12 alphanumeric characters");
-            Toast.makeText(getBaseContext(), "비밀번호는 6자리 이상 12자리 이하로 설정해주세요.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getBaseContext(), "비밀번호가 틀렸습니다.", Toast.LENGTH_SHORT).show();
             valid = false;
         }
 
