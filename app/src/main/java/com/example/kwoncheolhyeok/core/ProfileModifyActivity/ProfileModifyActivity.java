@@ -10,6 +10,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -20,13 +21,20 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.bumptech.glide.Glide;
 import com.example.kwoncheolhyeok.core.Camera.LoadPicture;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
-
+import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -72,6 +80,9 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
     private Uri outputFileUri;
     private LoadPicture loadPicture;
     private ImageView modifingPic;
+
+    // User Info
+    User user;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -199,7 +210,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 
 
         // 개인정보 Setting
-        User user = DataContainer.getInstance().getUser();
+        user = DataContainer.getInstance().getUser();
         _idText.setText(user.getId());
         numberpicker1.setValue(Integer.valueOf(user.getAge()));
         numberpicker2.setValue(Integer.valueOf(user.getHeight()));
@@ -207,7 +218,34 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 
         loadPicture = new LoadPicture(this, this);
 
-        // Get Picture
+        // Load the image using Glide
+        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+
+        StorageReference temp = storageRef.child(getParentPath()+"profilePic1.jpg");
+        Glide.with(this /* context */)
+                //.using(new FirebaseImageLoader())
+                .load(temp.getDownloadUrl().toString())
+                .into(profilePic1)
+        //  onLoadStarted(getResources().getDrawable(R.drawable.progress_dialog_icon_drawable_animation))
+
+        ;
+
+        Glide.with(this /* context */)
+                .using(new FirebaseImageLoader())
+                .load(storageRef.child(getParentPath()+"profilePic2.jpg"))
+                .into(profilePic2);
+
+        Glide.with(this /* context */)
+                .using(new FirebaseImageLoader())
+                .load(storageRef.child(getParentPath()+"profilePic3.jpg"))
+                .into(profilePic3);
+
+        Glide.with(this /* context */)
+                .using(new FirebaseImageLoader())
+                .load(storageRef.child(getParentPath()+"profilePic4.jpg"))
+                .into(profilePic4);
+
+        // Set Event of Getting Picture
         View.OnClickListener onProfilePicClickListener = new View.OnClickListener() {
 
             @Override
@@ -485,16 +523,53 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 
                 // 서버에 Upload
                 uploadPic(outputFileUri);
-
-                // 로컬에 출력
-                showImage(loadPicture.drawFile(outputFileUri));
             }
         }
     }
 
-    private void uploadPic(Uri outputFileUri) {
-//        FirebaseStorage storage = FirebaseStorage.getInstance();
+    private void uploadPic(final Uri outputFileUri) {
 
+        // Create a storage reference from our app
+        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+        String profilePicPath = getParentPath();
+        if(modifingPic == profilePic1){
+            profilePicPath += "profilePic1.jpg";
+        } else if(modifingPic == profilePic2){
+            profilePicPath += "profilePic2.jpg";
+        } else if(modifingPic == profilePic3){
+            profilePicPath += "profilePic3.jpg";
+        } else if(modifingPic == profilePic4){
+            profilePicPath += "profilePic4.jpg";
+        }
+        final StorageReference spaceRef = storageRef.child(profilePicPath);
+
+        UploadTask uploadTask = spaceRef.putFile(outputFileUri);
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle unsuccessful uploads
+                Toast.makeText(getBaseContext(),exception.getMessage(),Toast.LENGTH_SHORT).show();
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                @SuppressWarnings("VisibleForTests") String url = taskSnapshot.getDownloadUrl().getPath();
+                // 로컬에 출력
+                showImage(loadPicture.drawFile(outputFileUri));
+
+                Glide.with(getApplicationContext() /* context */)
+                        .using(new FirebaseImageLoader())
+                        .load(spaceRef)
+                        .into(profilePic2);
+            }
+        });
+
+    }
+
+    @NonNull
+    private String getParentPath() {
+        return "profile/pic/" + DataContainer.getInstance().getUid() + "/";
     }
 
     private void showImage(Bitmap bitmap) {

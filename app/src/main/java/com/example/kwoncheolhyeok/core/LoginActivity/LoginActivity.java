@@ -153,11 +153,15 @@ public class LoginActivity extends AppCompatActivity {
             // User is signed in
             Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
 
+            // Uid 저장
+            DataContainer.getInstance().setUid(user.getUid());
+
             // user 정보 읽어오기
             userRef.child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
 
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
+
                     User user = dataSnapshot.getValue(User.class);
                     DataContainer.getInstance().setUser(user);
                     onLoginSuccess();

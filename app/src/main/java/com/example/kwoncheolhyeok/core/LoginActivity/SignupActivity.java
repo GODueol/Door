@@ -46,8 +46,7 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
     ProgressDialog progressDialog;
 
     // database
-    FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference userRef = database.getReference("users");
+    DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users");
 
     User mUser;
 
@@ -127,6 +126,9 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
         if (user != null) {
             // User is signed in
             Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+
+            // Uid 저장
+            DataContainer.getInstance().setUid(user.getUid());
 
             // 선택 정보 입력
             // Write a message to the database

@@ -25,8 +25,6 @@ public class CloseActivityHandler {
 
         if (System.currentTimeMillis() <= backKeyPressedTime + time) {
             toast.cancel();
-//            activity.finish();
-//            activity.finishAffinity();
             ActivityCompat.finishAffinity(activity);
         }else{
             showGuide();

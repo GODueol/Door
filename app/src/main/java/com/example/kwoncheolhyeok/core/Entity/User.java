@@ -14,6 +14,11 @@ public class User {
     String height;
     String weight;
 
+    String picUrl1;
+    String picUrl2;
+    String picUrl3;
+    String picUrl4;
+
     public User(String email, String id, String age, String height, String weight) {
         this.email = email;
         this.id = id;
@@ -60,5 +65,37 @@ public class User {
 
     public void setWeight(String weight) {
         this.weight = weight;
+    }
+
+    public String getPicUrl1() {
+        return picUrl1;
+    }
+
+    public void setPicUrl1(String picUrl1) {
+        this.picUrl1 = picUrl1;
+    }
+
+    public String getPicUrl2() {
+        return picUrl2;
+    }
+
+    public void setPicUrl2(String picUrl2) {
+        this.picUrl2 = picUrl2;
+    }
+
+    public String getPicUrl3() {
+        return picUrl3;
+    }
+
+    public void setPicUrl3(String picUrl3) {
+        this.picUrl3 = picUrl3;
+    }
+
+    public String getPicUrl4() {
+        return picUrl4;
+    }
+
+    public void setPicUrl4(String picUrl4) {
+        this.picUrl4 = picUrl4;
     }
 }
