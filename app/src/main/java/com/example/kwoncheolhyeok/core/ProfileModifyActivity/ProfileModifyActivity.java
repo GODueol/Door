@@ -24,12 +24,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import com.bumptech.glide.Glide;
 import com.example.kwoncheolhyeok.core.Camera.LoadPicture;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.CoreProgress;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
+import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -221,10 +221,11 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 
 
         // Load the image using Glide
-        setImage("profilePic1.jpg", profilePic1);
-        setImage("profilePic2.jpg", profilePic2);
-        setImage("profilePic3.jpg", profilePic3);
-        setImage("profilePic4.jpg", profilePic4);
+        FireBaseUtil fbUtil = FireBaseUtil.getInstance();
+        fbUtil.setImage(fbUtil.getParentPath() + "profilePic1.jpg", profilePic1);
+        fbUtil.setImage(fbUtil.getParentPath() + "profilePic2.jpg", profilePic2);
+        fbUtil.setImage(fbUtil.getParentPath() + "profilePic3.jpg", profilePic3);
+        fbUtil.setImage(fbUtil.getParentPath() + "profilePic4.jpg", profilePic4);
 
         // Set Event of Getting Picture
         loadPicture = new LoadPicture(this, this);
@@ -242,26 +243,6 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         profilePic4.setOnClickListener(onProfilePicClickListener);
 
     }
-
-    private void setImage(String fileName, final ImageView targetImageView) {
-        FirebaseStorage.getInstance().getReference().child(getParentPath()+fileName)
-                .getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri) {
-                // Got the download URL for 'users/me/profile.png'
-                Glide.with(getApplicationContext() /* context */)
-                        .load(uri)
-                        .into(targetImageView);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                // Handle any errors
-                Log.d(this.getClass().getName(), exception.getMessage());
-            }
-        });
-    }
-
 
     // 넘버씨커 디바이더 색 바꾸기
     private void setDividerColor(NumberPicker numberpicker, int color) {
@@ -534,7 +515,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 
         // Create a storage reference from our app
         StorageReference storageRef = FirebaseStorage.getInstance().getReference();
-        String profilePicPath = getParentPath();
+        String profilePicPath = FireBaseUtil.getInstance().getParentPath();
         if(modifingPic == profilePic1){
             profilePicPath += "profilePic1.jpg";
         } else if(modifingPic == profilePic2){
@@ -568,11 +549,6 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
             }
         });
 
-    }
-
-    @NonNull
-    private String getParentPath() {
-        return "profile/pic/" + DataContainer.getInstance().getUid() + "/";
     }
 
     private void showImage(Bitmap bitmap) {
