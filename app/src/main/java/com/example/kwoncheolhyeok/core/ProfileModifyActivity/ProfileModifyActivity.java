@@ -10,6 +10,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.IntegerRes;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -34,6 +35,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -42,7 +46,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 
-public class ProfileModifyActivity extends AppCompatActivity implements NumberPicker.OnValueChangeListener{
+public class ProfileModifyActivity extends AppCompatActivity implements NumberPicker.OnValueChangeListener {
 
     Toolbar toolbar = null;
     NumberPicker numberpicker1 = null;
@@ -56,7 +60,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
     ToggleButton lock4 = null;
 
     static Dialog d;
-    private TextView min_age_filter , max_age_filter, min_height_filter, max_height_filter , min_weight_filter, max_weight_filter, min_bodytype_filter, max_bodytype_filter;
+    private TextView min_age_filter, max_age_filter, min_height_filter, max_height_filter, min_weight_filter, max_weight_filter, min_bodytype_filter, max_bodytype_filter;
 
     @Bind(R.id.modify_id)
     EditText _idText;
@@ -72,6 +76,9 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 
     @Bind(R.id.image4)
     ImageView profilePic4;
+
+    @Bind(R.id.modify_introduce)
+    EditText introEditText;
 
     final String[] values = {"Underweight", "Skinny", "Standard", "Muscular", "Overweight"};
 
@@ -148,7 +155,6 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         setDividerColor(numberpicker4, Color.WHITE);
 
 
-
         // 필터 다이얼로그 열기
         min_age_filter = (TextView) findViewById(R.id.min_age_filter);
         min_age_filter.setOnClickListener(new View.OnClickListener() {
@@ -217,8 +223,14 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         numberpicker1.setValue(Integer.valueOf(user.getAge()));
         numberpicker2.setValue(Integer.valueOf(user.getHeight()));
         numberpicker3.setValue(Integer.valueOf(user.getWeight()));
-
-
+        for (int i=0; i<values.length; i++){
+            String value = values[i];
+            if(value.equals(user.getBodyType())) {
+                numberpicker4.setValue(i);
+                break;
+            }
+        }
+        introEditText.setText(user.getIntro());
 
         // Load the image using Glide
         FireBaseUtil fbUtil = FireBaseUtil.getInstance();
@@ -516,13 +528,13 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         // Create a storage reference from our app
         StorageReference storageRef = FirebaseStorage.getInstance().getReference();
         String profilePicPath = FireBaseUtil.getInstance().getParentPath();
-        if(modifingPic == profilePic1){
+        if (modifingPic == profilePic1) {
             profilePicPath += "profilePic1.jpg";
-        } else if(modifingPic == profilePic2){
+        } else if (modifingPic == profilePic2) {
             profilePicPath += "profilePic2.jpg";
-        } else if(modifingPic == profilePic3){
+        } else if (modifingPic == profilePic3) {
             profilePicPath += "profilePic3.jpg";
-        } else if(modifingPic == profilePic4){
+        } else if (modifingPic == profilePic4) {
             profilePicPath += "profilePic4.jpg";
         }
         final StorageReference spaceRef = storageRef.child(profilePicPath);
@@ -532,14 +544,14 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
             @Override
             public void onFailure(@NonNull Exception exception) {
                 // Handle unsuccessful uploads
-                Toast.makeText(getBaseContext(),exception.getMessage(),Toast.LENGTH_SHORT).show();
+                Toast.makeText(getBaseContext(), exception.getMessage(), Toast.LENGTH_SHORT).show();
             }
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 // 로컬에 출력
                 showImage(loadPicture.drawFile(outputFileUri));
-                Toast.makeText(getBaseContext(),"Upload Complete",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getBaseContext(), "Upload Complete", Toast.LENGTH_SHORT).show();
             }
         }).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
             @Override
@@ -558,13 +570,61 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 //        mProductListener.ProductTabMessageToParent(bitmapDrawable);
     }
 
+    public void save(View view) {
+        CoreProgress.getInstance().startProgressDialog(this);
+
+        // Save User Info
+        user.setId(_idText.getText().toString());
+        user.setAge(Integer.toString(numberpicker1.getValue()));
+        user.setHeight(Integer.toString(numberpicker2.getValue()));
+        user.setWeight(Integer.toString(numberpicker3.getValue()));
+        user.setBodyType(values[numberpicker4.getValue()]);
+        user.setIntro(introEditText.getText().toString());
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        if (user != null) {
+            // User is signed in
+            Log.d(this.getClass().getName(), "onAuthStateChanged:signed_in:" + user.getUid());
+
+
+            // 파이어베이스 저장
+            final User mUser = this.user;
+            FirebaseDatabase.getInstance().getReference("users").child(user.getUid()).setValue(mUser)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            DataContainer.getInstance().setUser(mUser);  // 로컬 저장
+                            Toast.makeText(getApplicationContext(),"Save Success",Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(getApplicationContext(),"Save Fail",Toast.LENGTH_SHORT).show();
+                            Log.d(getApplication().getClass().getName(),e.getMessage());
+                        }
+                    })
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            CoreProgress.getInstance().stopProgressDialog();
+                        }
+                    });
+
+        } else {
+            // User is signed out
+            Log.d(this.getClass().getName(), "onAuthStateChanged:signed_out");
+        }
+
+    }
+
 //    @Override
 //    public boolean onCreateOptionsMenu(Menu menu) {
 //        // Inflate the menu; this adds items to the action bar if it is present.
 //        getMenuInflater().inflate(R.menu.activity_main_menu, menu);
 //        return true;
 //    }
-
 
 
 }

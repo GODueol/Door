@@ -13,25 +13,45 @@ public class User {
     String age;
     String height;
     String weight;
+    String bodyType;
 
     String picUrl1;
     String picUrl2;
     String picUrl3;
     String picUrl4;
 
-    public User(String email, String id, String age, String height, String weight) {
+    String intro;
+
+    public String getIntro() {
+        return intro;
+    }
+
+    public void setIntro(String intro) {
+        this.intro = intro;
+    }
+
+    public String getBodyType() {
+        return bodyType;
+    }
+
+    public void setBodyType(String bodyType) {
+        this.bodyType = bodyType;
+    }
+
+    public User(String email, String id, String age, String height, String weight, String bodyType) {
         this.email = email;
         this.id = id;
         this.age = age;
         this.height = height;
         this.weight = weight;
+        this.bodyType = bodyType;
     }
 
     public String getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
+    private void setEmail(String email) {
         this.email = email;
     }
 

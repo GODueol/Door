@@ -129,12 +129,8 @@ public class LoginActivity extends AppCompatActivity {
 
             CoreProgress.getInstance().startProgressDialog(this);
 
-
             // User is signed in
             Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
-
-            // Uid 저장
-            DataContainer.getInstance().setUid(user.getUid());
 
             // user 정보 읽어오기
             userRef.child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -149,6 +145,8 @@ public class LoginActivity extends AppCompatActivity {
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
+                    Toast.makeText(getApplicationContext(),"Getting UserInfo Cancelled",Toast.LENGTH_SHORT).show();
+                    Log.d(getApplication().getClass().getName(),databaseError.getMessage());
 
                 }
             });

@@ -1,6 +1,7 @@
 package com.example.kwoncheolhyeok.core.Util;
 
 import com.example.kwoncheolhyeok.core.Entity.User;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -19,7 +20,6 @@ public class DataContainer {
     }
 
     User user;
-    String uid;
 
     public User getUser() {
         return user;
@@ -30,15 +30,11 @@ public class DataContainer {
     }
 
     public String getUid() {
-        return uid;
-    }
-
-    public void setUid(String uid) {
-        this.uid = uid;
+        return FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 
     public DatabaseReference getUserRef(){
-        return FirebaseDatabase.getInstance().getReference("users").child(uid);
+        return FirebaseDatabase.getInstance().getReference("users").child(getUid());
     }
 
 

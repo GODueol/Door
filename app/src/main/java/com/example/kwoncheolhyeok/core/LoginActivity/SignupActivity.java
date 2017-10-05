@@ -20,6 +20,8 @@ import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.CoreProgress;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -71,7 +73,6 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
     @Bind(R.id.link_login)
     TextView _loginLink;
 
-    static Dialog d;
     private EditText bodytype;
     final String[] values = {"Underweight", "Skinny", "Standard", "Muscular", "Overweight"};
 
@@ -103,7 +104,7 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
             @Override
             public void onClick(View v) {
                 // Finish the registration screen and return to the Login activity
-                Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
+                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(intent);
                 finish();
                 overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
@@ -118,18 +119,24 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
             // User is signed in
             Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
 
-            // Uid 저장
-            DataContainer.getInstance().setUid(user.getUid());
-
             // 선택 정보 입력
             // Write a message to the database
-            userRef.child(user.getUid()).setValue(mUser);    // 파이어베이스 저장
-            DataContainer.getInstance().setUser(mUser);  // 로컬 저장
-
-            onSignupSuccess();
-
-        }
-        else {
+            userRef.child(user.getUid()).setValue(mUser)    // 파이어베이스 저장
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            DataContainer.getInstance().setUser(mUser);  // 로컬 저장
+                            onSignupSuccess();
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            onSignupFailed();
+                            Log.d(getApplication().getClass().getName(),e.getMessage());
+                        }
+                    });
+        } else {
             // User is signed out
             Log.d(TAG, "onAuthStateChanged:signed_out");
         }
@@ -184,8 +191,6 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
     }
 
 
-
-
     public void signup() {
         Log.d(TAG, "Signup");
 
@@ -205,7 +210,8 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
         final String age = _ageText.getText().toString();
         final String height = _heightText.getText().toString();
         final String weight = _weightText.getText().toString();
-        mUser = new User(email,id,age,height,weight);
+        final String bodyType = _bodyType.getText().toString();
+        mUser = new User(email, id, age, height, weight, bodyType);
 
         // firebase 회원가입
         mAuth.createUserWithEmailAndPassword(email, password)
@@ -227,21 +233,22 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
                             onSignupFailed();
                         }
 
-                        CoreProgress.getInstance().stopProgressDialog();
+
                     }
                 });
     }
 
     public void onSignupSuccess() {
+        Toast.makeText(getBaseContext(), "Join Success", Toast.LENGTH_LONG).show();
         _signupButton.setEnabled(true);
         Intent i = new Intent(this, MainActivity.class);
         startActivityForResult(i, 0);
     }
 
     public void onSignupFailed() {
-        //Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
-
+        Toast.makeText(getBaseContext(), "Join Failed", Toast.LENGTH_LONG).show();
         _signupButton.setEnabled(true);
+        CoreProgress.getInstance().stopProgressDialog();
     }
 
     public boolean validate() {
@@ -259,41 +266,27 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
         if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             Toast.makeText(getBaseContext(), "올바른 이메일 양식으로 작성해주세요.", Toast.LENGTH_SHORT).show();
             valid = false;
-        }
-
-        else if (password.isEmpty() || password.length() < 6 || password.length() > 12) {
+        } else if (password.isEmpty() || password.length() < 6 || password.length() > 12) {
             Toast.makeText(getBaseContext(), "비밀번호는 6자리 이상 12자리 이하로 설정해주세요.", Toast.LENGTH_SHORT).show();
             valid = false;
-        }
-
-        else if (reEnterPassword.isEmpty() || reEnterPassword.length() < 6 || reEnterPassword.length() > 12 || !(reEnterPassword.equals(password))) {
+        } else if (reEnterPassword.isEmpty() || reEnterPassword.length() < 6 || reEnterPassword.length() > 12 || !(reEnterPassword.equals(password))) {
             Toast.makeText(getBaseContext(), "패스워드가 일치하지 않습니다.", Toast.LENGTH_SHORT).show();
             valid = false;
-        }
-
-        else if (ID.isEmpty() || ID.length() < 2) {
+        } else if (ID.isEmpty() || ID.length() < 2) {
             Toast.makeText(getBaseContext(), "두 자리 이상의 아이디로 작성해주세요.", Toast.LENGTH_SHORT).show();
             valid = false;
-        }
-
-        else if (Age.isEmpty() || Age.length()!=2){
+        } else if (Age.isEmpty() || Age.length() != 2) {
             Toast.makeText(getBaseContext(), "올바른 나이를 작성해주세요.", Toast.LENGTH_SHORT).show();
-            valid=false;
-        }
-
-        else if (Height.isEmpty() || Height.length()!=3){
+            valid = false;
+        } else if (Height.isEmpty() || Height.length() != 3) {
             Toast.makeText(getBaseContext(), "올바른 키를 작성해 주세요.", Toast.LENGTH_SHORT).show();
-            valid=false;
-        }
-
-        else if (Weight.isEmpty() || Weight.length()<2 || Weight.length()>3){
+            valid = false;
+        } else if (Weight.isEmpty() || Weight.length() < 2 || Weight.length() > 3) {
             Toast.makeText(getBaseContext(), "올바른 몸무게로 작성해주세요.", Toast.LENGTH_SHORT).show();
-            valid=false;
-        }
-
-        else if (Bodytype.isEmpty()){
+            valid = false;
+        } else if (Bodytype.isEmpty()) {
             Toast.makeText(getBaseContext(), "바디타입을 설정해주세요.", Toast.LENGTH_SHORT).show();
-            valid=false;
+            valid = false;
         }
 
         return valid;

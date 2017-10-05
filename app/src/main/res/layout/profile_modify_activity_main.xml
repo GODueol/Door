@@ -1,37 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/modify_toolbar"
-    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
     <RelativeLayout
-        android:background="@color/white"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/scrollView"
         android:layout_alignParentTop="true"
-        >
+        android:background="@color/white">
 
-    <ImageButton
-        android:id="@+id/imageView"
-        android:layout_width="80dp"
-        android:layout_height="23dp"
-        android:layout_centerInParent="true"
-        android:background="@drawable/title"
-        />
+        <ImageButton
+            android:id="@+id/imageView"
+            android:layout_width="80dp"
+            android:layout_height="23dp"
+            android:layout_centerInParent="true"
+            android:background="@drawable/title" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="저장"
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        android:layout_centerVertical="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="20dp"
-        />
+        <TextView
+            android:id="@+id/saveButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="20dp"
+            android:onClick="save"
+            android:text="저장"
+            android:textColor="@color/black"
+            android:textSize="18sp" />
 
     </RelativeLayout>
 
@@ -43,6 +41,7 @@
         android:elevation="6dp"
         android:minHeight="?attr/actionBarSize"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        android:visibility="invisible"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
     </android.support.v7.widget.Toolbar>
@@ -52,575 +51,537 @@
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:layout_below="@+id/toolbar"
-        android:background="#616161"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        >
-
-    <RelativeLayout
-    android:layout_width="wrap_content"
-    android:layout_height="match_parent">
-
-    <View
-        android:id="@+id/section_line1"
-        android:layout_width="match_parent"
-        android:layout_height="0.5dip"
-        android:background="#FFFFFF"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        ></View>
-
-    <TextView
-        android:id="@+id/picture"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/section_line1"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="5dp"
-        android:text="Picture"
-        android:textSize="15sp"
-        android:textStyle="bold"
-        android:textColor="#FFFFFF"
-        />
-
-    <LinearLayout
-        android:id="@+id/unlock_lock_four"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/picture"
-        android:layout_marginTop="10dp"
-        android:weightSum="4"
-        >
+        android:background="#616161">
 
         <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            >
+            android:layout_height="match_parent">
 
-            <!--1번 이미지는 잠글 수 없음:메인사진에 무조건 한장은 등록되게-->
-            <Button
-                android:id="@+id/lock1"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
-                android:background="@drawable/check"
-                android:visibility="invisible"
-                android:clickable="false"
-                android:focusable="false"
-                android:focusableInTouchMode="false"
+            <View
+                android:id="@+id/section_line1"
+                android:layout_width="match_parent"
+                android:layout_height="0.5dip"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="10dp"
+                android:background="#FFFFFF"></View>
+
+            <TextView
+                android:id="@+id/picture"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/section_line1"
                 android:layout_centerInParent="true"
-                />
-        </RelativeLayout>
-
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            >
-        <ToggleButton
-            android:id="@+id/lock2"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:background="@drawable/check"
-            android:textOn=""
-            android:textOff=""
-            android:focusable="false"
-            android:focusableInTouchMode="false"
-            android:layout_centerInParent="true"
-            />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            >
-        <ToggleButton
-            android:id="@+id/lock3"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:background="@drawable/check"
-            android:textOn=""
-            android:textOff=""
-            android:focusable="false"
-            android:focusableInTouchMode="false"
-            android:layout_centerInParent="true"
-            />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            >
-        <ToggleButton
-            android:id="@+id/lock4"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:background="@drawable/check"
-            android:textOn=""
-            android:textOff=""
-            android:focusable="false"
-            android:focusableInTouchMode="false"
-            android:layout_centerInParent="true"
-            />
-
-        </RelativeLayout>
-
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/image_four"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/unlock_lock_four"
-        android:layout_marginTop="7dp"
-        android:weightSum="4"
-        >
-        <com.example.kwoncheolhyeok.core.PeopleFragment.SquareImageView
-            android:id="@+id/image1"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:src="@drawable/a"
-            android:scaleType="centerCrop"
-            />
-        <com.example.kwoncheolhyeok.core.PeopleFragment.SquareImageView
-            android:id="@+id/image2"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:src="@drawable/a"
-            android:scaleType="centerCrop"
-            />
-        <com.example.kwoncheolhyeok.core.PeopleFragment.SquareImageView
-            android:id="@+id/image3"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:src="@drawable/a"
-            android:scaleType="centerCrop"
-            />
-        <com.example.kwoncheolhyeok.core.PeopleFragment.SquareImageView
-            android:id="@+id/image4"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:src="@drawable/a"
-            android:scaleType="centerCrop"
-            />
-    </LinearLayout>
-
-    <View
-        android:id="@+id/section_line2"
-        android:layout_width="match_parent"
-        android:layout_height="0.5dip"
-        android:background="#FFFFFF"
-        android:layout_below="@+id/image_four"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        ></View>
-
-    <TextView
-        android:id="@+id/id_nouse"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/section_line2"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="5dp"
-        android:text="ID"
-        android:textStyle="bold"
-        android:textColor="#FFFFFF"
-        android:textSize="15sp"/>
-
-    <EditText
-        android:id="@+id/modify_id"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/id_nouse"
-        android:layout_marginTop="10dp"
-        android:focusableInTouchMode="true"
-        android:layout_centerInParent="true"
-        android:gravity="center"
-        android:text="CheolHyeok Kwon"
-        android:textColor="#FFFFFF"
-        android:textSize="15sp"
-        android:maxLength="13"
-        android:maxLines="1"
-        android:theme="@style/Theme.App.Base"
-        android:bufferType="editable"
-        />
-
-    <View
-        android:id="@+id/section_line3"
-        android:layout_width="match_parent"
-        android:layout_height="1dip"
-        android:background="#FFFFFF"
-        android:layout_below="@+id/modify_id"
-        android:layout_marginTop="25dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        ></View>
-
-    <TextView
-        android:id="@+id/age_nouse"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/section_line3"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="5dp"
-        android:text="Age / Height / Weight / BodyType"
-        android:textColor="#FFFFFF"
-        android:textStyle="bold"
-        android:textSize="15sp"/>
-
-    <LinearLayout
-        android:id="@+id/numberPicker"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_below="@+id/age_nouse"
-        android:layout_marginTop="10dp"
-        android:layout_centerInParent="true"
-        >
-
-        <NumberPicker
-            android:id="@+id/numberPicker1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:theme="@style/AppTheme.Picker"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginRight="5dp"
-            />
-        <NumberPicker
-            android:id="@+id/numberPicker2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:theme="@style/AppTheme.Picker"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginRight="5dp"
-
-            />
-        <NumberPicker
-            android:id="@+id/numberPicker3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:theme="@style/AppTheme.Picker"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginRight="5dp"
-
-            />
-        <NumberPicker
-            android:id="@+id/numberPicker4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:theme="@style/AppTheme.Picker"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:weightSum="1"
-            />
-
-    </LinearLayout>
-
-    <View
-        android:id="@+id/section_line4"
-        android:layout_width="match_parent"
-        android:layout_height="1dip"
-        android:background="#FFFFFF"
-        android:layout_below="@+id/numberPicker"
-        android:layout_marginTop="15dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        ></View>
-
-    <TextView
-        android:id="@+id/introduce_nouse"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/section_line4"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="5dp"
-        android:text="Introduce"
-        android:textColor="#FFFFFF"
-        android:textStyle="bold"
-        android:textSize="15sp"/>
-
-    <EditText
-        android:id="@+id/modify_introduce"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/introduce_nouse"
-        android:gravity="left"
-        android:text="소개란"
-        android:focusableInTouchMode="true"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="5dp"
-        android:textColor="#FFFFFF"
-        android:textSize="15sp"
-        android:maxLength="200"
-        android:maxLines="5"
-        android:theme="@style/Theme.App.Base"
-        />
-
-    <View
-        android:id="@+id/section_line5"
-        android:layout_width="match_parent"
-        android:layout_height="1dip"
-        android:background="#FFFFFF"
-        android:layout_below="@+id/modify_introduce"
-        android:layout_marginTop="25dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        ></View>
-
-    <TextView
-        android:id="@+id/filter_nouse"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/section_line5"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="5dp"
-        android:text="Filter"
-        android:textColor="#FFFFFF"
-        android:textStyle="bold"
-        android:textSize="15sp"/>
-
-        <RelativeLayout
-            android:id="@+id/AGE_FILTER"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/filter_nouse"
-            android:layout_marginTop="20dp"
-            >
-
-            <TextView
-                android:id="@+id/AGE_NOUSE"
-                android:text="AGE"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="10dp"
+                android:text="Picture"
                 android:textColor="#FFFFFF"
-                android:textStyle="bold"
-                android:layout_marginLeft="10dip"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                />
+                android:textSize="15sp"
+                android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/min_age_filter"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/unlock_lock_four"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentLeft="true"
                 android:layout_alignParentRight="true"
-                android:text="min"
-                android:textColor="@color/text_white"
-                android:layout_marginRight="80dp"
-                />
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/picture"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal"
+                android:weightSum="4">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <!--1번 이미지는 잠글 수 없음:메인사진에 무조건 한장은 등록되게-->
+                    <Button
+                        android:id="@+id/lock1"
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:layout_centerInParent="true"
+                        android:background="@drawable/check"
+                        android:clickable="false"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:visibility="invisible" />
+                </RelativeLayout>
+
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <ToggleButton
+                        android:id="@+id/lock2"
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:layout_centerInParent="true"
+                        android:background="@drawable/check"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:textOff=""
+                        android:textOn="" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <ToggleButton
+                        android:id="@+id/lock3"
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:layout_centerInParent="true"
+                        android:background="@drawable/check"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:textOff=""
+                        android:textOn="" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <ToggleButton
+                        android:id="@+id/lock4"
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:layout_centerInParent="true"
+                        android:background="@drawable/check"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:textOff=""
+                        android:textOn="" />
+
+                </RelativeLayout>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/image_four"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/unlock_lock_four"
+                android:layout_marginTop="7dp"
+                android:orientation="horizontal"
+                android:weightSum="4">
+
+                <com.example.kwoncheolhyeok.core.PeopleFragment.SquareImageView
+                    android:id="@+id/image1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/a" />
+
+                <com.example.kwoncheolhyeok.core.PeopleFragment.SquareImageView
+                    android:id="@+id/image2"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/a" />
+
+                <com.example.kwoncheolhyeok.core.PeopleFragment.SquareImageView
+                    android:id="@+id/image3"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/a" />
+
+                <com.example.kwoncheolhyeok.core.PeopleFragment.SquareImageView
+                    android:id="@+id/image4"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/a" />
+            </LinearLayout>
+
+            <View
+                android:id="@+id/section_line2"
+                android:layout_width="match_parent"
+                android:layout_height="0.5dip"
+                android:layout_below="@+id/image_four"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="20dp"
+                android:background="#FFFFFF"></View>
 
             <TextView
+                android:id="@+id/id_nouse"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:text="~"
-                android:textColor="@color/text_white"
-                android:layout_marginRight="59dp"
-                />
-
-            <TextView
-                android:id="@+id/max_age_filter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:text="max"
-                android:textColor="@color/text_white"
-                android:layout_marginRight="20dp"
-                />
-
-        </RelativeLayout>
-
-
-        <RelativeLayout
-            android:id="@+id/HEIGHT_FILTER"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/AGE_FILTER"
-            android:layout_marginTop="20dp"
-            >
-
-            <TextView
-                android:id="@+id/HEIGHT_NOUSE"
-                android:text="HEIGHT"
+                android:layout_below="@id/section_line2"
+                android:layout_centerInParent="true"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="10dp"
+                android:text="ID"
                 android:textColor="#FFFFFF"
-                android:textStyle="bold"
-                android:layout_marginLeft="10dip"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/modify_id"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                />
-
-            <TextView
-                android:id="@+id/min_height_filter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:text="min"
-                android:textColor="@color/text_white"
-                android:layout_marginRight="80dp"
-                />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:text="~"
-                android:textColor="@color/text_white"
-                android:layout_marginRight="59dp"
-                />
-
-            <TextView
-                android:id="@+id/max_height_filter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:text="max"
-                android:textColor="@color/text_white"
-                android:layout_marginRight="20dp"
-                />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/WEIGHT_FILTER"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/HEIGHT_FILTER"
-            android:layout_marginTop="20dp"
-            >
-
-            <TextView
-                android:id="@+id/WEIGHT_NOUSE"
-                android:text="WEIGHT"
+                android:layout_below="@+id/id_nouse"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="10dp"
+                android:bufferType="editable"
+                android:focusableInTouchMode="true"
+                android:gravity="center"
+                android:maxLength="13"
+                android:maxLines="1"
+                android:text="CheolHyeok Kwon"
                 android:textColor="#FFFFFF"
-                android:textStyle="bold"
-                android:layout_marginLeft="10dip"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                />
+                android:textSize="15sp"
+                android:theme="@style/Theme.App.Base" />
+
+            <View
+                android:id="@+id/section_line3"
+                android:layout_width="match_parent"
+                android:layout_height="1dip"
+                android:layout_below="@+id/modify_id"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="25dp"
+                android:background="#FFFFFF"></View>
 
             <TextView
-                android:id="@+id/min_weight_filter"
+                android:id="@+id/age_nouse"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:text="min"
-                android:textColor="@color/text_white"
-                android:layout_marginRight="80dp"
-                />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:text="~"
-                android:textColor="@color/text_white"
-                android:layout_marginRight="59dp"
-                />
-
-            <TextView
-                android:id="@+id/max_weight_filter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:text="max"
-                android:textColor="@color/text_white"
-                android:layout_marginRight="20dp"
-                />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/BODY_TYPE_FILTER"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/WEIGHT_FILTER"
-            android:layout_marginTop="20dp"
-            >
-
-            <TextView
-                android:id="@+id/BODY_TYPE_NOUSE"
-                android:text="BODY TYPE"
+                android:layout_below="@id/section_line3"
+                android:layout_centerInParent="true"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="10dp"
+                android:text="Age / Height / Weight / BodyType"
                 android:textColor="#FFFFFF"
-                android:textStyle="bold"
-                android:layout_marginLeft="10dip"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:id="@+id/numberPicker"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                />
+                android:layout_below="@+id/age_nouse"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <NumberPicker
+                    android:id="@+id/numberPicker1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginRight="5dp"
+                    android:theme="@style/AppTheme.Picker" />
+
+                <NumberPicker
+                    android:id="@+id/numberPicker2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginRight="5dp"
+                    android:theme="@style/AppTheme.Picker"
+
+                    />
+
+                <NumberPicker
+                    android:id="@+id/numberPicker3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginRight="5dp"
+                    android:theme="@style/AppTheme.Picker"
+
+                    />
+
+                <NumberPicker
+                    android:id="@+id/numberPicker4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:theme="@style/AppTheme.Picker"
+                    android:weightSum="1" />
+
+            </LinearLayout>
+
+            <View
+                android:id="@+id/section_line4"
+                android:layout_width="match_parent"
+                android:layout_height="1dip"
+                android:layout_below="@+id/numberPicker"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="15dp"
+                android:background="#FFFFFF"></View>
 
             <TextView
-                android:id="@+id/min_bodytype_filter"
+                android:id="@+id/introduce_nouse"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:text="min"
-                android:textColor="@color/text_white"
-                android:layout_marginRight="110dp"
-                />
+                android:layout_below="@id/section_line4"
+                android:layout_centerInParent="true"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="10dp"
+                android:text="Introduce"
+                android:textColor="#FFFFFF"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/modify_introduce"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/introduce_nouse"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="10dp"
+                android:focusableInTouchMode="true"
+                android:gravity="left"
+                android:maxLength="200"
+                android:maxLines="5"
+                android:text="소개란"
+                android:textColor="#FFFFFF"
+                android:textSize="15sp"
+                android:theme="@style/Theme.App.Base" />
+
+            <View
+                android:id="@+id/section_line5"
+                android:layout_width="match_parent"
+                android:layout_height="1dip"
+                android:layout_below="@+id/modify_introduce"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="25dp"
+                android:background="#FFFFFF"></View>
 
             <TextView
+                android:id="@+id/filter_nouse"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:text="~"
-                android:textColor="@color/text_white"
-                android:layout_marginRight="97dp"
-                />
+                android:layout_below="@id/section_line5"
+                android:layout_centerInParent="true"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="10dp"
+                android:text="Filter"
+                android:textColor="#FFFFFF"
+                android:textSize="15sp"
+                android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/max_bodytype_filter"
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:id="@+id/AGE_FILTER"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:text="max"
-                android:textColor="@color/text_white"
-                android:layout_marginRight="20dp"
-                />
+                android:layout_below="@+id/filter_nouse"
+                android:layout_marginTop="20dp">
+
+                <TextView
+                    android:id="@+id/AGE_NOUSE"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dip"
+                    android:text="AGE"
+                    android:textColor="#FFFFFF"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/min_age_filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="80dp"
+                    android:text="min"
+                    android:textColor="@color/text_white" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="59dp"
+                    android:text="~"
+                    android:textColor="@color/text_white" />
+
+                <TextView
+                    android:id="@+id/max_age_filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="20dp"
+                    android:text="max"
+                    android:textColor="@color/text_white" />
+
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:id="@+id/HEIGHT_FILTER"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/AGE_FILTER"
+                android:layout_marginTop="20dp">
+
+                <TextView
+                    android:id="@+id/HEIGHT_NOUSE"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dip"
+                    android:text="HEIGHT"
+                    android:textColor="#FFFFFF"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/min_height_filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="80dp"
+                    android:text="min"
+                    android:textColor="@color/text_white" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="59dp"
+                    android:text="~"
+                    android:textColor="@color/text_white" />
+
+                <TextView
+                    android:id="@+id/max_height_filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="20dp"
+                    android:text="max"
+                    android:textColor="@color/text_white" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/WEIGHT_FILTER"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/HEIGHT_FILTER"
+                android:layout_marginTop="20dp">
+
+                <TextView
+                    android:id="@+id/WEIGHT_NOUSE"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dip"
+                    android:text="WEIGHT"
+                    android:textColor="#FFFFFF"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/min_weight_filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="80dp"
+                    android:text="min"
+                    android:textColor="@color/text_white" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="59dp"
+                    android:text="~"
+                    android:textColor="@color/text_white" />
+
+                <TextView
+                    android:id="@+id/max_weight_filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="20dp"
+                    android:text="max"
+                    android:textColor="@color/text_white" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/BODY_TYPE_FILTER"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/WEIGHT_FILTER"
+                android:layout_marginTop="20dp">
+
+                <TextView
+                    android:id="@+id/BODY_TYPE_NOUSE"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dip"
+                    android:text="BODY TYPE"
+                    android:textColor="#FFFFFF"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/min_bodytype_filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="110dp"
+                    android:text="min"
+                    android:textColor="@color/text_white" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="97dp"
+                    android:text="~"
+                    android:textColor="@color/text_white" />
+
+                <TextView
+                    android:id="@+id/max_bodytype_filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="20dp"
+                    android:text="max"
+                    android:textColor="@color/text_white" />
+
+            </RelativeLayout>
+
+
+            <View
+                android:id="@+id/section_line6"
+                android:layout_width="match_parent"
+                android:layout_height="1dip"
+                android:layout_below="@+id/BODY_TYPE_FILTER"
+                android:layout_marginBottom="20dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="25dp"
+                android:background="#FFFFFF"></View>
 
         </RelativeLayout>
-
-
-        <View
-        android:id="@+id/section_line6"
-        android:layout_width="match_parent"
-        android:layout_height="1dip"
-        android:background="#FFFFFF"
-        android:layout_below="@+id/BODY_TYPE_FILTER"
-        android:layout_marginTop="25dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        android:layout_marginBottom="20dp"
-        ></View>
-
-</RelativeLayout>
 
     </ScrollView>
-
 
 
 </RelativeLayout>
