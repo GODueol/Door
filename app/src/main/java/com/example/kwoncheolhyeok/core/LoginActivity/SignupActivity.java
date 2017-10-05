@@ -1,11 +1,7 @@
 package com.example.kwoncheolhyeok.core.LoginActivity;
 
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.res.Resources;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -14,15 +10,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ExpandableListView;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.kwoncheolhyeok.core.Activity.MainActivity;
 import com.example.kwoncheolhyeok.core.Entity.User;
-import com.example.kwoncheolhyeok.core.ProfileModifyActivity.ProfileModifyActivity;
 import com.example.kwoncheolhyeok.core.R;
+import com.example.kwoncheolhyeok.core.Util.CoreProgress;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -32,9 +27,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
@@ -43,7 +35,6 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
 
     // auth
     private FirebaseAuth mAuth;
-    ProgressDialog progressDialog;
 
     // database
     DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users");
@@ -198,17 +189,14 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
     public void signup() {
         Log.d(TAG, "Signup");
 
-
-
         if (!validate()) {
             onSignupFailed();
             return;
         }
 
-
         _signupButton.setEnabled(false);
 
-        startProgressDialog();
+        CoreProgress.getInstance().startProgressDialog(this);
 
         final String email = _emailText.getText().toString();
         String password = _passwordText.getText().toString();
@@ -218,8 +206,6 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
         final String height = _heightText.getText().toString();
         final String weight = _weightText.getText().toString();
         mUser = new User(email,id,age,height,weight);
-
-        // TODO: Implement your own signup logic here.
 
         // firebase 회원가입
         mAuth.createUserWithEmailAndPassword(email, password)
@@ -241,24 +227,10 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
                             onSignupFailed();
                         }
 
-                        progressDialog.dismiss();
+                        CoreProgress.getInstance().stopProgressDialog();
                     }
                 });
     }
-
-    private void startProgressDialog() {
-
-        //프로그레스 다이얼로그 이미지만 센터에서 돌아가게
-        progressDialog = new ProgressDialog(SignupActivity.this,R.style.MyTheme);
-        progressDialog.setIndeterminate(true);
-        progressDialog.setProgressStyle(android.R.style.Widget_ProgressBar_Small);
-        progressDialog.setIndeterminateDrawable(getResources().getDrawable(R.drawable.progress_dialog_icon_drawable_animation));
-        progressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        progressDialog.show();
-
-
-    }
-
 
     public void onSignupSuccess() {
         _signupButton.setEnabled(true);
@@ -326,8 +298,6 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
 
         return valid;
     }
-
-
 
     @Override
     public void onStart() {

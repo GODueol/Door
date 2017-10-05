@@ -28,10 +28,12 @@ import com.bumptech.glide.Glide;
 import com.example.kwoncheolhyeok.core.Camera.LoadPicture;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.R;
+import com.example.kwoncheolhyeok.core.Util.CoreProgress;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
-import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -216,36 +218,16 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         numberpicker2.setValue(Integer.valueOf(user.getHeight()));
         numberpicker3.setValue(Integer.valueOf(user.getWeight()));
 
-        loadPicture = new LoadPicture(this, this);
+
 
         // Load the image using Glide
-        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
-
-        StorageReference temp = storageRef.child(getParentPath()+"profilePic1.jpg");
-        Glide.with(this /* context */)
-                //.using(new FirebaseImageLoader())
-                .load(temp.getDownloadUrl().toString())
-                .into(profilePic1)
-        //  onLoadStarted(getResources().getDrawable(R.drawable.progress_dialog_icon_drawable_animation))
-
-        ;
-
-        Glide.with(this /* context */)
-                .using(new FirebaseImageLoader())
-                .load(storageRef.child(getParentPath()+"profilePic2.jpg"))
-                .into(profilePic2);
-
-        Glide.with(this /* context */)
-                .using(new FirebaseImageLoader())
-                .load(storageRef.child(getParentPath()+"profilePic3.jpg"))
-                .into(profilePic3);
-
-        Glide.with(this /* context */)
-                .using(new FirebaseImageLoader())
-                .load(storageRef.child(getParentPath()+"profilePic4.jpg"))
-                .into(profilePic4);
+        setImage("profilePic1.jpg", profilePic1);
+        setImage("profilePic2.jpg", profilePic2);
+        setImage("profilePic3.jpg", profilePic3);
+        setImage("profilePic4.jpg", profilePic4);
 
         // Set Event of Getting Picture
+        loadPicture = new LoadPicture(this, this);
         View.OnClickListener onProfilePicClickListener = new View.OnClickListener() {
 
             @Override
@@ -259,6 +241,25 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         profilePic3.setOnClickListener(onProfilePicClickListener);
         profilePic4.setOnClickListener(onProfilePicClickListener);
 
+    }
+
+    private void setImage(String fileName, final ImageView targetImageView) {
+        FirebaseStorage.getInstance().getReference().child(getParentPath()+fileName)
+                .getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                // Got the download URL for 'users/me/profile.png'
+                Glide.with(getApplicationContext() /* context */)
+                        .load(uri)
+                        .into(targetImageView);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle any errors
+                Log.d(this.getClass().getName(), exception.getMessage());
+            }
+        });
     }
 
 
@@ -529,6 +530,8 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 
     private void uploadPic(final Uri outputFileUri) {
 
+        CoreProgress.getInstance().startProgressDialog(this);
+
         // Create a storage reference from our app
         StorageReference storageRef = FirebaseStorage.getInstance().getReference();
         String profilePicPath = getParentPath();
@@ -553,15 +556,15 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
-                @SuppressWarnings("VisibleForTests") String url = taskSnapshot.getDownloadUrl().getPath();
                 // 로컬에 출력
                 showImage(loadPicture.drawFile(outputFileUri));
-
-                Glide.with(getApplicationContext() /* context */)
-                        .using(new FirebaseImageLoader())
-                        .load(spaceRef)
-                        .into(profilePic2);
+                Toast.makeText(getBaseContext(),"Upload Complete",Toast.LENGTH_SHORT).show();
+            }
+        }).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                // 프로그레스바 중단
+                CoreProgress.getInstance().stopProgressDialog();
             }
         });
 
