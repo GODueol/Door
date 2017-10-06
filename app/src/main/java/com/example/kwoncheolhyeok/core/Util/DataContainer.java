@@ -37,5 +37,7 @@ public class DataContainer {
         return FirebaseDatabase.getInstance().getReference("users").child(getUid());
     }
 
-
+    public static DataContainer getOurInstance() {
+        return ourInstance;
+    }
 }

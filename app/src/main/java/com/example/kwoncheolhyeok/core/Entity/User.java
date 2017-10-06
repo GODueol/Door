@@ -6,7 +6,8 @@ package com.example.kwoncheolhyeok.core.Entity;
 
 public class User {
 
-    public User() { }
+    public User() {
+    }
 
     String email;
     String id;
@@ -15,12 +16,45 @@ public class User {
     String weight;
     String bodyType;
 
-    String picUrl1;
-    String picUrl2;
-    String picUrl3;
-    String picUrl4;
-
     String intro;
+
+
+    IntBoundary ageBoundary;
+    IntBoundary heightBoundary;
+    IntBoundary weightBoundary;
+    StringBoundary bodyTypeBoundary;
+
+    public IntBoundary getAgeBoundary() {
+        return ageBoundary;
+    }
+
+    public void setAgeBoundary(IntBoundary ageBoundary) {
+        this.ageBoundary = ageBoundary;
+    }
+
+    public IntBoundary getHeightBoundary() {
+        return heightBoundary;
+    }
+
+    public void setHeightBoundary(IntBoundary heightBoundary) {
+        this.heightBoundary = heightBoundary;
+    }
+
+    public IntBoundary getWeightBoundary() {
+        return weightBoundary;
+    }
+
+    public void setWeightBoundary(IntBoundary weightBoundary) {
+        this.weightBoundary = weightBoundary;
+    }
+
+    public StringBoundary getBodyTypeBoundary() {
+        return bodyTypeBoundary;
+    }
+
+    public void setBodyTypeBoundary(StringBoundary bodyTypeBoundary) {
+        this.bodyTypeBoundary = bodyTypeBoundary;
+    }
 
     public String getIntro() {
         return intro;
@@ -85,37 +119,5 @@ public class User {
 
     public void setWeight(String weight) {
         this.weight = weight;
-    }
-
-    public String getPicUrl1() {
-        return picUrl1;
-    }
-
-    public void setPicUrl1(String picUrl1) {
-        this.picUrl1 = picUrl1;
-    }
-
-    public String getPicUrl2() {
-        return picUrl2;
-    }
-
-    public void setPicUrl2(String picUrl2) {
-        this.picUrl2 = picUrl2;
-    }
-
-    public String getPicUrl3() {
-        return picUrl3;
-    }
-
-    public void setPicUrl3(String picUrl3) {
-        this.picUrl3 = picUrl3;
-    }
-
-    public String getPicUrl4() {
-        return picUrl4;
-    }
-
-    public void setPicUrl4(String picUrl4) {
-        this.picUrl4 = picUrl4;
     }
 }

@@ -10,7 +10,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.IntegerRes;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -26,6 +25,8 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.example.kwoncheolhyeok.core.Camera.LoadPicture;
+import com.example.kwoncheolhyeok.core.Entity.IntBoundary;
+import com.example.kwoncheolhyeok.core.Entity.StringBoundary;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.CoreProgress;
@@ -41,6 +42,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+
+import java.util.Arrays;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -223,13 +226,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         numberpicker1.setValue(Integer.valueOf(user.getAge()));
         numberpicker2.setValue(Integer.valueOf(user.getHeight()));
         numberpicker3.setValue(Integer.valueOf(user.getWeight()));
-        for (int i=0; i<values.length; i++){
-            String value = values[i];
-            if(value.equals(user.getBodyType())) {
-                numberpicker4.setValue(i);
-                break;
-            }
-        }
+        numberpicker4.setValue(Arrays.asList(values).indexOf(user.getBodyType()));
         introEditText.setText(user.getIntro());
 
         // Load the image using Glide
@@ -253,6 +250,24 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         profilePic2.setOnClickListener(onProfilePicClickListener);
         profilePic3.setOnClickListener(onProfilePicClickListener);
         profilePic4.setOnClickListener(onProfilePicClickListener);
+
+        // Set Filter
+        try {
+            max_age_filter.setText(Integer.toString(user.getAgeBoundary().getMax()));
+            min_age_filter.setText(Integer.toString(user.getAgeBoundary().getMin()));
+
+            max_weight_filter.setText(Integer.toString(user.getWeightBoundary().getMax()));
+            min_weight_filter.setText(Integer.toString(user.getWeightBoundary().getMin()));
+
+            max_height_filter.setText(Integer.toString(user.getHeightBoundary().getMax()));
+            min_height_filter.setText(Integer.toString(user.getHeightBoundary().getMin()));
+
+            max_bodytype_filter.setText(user.getBodyTypeBoundary().getMax());
+            min_bodytype_filter.setText(user.getBodyTypeBoundary().getMin());
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
 
     }
 
@@ -565,13 +580,29 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 
     private void showImage(Bitmap bitmap) {
         Drawable bitmapDrawable = new BitmapDrawable(getResources(), bitmap);
-
         modifingPic.setImageDrawable(bitmapDrawable);
-//        mProductListener.ProductTabMessageToParent(bitmapDrawable);
     }
 
     public void save(View view) {
         CoreProgress.getInstance().startProgressDialog(this);
+
+        // Save Filter
+        user.setAgeBoundary(new IntBoundary(
+                Integer.parseInt(max_age_filter.getText().toString()),
+                Integer.parseInt(min_age_filter.getText().toString())
+        ));
+        user.setHeightBoundary(new IntBoundary(
+                Integer.parseInt(max_height_filter.getText().toString()),
+                Integer.parseInt(min_height_filter.getText().toString())
+        ));
+        user.setWeightBoundary(new IntBoundary(
+                Integer.parseInt(max_weight_filter.getText().toString()),
+                Integer.parseInt(min_weight_filter.getText().toString())
+        ));
+        user.setBodyTypeBoundary(new StringBoundary(
+                max_bodytype_filter.getText().toString(),
+                min_bodytype_filter.getText().toString()
+        ));
 
         // Save User Info
         user.setId(_idText.getText().toString());
@@ -586,7 +617,6 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         if (user != null) {
             // User is signed in
             Log.d(this.getClass().getName(), "onAuthStateChanged:signed_in:" + user.getUid());
-
 
             // 파이어베이스 저장
             final User mUser = this.user;
@@ -611,20 +641,11 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
                             CoreProgress.getInstance().stopProgressDialog();
                         }
                     });
-
         } else {
             // User is signed out
             Log.d(this.getClass().getName(), "onAuthStateChanged:signed_out");
         }
 
     }
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.activity_main_menu, menu);
-//        return true;
-//    }
-
 
 }
