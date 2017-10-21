@@ -645,6 +645,9 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
                         public void onSuccess(Void aVoid) {
                             DataContainer.getInstance().setUser(mUser);  // 로컬 저장
                             Toast.makeText(getApplicationContext(), "Save Success", Toast.LENGTH_SHORT).show();
+
+                            // 성공시 백버튼
+                            onBackPressed();
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
