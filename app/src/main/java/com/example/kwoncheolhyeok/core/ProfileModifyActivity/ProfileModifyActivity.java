@@ -30,9 +30,11 @@ import com.example.kwoncheolhyeok.core.Entity.IntBoundary;
 import com.example.kwoncheolhyeok.core.Entity.StringBoundary;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.R;
+import com.example.kwoncheolhyeok.core.Util.BusProvider;
 import com.example.kwoncheolhyeok.core.Util.CoreProgress;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
+import com.example.kwoncheolhyeok.core.Util.PushEvent;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -572,6 +574,11 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
                         .into(modifingPic);
                 FireBaseUtil.getInstance().setImage(uri.toString(), modifingPic);
                 Toast.makeText(getBaseContext(), "Upload Complete", Toast.LENGTH_SHORT).show();
+
+                // 첫번째 사진일 경우는 프로필 사진 변경 이벤트 발생
+                if(modifingPic == profilePic1) {
+                    BusProvider.getInstance().post(new PushEvent());
+                }
             }
         }).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
             @Override

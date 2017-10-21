@@ -26,10 +26,13 @@ import com.example.kwoncheolhyeok.core.FriendsActivity.FriednsActivity;
 import com.example.kwoncheolhyeok.core.MessageActivity.MessageActivity;
 import com.example.kwoncheolhyeok.core.ProfileModifyActivity.ProfileModifyActivity;
 import com.example.kwoncheolhyeok.core.R;
+import com.example.kwoncheolhyeok.core.Util.BusProvider;
 import com.example.kwoncheolhyeok.core.Util.CloseActivityHandler;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
+import com.example.kwoncheolhyeok.core.Util.PushEvent;
 import com.google.firebase.auth.FirebaseAuth;
+import com.squareup.otto.Subscribe;
 
 
 public class MainActivity extends AppCompatActivity
@@ -42,6 +45,8 @@ public class MainActivity extends AppCompatActivity
 
     ViewPager viewPager = null;
     TabLayout tabLayout = null;
+
+    ImageView profileImage;
 
     private CloseActivityHandler closeActivityHandler;
 
@@ -111,7 +116,7 @@ public class MainActivity extends AppCompatActivity
 
         //네비게이션 뷰 내의 프로필 사진 클릭시 프로필 편집
         View headerview = navigationView.getHeaderView(0);
-        ImageView profileImage = (ImageView) headerview.findViewById(R.id.profile_image);
+        profileImage = (ImageView) headerview.findViewById(R.id.profile_image);
         profileImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -124,9 +129,7 @@ public class MainActivity extends AppCompatActivity
         });
 
         // Set Profile Pic
-        FireBaseUtil fbUtil = FireBaseUtil.getInstance();
-        fbUtil.setImage(fbUtil.getParentPath() + "profilePic1.jpg", profileImage);
-
+        setProfilePic(profileImage);
 
         // 이메일 Set
         TextView emailText = (TextView) headerview.findViewById(R.id.textView);
@@ -134,6 +137,14 @@ public class MainActivity extends AppCompatActivity
 
         closeActivityHandler = new CloseActivityHandler(this);
 
+        // Otto 등록
+        BusProvider.getInstance().register(this);
+
+    }
+
+    private void setProfilePic(ImageView profileImage) {
+        FireBaseUtil fbUtil = FireBaseUtil.getInstance();
+        fbUtil.setImage(fbUtil.getParentPath() + "profilePic1.jpg", profileImage);
     }
 
 
@@ -220,6 +231,19 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    @Override
+    protected void onDestroy() {
+        BusProvider.getInstance().unregister(this);
+
+        super.onDestroy();
+    }
+
+    @Subscribe
+    public void FinishLoad(PushEvent pushEvent) {
+        // 이벤트가 발생한뒤 수행할 작업
+        // 프로필 사진을 다시 받아옴
+        setProfilePic(profileImage);
+    }
 
 }
 
