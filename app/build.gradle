@@ -36,6 +36,7 @@ dependencies {
     compile 'com.google.android.gms:play-services-maps:10.2.6'
     compile 'gun0912.ted:tedpermission:1.0.4'        //permission lib
     compile 'com.firebaseui:firebase-ui-storage:1.2.0'
+    compile 'com.firebase:geofire-android:2.1.2'
 }
 apply plugin: 'com.google.gms.google-services'
 

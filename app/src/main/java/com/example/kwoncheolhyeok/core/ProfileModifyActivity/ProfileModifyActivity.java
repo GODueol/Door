@@ -24,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.bumptech.glide.Glide;
 import com.example.kwoncheolhyeok.core.Camera.LoadPicture;
 import com.example.kwoncheolhyeok.core.Entity.IntBoundary;
 import com.example.kwoncheolhyeok.core.Entity.StringBoundary;
@@ -565,7 +566,11 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 // 로컬에 출력
-                showImage(loadPicture.drawFile(outputFileUri));
+                @SuppressWarnings("VisibleForTests") Uri uri =  taskSnapshot.getDownloadUrl();
+                Glide.with(modifingPic.getContext() /* context */)
+                        .load(uri)
+                        .into(modifingPic);
+                FireBaseUtil.getInstance().setImage(uri.toString(), modifingPic);
                 Toast.makeText(getBaseContext(), "Upload Complete", Toast.LENGTH_SHORT).show();
             }
         }).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
