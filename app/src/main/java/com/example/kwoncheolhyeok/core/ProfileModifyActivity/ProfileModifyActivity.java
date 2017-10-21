@@ -268,7 +268,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
             max_bodytype_filter.setText(user.getBodyTypeBoundary().getMax());
             min_bodytype_filter.setText(user.getBodyTypeBoundary().getMin());
 
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -568,15 +568,22 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 // 로컬에 출력
-                @SuppressWarnings("VisibleForTests") Uri uri =  taskSnapshot.getDownloadUrl();
-                Glide.with(modifingPic.getContext() /* context */)
-                        .load(uri)
-                        .into(modifingPic);
+                @SuppressWarnings("VisibleForTests") Uri uri = taskSnapshot.getDownloadUrl();
+
+                try {
+                    Glide.with(modifingPic.getContext() /* context */)
+                            .load(uri)
+                            .into(modifingPic);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(getBaseContext(), "Upload Fail", Toast.LENGTH_SHORT).show();
+                }
+
                 FireBaseUtil.getInstance().setImage(uri.toString(), modifingPic);
                 Toast.makeText(getBaseContext(), "Upload Complete", Toast.LENGTH_SHORT).show();
 
                 // 첫번째 사진일 경우는 프로필 사진 변경 이벤트 발생
-                if(modifingPic == profilePic1) {
+                if (modifingPic == profilePic1) {
                     BusProvider.getInstance().post(new PushEvent());
                 }
             }
@@ -637,14 +644,14 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
                         @Override
                         public void onSuccess(Void aVoid) {
                             DataContainer.getInstance().setUser(mUser);  // 로컬 저장
-                            Toast.makeText(getApplicationContext(),"Save Success",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "Save Success", Toast.LENGTH_SHORT).show();
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(getApplicationContext(),"Save Fail",Toast.LENGTH_SHORT).show();
-                            Log.d(getApplication().getClass().getName(),e.getMessage());
+                            Toast.makeText(getApplicationContext(), "Save Fail", Toast.LENGTH_SHORT).show();
+                            Log.d(getApplication().getClass().getName(), e.getMessage());
                         }
                     })
                     .addOnCompleteListener(new OnCompleteListener<Void>() {
