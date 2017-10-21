@@ -43,7 +43,7 @@ public class ProviderUtil {
   public static Uri getOutputMediaFileUri(Context context, File file) {
     Log.d("asd", "file:"+file);
     Log.d("asd", "BuildConfig.APPLICATION_ID:"+ BuildConfig.APPLICATION_ID);
-    return FileProvider.getUriForFile(context, "com.garagesale.gapp.garagesale.camera", file);
+    return FileProvider.getUriForFile(context, "com.example.kwoncheolhyeok.core.camera", file);
   }
 
   public static Uri getOutputMediaFileUri(Context context) {

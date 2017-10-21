@@ -28,7 +28,7 @@
         <!--사진 폴더 접근을 위한 provider 설정-->
         <provider
             android:name="android.support.v4.content.FileProvider"
-            android:authorities="com.google.android.geo.camera"
+            android:authorities="com.example.kwoncheolhyeok.core.camera"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
