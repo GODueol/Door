@@ -23,6 +23,7 @@ import android.widget.TextView;
 import com.example.kwoncheolhyeok.core.ClubActivity.Club_Filter_Activity;
 import com.example.kwoncheolhyeok.core.CorePage.CoreActivity;
 import com.example.kwoncheolhyeok.core.FriendsActivity.FriednsActivity;
+import com.example.kwoncheolhyeok.core.LoginActivity.LoginActivity;
 import com.example.kwoncheolhyeok.core.MessageActivity.MessageActivity;
 import com.example.kwoncheolhyeok.core.ProfileModifyActivity.ProfileModifyActivity;
 import com.example.kwoncheolhyeok.core.R;
@@ -221,6 +222,9 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_setting) {
 
         } else if (id == R.id.nav_logout) {
+            Intent i = new Intent(this, LoginActivity.class);
+            startActivityForResult(i, 0);
+
             FirebaseAuth.getInstance().signOut();
             finish();
         }
