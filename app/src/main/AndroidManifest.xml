@@ -25,6 +25,17 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyB-mygQUvLyweQ0iqidaYy10DVrkE5Fmbw"
             />
+        <!--사진 폴더 접근을 위한 provider 설정-->
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.google.android.geo.camera"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_path"/>
+        </provider>
+
 
         <activity
             android:name=".Activity.IntroActivity"
