@@ -1,17 +1,12 @@
-package com.example.kwoncheolhyeok.core.PeopleFragment.FullImage_4_ViewPager;
+package com.example.kwoncheolhyeok.core.PeopleFragment.FullImageViewPager;
 
 import android.annotation.TargetApi;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -20,7 +15,7 @@ import com.example.kwoncheolhyeok.core.R;
 /**
  * Created by songmho on 2015-01-02.
  */
-public class page_1 extends android.support.v4.app.Fragment {
+public class page2 extends android.support.v4.app.Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,29 +27,18 @@ public class page_1 extends android.support.v4.app.Fragment {
 
         View view = inflater.inflate(R.layout.full_image_4_page, container, false);
 
-//        LinearLayout linearLayout=(LinearLayout)inflater.inflate(R.layout.full_image_4_page,container,false);
-
-
         RelativeLayout background=(RelativeLayout)view.findViewById(R.id.background);
         TextView page_num=(TextView)view.findViewById(R.id.page_num);
 
-//        Intent intent = getIntent();
-//        byte[] arr = getIntent().getByteArrayExtra("image");
+//        LinearLayout linearLayout=(LinearLayout)inflater.inflate(R.layout.full_image_4_page,container,false);
 
-//        Bitmap bitmap=(Bitmap)this.getIntent().getParcelableExtra("Bitmap");
-//        ImageView imageView= (ImageView) linearLayout.findViewById(R.id.image);
-//        imageView.setImageBitmap(bitmap);
+//        LinearLayout background=(LinearLayout)linearLayout.findViewById(R.id.background);
+//        TextView page_num=(TextView)linearLayout.findViewById(R.id.page_num);
 
+        ImageView imageView=(ImageView)view.findViewById(R.id.image1);
 
-
-        page_num.setText(String.valueOf(1));
-//        imageView.setColorFilter(0xff6dc6d2);
-//        background.setBackground(new ColorDrawable(0xff6dc6d2));
-
+        page_num.setText(String.valueOf(2));
+//        background.setBackground(new ColorDrawable(0xff26abb5));
         return view;
     }
-
-
-
-
 }

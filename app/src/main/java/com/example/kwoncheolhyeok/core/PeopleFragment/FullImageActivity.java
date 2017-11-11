@@ -9,10 +9,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.example.kwoncheolhyeok.core.CorePage.CoreActivity;
-import com.example.kwoncheolhyeok.core.PeopleFragment.FullImage_4_ViewPager.FullImage_4_Activity;
+import com.example.kwoncheolhyeok.core.PeopleFragment.FullImageViewPager.DetailImageActivity;
 import com.example.kwoncheolhyeok.core.R;
 import com.google.firebase.appindexing.Action;
 import com.google.firebase.appindexing.FirebaseUserActions;
@@ -82,7 +81,8 @@ public class FullImageActivity extends AppCompatActivity {
         pic1 = (ImageView) findViewById(R.id.image1);
         pic1.setOnClickListener(new View.OnClickListener() {
             public void onClick(View arg0) {
-                Intent myIntent = new Intent(getApplicationContext(),FullImage_4_Activity.class);
+                Intent myIntent = new Intent(getApplicationContext(),DetailImageActivity.class);
+                myIntent.putExtra("page",0);
                 startActivity(myIntent);
                }
         });
@@ -91,7 +91,8 @@ public class FullImageActivity extends AppCompatActivity {
         pic2 = (ImageView) findViewById(R.id.image2);
         pic2.setOnClickListener(new View.OnClickListener() {
             public void onClick(View arg0) {
-                Intent myIntent = new Intent(FullImageActivity.this,FullImage_4_Activity.class);
+                Intent myIntent = new Intent(FullImageActivity.this,DetailImageActivity.class);
+                myIntent.putExtra("page",1);
                 startActivity(myIntent);
             }
         });
@@ -100,7 +101,8 @@ public class FullImageActivity extends AppCompatActivity {
         pic3 = (ImageView) findViewById(R.id.image3);
         pic3.setOnClickListener(new View.OnClickListener() {
             public void onClick(View arg0) {
-                Intent myIntent = new Intent(FullImageActivity.this,FullImage_4_Activity.class);
+                Intent myIntent = new Intent(FullImageActivity.this,DetailImageActivity.class);
+                myIntent.putExtra("page",2);
                 startActivity(myIntent);
             }
         });
@@ -109,7 +111,8 @@ public class FullImageActivity extends AppCompatActivity {
         pic4 = (ImageView) findViewById(R.id.image4);
         pic4.setOnClickListener(new View.OnClickListener() {
             public void onClick(View arg0) {
-                Intent myIntent = new Intent(FullImageActivity.this,FullImage_4_Activity.class);
+                Intent myIntent = new Intent(FullImageActivity.this,DetailImageActivity.class);
+                myIntent.putExtra("page",3);
                 startActivity(myIntent);
             }
         });
