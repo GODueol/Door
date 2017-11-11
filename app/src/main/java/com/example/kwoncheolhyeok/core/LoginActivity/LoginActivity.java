@@ -87,8 +87,11 @@ public class LoginActivity extends AppCompatActivity {
     public void login() {
         Log.d(TAG, "Login Start");
 
-        if (!validate()) {
-            onLoginFailed();
+
+        try {
+            validate();
+        } catch (Exception e) {
+            onLoginFailed(e);
             return;
         }
 
@@ -117,10 +120,7 @@ public class LoginActivity extends AppCompatActivity {
 
                         } else {
                             Log.w(TAG, "signInWithEmail:failed", task.getException());
-
-                            Toast.makeText(getBaseContext(), task.getException().getMessage(),
-                                    Toast.LENGTH_SHORT).show();
-                            onLoginFailed();
+                            onLoginFailed(task.getException());
                         }
 
                     }
@@ -208,28 +208,22 @@ public class LoginActivity extends AppCompatActivity {
         CoreProgress.getInstance().stopProgressDialog();
     }
 
-    public void onLoginFailed() {
+    public void onLoginFailed(Exception e) {
+        Toast.makeText(getBaseContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
         _loginButton.setEnabled(true);
         CoreProgress.getInstance().stopProgressDialog();
     }
 
-    public boolean validate() {
-        boolean valid = true;
+    public void validate() throws Exception {
 
         String email = _emailText.getText().toString();
         String password = _passwordText.getText().toString();
 
         if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-//            _emailText.setError("enter a valid email address");
-            Toast.makeText(getBaseContext(), "이메일이 틀렸습니다.", Toast.LENGTH_SHORT).show();
-            valid = false;
+            throw new Exception("이메일이 틀렸습니다.");
         } else if (password.isEmpty() || password.length() < 6 || password.length() > 12) {
-//            _passwordText.setError("between 6 and 12 alphanumeric characters");
-            Toast.makeText(getBaseContext(), "비밀번호가 틀렸습니다.", Toast.LENGTH_SHORT).show();
-            valid = false;
+            throw new Exception("비밀번호가 틀렸습니다.");
         }
-
-        return valid;
     }
 
     @Override

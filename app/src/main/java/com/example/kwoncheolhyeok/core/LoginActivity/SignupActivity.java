@@ -194,8 +194,10 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
     public void signup() {
         Log.d(TAG, "Signup");
 
-        if (!validate()) {
-            onSignupFailed(new Exception("Validation Fail"));
+        try {
+            validate();
+        } catch (Exception e) {
+            onSignupFailed(e);
             return;
         }
 
@@ -251,7 +253,7 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
         CoreProgress.getInstance().stopProgressDialog();
     }
 
-    public boolean validate() {
+    public void validate() throws Exception {
         boolean valid = true;
 
         String email = _emailText.getText().toString();
@@ -264,32 +266,22 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
         String Bodytype = _bodyType.getText().toString();
 
         if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            Toast.makeText(getBaseContext(), "올바른 이메일 양식으로 작성해주세요.", Toast.LENGTH_SHORT).show();
-            valid = false;
+            throw new Exception("올바른 이메일 양식으로 작성해주세요.");
         } else if (password.isEmpty() || password.length() < 6 || password.length() > 12) {
-            Toast.makeText(getBaseContext(), "비밀번호는 6자리 이상 12자리 이하로 설정해주세요.", Toast.LENGTH_SHORT).show();
-            valid = false;
+            throw new Exception("비밀번호는 6자리 이상 12자리 이하로 설정해주세요.");
         } else if (reEnterPassword.isEmpty() || reEnterPassword.length() < 6 || reEnterPassword.length() > 12 || !(reEnterPassword.equals(password))) {
-            Toast.makeText(getBaseContext(), "패스워드가 일치하지 않습니다.", Toast.LENGTH_SHORT).show();
-            valid = false;
+            throw new Exception("패스워드가 일치하지 않습니다.");
         } else if (ID.isEmpty() || ID.length() < 2) {
-            Toast.makeText(getBaseContext(), "두 자리 이상의 아이디로 작성해주세요.", Toast.LENGTH_SHORT).show();
-            valid = false;
+            throw new Exception("두 자리 이상의 아이디로 작성해주세요.");
         } else if (Age.isEmpty() || Age.length() != 2) {
-            Toast.makeText(getBaseContext(), "올바른 나이를 작성해주세요.", Toast.LENGTH_SHORT).show();
-            valid = false;
+            throw new Exception("올바른 나이를 작성해주세요.");
         } else if (Height.isEmpty() || Height.length() != 3) {
-            Toast.makeText(getBaseContext(), "올바른 키를 작성해 주세요.", Toast.LENGTH_SHORT).show();
-            valid = false;
+            throw new Exception("올바른 키를 작성해 주세요.");
         } else if (Weight.isEmpty() || Weight.length() < 2 || Weight.length() > 3) {
-            Toast.makeText(getBaseContext(), "올바른 몸무게로 작성해주세요.", Toast.LENGTH_SHORT).show();
-            valid = false;
+            throw new Exception("올바른 몸무게로 작성해주세요.");
         } else if (Bodytype.isEmpty()) {
-            Toast.makeText(getBaseContext(), "바디타입을 설정해주세요.", Toast.LENGTH_SHORT).show();
-            valid = false;
+            throw new Exception("바디타입을 설정해주세요.");
         }
-
-        return valid;
     }
 
     @Override
