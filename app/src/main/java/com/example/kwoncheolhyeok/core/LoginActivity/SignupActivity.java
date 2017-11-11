@@ -132,7 +132,7 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            onSignupFailed();
+                            onSignupFailed(e);
                             Log.d(getApplication().getClass().getName(),e.getMessage());
                         }
                     });
@@ -195,7 +195,7 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
         Log.d(TAG, "Signup");
 
         if (!validate()) {
-            onSignupFailed();
+            onSignupFailed(new Exception("Validation Fail"));
             return;
         }
 
@@ -230,7 +230,7 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
                         } else {
                             Toast.makeText(getBaseContext(), task.getException().getMessage(),
                                     Toast.LENGTH_SHORT).show();
-                            onSignupFailed();
+                            onSignupFailed(task.getException());
                         }
 
 
@@ -245,8 +245,8 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
         startActivityForResult(i, 0);
     }
 
-    public void onSignupFailed() {
-        Toast.makeText(getBaseContext(), "Join Failed", Toast.LENGTH_LONG).show();
+    public void onSignupFailed(Exception e) {
+        Toast.makeText(getBaseContext(), "Join Failed : " + e.getMessage(), Toast.LENGTH_LONG).show();
         _signupButton.setEnabled(true);
         CoreProgress.getInstance().stopProgressDialog();
     }
