@@ -1,6 +1,7 @@
 package com.example.kwoncheolhyeok.core.PeopleFragment;
 
 import android.content.Intent;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -21,15 +22,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class FullImageActivity extends AppCompatActivity {
+public class FullImageActivity extends AppCompatActivity implements View.OnClickListener {
 
     int position;
     Toolbar toolbar = null;
 
     RelativeLayout core_enter = null;
-
-    ImageView pic1, pic2, pic3, pic4 = null;
-
+    ImageView page1,page2,page3,page4;
     ImageView pic_open, message_white, add_friends, block_friends;
 
     @Override
@@ -59,7 +58,14 @@ public class FullImageActivity extends AppCompatActivity {
             imageView.setScaleType(ImageView.ScaleType.CENTER);
             images.add(imageView);
         }
-
+        page1 = (ImageView) findViewById(R.id.image1);
+        page1.setOnClickListener(this);
+        page2 = (ImageView) findViewById(R.id.image2);
+        page2.setOnClickListener(this);
+        page3 = (ImageView) findViewById(R.id.image3);
+        page3.setOnClickListener(this);
+        page4 = (ImageView) findViewById(R.id.image4);
+        page4.setOnClickListener(this);
         //FullImageAdapter 객체를 생성해 썸네일 풀 이미지를 한장씩 넘길 수 있게 함
         FullImagePagerAdapter pageradapter = new FullImagePagerAdapter(images);
         ViewPager viewpager = (ViewPager) findViewById(R.id.pager1);
@@ -76,47 +82,6 @@ public class FullImageActivity extends AppCompatActivity {
                 startActivityForResult(new Intent(FullImageActivity.this,CoreActivity.class), 0);
             }
         });
-
-        // 코어 버튼 눌렀을 때 CoreActivity로 들어감
-        pic1 = (ImageView) findViewById(R.id.image1);
-        pic1.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View arg0) {
-                Intent myIntent = new Intent(getApplicationContext(),DetailImageActivity.class);
-                myIntent.putExtra("page",0);
-                startActivity(myIntent);
-               }
-        });
-
-        // 코어 버튼 눌렀을 때 CoreActivity로 들어감
-        pic2 = (ImageView) findViewById(R.id.image2);
-        pic2.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View arg0) {
-                Intent myIntent = new Intent(FullImageActivity.this,DetailImageActivity.class);
-                myIntent.putExtra("page",1);
-                startActivity(myIntent);
-            }
-        });
-
-        // 코어 버튼 눌렀을 때 CoreActivity로 들어감
-        pic3 = (ImageView) findViewById(R.id.image3);
-        pic3.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View arg0) {
-                Intent myIntent = new Intent(FullImageActivity.this,DetailImageActivity.class);
-                myIntent.putExtra("page",2);
-                startActivity(myIntent);
-            }
-        });
-
-        // 코어 버튼 눌렀을 때 CoreActivity로 들어감
-        pic4 = (ImageView) findViewById(R.id.image4);
-        pic4.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View arg0) {
-                Intent myIntent = new Intent(FullImageActivity.this,DetailImageActivity.class);
-                myIntent.putExtra("page",3);
-                startActivity(myIntent);
-            }
-        });
-
 
     }
 
@@ -153,4 +118,27 @@ public class FullImageActivity extends AppCompatActivity {
         super.onStop();
     }
 
+    @Override
+    public void onClick(View view) {
+        Intent myIntent = new Intent(getApplicationContext(),DetailImageActivity.class);
+        switch (view.getId()){
+            case R.id.image1:
+                myIntent.putExtra("page",0);
+                startActivity(myIntent);
+                break;
+            case R.id.image2:
+                myIntent.putExtra("page",1);
+                startActivity(myIntent);
+                break;
+            case R.id.image3:
+                myIntent.putExtra("page",2);
+                startActivity(myIntent);
+                break;
+            case R.id.image4:
+                myIntent.putExtra("page",3);
+                startActivity(myIntent);
+                break;
+        }
+
+    }
 }
