@@ -230,12 +230,8 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
                             FirebaseUser user = mAuth.getCurrentUser();
                             setUserInfo(user);
                         } else {
-                            Toast.makeText(getBaseContext(), task.getException().getMessage(),
-                                    Toast.LENGTH_SHORT).show();
                             onSignupFailed(task.getException());
                         }
-
-
                     }
                 });
     }
@@ -254,7 +250,6 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
     }
 
     public void validate() throws Exception {
-        boolean valid = true;
 
         String email = _emailText.getText().toString();
         String password = _passwordText.getText().toString();
