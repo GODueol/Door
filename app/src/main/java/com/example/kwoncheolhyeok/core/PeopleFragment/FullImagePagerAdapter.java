@@ -1,15 +1,9 @@
 package com.example.kwoncheolhyeok.core.PeopleFragment;
 
-import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-
-import com.example.kwoncheolhyeok.core.PeopleFragment.FullImage_4_ViewPager.page_1;
-import com.example.kwoncheolhyeok.core.PeopleFragment.FullImage_4_ViewPager.page_2;
-import com.example.kwoncheolhyeok.core.PeopleFragment.FullImage_4_ViewPager.page_3;
-import com.example.kwoncheolhyeok.core.PeopleFragment.FullImage_4_ViewPager.page_4;
 
 import java.util.List;
 
@@ -36,16 +30,16 @@ public class FullImagePagerAdapter extends PagerAdapter {
 //
 //        switch (position) {
 //            case 0:
-//                page_1 tab1 = new page_1();
+//                page1 tab1 = new page1();
 //                return tab1;
 //            case 1:
-//                page_2 tab2 = new page_2();
+//                page2 tab2 = new page2();
 //                return tab2;
 //            case 2:
-//                page_3 tab3 = new page_3();
+//                page3 tab3 = new page3();
 //                return tab3;
 //            case 3:
-//                page_4 tab4 = new page_4();
+//                page4 tab4 = new page4();
 //                return tab4;
 //            default:
 //                return null;

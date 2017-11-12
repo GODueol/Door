@@ -88,7 +88,7 @@
             </activity>
 
         <activity
-            android:name=".PeopleFragment.FullImage_4_ViewPager.FullImage_4_Activity"
+            android:name=".PeopleFragment.FullImageViewPager.DetailImageActivity"
             android:screenOrientation="portrait"
             >
         </activity>
