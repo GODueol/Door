@@ -1,6 +1,5 @@
 package com.example.kwoncheolhyeok.core.Util;
 
-import android.app.Activity;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -16,6 +15,7 @@ import com.google.firebase.storage.FirebaseStorage;
  */
 
 public class FireBaseUtil {
+    public static final String currentLocationPath = "location/users";
     private static final FireBaseUtil ourInstance = new FireBaseUtil();
 
     public static FireBaseUtil getInstance() {
