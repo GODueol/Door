@@ -1,11 +1,13 @@
 package com.example.kwoncheolhyeok.core.Util;
 
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.example.kwoncheolhyeok.core.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
@@ -40,13 +42,19 @@ public class FireBaseUtil {
             public void onFailure(@NonNull Exception exception) {
                 // Handle any errors
                 Log.d(this.getClass().getName(), exception.getMessage());
+                targetImageView.setImageResource(R.drawable.f);
             }
         });
     }
 
     @NonNull
+    public String getParentPath(String uuid) {
+        return "profile/pic/" + uuid + "/";
+    }
+
+    @NonNull
     public String getParentPath() {
-        return "profile/pic/" + DataContainer.getInstance().getUid() + "/";
+        return getParentPath(DataContainer.getInstance().getUid());
     }
 
 }

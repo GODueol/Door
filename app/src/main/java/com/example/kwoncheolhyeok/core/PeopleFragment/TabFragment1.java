@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
 
+import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
@@ -25,6 +26,7 @@ import com.google.firebase.database.FirebaseDatabase;
 public class TabFragment1 extends android.support.v4.app.Fragment {
 
     GridView gridView = null;
+    ImageAdapter imageAdapter;
 
 
     @Override
@@ -33,7 +35,8 @@ public class TabFragment1 extends android.support.v4.app.Fragment {
         View view = inflater.inflate(R.layout.tab_fragment_1, container, false);
 
         gridView = (GridView) view.findViewById(R.id.gridview);
-        gridView.setAdapter(new ImageAdapter(getContext()));
+        imageAdapter = new ImageAdapter(getContext());
+        gridView.setAdapter(imageAdapter);
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -54,14 +57,26 @@ public class TabFragment1 extends android.support.v4.app.Fragment {
         // 현재 자신의 위치에 가까운 리스트 가져옴
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(FireBaseUtil.currentLocationPath);
         GeoFire geoFire = new GeoFire(ref);
-        Location location = GPSInfo.getmInstance(getActivity()).getGPSLocation();
+        final Location location = GPSInfo.getmInstance(getActivity()).getGPSLocation();
         GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(location.getLatitude(), location.getLongitude()), 0.6);
 
-        // TODO : 쿼리받은 값을 처리
+        // 쿼리받은 값을 처리
         geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
             @Override
-            public void onKeyEntered(String key, GeoLocation location) {
-                System.out.println(String.format("Key %s entered the search area at [%f,%f]", key, location.latitude, location.longitude));
+            public void onKeyEntered(String key, GeoLocation geoLocation) {
+                System.out.println(String.format("Key %s entered the search area at [%f,%f]", key, geoLocation.latitude, geoLocation.longitude));
+                // key로 프사url, 거리 가져옴
+                Location targetLocation = new Location("");//provider name is unnecessary
+                targetLocation.setLatitude(geoLocation.latitude);//your coords of course
+                targetLocation.setLongitude(geoLocation.longitude);
+
+                float distance = location.distanceTo(targetLocation);
+
+                // TODO : grid에 사진, distance추가
+                if(imageAdapter != null){
+                    imageAdapter.addItem(new ImageAdapter.Item(distance, key));
+                }
+
             }
 
             @Override
