@@ -23,7 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="#aaffffff"
-            android:src="@drawable/l" />
+            android:src="@drawable/a" />
     </com.example.kwoncheolhyeok.core.MessageActivity.chat_message_view.ChatMessageView>
 
 </LinearLayout>
