@@ -24,6 +24,34 @@ public class User {
     IntBoundary weightBoundary;
     StringBoundary bodyTypeBoundary;
 
+    boolean isLockPic2;
+    boolean isLockPic3;
+    boolean isLockPic4;
+
+    public boolean isLockPic2() {
+        return isLockPic2;
+    }
+
+    public void setLockPic2(boolean lockPic2) {
+        isLockPic2 = lockPic2;
+    }
+
+    public boolean isLockPic3() {
+        return isLockPic3;
+    }
+
+    public void setLockPic3(boolean lockPic3) {
+        isLockPic3 = lockPic3;
+    }
+
+    public boolean isLockPic4() {
+        return isLockPic4;
+    }
+
+    public void setLockPic4(boolean lockPic4) {
+        isLockPic4 = lockPic4;
+    }
+
     boolean isUseFilter;
 
     public boolean isUseFilter() {

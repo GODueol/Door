@@ -50,6 +50,8 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.tsengvn.typekit.TypekitContextWrapper;
 
+import java.util.Arrays;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
@@ -63,13 +65,6 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
     TextView heightPick = null;
     TextView weightPick = null;
     TextView bodyTypePick = null;
-
-    ToggleButton lock1 = null;
-    ToggleButton lock2 = null;
-    ToggleButton lock3 = null;
-    ToggleButton lock4 = null;
-
-    static Dialog d;
 
     private TextView min_age_filter, max_age_filter, min_height_filter, max_height_filter, min_weight_filter, max_weight_filter, min_bodytype_filter, max_bodytype_filter;
 
@@ -106,14 +101,23 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
     @Bind(R.id.BODY_TYPE_FILTER)
     RelativeLayout bodyTypeFilterLayout;
 
+    @Bind(R.id.lock2)
+    ToggleButton lock2Toggle;
+
+    @Bind(R.id.lock3)
+    ToggleButton lock3Toggle;
+
+    @Bind(R.id.lock4)
+    ToggleButton lock4Toggle;
+
 
 
     final String[] values = {"Underweight", "Skinny", "Standard", "Muscular", "Overweight"};
 
     // filter boundary
-    enum FILTER {AGE, HEIGHT, WEIGHT, BODYTYPE};
-    private static final int minBoundary[] = {19 , 150, 40, 4};
-    private static final int maxBoundary[] = {100, 200, 150, 4};
+    enum FILTER {AGE, HEIGHT, WEIGHT};
+    private static final int minBoundary[] = {19 , 150, 40};
+    private static final int maxBoundary[] = {100, 200, 150};
 
     // 카메라관련 인자
     private static final int REQUEST_TAKE_PHOTO = 1;
@@ -125,7 +129,6 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 
     // User Info
     User user;
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -342,6 +345,11 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
                 setVisibilityFilterLayout(isChecked);
             }
         });
+
+        /* pic lock */
+        lock2Toggle.setChecked(user.isLockPic2());
+        lock3Toggle.setChecked(user.isLockPic3());
+        lock4Toggle.setChecked(user.isLockPic4());
     }
 
     private void setVisibilityFilterLayout(boolean isChecked) {
@@ -444,7 +452,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         numberpicker3.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
         numberpicker3.setWrapSelectorWheel(false);
 //        setDividerColor(numberpicker3, Color.WHITE);
-        numberpicker3.setOnValueChangedListener(this);
+//        numberpicker3.setOnValueChangedListener(this);
 
         final NumberPicker numberpicker4 = (NumberPicker) d.findViewById(R.id.numberPicker4);
         numberpicker4.setMinValue(0); //from array first value
@@ -454,7 +462,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         numberpicker4.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
         numberpicker4.setWrapSelectorWheel(false);
 //        setDividerColor(numberpicker4, Color.WHITE);
-        numberpicker4.setOnValueChangedListener(this);
+//        numberpicker4.setOnValueChangedListener(this);
 
         b1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -500,15 +508,21 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         np.setValue(Integer.parseInt(min_filter.getText().toString()));
         np.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);  //데이터 선택시 edittext 방지
         np.setWrapSelectorWheel(false);
-        np.setOnValueChangedListener(this);
 
         final NumberPicker np2 = (NumberPicker) d.findViewById(R.id.numberPicker2);
         np2.setMaxValue(maxBoundary[filterType.ordinal()]); // max value 100
-        np2.setMinValue(minBoundary[filterType.ordinal()]);   // min value 0
+        np2.setMinValue(np.getValue());   // min value 0
         np2.setValue(Integer.parseInt(max_filter.getText().toString()));
         np2.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);  //데이터 선택시 edittext 방지
         np2.setWrapSelectorWheel(false);
-        np2.setOnValueChangedListener(this);
+
+        // min 값 바뀌면 max의 하한선이 변경
+        np.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+            @Override
+            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                np2.setMinValue(newVal);
+            }
+        });
 
         b1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -549,16 +563,16 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 
         np.setMinValue(0); //from array first value
         np.setMaxValue(values.length - 1); //to array last value
-        np.setValue(values.length - 3);
+        np.setValue(Arrays.asList(values).indexOf(min_bodytype_filter.getText().toString()));
         np.setDisplayedValues(values);
         np.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
         np.setWrapSelectorWheel(false);
         np.setOnValueChangedListener(this);
 
         final NumberPicker np2 = (NumberPicker) d.findViewById(R.id.numberPicker2);
-        np2.setMinValue(0); //from array first value
+        np2.setMinValue(np.getValue()); //from array first value
         np2.setMaxValue(values.length - 1); //to array last value
-        np2.setValue(values.length - 3);
+        np2.setValue(Arrays.asList(values).indexOf(max_bodytype_filter.getText().toString()));
         np2.setDisplayedValues(values);
         np2.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
         np2.setWrapSelectorWheel(false);
@@ -710,6 +724,9 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         user.setBodyType(bodyTypePick.getText().toString());
         user.setIntro(introEditText.getText().toString());
         user.setUseFilter(filterSwitch.isChecked());
+        user.setLockPic2(lock2Toggle.isChecked());
+        user.setLockPic3(lock3Toggle.isChecked());
+        user.setLockPic4(lock4Toggle.isChecked());
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
