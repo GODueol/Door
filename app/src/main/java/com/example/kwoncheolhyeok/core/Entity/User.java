@@ -9,8 +9,8 @@ public class User {
     public User() {
     }
 
-    String email;
-    String id;
+    String email = "";
+    String id = "";
     String age;
     String height;
     String weight;
@@ -23,6 +23,16 @@ public class User {
     IntBoundary heightBoundary;
     IntBoundary weightBoundary;
     StringBoundary bodyTypeBoundary;
+
+    boolean isUseFilter;
+
+    public boolean isUseFilter() {
+        return isUseFilter;
+    }
+
+    public void setUseFilter(boolean useFilter) {
+        isUseFilter = useFilter;
+    }
 
     public IntBoundary getAgeBoundary() {
         return ageBoundary;

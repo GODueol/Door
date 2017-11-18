@@ -130,7 +130,11 @@ public class MainActivity extends AppCompatActivity
 
         // 이메일 Set
         TextView emailText = (TextView) headerview.findViewById(R.id.textView);
-        emailText.setText(DataContainer.getInstance().getUser().getEmail());
+        try {
+            emailText.setText(DataContainer.getInstance().getUser().getEmail());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         closeActivityHandler = new CloseActivityHandler(this);
 

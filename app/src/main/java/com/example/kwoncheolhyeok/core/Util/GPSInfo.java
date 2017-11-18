@@ -31,7 +31,7 @@ public class GPSInfo extends Service implements LocationListener {
     @SuppressLint("StaticFieldLeak")
     private static GPSInfo mInstance;
 
-    public static GPSInfo getmInstance(Context c){
+    public static GPSInfo getmInstance(Context c) {
         if (mInstance == null) mInstance = new GPSInfo(c);
         return mInstance;
     }
@@ -58,7 +58,7 @@ public class GPSInfo extends Service implements LocationListener {
         locationManager = (LocationManager) mContext.getSystemService(LOCATION_SERVICE);
         location = getknownLocation();
 
-        if(location==null) {
+        if (location == null) {
             setDefaultLoction();
         }
     }
@@ -116,7 +116,18 @@ public class GPSInfo extends Service implements LocationListener {
 
             if (!isGPSEnabled && !isNetWorkEnabled) {
             } else {
-                if (isNetWorkEnabled) {     //네트워크가 사용가능하다면
+                if (isGPSEnabled /*&& location == null*/) { // GPS가 사용가능하다면
+                    locationManager.requestLocationUpdates(provider, MIN_TIME_BW_UPDATES, MIN_DISTANCE_CHANGE_FOR_UPDATE, this);
+                    if (locationManager != null) {
+                        location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                        if (location != null) {
+                            lat = location.getLatitude();
+                            lon = location.getLongitude();
+                        }
+                    }
+                }
+
+                if (isNetWorkEnabled && location == null) {     // GPS로 못했을 경우 네트워크가 사용가능하다면
                     locationManager.requestLocationUpdates(provider, MIN_TIME_BW_UPDATES, MIN_DISTANCE_CHANGE_FOR_UPDATE, this);
                     if (locationManager != null) {
                         location = locationManager.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
@@ -127,35 +138,31 @@ public class GPSInfo extends Service implements LocationListener {
                         }
                     }
                 }
-                if (isGPSEnabled) {
-                    if (location == null) {     //네트워크로 Location을 잡지 못했다면
-                        locationManager.requestLocationUpdates(provider, MIN_TIME_BW_UPDATES, MIN_DISTANCE_CHANGE_FOR_UPDATE, this);
-                        if (locationManager != null) {
-                            location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                            if (location != null) {
-                                lat = location.getLatitude();
-                                lon = location.getLongitude();
-                            }
-                        }
-                    }
-                }
+
             }
 
         } catch (Exception e) {
             e.printStackTrace();
         } // end of try~catch
+
+        // 위치를 잡지 못했을 때
+        if (location == null) {
+            setDefaultLoction();
+        }
+
         return location;
     }
 
-    private void setDefaultLoction(){
+    private void setDefaultLoction() {
         location = new Location("Default");
         location.setLatitude(37.56);
         location.setLongitude(126.97);
     }
 
-    public Location getLocation(){
+    public Location getLocation() {
         return location;
     }
+
     public double getLatitude() {
         if (location != null) {
             lat = location.getLatitude();
@@ -170,11 +177,11 @@ public class GPSInfo extends Service implements LocationListener {
         return lon;
     }
 
-    public LatLng getLatLng(){
+    public LatLng getLatLng() {
         if (location != null) {
             lat = location.getLatitude();
         }
-        return new LatLng(getLatitude(),getLongitude());
+        return new LatLng(getLatitude(), getLongitude());
     }
 
     public void stopUsingGPS() {
@@ -183,23 +190,27 @@ public class GPSInfo extends Service implements LocationListener {
         }
     }
 
-    public void testMessage(){
-        Toast.makeText(mContext,"(임시처리) 권한이 없어 내위치가 서울로", Toast.LENGTH_SHORT);
+    public void testMessage() {
+        Toast.makeText(mContext, "(임시처리) 권한이 없어 내위치가 서울로", Toast.LENGTH_SHORT);
     }
+
     // 위치값,위치시간 변경시 발생(0초/1미터)
     @Override
     public void onLocationChanged(Location location) {
         this.location = location;
         stopUsingGPS();
     }
+
     // Provider 사용 불가시
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
     }
+
     // Provider가 사용가능해질시
     @Override
     public void onProviderEnabled(String provider) {
     }
+
     // Provider의 상태가 바뀔시 (network,gps,...)
     @Override
     public void onProviderDisabled(String provider) {

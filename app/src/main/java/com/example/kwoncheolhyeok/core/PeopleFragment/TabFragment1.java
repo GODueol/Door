@@ -3,6 +3,8 @@ package com.example.kwoncheolhyeok.core.PeopleFragment;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,6 +53,30 @@ public class TabFragment1 extends android.support.v4.app.Fragment {
             }
         });
 
+        refreshLocation();
+
+        // 스와이프로 위치 새로고침
+        final SwipeRefreshLayout mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_layout);
+        mSwipeRefreshLayout.setColorSchemeResources(
+                android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light
+        );
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // 위치 새로고침
+                imageAdapter.clear();
+                refreshLocation();
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+        });
+
+        return view;
+    }
+
+    private void refreshLocation() {
         // 현재 자신의 위치를 가져옴
         saveMyGPS();
 
@@ -58,7 +84,7 @@ public class TabFragment1 extends android.support.v4.app.Fragment {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(FireBaseUtil.currentLocationPath);
         GeoFire geoFire = new GeoFire(ref);
         final Location location = GPSInfo.getmInstance(getActivity()).getGPSLocation();
-        GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(location.getLatitude(), location.getLongitude()), 0.6);
+        GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(location.getLatitude(), location.getLongitude()), 300);
 
         // 쿼리받은 값을 처리
         geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
@@ -75,6 +101,8 @@ public class TabFragment1 extends android.support.v4.app.Fragment {
                 // TODO : grid에 사진, distance추가
                 if(imageAdapter != null){
                     imageAdapter.addItem(new ImageAdapter.Item(distance, key));
+                } else {
+                    Log.d(getTag(), "imageAdapter is null");
                 }
 
             }
@@ -99,8 +127,6 @@ public class TabFragment1 extends android.support.v4.app.Fragment {
                 System.err.println("There was an error with this query: " + error);
             }
         });
-
-        return view;
     }
 
     private void saveMyGPS() {
@@ -117,7 +143,7 @@ public class TabFragment1 extends android.support.v4.app.Fragment {
                 if (error != null) {
                     Toast.makeText(getContext(),"There was an error saving the location to GeoFire: " + error,Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(getContext(),"Location saved on server successfully!",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(),"Location saved on server successfully! ",Toast.LENGTH_SHORT).show();
                 }
             }
         });

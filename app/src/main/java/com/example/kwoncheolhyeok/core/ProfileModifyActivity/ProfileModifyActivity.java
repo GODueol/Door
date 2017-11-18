@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -17,9 +16,12 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.NumberPicker;
+import android.widget.RelativeLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -45,8 +47,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-
-import java.util.Arrays;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -88,6 +88,23 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 
     @Bind(R.id.modify_introduce)
     EditText introEditText;
+
+    @Bind(R.id.filter_switch)
+    Switch filterSwitch;
+
+    @Bind(R.id.AGE_FILTER)
+    RelativeLayout ageFilterLayout;
+
+    @Bind(R.id.HEIGHT_FILTER)
+    RelativeLayout heightFilterLayout;
+
+    @Bind(R.id.WEIGHT_FILTER)
+    RelativeLayout weightFilterLayout;
+
+    @Bind(R.id.BODY_TYPE_FILTER)
+    RelativeLayout bodyTypeFilterLayout;
+
+
 
     final String[] values = {"Underweight", "Skinny", "Standard", "Muscular", "Overweight"};
 
@@ -322,6 +339,25 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
             e.printStackTrace();
         }
 
+        /* filter_switch */
+        filterSwitch.setChecked(user.isUseFilter());
+        setVisibilityFilterLayout(filterSwitch.isChecked());
+        filterSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                setVisibilityFilterLayout(isChecked);
+            }
+        });
+    }
+
+    private void setVisibilityFilterLayout(boolean isChecked) {
+        int FLAG;
+        if(isChecked) FLAG = View.VISIBLE;
+        else FLAG = View.GONE;
+        ageFilterLayout.setVisibility(FLAG);
+        heightFilterLayout.setVisibility(FLAG);
+        weightFilterLayout.setVisibility(FLAG);
+        bodyTypeFilterLayout.setVisibility(FLAG);
     }
 
     // 넘버씨커 디바이더 색 바꾸기
@@ -775,6 +811,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         user.setWeight(weightPick.getText().toString());
         user.setBodyType(bodyTypePick.getText().toString());
         user.setIntro(introEditText.getText().toString());
+        user.setUseFilter(filterSwitch.isChecked());
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 

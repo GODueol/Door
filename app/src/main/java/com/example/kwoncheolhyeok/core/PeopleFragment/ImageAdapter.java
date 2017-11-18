@@ -74,6 +74,10 @@ public class ImageAdapter extends BaseAdapter {
         return v;
     }
 
+    public void clear() {
+        List<Item> mItems = new ArrayList<Item>();
+    }
+
     public static class Item {
         public float distance;
         public String uuid;
