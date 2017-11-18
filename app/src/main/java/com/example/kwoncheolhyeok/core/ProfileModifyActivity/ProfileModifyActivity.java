@@ -55,10 +55,12 @@ import butterknife.ButterKnife;
 public class ProfileModifyActivity extends AppCompatActivity implements NumberPicker.OnValueChangeListener {
 
     Toolbar toolbar = null;
-    NumberPicker numberpicker1 = null;
-    NumberPicker numberpicker2 = null;
-    NumberPicker numberpicker3 = null;
-    NumberPicker numberpicker4 = null;
+
+
+    TextView agePick = null;
+    TextView heightPick = null;
+    TextView weightPick = null;
+    TextView bodyTypePick = null;
 
     ToggleButton lock1 = null;
     ToggleButton lock2 = null;
@@ -66,6 +68,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
     ToggleButton lock4 = null;
 
     static Dialog d;
+
     private TextView min_age_filter, max_age_filter, min_height_filter, max_height_filter, min_weight_filter, max_weight_filter, min_bodytype_filter, max_bodytype_filter;
 
     @Bind(R.id.modify_id)
@@ -124,41 +127,74 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 //                }
 //        });
 
+//        numberpicker_layout = (LinearLayout) findViewById(R.id.numberPicker_layout);
+//        numberpicker_layout.setOnClickListener(new View.OnClickListener(){
+//            @Override
+//            public void onClick(View view) {
+//                show_numPick();
+//            }
+//        });
 
-        numberpicker1 = (NumberPicker) findViewById(R.id.numberPicker1);
-        numberpicker1.setMinValue(19);
-        numberpicker1.setMaxValue(200);
-        numberpicker1.setValue(25);
-        numberpicker1.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
-        numberpicker1.setWrapSelectorWheel(false);
-        setDividerColor(numberpicker1, Color.WHITE);
-//        numberpicker1.setTextColor(getResources().getColor(R.color.colorPrimary));
-//        numberpicker1.setTextColorResource(R.color.colorPrimary);
+        // 지금 하려는 부분
+        agePick = (TextView) findViewById(R.id.numberPicker1);
+        agePick.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                show_numPick();
+            }
+        });
 
-        numberpicker2 = (NumberPicker) findViewById(R.id.numberPicker2);
-        numberpicker2.setMinValue(100);
-        numberpicker2.setMaxValue(200);
-        numberpicker2.setValue(175);
-        numberpicker2.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
-        numberpicker2.setWrapSelectorWheel(false);
-        setDividerColor(numberpicker2, Color.WHITE);
+//        agePick.setMinValue(19);
+//        agePick.setMaxValue(200);
+//        agePick.setValue(25);
+//        agePick.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+//        agePick.setWrapSelectorWheel(false);
+//        setDividerColor(agePick, Color.WHITE);
+////        agePick.setTextColor(getResources().getColor(R.color.colorPrimary));
+////        agePick.setTextColorResource(R.color.colorPrimary);
 
-        numberpicker3 = (NumberPicker) findViewById(R.id.numberPicker3);
-        numberpicker3.setMinValue(40);
-        numberpicker3.setMaxValue(150);
-        numberpicker3.setValue(65);
-        numberpicker3.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
-        numberpicker3.setWrapSelectorWheel(false);
-        setDividerColor(numberpicker3, Color.WHITE);
+        heightPick = (TextView) findViewById(R.id.numberPicker2);
+        heightPick.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                show_numPick();
+            }
+        });
+//        heightPick.setMinValue(100);
+//        heightPick.setMaxValue(200);
+//        heightPick.setValue(175);
+//        heightPick.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+//        heightPick.setWrapSelectorWheel(false);
+//        setDividerColor(heightPick, Color.WHITE);
 
-        numberpicker4 = (NumberPicker) findViewById(R.id.numberPicker4);
-        numberpicker4.setMinValue(0); //from array first value
-        numberpicker4.setMaxValue(values.length - 1); //to array last value
-        numberpicker4.setValue(values.length - 3);
-        numberpicker4.setDisplayedValues(values);
-        numberpicker4.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
-        numberpicker4.setWrapSelectorWheel(false);
-        setDividerColor(numberpicker4, Color.WHITE);
+        weightPick = (TextView) findViewById(R.id.numberPicker3);
+        weightPick.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                show_numPick();
+            }
+        });
+//        weightPick.setMinValue(40);
+//        weightPick.setMaxValue(150);
+//        weightPick.setValue(65);
+//        weightPick.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+//        weightPick.setWrapSelectorWheel(false);
+//        setDividerColor(weightPick, Color.WHITE);
+
+        bodyTypePick = (TextView) findViewById(R.id.numberPicker4);
+        bodyTypePick.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                show_numPick();
+            }
+        });
+//        bodyTypePick.setMinValue(0); //from array first value
+//        bodyTypePick.setMaxValue(values.length - 1); //to array last value
+//        bodyTypePick.setValue(values.length - 3);
+//        bodyTypePick.setDisplayedValues(values);
+//        bodyTypePick.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+//        bodyTypePick.setWrapSelectorWheel(false);
+//        setDividerColor(bodyTypePick, Color.WHITE);
 
 
         // 필터 다이얼로그 열기
@@ -226,10 +262,10 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         // 개인정보 Setting
         user = DataContainer.getInstance().getUser();
         _idText.setText(user.getId());
-        numberpicker1.setValue(Integer.valueOf(user.getAge()));
-        numberpicker2.setValue(Integer.valueOf(user.getHeight()));
-        numberpicker3.setValue(Integer.valueOf(user.getWeight()));
-        numberpicker4.setValue(Arrays.asList(values).indexOf(user.getBodyType()));
+        agePick.setText(user.getAge());
+        heightPick.setText(user.getHeight());
+        weightPick.setText(user.getWeight());
+        bodyTypePick.setText(user.getBodyType());
         introEditText.setText(user.getIntro());
 
         // Load the image using Glide
@@ -253,6 +289,20 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         profilePic2.setOnClickListener(onProfilePicClickListener);
         profilePic3.setOnClickListener(onProfilePicClickListener);
         profilePic4.setOnClickListener(onProfilePicClickListener);
+
+        // Set NumberPickerText
+        try {
+            agePick.setText(Integer.toString(user.getAgeBoundary().getMax()));
+
+            heightPick.setText(Integer.toString(user.getHeightBoundary().getMax()));
+
+            weightPick.setText(Integer.toString(user.getWeightBoundary().getMax()));
+
+            bodyTypePick.setText(user.getBodyTypeBoundary().getMax());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         // Set Filter
         try {
@@ -300,6 +350,101 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
     @Override
     public void onValueChange(NumberPicker numberPicker, int oldVal, int newVal) {
         Log.i("value is", "" + newVal);
+    }
+
+    //지금하는거
+    public void show_numPick() {
+
+        final Dialog d = new Dialog(ProfileModifyActivity.this);
+        d.setContentView(R.layout.profile_modify_numpick_layout);
+
+        // Dialog 사이즈 조절 하기
+        ViewGroup.LayoutParams params = d.getWindow().getAttributes();
+        params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        d.getWindow().setAttributes((android.view.WindowManager.LayoutParams) params);
+
+        d.show();
+
+        TextView b1 = (TextView) d.findViewById(R.id.button1);
+        TextView b2 = (TextView) d.findViewById(R.id.button2);
+
+//        final NumberPicker np = (NumberPicker) d.findViewById(R.id.numberPicker1);
+//        np.setMaxValue(100); // max value 100
+//        np.setMinValue(19);   // min value 0
+//        np.setValue(25);
+//        np.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);  //데이터 선택시 edittext 방지
+//        np.setWrapSelectorWheel(false);
+//        np.setOnValueChangedListener(this);
+
+//        final NumberPicker np2 = (NumberPicker) d.findViewById(R.id.numberPicker2);
+//        np2.setMaxValue(100); // max value 100
+//        np2.setMinValue(19);   // min value 0
+//        np2.setValue(25);
+//        np2.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);  //데이터 선택시 edittext 방지
+//        np2.setWrapSelectorWheel(false);
+//        np2.setOnValueChangedListener(this);
+
+        // 지금 하려는 부분
+        final NumberPicker numberpicker1 = (NumberPicker) d.findViewById(R.id.numberPicker1);
+        numberpicker1.setMinValue(19);
+        numberpicker1.setMaxValue(200);
+        numberpicker1.setValue(25);
+        numberpicker1.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+        numberpicker1.setWrapSelectorWheel(false);
+//        setDividerColor(numberpicker1, Color.WHITE);
+        numberpicker1.setOnValueChangedListener(this);
+//        agePick.setTextColor(getResources().getColor(R.color.colorPrimary));
+//        agePick.setTextColorResource(R.color.colorPrimary);
+
+        final NumberPicker numberpicker2 = (NumberPicker) d.findViewById(R.id.numberPicker2);
+        numberpicker2.setMinValue(100);
+        numberpicker2.setMaxValue(200);
+        numberpicker2.setValue(175);
+        numberpicker2.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+        numberpicker2.setWrapSelectorWheel(false);
+//        setDividerColor(numberpicker2, Color.WHITE);
+        numberpicker2.setOnValueChangedListener(this);
+
+
+        final NumberPicker numberpicker3 = (NumberPicker) d.findViewById(R.id.numberPicker3);
+        numberpicker3.setMinValue(40);
+        numberpicker3.setMaxValue(150);
+        numberpicker3.setValue(65);
+        numberpicker3.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+        numberpicker3.setWrapSelectorWheel(false);
+//        setDividerColor(numberpicker3, Color.WHITE);
+        numberpicker3.setOnValueChangedListener(this);
+
+        final NumberPicker numberpicker4 = (NumberPicker) d.findViewById(R.id.numberPicker4);
+        numberpicker4.setMinValue(0); //from array first value
+        numberpicker4.setMaxValue(values.length - 1); //to array last value
+        numberpicker4.setValue(values.length - 3);
+        numberpicker4.setDisplayedValues(values);
+        numberpicker4.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+        numberpicker4.setWrapSelectorWheel(false);
+//        setDividerColor(numberpicker4, Color.WHITE);
+        numberpicker4.setOnValueChangedListener(this);
+
+        b1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                agePick.setText(Integer.toString(numberpicker1.getValue()));
+                heightPick.setText(Integer.toString(numberpicker2.getValue()));
+                weightPick.setText(Integer.toString(numberpicker3.getValue()));
+                bodyTypePick.setText(values[numberpicker4.getValue()]);
+                d.dismiss();
+            }
+        });
+
+        b2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                d.dismiss();
+            }
+        });
+        d.show();
     }
 
 
@@ -625,10 +770,10 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 
         // Save User Info
         user.setId(_idText.getText().toString());
-        user.setAge(Integer.toString(numberpicker1.getValue()));
-        user.setHeight(Integer.toString(numberpicker2.getValue()));
-        user.setWeight(Integer.toString(numberpicker3.getValue()));
-        user.setBodyType(values[numberpicker4.getValue()]);
+        user.setAge(agePick.getText().toString());
+        user.setHeight(heightPick.getText().toString());
+        user.setWeight(weightPick.getText().toString());
+        user.setBodyType(bodyTypePick.getText().toString());
         user.setIntro(introEditText.getText().toString());
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();

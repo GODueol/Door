@@ -136,6 +136,10 @@
         <item name="android:topDark">@color/transparent</item>
     </style>
 
+    <!--스위치 ON 컬러 변화-->
+    <style name="ColorSwitchStyle">
+        <item name="colorControlActivated">@color/skyblue</item>
+    </style>
 
 </resources>
 

@@ -79,7 +79,7 @@
                 android:layout_marginTop="10dp"
                 android:text="Picture"
                 android:textColor="#FFFFFF"
-                android:textSize="15sp"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
             <LinearLayout
@@ -214,11 +214,53 @@
                     android:src="@drawable/a" />
             </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/image_delete"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/image_four"
+                android:layout_marginTop="15dp"
+                android:orientation="horizontal"
+                android:weightSum="4">
+
+                <ImageView
+                    android:id="@+id/delete1"
+                    android:layout_width="15dp"
+                    android:layout_height="26dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/delete_button"
+                    android:visibility="invisible"
+                    />
+
+                <ImageView
+                    android:id="@+id/delete2"
+                    android:layout_width="15dp"
+                    android:layout_height="26dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/delete_button" />
+
+                <ImageView
+                    android:id="@+id/delete3"
+                    android:layout_width="15dp"
+                    android:layout_height="26dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/delete_button" />
+
+                <ImageView
+                    android:id="@+id/delete4"
+                    android:layout_width="15dp"
+                    android:layout_height="26dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/delete_button" />
+            </LinearLayout>
+
             <View
                 android:id="@+id/section_line2"
                 android:layout_width="match_parent"
                 android:layout_height="0.5dip"
-                android:layout_below="@+id/image_four"
+                android:layout_below="@+id/image_delete"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 android:layout_marginTop="20dp"
@@ -232,9 +274,9 @@
                 android:layout_centerInParent="true"
                 android:layout_marginLeft="5dp"
                 android:layout_marginTop="10dp"
-                android:text="ID"
+                android:text="NickName"
                 android:textColor="#FFFFFF"
-                android:textSize="15sp"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
             <EditText
@@ -274,53 +316,65 @@
                 android:layout_marginTop="10dp"
                 android:text="Age / Height / Weight / BodyType"
                 android:textColor="#FFFFFF"
-                android:textSize="15sp"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
             <LinearLayout
-                android:id="@+id/numberPicker"
+                android:id="@+id/numberPicker_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/age_nouse"
                 android:layout_centerInParent="true"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="20dp"
                 android:orientation="horizontal">
 
-                <NumberPicker
+                <TextView
                     android:id="@+id/numberPicker1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginRight="5dp"
+                    android:text="Age"
+                    android:textSize="20sp"
+                    android:textColor="@color/white"
+                    android:layout_marginRight="15dp"
                     android:theme="@style/AppTheme.Picker" />
 
-                <NumberPicker
+                <TextView
                     android:id="@+id/numberPicker2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginRight="5dp"
+                    android:text="Height"
+                    android:textSize="20sp"
+                    android:textColor="@color/white"
+                    android:layout_marginRight="15dp"
                     android:theme="@style/AppTheme.Picker"
 
                     />
 
-                <NumberPicker
+                <TextView
                     android:id="@+id/numberPicker3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginRight="5dp"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    android:text="Weight"
+                    android:layout_marginRight="15dp"
                     android:theme="@style/AppTheme.Picker"
 
                     />
 
-                <NumberPicker
+                <TextView
                     android:id="@+id/numberPicker4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:text="Bodytype"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
                     android:theme="@style/AppTheme.Picker"
@@ -332,7 +386,7 @@
                 android:id="@+id/section_line4"
                 android:layout_width="match_parent"
                 android:layout_height="1dip"
-                android:layout_below="@+id/numberPicker"
+                android:layout_below="@+id/numberPicker_layout"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 android:layout_marginTop="15dp"
@@ -348,7 +402,7 @@
                 android:layout_marginTop="10dp"
                 android:text="Introduce"
                 android:textColor="#FFFFFF"
-                android:textSize="15sp"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
             <EditText
@@ -387,14 +441,24 @@
                 android:layout_marginTop="10dp"
                 android:text="Filter"
                 android:textColor="#FFFFFF"
-                android:textSize="15sp"
+                android:textSize="20sp"
                 android:textStyle="bold" />
+
+            <Switch
+                android:id="@+id/filter_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/filter_nouse"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:theme="@style/ColorSwitchStyle"
+                />
 
             <RelativeLayout
                 android:id="@+id/AGE_FILTER"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/filter_nouse"
+                android:layout_below="@+id/filter_switch"
                 android:layout_marginTop="20dp">
 
                 <TextView
@@ -585,6 +649,3 @@
 
 
 </RelativeLayout>
-
-
-
