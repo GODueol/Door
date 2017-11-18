@@ -1,5 +1,6 @@
 package com.example.kwoncheolhyeok.core.PeopleFragment;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,18 +18,14 @@ import java.util.List;
 
 public class ImageAdapter extends BaseAdapter {
 
-
-    private Context context = null;
-    ImageView imageView = null;
-
-    private final List<Item> mItems = new ArrayList<Item>();
+    private List<Item> mItems = new ArrayList<>();
     private final LayoutInflater mInflater;
 
-    public ImageAdapter(Context context) {
+    ImageAdapter(Context context) {
         mInflater = LayoutInflater.from(context);
     }
 
-    public void addItem(Item item){
+    void addItem(Item item){
         mItems.add(item);
     }
 
@@ -47,6 +44,7 @@ public class ImageAdapter extends BaseAdapter {
         return 0;
     }
 
+    @SuppressLint("DefaultLocale")
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
         View v = view;
@@ -74,15 +72,16 @@ public class ImageAdapter extends BaseAdapter {
         return v;
     }
 
-    public void clear() {
-        List<Item> mItems = new ArrayList<Item>();
+    void clear() {
+        mItems.clear();
+
     }
 
-    public static class Item {
-        public float distance;
-        public String uuid;
+    static class Item {
+        float distance;
+        String uuid;
 
-        public Item(float distance, String uuid) {
+        Item(float distance, String uuid) {
             this.distance = distance;
             this.uuid = uuid;
         }

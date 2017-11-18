@@ -1,5 +1,6 @@
 package com.example.kwoncheolhyeok.core.PeopleFragment;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
@@ -12,7 +13,6 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
 
-import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
@@ -68,7 +68,10 @@ public class TabFragment1 extends android.support.v4.app.Fragment {
             public void onRefresh() {
                 // 위치 새로고침
                 imageAdapter.clear();
+                gridView.invalidateViews();
+
                 refreshLocation();
+
                 mSwipeRefreshLayout.setRefreshing(false);
             }
         });
@@ -88,6 +91,7 @@ public class TabFragment1 extends android.support.v4.app.Fragment {
 
         // 쿼리받은 값을 처리
         geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
+            @SuppressLint("DefaultLocale")
             @Override
             public void onKeyEntered(String key, GeoLocation geoLocation) {
                 System.out.println(String.format("Key %s entered the search area at [%f,%f]", key, geoLocation.latitude, geoLocation.longitude));
@@ -101,6 +105,7 @@ public class TabFragment1 extends android.support.v4.app.Fragment {
                 // TODO : grid에 사진, distance추가
                 if(imageAdapter != null){
                     imageAdapter.addItem(new ImageAdapter.Item(distance, key));
+                    gridView.invalidateViews();
                 } else {
                     Log.d(getTag(), "imageAdapter is null");
                 }
