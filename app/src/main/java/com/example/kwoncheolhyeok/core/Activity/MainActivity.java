@@ -14,8 +14,11 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.DragEvent;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -36,6 +39,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.otto.Subscribe;
 
 
+/**
+ *
+ * drawer / viewpager drag duplication issue 
+ */
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -46,7 +53,7 @@ public class MainActivity extends AppCompatActivity
 
     ViewPager viewPager = null;
     TabLayout tabLayout = null;
-
+    Drawable icon_open,icon_close;
     ImageView profileImage;
 
     private CloseActivityHandler closeActivityHandler;
@@ -64,13 +71,7 @@ public class MainActivity extends AppCompatActivity
 
         setSupportActionBar(toolbar);
 
-        Drawable drawable = ResourcesCompat.getDrawable(getResources(), R.drawable.icon, getTheme());
-        Drawable drawable2 = ResourcesCompat.getDrawable(getResources(), R.drawable.icon2, getTheme());
-        Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
-        Bitmap bitmap2 = ((BitmapDrawable) drawable2).getBitmap();
-        final Drawable icon_open = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 85, 85, true));
-        final Drawable icon_close = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap2, 85, 85, true));
-
+        ToggleIconSet();
         toggle = new ActionBarDrawerToggle(
                 this,
                 drawer,
@@ -84,22 +85,19 @@ public class MainActivity extends AppCompatActivity
         toggle.setToolbarNavigationClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (drawer.isDrawerVisible(GravityCompat.START)) {
-                    //드로워 열었을 때 아이콘
-                    toggle.setHomeAsUpIndicator(icon_open);
-                    drawer.closeDrawer(GravityCompat.START);
-                } else {
-                    //드로워 다시 닫혔을 때 아이콘
-                    toggle.setHomeAsUpIndicator(icon_close);
-                    drawer.openDrawer(GravityCompat.START);
-                }
+                changeToggleIcon();
             }
         });
-
         //Navigation view
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
+        drawer.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                changeToggleIcon();
+                return false;
+            }
+        });
 
         // people,board,club 스와이프 탭 view 관련
         // final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
@@ -123,8 +121,6 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View v) {
 
                 Intent i2 = new Intent(MainActivity.this, ProfileModifyActivity.class);
-
-
                 startActivity(i2);
             }
         });
@@ -197,6 +193,7 @@ public class MainActivity extends AppCompatActivity
 
     @SuppressWarnings("StatementWithEmptyBody")
 
+
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
 
@@ -229,12 +226,36 @@ public class MainActivity extends AppCompatActivity
             finish();
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+       // DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
 
         return true;
     }
 
+
+    public void ToggleIconSet(){
+        Drawable drawable = ResourcesCompat.getDrawable(getResources(), R.drawable.icon, getTheme());
+        Drawable drawable2 = ResourcesCompat.getDrawable(getResources(), R.drawable.icon2, getTheme());
+        Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
+        Bitmap bitmap2 = ((BitmapDrawable) drawable2).getBitmap();
+        icon_open = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 85, 85, true));
+        icon_close = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap2, 85, 85, true));
+    }
+    /**
+     * 토클 이미지 변경
+     */
+    public void changeToggleIcon(){
+
+        if (drawer.isDrawerVisible(GravityCompat.START)) {
+            //드로워 열었을 때 아이콘
+            toggle.setHomeAsUpIndicator(icon_open);
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            //드로워 다시 닫혔을 때 아이콘
+            toggle.setHomeAsUpIndicator(icon_close);
+            drawer.openDrawer(GravityCompat.START);
+        }
+    }
     @Override
     protected void onDestroy() {
         BusProvider.getInstance().unregister(this);
