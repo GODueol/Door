@@ -110,6 +110,11 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 
     final String[] values = {"Underweight", "Skinny", "Standard", "Muscular", "Overweight"};
 
+    // filter boundary
+    enum FILTER {AGE, HEIGHT, WEIGHT, BODYTYPE};
+    private static final int minBoundary[] = {19 , 150, 40, 4};
+    private static final int maxBoundary[] = {100, 200, 150, 4};
+
     // 카메라관련 인자
     private static final int REQUEST_TAKE_PHOTO = 1;
     private static final int REQUEST_GALLERY = 2;
@@ -222,14 +227,14 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         min_age_filter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                show();
+                show(min_age_filter, max_age_filter, FILTER.AGE);
             }
         });
         max_age_filter = (TextView) findViewById(R.id.max_age_filter);
         max_age_filter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                show();
+                show(min_age_filter, max_age_filter, FILTER.AGE);
             }
         });
 
@@ -237,14 +242,14 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         min_height_filter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                show2();
+                show(min_height_filter, max_height_filter, FILTER.HEIGHT);
             }
         });
         max_height_filter = (TextView) findViewById(R.id.max_height_filter);
         max_height_filter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                show2();
+                show(min_height_filter, max_height_filter, FILTER.HEIGHT);
             }
         });
 
@@ -252,14 +257,14 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         min_weight_filter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                show3();
+                show(min_weight_filter, max_weight_filter, FILTER.WEIGHT);
             }
         });
         max_weight_filter = (TextView) findViewById(R.id.max_weight_filter);
         max_weight_filter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                show3();
+                show(min_weight_filter, max_weight_filter, FILTER.WEIGHT);
             }
         });
 
@@ -267,14 +272,14 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         min_bodytype_filter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                show4();
+                showBodyType();
             }
         });
         max_bodytype_filter = (TextView) findViewById(R.id.max_bodytype_filter);
         max_bodytype_filter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                show4();
+                showBodyType();
             }
         });
 
@@ -309,20 +314,6 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         profilePic2.setOnClickListener(onProfilePicClickListener);
         profilePic3.setOnClickListener(onProfilePicClickListener);
         profilePic4.setOnClickListener(onProfilePicClickListener);
-
-        // Set NumberPickerText
-        try {
-            agePick.setText(Integer.toString(user.getAgeBoundary().getMax()));
-
-            heightPick.setText(Integer.toString(user.getHeightBoundary().getMax()));
-
-            weightPick.setText(Integer.toString(user.getWeightBoundary().getMax()));
-
-            bodyTypePick.setText(user.getBodyTypeBoundary().getMax());
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
         // Set Filter
         try {
@@ -487,7 +478,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
     }
 
 
-    public void show() {
+    public void show(final TextView min_filter, final TextView max_filter, FILTER filterType) {
 
         final Dialog d = new Dialog(ProfileModifyActivity.this);
         d.setContentView(R.layout.profile_modify_age_dialog);
@@ -504,17 +495,17 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         TextView b2 = (TextView) d.findViewById(R.id.button2);
 
         final NumberPicker np = (NumberPicker) d.findViewById(R.id.numberPicker1);
-        np.setMaxValue(100); // max value 100
-        np.setMinValue(19);   // min value 0
-        np.setValue(25);
+        np.setMaxValue(maxBoundary[filterType.ordinal()]); // max value 100
+        np.setMinValue(minBoundary[filterType.ordinal()]);   // min value 0
+        np.setValue(Integer.parseInt(min_filter.getText().toString()));
         np.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);  //데이터 선택시 edittext 방지
         np.setWrapSelectorWheel(false);
         np.setOnValueChangedListener(this);
 
         final NumberPicker np2 = (NumberPicker) d.findViewById(R.id.numberPicker2);
-        np2.setMaxValue(100); // max value 100
-        np2.setMinValue(19);   // min value 0
-        np2.setValue(25);
+        np2.setMaxValue(maxBoundary[filterType.ordinal()]); // max value 100
+        np2.setMinValue(minBoundary[filterType.ordinal()]);   // min value 0
+        np2.setValue(Integer.parseInt(max_filter.getText().toString()));
         np2.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);  //데이터 선택시 edittext 방지
         np2.setWrapSelectorWheel(false);
         np2.setOnValueChangedListener(this);
@@ -522,9 +513,9 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         b1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                min_age_filter.setText(String.valueOf(np.getValue())); //set the value to textview
+                min_filter.setText(String.valueOf(np.getValue())); //set the value to textview
                 d.dismiss();
-                max_age_filter.setText(String.valueOf(np2.getValue())); //set the value to textview
+                max_filter.setText(String.valueOf(np2.getValue())); //set the value to textview
                 d.dismiss();
             }
         });
@@ -538,109 +529,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         d.show();
     }
 
-    public void show2() {
-
-        final Dialog d = new Dialog(ProfileModifyActivity.this);
-        d.setContentView(R.layout.profile_modify_height_dialog);
-
-        // Dialog 사이즈 조절 하기
-        ViewGroup.LayoutParams params = d.getWindow().getAttributes();
-        params.width = ViewGroup.LayoutParams.MATCH_PARENT;
-        params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-        d.getWindow().setAttributes((android.view.WindowManager.LayoutParams) params);
-
-        d.show();
-
-        TextView b1 = (TextView) d.findViewById(R.id.button1);
-        TextView b2 = (TextView) d.findViewById(R.id.button2);
-
-        final NumberPicker np = (NumberPicker) d.findViewById(R.id.numberPicker1);
-        np.setMaxValue(200); // max value 100
-        np.setMinValue(150);   // min value 0
-        np.setValue(175);
-        np.setWrapSelectorWheel(false);
-        np.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);  //데이터 선택시 edittext 방지
-        np.setOnValueChangedListener(this);
-
-        final NumberPicker np2 = (NumberPicker) d.findViewById(R.id.numberPicker2);
-        np2.setMaxValue(200); // max value 100
-        np2.setMinValue(150);   // min value 0
-        np2.setValue(175);
-        np2.setWrapSelectorWheel(false);
-        np2.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);  //데이터 선택시 edittext 방지
-        np2.setOnValueChangedListener(this);
-
-        b1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                min_height_filter.setText(String.valueOf(np.getValue())); //set the value to textview
-                d.dismiss();
-                max_height_filter.setText(String.valueOf(np2.getValue())); //set the value to textview
-                d.dismiss();
-            }
-        });
-
-        b2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                d.dismiss();
-            }
-        });
-        d.show();
-    }
-
-    public void show3() {
-
-        final Dialog d = new Dialog(ProfileModifyActivity.this);
-        d.setContentView(R.layout.profile_modify_weight_dialog);
-
-        // Dialog 사이즈 조절 하기
-        ViewGroup.LayoutParams params = d.getWindow().getAttributes();
-        params.width = ViewGroup.LayoutParams.MATCH_PARENT;
-        params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-        d.getWindow().setAttributes((android.view.WindowManager.LayoutParams) params);
-
-        d.show();
-
-        TextView b1 = (TextView) d.findViewById(R.id.button1);
-        TextView b2 = (TextView) d.findViewById(R.id.button2);
-
-        final NumberPicker np = (NumberPicker) d.findViewById(R.id.numberPicker1);
-        np.setMaxValue(150); // max value 100
-        np.setMinValue(40);   // min value 0
-        np.setValue(65);
-        np.setWrapSelectorWheel(false);
-        np.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);  //데이터 선택시 edittext 방지
-        np.setOnValueChangedListener(this);
-
-        final NumberPicker np2 = (NumberPicker) d.findViewById(R.id.numberPicker2);
-        np2.setMaxValue(150); // max value 100
-        np2.setMinValue(40);   // min value 0
-        np2.setValue(65);
-        np2.setWrapSelectorWheel(false);
-        np2.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);  //데이터 선택시 edittext 방지
-        np2.setOnValueChangedListener(this);
-
-        b1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                min_weight_filter.setText(String.valueOf(np.getValue())); //set the value to textview
-                d.dismiss();
-                max_weight_filter.setText(String.valueOf(np2.getValue())); //set the value to textview
-                d.dismiss();
-            }
-        });
-
-        b2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                d.dismiss();
-            }
-        });
-        d.show();
-    }
-
-    public void show4() {
+    public void showBodyType() {
 
         final Dialog d = new Dialog(ProfileModifyActivity.this);
         d.setContentView(R.layout.profile_modify_bodytype_dialog);
