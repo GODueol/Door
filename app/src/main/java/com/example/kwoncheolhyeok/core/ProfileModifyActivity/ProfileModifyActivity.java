@@ -1,6 +1,7 @@
 package com.example.kwoncheolhyeok.core.ProfileModifyActivity;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -47,6 +48,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.tsengvn.typekit.TypekitContextWrapper;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -118,6 +120,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 
     // User Info
     User user;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -777,6 +780,12 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         });
 
     }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(TypekitContextWrapper.wrap(newBase));
+    }
+
 
     private void showImage(Bitmap bitmap) {
         Drawable bitmapDrawable = new BitmapDrawable(getResources(), bitmap);

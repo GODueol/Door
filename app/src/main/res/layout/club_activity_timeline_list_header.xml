@@ -111,7 +111,7 @@
                     android:id="@+id/notice_picture"
                     android:layout_width="38dp"
                     android:layout_height="38dp"
-                    android:src="@drawable/l"
+                    android:src="@drawable/a"
                     android:scaleType="centerCrop"
                     android:layout_alignParentLeft="true"
                     android:layout_marginLeft="10dp"

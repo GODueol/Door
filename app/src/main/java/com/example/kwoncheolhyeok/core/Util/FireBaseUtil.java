@@ -42,7 +42,7 @@ public class FireBaseUtil {
             public void onFailure(@NonNull Exception exception) {
                 // Handle any errors
                 Log.d(this.getClass().getName(), exception.getMessage());
-                targetImageView.setImageResource(R.drawable.f);
+                targetImageView.setImageResource(R.drawable.a);
             }
         });
     }

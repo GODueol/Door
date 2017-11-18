@@ -84,7 +84,7 @@
                     android:id="@+id/club1"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-                    android:src="@drawable/k"
+                    android:src="@drawable/a"
                     android:layout_marginLeft="5dp"
                     android:scaleType="centerCrop"
                     android:clickable="true"/>
@@ -93,7 +93,7 @@
                     android:id="@+id/club2"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-                    android:src="@drawable/c"
+                    android:src="@drawable/a"
                     android:scaleType="centerCrop"
                     android:layout_marginLeft="5dp"
                     android:clickable="true"/>
@@ -102,7 +102,7 @@
                     android:id="@+id/club3"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-                    android:src="@drawable/f"
+                    android:src="@drawable/a"
                     android:layout_marginLeft="5dp"
                     android:scaleType="centerCrop"
                     android:clickable="true"/>
@@ -111,7 +111,7 @@
                     android:id="@+id/club4"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-                    android:src="@drawable/q"
+                    android:src="@drawable/a"
                     android:layout_marginLeft="5dp"
                     android:clickable="true"
                     android:scaleType="centerCrop"/>
@@ -120,7 +120,7 @@
                     android:id="@+id/club5"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-                    android:src="@drawable/s"
+                    android:src="@drawable/a"
                     android:layout_marginLeft="5dp"
                     android:clickable="true"
                     android:scaleType="centerCrop"/>
@@ -129,7 +129,7 @@
                     android:id="@+id/club6"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-                    android:src="@drawable/r"
+                    android:src="@drawable/a"
                     android:layout_marginLeft="5dp"
                     android:scaleType="centerCrop"/>
 

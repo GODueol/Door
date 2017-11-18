@@ -18,7 +18,7 @@
         android:id="@+id/pic_writer"
         android:layout_width="70dp"
         android:layout_height="70dp"
-        android:src="@drawable/j"
+        android:src="@drawable/a"
         android:scaleType="centerCrop"
         android:layout_alignParentLeft="true"
         android:layout_marginLeft="10dp"
@@ -119,7 +119,7 @@
                 android:id="@+id/pic_reply"
                 android:layout_width="38dp"
                 android:layout_height="38dp"
-                android:src="@drawable/g"
+                android:src="@drawable/a"
                 android:scaleType="centerCrop"
                 android:layout_alignParentLeft="true"
                 />

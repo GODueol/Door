@@ -1,6 +1,7 @@
 package com.example.kwoncheolhyeok.core.CorePage;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -9,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.example.kwoncheolhyeok.core.R;
+import com.tsengvn.typekit.TypekitContextWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +58,11 @@ public class CoreActivity extends AppCompatActivity {
         });
 
 
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(TypekitContextWrapper.wrap(newBase));
     }
 
     // 뒤로가기 버튼 기능

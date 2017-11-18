@@ -13,7 +13,7 @@
         android:layout_marginLeft="5dp"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
-        android:src="@drawable/o"
+        android:src="@drawable/a"
         android:scaleType="centerCrop"
     />
 
