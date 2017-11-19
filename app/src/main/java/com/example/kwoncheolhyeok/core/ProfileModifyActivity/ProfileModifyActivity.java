@@ -1,7 +1,9 @@
 package com.example.kwoncheolhyeok.core.ProfileModifyActivity;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -110,6 +112,14 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
     @Bind(R.id.lock4)
     ToggleButton lock4Toggle;
 
+    @Bind(R.id.delete2)
+    ImageView delete2Image;
+
+    @Bind(R.id.delete3)
+    ImageView delete3Image;
+
+    @Bind(R.id.delete4)
+    ImageView delete4Image;
 
 
     final String[] values = {"Underweight", "Skinny", "Standard", "Muscular", "Overweight"};
@@ -350,6 +360,55 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         lock2Toggle.setChecked(user.isLockPic2());
         lock3Toggle.setChecked(user.isLockPic3());
         lock4Toggle.setChecked(user.isLockPic4());
+
+        /* onClick del btn */
+        setOnDelPicBtnClickListener(delete2Image);
+        setOnDelPicBtnClickListener(delete3Image);
+        setOnDelPicBtnClickListener(delete4Image);
+
+    }
+
+    private void setOnDelPicBtnClickListener(final ImageView targetPic) {
+        View.OnClickListener onDeleteClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+                builder.setTitle("Delete Picture");
+                builder.setMessage("Do you want delete Picture?");
+                builder.setCancelable(false);
+                builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        // 사진 삭제
+                        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+                        String picPath = getPicPath(targetPic);
+                        StorageReference desertRef = storageRef.child(picPath);
+
+                        // Delete the file
+                        desertRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                // File deleted successfully
+                                targetPic.setImageResource(R.drawable.a);
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception exception) {
+                                // Uh-oh, an error occurred!
+                            }
+                        });
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) { }
+                });
+
+                AlertDialog dialog = builder.create();    // 알림창 객체 생성
+                dialog.show();    // 알림창 띄우기
+
+            }
+        };
+
+        targetPic.setOnClickListener(onDeleteClickListener);
     }
 
     private void setVisibilityFilterLayout(boolean isChecked) {
@@ -632,16 +691,9 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 
         // Create a storage reference from our app
         StorageReference storageRef = FirebaseStorage.getInstance().getReference();
-        String profilePicPath = FireBaseUtil.getInstance().getParentPath();
-        if (modifingPic == profilePic1) {
-            profilePicPath += "profilePic1.jpg";
-        } else if (modifingPic == profilePic2) {
-            profilePicPath += "profilePic2.jpg";
-        } else if (modifingPic == profilePic3) {
-            profilePicPath += "profilePic3.jpg";
-        } else if (modifingPic == profilePic4) {
-            profilePicPath += "profilePic4.jpg";
-        }
+
+        String profilePicPath = getPicPath(modifingPic);
+
         final StorageReference spaceRef = storageRef.child(profilePicPath);
 
         UploadTask uploadTask = spaceRef.putFile(outputFileUri);
@@ -682,6 +734,21 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
             }
         });
 
+    }
+
+    @NonNull
+    private String getPicPath(ImageView targetImage) {
+        String profilePicPath = FireBaseUtil.getInstance().getParentPath();
+        if (targetImage == profilePic1) {
+            profilePicPath += "profilePic1.jpg";
+        } else if (targetImage == profilePic2) {
+            profilePicPath += "profilePic2.jpg";
+        } else if (targetImage == profilePic3) {
+            profilePicPath += "profilePic3.jpg";
+        } else if (targetImage == profilePic4) {
+            profilePicPath += "profilePic4.jpg";
+        }
+        return profilePicPath;
     }
 
     @Override

@@ -34,8 +34,6 @@ public class IntroActivity extends Activity {
     /** Called when the activity is first created. */
 
     FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference userRef = database.getReference("users");
-
 
     @Override
     protected void onStart() {
@@ -61,7 +59,8 @@ public class IntroActivity extends Activity {
 
             // user 정보 읽어오기
             DatabaseReference userRef = database.getReference("users");
-            userRef.child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            String uuid = user.getUid();
+            userRef.child(uuid).addListenerForSingleValueEvent(new ValueEventListener() {
 
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -77,7 +76,9 @@ public class IntroActivity extends Activity {
                     Log.d(getApplication().getClass().getName(),databaseError.getMessage());
 
                 }
+
             });
+
 
         } else {
             // User is signed out
