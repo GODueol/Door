@@ -125,8 +125,12 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
     final String[] values = {"Underweight", "Skinny", "Standard", "Muscular", "Overweight"};
 
     // filter boundary
-    enum FILTER {AGE, HEIGHT, WEIGHT};
-    private static final int minBoundary[] = {19 , 150, 40};
+    enum FILTER {
+        AGE, HEIGHT, WEIGHT
+    }
+
+    ;
+    private static final int minBoundary[] = {19, 150, 40};
     private static final int maxBoundary[] = {100, 200, 150};
 
     // 카메라관련 인자
@@ -362,17 +366,17 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         lock4Toggle.setChecked(user.isLockPic4());
 
         /* onClick del btn */
-        setOnDelPicBtnClickListener(delete2Image);
-        setOnDelPicBtnClickListener(delete3Image);
-        setOnDelPicBtnClickListener(delete4Image);
+        setOnDelPicBtnClickListener(delete2Image, profilePic2);
+        setOnDelPicBtnClickListener(delete3Image, profilePic3);
+        setOnDelPicBtnClickListener(delete4Image, profilePic4);
 
     }
 
-    private void setOnDelPicBtnClickListener(final ImageView targetPic) {
+    private void setOnDelPicBtnClickListener(final ImageView btn, final ImageView targetPic) {
         View.OnClickListener onDeleteClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+                AlertDialog.Builder builder = new AlertDialog.Builder(ProfileModifyActivity.this);
                 builder.setTitle("Delete Picture");
                 builder.setMessage("Do you want delete Picture?");
                 builder.setCancelable(false);
@@ -384,36 +388,44 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
                         StorageReference desertRef = storageRef.child(picPath);
 
                         // Delete the file
+                        CoreProgress.getInstance().startProgressDialog(ProfileModifyActivity.this);
                         desertRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
                                 // File deleted successfully
+                                Log.d(getClass().getName(),"Delete Pic Success");
                                 targetPic.setImageResource(R.drawable.a);
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception exception) {
                                 // Uh-oh, an error occurred!
+                                Log.d(getClass().getName(),"Delete Pic Fail");
+                            }
+                        }).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                CoreProgress.getInstance().stopProgressDialog();
                             }
                         });
                     }
                 });
                 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) { }
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                    }
                 });
 
                 AlertDialog dialog = builder.create();    // 알림창 객체 생성
                 dialog.show();    // 알림창 띄우기
-
             }
         };
 
-        targetPic.setOnClickListener(onDeleteClickListener);
+        btn.setOnClickListener(onDeleteClickListener);
     }
 
     private void setVisibilityFilterLayout(boolean isChecked) {
         int FLAG;
-        if(isChecked) FLAG = View.VISIBLE;
+        if (isChecked) FLAG = View.VISIBLE;
         else FLAG = View.GONE;
         ageFilterLayout.setVisibility(FLAG);
         heightFilterLayout.setVisibility(FLAG);
@@ -747,6 +759,9 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
             profilePicPath += "profilePic3.jpg";
         } else if (targetImage == profilePic4) {
             profilePicPath += "profilePic4.jpg";
+        } else {
+            new Exception("Not Found Picture Path").printStackTrace();
+            return null;
         }
         return profilePicPath;
     }
