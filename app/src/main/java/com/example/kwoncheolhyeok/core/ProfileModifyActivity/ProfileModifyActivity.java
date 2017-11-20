@@ -654,7 +654,10 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
             public void onClick(View v) {
                 int pos = np.getValue();
                 int pos2 = np2.getValue();
-
+                if(pos > pos2 ){
+                    Toast.makeText(getBaseContext(), "BodyType Filter Setting Value is Wrong, Fix BodyType Filter", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 min_bodytype_filter.setText(values[pos]); //set the value to textview
                 d.dismiss();
                 max_bodytype_filter.setText(values[pos2]); //set the value to textview
@@ -779,6 +782,23 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 
     public void save(View view) {
         CoreProgress.getInstance().startProgressDialog(this);
+
+        // validation
+        try {
+            if(_idText.getText().toString().equals("")){
+                throw new Exception("ID is Empty, Input ID");
+            }
+
+            String minBT = min_bodytype_filter.getText().toString();
+            String maxBT = max_bodytype_filter.getText().toString();
+            if(Arrays.asList(values).indexOf(minBT) > Arrays.asList(values).indexOf(maxBT) ){
+                throw new Exception("BodyType Filter Setting Value is Wrong, Fix BodyType Filter");
+            }
+        } catch (Exception e){
+            Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
+            CoreProgress.getInstance().stopProgressDialog();
+            return;
+        }
 
         // Save Filter
         user.setAgeBoundary(new IntBoundary(
