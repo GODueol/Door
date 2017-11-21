@@ -276,11 +276,13 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
             throw new Exception("패스워드가 일치하지 않습니다.");
         } else if (ID.isEmpty() || ID.length() < 2) {
             throw new Exception("두 자리 이상의 아이디로 작성해주세요.");
-        } else if (Age.isEmpty() || Age.length() != 2) {
+        } else if (Age.isEmpty() || Age.length() != 2 || Integer.parseInt(Age)>100) {
             throw new Exception("올바른 나이를 작성해주세요.");
-        } else if (Height.isEmpty() || Height.length() != 3) {
+        } else if (Integer.parseInt(Age) < 20){
+            throw new Exception("미성년자는 가입할 수 없습니다.");
+        } else if (Height.isEmpty() || Height.length() != 3 || Integer.parseInt(Height)<100 || Integer.parseInt(Height)>220) {
             throw new Exception("올바른 키를 작성해 주세요.");
-        } else if (Weight.isEmpty() || Weight.length() < 2 || Weight.length() > 3) {
+        } else if (Weight.isEmpty() || Weight.length() < 2 || Weight.length() > 3 || Integer.parseInt(Weight) < 40 || Integer.parseInt(Weight) > 140) {
             throw new Exception("올바른 몸무게로 작성해주세요.");
         } else if (Bodytype.isEmpty()) {
             throw new Exception("바디타입을 설정해주세요.");

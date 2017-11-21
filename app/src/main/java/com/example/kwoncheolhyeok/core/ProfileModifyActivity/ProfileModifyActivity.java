@@ -115,8 +115,8 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
     // filter boundary
     enum FILTER {AGE, HEIGHT, WEIGHT, BODYTYPE};
 
-    private static final int minBoundary[] = {20 , 150, 40, 4};
-    private static final int maxBoundary[] = {99, 200, 130, 4};
+    private static final int minBoundary[] = {20 , 100, 40, 4};
+    private static final int maxBoundary[] = {99, 220, 140, 4};
 
     // 카메라관련 인자
     private static final int REQUEST_TAKE_PHOTO = 1;
@@ -384,8 +384,8 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         numberpicker1.setOnValueChangedListener(this);
 
         final NumberPicker numberpicker2 = (NumberPicker) d.findViewById(R.id.numberPicker2);
-        numberpicker2.setMinValue(150);
-        numberpicker2.setMaxValue(200);
+        numberpicker2.setMinValue(100);
+        numberpicker2.setMaxValue(220);
         numberpicker2.setValue(Integer.parseInt(heightPick.getText().toString()));
         numberpicker2.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
         numberpicker2.setWrapSelectorWheel(false);
@@ -394,7 +394,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 
         final NumberPicker numberpicker3 = (NumberPicker) d.findViewById(R.id.numberPicker3);
         numberpicker3.setMinValue(40);
-        numberpicker3.setMaxValue(130);
+        numberpicker3.setMaxValue(140);
         numberpicker3.setValue(Integer.parseInt(weightPick.getText().toString()));
         numberpicker3.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
         numberpicker3.setWrapSelectorWheel(false);
@@ -656,8 +656,8 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 
         // validation
         try {
-            if(_idText.getText().toString().equals("")){
-                throw new Exception("아이디는 공백일 수 없습니다.");
+            if(_idText.getText().toString().equals("") || _idText.length()<2 ){
+                throw new Exception("두 자리 이상의 아이디로 작성해주세요.");
             }
 
             String minBT = min_bodytype_filter.getText().toString();
