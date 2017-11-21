@@ -96,16 +96,16 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
     @Bind(R.id.filter_switch)
     Switch filterSwitch;
 
-    @Bind(R.id.AGE_FILTER)
+    @Bind(R.id.AGE_FILTER1)
     RelativeLayout ageFilterLayout;
 
-    @Bind(R.id.HEIGHT_FILTER)
+    @Bind(R.id.HEIGHT_FILTER1)
     RelativeLayout heightFilterLayout;
 
-    @Bind(R.id.WEIGHT_FILTER)
+    @Bind(R.id.WEIGHT_FILTER1)
     RelativeLayout weightFilterLayout;
 
-    @Bind(R.id.BODY_TYPE_FILTER)
+    @Bind(R.id.BODY_TYPE_FILTER1)
     RelativeLayout bodyTypeFilterLayout;
 
 
