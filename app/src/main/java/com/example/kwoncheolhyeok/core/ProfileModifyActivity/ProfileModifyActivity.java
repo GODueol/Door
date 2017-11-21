@@ -34,12 +34,13 @@ import com.example.kwoncheolhyeok.core.Camera.LoadPicture;
 import com.example.kwoncheolhyeok.core.Entity.IntBoundary;
 import com.example.kwoncheolhyeok.core.Entity.StringBoundary;
 import com.example.kwoncheolhyeok.core.Entity.User;
+import com.example.kwoncheolhyeok.core.Event.RefreshLocationEvent;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.BusProvider;
 import com.example.kwoncheolhyeok.core.Util.CoreProgress;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
-import com.example.kwoncheolhyeok.core.Util.PushEvent;
+import com.example.kwoncheolhyeok.core.Event.SetProfilePicEvent;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -119,9 +120,6 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 
     @Bind(R.id.delete4)
     ImageView delete4Image;
-
-
-    final String[] values = {"Underweight", "Skinny", "Standard", "Muscular", "Overweight"};
 
     // filter boundary
     enum FILTER {AGE, HEIGHT, WEIGHT};
@@ -473,9 +471,9 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 
         final NumberPicker numberpicker4 = (NumberPicker) d.findViewById(R.id.numberPicker4);
         numberpicker4.setMinValue(0); //from array first value
-        numberpicker4.setMaxValue(values.length - 1); //to array last value
-        numberpicker4.setDisplayedValues(values);
-        numberpicker4.setValue(Arrays.asList(values).indexOf(bodyTypePick.getText()));
+        numberpicker4.setMaxValue(DataContainer.bodyTypes.length - 1); //to array last value
+        numberpicker4.setDisplayedValues(DataContainer.bodyTypes);
+        numberpicker4.setValue(Arrays.asList(DataContainer.bodyTypes).indexOf(bodyTypePick.getText()));
         numberpicker4.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
         numberpicker4.setWrapSelectorWheel(false);
         numberpicker4.setOnValueChangedListener(this);
@@ -487,7 +485,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
                 agePick.setText(Integer.toString(numberpicker1.getValue()));
                 heightPick.setText(Integer.toString(numberpicker2.getValue()));
                 weightPick.setText(Integer.toString(numberpicker3.getValue()));
-                bodyTypePick.setText(values[numberpicker4.getValue()]);
+                bodyTypePick.setText(DataContainer.bodyTypes[numberpicker4.getValue()]);
                 d.dismiss();
             }
         });
@@ -584,18 +582,18 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         final NumberPicker np = (NumberPicker) d.findViewById(R.id.numberPicker1);
 
         np.setMinValue(0); //from array first value
-        np.setMaxValue(values.length - 1); //to array last value
-        np.setValue(Arrays.asList(values).indexOf(min_bodytype_filter.getText()));
-        np.setDisplayedValues(values);
+        np.setMaxValue(DataContainer.bodyTypes.length - 1); //to array last value
+        np.setValue(Arrays.asList(DataContainer.bodyTypes).indexOf(min_bodytype_filter.getText()));
+        np.setDisplayedValues(DataContainer.bodyTypes);
         np.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
         np.setWrapSelectorWheel(false);
         np.setOnValueChangedListener(this);
 
         final NumberPicker np2 = (NumberPicker) d.findViewById(R.id.numberPicker2);
         np2.setMinValue(np.getValue()); //from array first value
-        np2.setMaxValue(values.length - 1); //to array last value
-        np2.setValue(Arrays.asList(values).indexOf(max_bodytype_filter.getText()));
-        np2.setDisplayedValues(values);
+        np2.setMaxValue(DataContainer.bodyTypes.length - 1); //to array last value
+        np2.setValue(Arrays.asList(DataContainer.bodyTypes).indexOf(max_bodytype_filter.getText()));
+        np2.setDisplayedValues(DataContainer.bodyTypes);
         np2.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
         np2.setWrapSelectorWheel(false);
         np2.setOnValueChangedListener(this);
@@ -609,9 +607,9 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
                     Toast.makeText(getBaseContext(), "범위가 잘못되었습니다.", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                min_bodytype_filter.setText(values[pos]); //set the value to textview
+                min_bodytype_filter.setText(DataContainer.bodyTypes[pos]); //set the value to textview
                 d.dismiss();
-                max_bodytype_filter.setText(values[pos2]); //set the value to textview
+                max_bodytype_filter.setText(DataContainer.bodyTypes[pos2]); //set the value to textview
                 d.dismiss();
             }
         });
@@ -689,7 +687,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 
                 // 첫번째 사진일 경우는 프로필 사진 변경 이벤트 발생
                 if (modifingPic == profilePic1) {
-                    BusProvider.getInstance().post(new PushEvent());
+                    BusProvider.getInstance().post(new SetProfilePicEvent());
                 }
             }
         }).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
@@ -742,7 +740,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 
             String minBT = min_bodytype_filter.getText().toString();
             String maxBT = max_bodytype_filter.getText().toString();
-            if(Arrays.asList(values).indexOf(minBT) > Arrays.asList(values).indexOf(maxBT) ){
+            if(Arrays.asList(DataContainer.bodyTypes).indexOf(minBT) > Arrays.asList(DataContainer.bodyTypes).indexOf(maxBT) ){
                 throw new Exception("범위가 잘못되었습니다.");
             }
         } catch (Exception e){
@@ -798,6 +796,9 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 
                             // 성공시 백버튼
                             onBackPressed();
+
+                            // grid refresh
+                            BusProvider.getInstance().post(new RefreshLocationEvent());
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {

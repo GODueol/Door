@@ -13,7 +13,10 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
 
+import com.example.kwoncheolhyeok.core.Entity.User;
+import com.example.kwoncheolhyeok.core.Event.RefreshLocationEvent;
 import com.example.kwoncheolhyeok.core.R;
+import com.example.kwoncheolhyeok.core.Util.BusProvider;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
 import com.example.kwoncheolhyeok.core.Util.GPSInfo;
@@ -21,15 +24,20 @@ import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQuery;
 import com.firebase.geofire.GeoQueryEventListener;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.squareup.otto.Subscribe;
+
+import java.util.Arrays;
 
 public class TabFragment1 extends android.support.v4.app.Fragment {
 
     GridView gridView = null;
     ImageAdapter imageAdapter;
-
+    private User mUser;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -69,14 +77,23 @@ public class TabFragment1 extends android.support.v4.app.Fragment {
                 // 위치 새로고침
                 imageAdapter.clear();
                 gridView.invalidateViews();
-
                 refreshLocation();
 
                 mSwipeRefreshLayout.setRefreshing(false);
             }
         });
+        mUser = DataContainer.getInstance().getUser();
+
+        BusProvider.getInstance().register(this); // Otto 등록
 
         return view;
+    }
+
+    @Subscribe
+    public void finishLoad(RefreshLocationEvent pushEvent) {
+        imageAdapter.clear();
+        gridView.invalidateViews();
+        refreshLocation();
     }
 
     private void refreshLocation() {
@@ -93,8 +110,23 @@ public class TabFragment1 extends android.support.v4.app.Fragment {
         geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
             @SuppressLint("DefaultLocale")
             @Override
-            public void onKeyEntered(String key, GeoLocation geoLocation) {
-                System.out.println(String.format("Key %s entered the search area at [%f,%f]", key, geoLocation.latitude, geoLocation.longitude));
+            public void onKeyEntered(final String key, final GeoLocation geoLocation) {
+                DataContainer.getInstance().getUserRef(key).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        User oUser = dataSnapshot.getValue(User.class);
+                        if(!isOnFilter(oUser)) return;  // 필터링
+                        Log.d(getClass().toString(),String.format("Key %s entered the search area at [%f,%f]", key, geoLocation.latitude, geoLocation.longitude));
+                        addItemToGrid(key, geoLocation);
+                    }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        databaseError.toException().printStackTrace();
+                    }
+                });
+            }
+
+            private void addItemToGrid(String key, GeoLocation geoLocation) {
                 // key로 프사url, 거리 가져옴
                 Location targetLocation = new Location("");//provider name is unnecessary
                 targetLocation.setLatitude(geoLocation.latitude);//your coords of course
@@ -102,14 +134,13 @@ public class TabFragment1 extends android.support.v4.app.Fragment {
 
                 float distance = location.distanceTo(targetLocation);
 
-                // TODO : grid에 사진, distance추가
+                // grid에 사진, distance추가
                 if(imageAdapter != null){
                     imageAdapter.addItem(new ImageAdapter.Item(distance, key));
                     gridView.invalidateViews();
                 } else {
                     Log.d(getTag(), "imageAdapter is null");
                 }
-
             }
 
             @Override
@@ -132,6 +163,18 @@ public class TabFragment1 extends android.support.v4.app.Fragment {
                 System.err.println("There was an error with this query: " + error);
             }
         });
+    }
+
+    private boolean isOnFilter(User oUser) {
+        if(!mUser.isUseFilter()) return true;   // 필터 적용여부
+        if(!(mUser.getAgeBoundary().getMin() <= oUser.getAgeByInt() && oUser.getAgeByInt() <= mUser.getAgeBoundary().getMax())) return false;
+        if(!(mUser.getHeightBoundary().getMin() <= oUser.getHeightByInt() && oUser.getHeightByInt() <= mUser.getHeightBoundary().getMax())) return false;
+        if(!(mUser.getWeightBoundary().getMin() <= oUser.getWeightByInt() && oUser.getWeightByInt() <= mUser.getWeightBoundary().getMax())) return false;
+        int minBodyType = Arrays.asList(DataContainer.bodyTypes).indexOf(mUser.getBodyTypeBoundary().getMin());
+        int maxBodyType = Arrays.asList(DataContainer.bodyTypes).indexOf(mUser.getBodyTypeBoundary().getMax());
+        int bodyType = Arrays.asList(DataContainer.bodyTypes).indexOf(oUser.getBodyType());
+        if(!(minBodyType <= bodyType && bodyType <= maxBodyType)) return false;
+        return true;
     }
 
     private void saveMyGPS() {

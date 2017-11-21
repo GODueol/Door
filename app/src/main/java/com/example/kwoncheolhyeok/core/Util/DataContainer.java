@@ -12,6 +12,8 @@ import com.google.firebase.database.FirebaseDatabase;
  */
 
 public class DataContainer {
+    public static final String[] bodyTypes =  {"Underweight", "Skinny", "Standard", "Muscular", "Overweight"};
+
     private static final DataContainer ourInstance = new DataContainer();
 
     public static DataContainer getInstance() {
@@ -35,8 +37,8 @@ public class DataContainer {
         return FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 
-    public DatabaseReference getUserRef(){
-        return FirebaseDatabase.getInstance().getReference("users").child(getUid());
+    public DatabaseReference getUserRef(String uuid){
+        return FirebaseDatabase.getInstance().getReference("users").child(uuid);
     }
 
     public static DataContainer getOurInstance() {

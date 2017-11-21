@@ -158,4 +158,16 @@ public class User {
     public void setWeight(String weight) {
         this.weight = weight;
     }
+
+    public int getAgeByInt(){
+        return Integer.parseInt(age);
+    }
+
+    public int getHeightByInt(){
+        return Integer.parseInt(height);
+    }
+
+    public int getWeightByInt(){
+        return Integer.parseInt(weight);
+    }
 }

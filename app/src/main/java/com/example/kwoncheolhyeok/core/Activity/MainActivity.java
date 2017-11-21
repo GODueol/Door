@@ -33,11 +33,10 @@ import com.example.kwoncheolhyeok.core.Util.BusProvider;
 import com.example.kwoncheolhyeok.core.Util.CloseActivityHandler;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
-import com.example.kwoncheolhyeok.core.Util.PushEvent;
+import com.example.kwoncheolhyeok.core.Event.SetProfilePicEvent;
 import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.otto.Subscribe;
 import com.tsengvn.typekit.TypekitContextWrapper;
-
 
 /**
  *
@@ -274,7 +273,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Subscribe
-    public void FinishLoad(PushEvent pushEvent) {
+    public void finishLoad(SetProfilePicEvent setProfilePicEvent) {
         // 이벤트가 발생한뒤 수행할 작업
         // 프로필 사진을 다시 받아옴
         setProfilePic(profileImage);
