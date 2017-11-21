@@ -1,6 +1,7 @@
 package com.example.kwoncheolhyeok.core.LoginActivity;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -28,6 +29,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.tsengvn.typekit.TypekitContextWrapper;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -75,6 +77,12 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
 
     private EditText bodytype;
     final String[] values = {"Underweight", "Skinny", "Standard", "Muscular", "Overweight"};
+
+    // 기본 폰트 고정
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(TypekitContextWrapper.wrap(newBase));
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

@@ -1,5 +1,6 @@
 package com.example.kwoncheolhyeok.core.Activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -22,6 +23,7 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.tsengvn.typekit.TypekitContextWrapper;
 
 /**
  * Created by KwonCheolHyeok on 2016-11-25.
@@ -32,6 +34,12 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.On
     private GoogleMap mGoogleMap;
     private LatLng mLatLng;
     private GPSInfo mGPSInfo;
+
+    // 기본 폰트 고정
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(TypekitContextWrapper.wrap(newBase));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

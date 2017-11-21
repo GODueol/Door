@@ -26,6 +26,13 @@ public class MessageActivity extends AppCompatActivity {
     List<String> listDataHeader;
     HashMap<String, List<String>> listDataChild;
 
+
+    // 기본 폰트 고정
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(TypekitContextWrapper.wrap(newBase));
+    }
+
     /*
    * Preparing the list data
    */

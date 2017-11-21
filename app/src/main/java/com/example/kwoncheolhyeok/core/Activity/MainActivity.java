@@ -1,5 +1,6 @@
 package com.example.kwoncheolhyeok.core.Activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -35,6 +36,7 @@ import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
 import com.example.kwoncheolhyeok.core.Util.PushEvent;
 import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.otto.Subscribe;
+import com.tsengvn.typekit.TypekitContextWrapper;
 
 
 /**
@@ -55,6 +57,12 @@ public class MainActivity extends AppCompatActivity
     ImageView profileImage;
 
     private CloseActivityHandler closeActivityHandler;
+
+    // 기본 폰트 고정
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(TypekitContextWrapper.wrap(newBase));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

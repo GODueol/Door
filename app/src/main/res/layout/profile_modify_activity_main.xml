@@ -31,7 +31,7 @@
             android:onClick="save"
             android:text="저장"
             android:textColor="@color/black"
-            android:textSize="18sp" />
+            android:textSize="18dp" />
 
     </RelativeLayout>
 
@@ -80,10 +80,9 @@
                 android:layout_marginLeft="5dp"
                 android:layout_marginTop="10dp"
                 android:text="Picture"
-                app:font="custom1"
                 android:textColor="#FFFFFF"
-                android:textSize="20sp"
-                android:textStyle="italic"
+                android:textSize="20dp"
+                android:textStyle="bold"
                 />
 
             <LinearLayout
@@ -280,7 +279,7 @@
                 android:layout_marginTop="10dp"
                 android:text="NickName"
                 android:textColor="#FFFFFF"
-                android:textSize="20sp"
+                android:textSize="20dp"
                 android:textStyle="bold" />
 
             <EditText
@@ -297,7 +296,7 @@
                 android:maxLines="1"
                 android:text="CheolHyeok Kwon"
                 android:textColor="#FFFFFF"
-                android:textSize="15sp"
+                android:textSize="15dp"
                 android:theme="@style/Theme.App.Base" />
 
             <View
@@ -320,7 +319,7 @@
                 android:layout_marginTop="10dp"
                 android:text="Age / Height / Weight / BodyType"
                 android:textColor="#FFFFFF"
-                android:textSize="20sp"
+                android:textSize="20dp"
                 android:textStyle="bold" />
 
             <LinearLayout
@@ -339,7 +338,7 @@
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
                     android:text="Age"
-                    android:textSize="20sp"
+                    android:textSize="20dp"
                     android:textColor="@color/white"
                     android:layout_marginRight="15dp"
                     android:theme="@style/AppTheme.Picker" />
@@ -351,7 +350,7 @@
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
                     android:text="Height"
-                    android:textSize="20sp"
+                    android:textSize="20dp"
                     android:textColor="@color/white"
                     android:layout_marginRight="15dp"
                     android:theme="@style/AppTheme.Picker"
@@ -365,7 +364,7 @@
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
                     android:textColor="@color/white"
-                    android:textSize="20sp"
+                    android:textSize="20dp"
                     android:text="Weight"
                     android:layout_marginRight="15dp"
                     android:theme="@style/AppTheme.Picker"
@@ -378,7 +377,7 @@
                     android:layout_height="wrap_content"
                     android:text="Bodytype"
                     android:textColor="@color/white"
-                    android:textSize="20sp"
+                    android:textSize="20dp"
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
                     android:theme="@style/AppTheme.Picker"
@@ -406,7 +405,7 @@
                 android:layout_marginTop="10dp"
                 android:text="Introduce"
                 android:textColor="#FFFFFF"
-                android:textSize="20sp"
+                android:textSize="20dp"
                 android:textStyle="bold" />
 
             <EditText
@@ -422,7 +421,7 @@
                 android:maxLines="5"
                 android:text="소개란"
                 android:textColor="#FFFFFF"
-                android:textSize="15sp"
+                android:textSize="15dp"
                 android:theme="@style/Theme.App.Base" />
 
             <View
@@ -445,7 +444,7 @@
                 android:layout_marginTop="10dp"
                 android:text="Filter"
                 android:textColor="#FFFFFF"
-                android:textSize="20sp"
+                android:textSize="20dp"
                 android:textStyle="bold" />
 
             <Switch
@@ -639,7 +638,7 @@
             <View
                 android:id="@+id/section_line6"
                 android:layout_width="match_parent"
-                android:layout_height="1dip"
+                android:layout_height="1dp"
                 android:layout_below="@+id/BODY_TYPE_FILTER"
                 android:layout_marginBottom="20dp"
                 android:layout_marginLeft="5dp"

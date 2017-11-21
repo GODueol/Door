@@ -155,7 +155,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Kim Min Suk"
-                    android:textSize="10sp"/>
+                    android:textSize="10dp"/>
 
 
                 <TextView
@@ -165,7 +165,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="/ 2016.12.28 16:06"
-                    android:textSize="10sp"/>
+                    android:textSize="10dp"/>
 
                 </RelativeLayout>
             </LinearLayout>

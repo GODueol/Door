@@ -19,7 +19,7 @@
         android:layout_toRightOf="@+id/profile_image"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:textSize="15dip"
+        android:textSize="15dp"
         android:textStyle="bold"
         android:textColor="#000000"
         android:layout_marginLeft="10dp" />
@@ -31,7 +31,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="sub_profile"
-        android:textSize="14dip"
+        android:textSize="14dp"
         android:layout_marginTop="0dp"
         android:textColor="#000000"
         android:layout_marginLeft="10dp" />
@@ -44,7 +44,7 @@
         android:layout_marginTop="35dp"
         android:layout_toRightOf="@+id/profile_image"
         android:text="2016_12_02_18:56"
-        android:textSize="10dip"
+        android:textSize="10dp"
         android:textColor="#000000"
         android:layout_marginLeft="10dp" />
 

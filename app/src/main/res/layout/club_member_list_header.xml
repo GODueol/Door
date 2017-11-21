@@ -38,7 +38,7 @@
                 android:layout_marginTop="15dp"
                 android:layout_marginLeft="15dp"
                 android:text="[ General member ]"
-                android:textSize="12sp"/>
+                android:textSize="12dp"/>
 
             <TextView
                 android:id="@+id/member_id"
@@ -59,7 +59,7 @@
                 android:layout_alignBottom="@+id/member_image"
                 android:layout_marginLeft="15dp"
                 android:text="2016.12.29"
-                android:textSize="12sp"
+                android:textSize="12dp"
                 />
 
             <ImageView
@@ -93,6 +93,6 @@
         android:layout_marginBottom="10dp"
         android:layout_toRightOf="@+id/btn_nouse"
         android:text="Member List"
-        android:textSize="13sp"/>
+        android:textSize="13dp"/>
 
 </RelativeLayout>

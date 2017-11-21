@@ -22,6 +22,11 @@ public class CoreActivity extends AppCompatActivity {
 
     private ListView core_list_view;
 
+//    // 기본 폰트 고정
+//    @Override
+//    protected void attachBaseContext(Context newBase) {
+//        super.attachBaseContext(TypekitContextWrapper.wrap(newBase));
+//    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

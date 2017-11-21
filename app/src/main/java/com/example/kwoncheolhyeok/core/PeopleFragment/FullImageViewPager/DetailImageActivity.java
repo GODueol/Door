@@ -1,6 +1,7 @@
 package com.example.kwoncheolhyeok.core.PeopleFragment.FullImageViewPager;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -8,9 +9,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.example.kwoncheolhyeok.core.R;
+import com.tsengvn.typekit.TypekitContextWrapper;
 
 
 public class DetailImageActivity extends AppCompatActivity {
+
+    // 기본 폰트 고정
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(TypekitContextWrapper.wrap(newBase));
+    }
 
     DetailImageViewPagerAdapter mAdapter;
     @Override

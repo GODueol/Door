@@ -26,7 +26,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="[ General member ]"
-            android:textSize="12sp"
+            android:textSize="12dp"
             android:layout_marginTop="3dp"
             android:layout_alignParentTop="true"
             android:layout_alignLeft="@+id/member_join_date"
@@ -52,7 +52,7 @@
             android:layout_marginLeft="15dp"
             android:layout_marginBottom="2dp"
             android:text="2016.12.29"
-            android:textSize="12sp"
+            android:textSize="12dp"
             />
 
         <ImageView

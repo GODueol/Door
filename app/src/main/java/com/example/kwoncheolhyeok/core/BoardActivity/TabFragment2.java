@@ -19,6 +19,7 @@ public class TabFragment2 extends android.support.v4.app.Fragment {
 
     @Nullable
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 

@@ -1,5 +1,6 @@
 package com.example.kwoncheolhyeok.core.MessageActivity;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -12,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.example.kwoncheolhyeok.core.R;
+import com.tsengvn.typekit.TypekitContextWrapper;
 
 import java.util.ArrayList;
 
@@ -25,6 +27,13 @@ public class ChattingActivity extends AppCompatActivity {
     private ImageView mImageView;
 
     private ChatMessageAdapter mAdapter;
+
+    // 기본 폰트 고정
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(TypekitContextWrapper.wrap(newBase));
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

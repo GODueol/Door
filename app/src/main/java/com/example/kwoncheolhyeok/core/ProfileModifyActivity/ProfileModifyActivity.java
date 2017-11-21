@@ -1,9 +1,7 @@
 package com.example.kwoncheolhyeok.core.ProfileModifyActivity;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -68,6 +66,13 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
     TextView weightPick = null;
     TextView bodyTypePick = null;
 
+    ToggleButton lock1 = null;
+    ToggleButton lock2 = null;
+    ToggleButton lock3 = null;
+    ToggleButton lock4 = null;
+
+    static Dialog d;
+
     private TextView min_age_filter, max_age_filter, min_height_filter, max_height_filter, min_weight_filter, max_weight_filter, min_bodytype_filter, max_bodytype_filter;
 
     @Bind(R.id.modify_id)
@@ -103,35 +108,15 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
     @Bind(R.id.BODY_TYPE_FILTER)
     RelativeLayout bodyTypeFilterLayout;
 
-    @Bind(R.id.lock2)
-    ToggleButton lock2Toggle;
-
-    @Bind(R.id.lock3)
-    ToggleButton lock3Toggle;
-
-    @Bind(R.id.lock4)
-    ToggleButton lock4Toggle;
-
-    @Bind(R.id.delete2)
-    ImageView delete2Image;
-
-    @Bind(R.id.delete3)
-    ImageView delete3Image;
-
-    @Bind(R.id.delete4)
-    ImageView delete4Image;
 
 
     final String[] values = {"Underweight", "Skinny", "Standard", "Muscular", "Overweight"};
 
     // filter boundary
-    enum FILTER {
-        AGE, HEIGHT, WEIGHT
-    }
+    enum FILTER {AGE, HEIGHT, WEIGHT, BODYTYPE};
 
-    ;
-    private static final int minBoundary[] = {19, 150, 40};
-    private static final int maxBoundary[] = {100, 200, 150};
+    private static final int minBoundary[] = {20 , 150, 40, 4};
+    private static final int maxBoundary[] = {99, 200, 130, 4};
 
     // 카메라관련 인자
     private static final int REQUEST_TAKE_PHOTO = 1;
@@ -143,6 +128,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 
     // User Info
     User user;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -177,7 +163,6 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 //            }
 //        });
 
-        // 지금 하려는 부분
         agePick = (TextView) findViewById(R.id.numberPicker1);
         agePick.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -186,15 +171,6 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
             }
         });
 
-//        agePick.setMinValue(19);
-//        agePick.setMaxValue(200);
-//        agePick.setValue(25);
-//        agePick.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
-//        agePick.setWrapSelectorWheel(false);
-//        setDividerColor(agePick, Color.WHITE);
-////        agePick.setTextColor(getResources().getColor(R.color.colorPrimary));
-////        agePick.setTextColorResource(R.color.colorPrimary);
-
         heightPick = (TextView) findViewById(R.id.numberPicker2);
         heightPick.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -202,12 +178,6 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
                 show_numPick();
             }
         });
-//        heightPick.setMinValue(100);
-//        heightPick.setMaxValue(200);
-//        heightPick.setValue(175);
-//        heightPick.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
-//        heightPick.setWrapSelectorWheel(false);
-//        setDividerColor(heightPick, Color.WHITE);
 
         weightPick = (TextView) findViewById(R.id.numberPicker3);
         weightPick.setOnClickListener(new View.OnClickListener() {
@@ -216,12 +186,6 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
                 show_numPick();
             }
         });
-//        weightPick.setMinValue(40);
-//        weightPick.setMaxValue(150);
-//        weightPick.setValue(65);
-//        weightPick.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
-//        weightPick.setWrapSelectorWheel(false);
-//        setDividerColor(weightPick, Color.WHITE);
 
         bodyTypePick = (TextView) findViewById(R.id.numberPicker4);
         bodyTypePick.setOnClickListener(new View.OnClickListener() {
@@ -230,13 +194,6 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
                 show_numPick();
             }
         });
-//        bodyTypePick.setMinValue(0); //from array first value
-//        bodyTypePick.setMaxValue(values.length - 1); //to array last value
-//        bodyTypePick.setValue(values.length - 3);
-//        bodyTypePick.setDisplayedValues(values);
-//        bodyTypePick.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
-//        bodyTypePick.setWrapSelectorWheel(false);
-//        setDividerColor(bodyTypePick, Color.WHITE);
 
 
         // 필터 다이얼로그 열기
@@ -292,6 +249,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
                 showBodyType();
             }
         });
+
         max_bodytype_filter = (TextView) findViewById(R.id.max_bodytype_filter);
         max_bodytype_filter.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -359,73 +317,11 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
                 setVisibilityFilterLayout(isChecked);
             }
         });
-
-        /* pic lock */
-        lock2Toggle.setChecked(user.isLockPic2());
-        lock3Toggle.setChecked(user.isLockPic3());
-        lock4Toggle.setChecked(user.isLockPic4());
-
-        /* onClick del btn */
-        setOnDelPicBtnClickListener(delete2Image, profilePic2);
-        setOnDelPicBtnClickListener(delete3Image, profilePic3);
-        setOnDelPicBtnClickListener(delete4Image, profilePic4);
-
-    }
-
-    private void setOnDelPicBtnClickListener(final ImageView btn, final ImageView targetPic) {
-        View.OnClickListener onDeleteClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(ProfileModifyActivity.this);
-                builder.setTitle("Delete Picture");
-                builder.setMessage("Do you want delete Picture?");
-                builder.setCancelable(false);
-                builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        // 사진 삭제
-                        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
-                        String picPath = getPicPath(targetPic);
-                        StorageReference desertRef = storageRef.child(picPath);
-
-                        // Delete the file
-                        CoreProgress.getInstance().startProgressDialog(ProfileModifyActivity.this);
-                        desertRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                // File deleted successfully
-                                Log.d(getClass().getName(),"Delete Pic Success");
-                                targetPic.setImageResource(R.drawable.a);
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception exception) {
-                                // Uh-oh, an error occurred!
-                                Log.d(getClass().getName(),"Delete Pic Fail");
-                            }
-                        }).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                CoreProgress.getInstance().stopProgressDialog();
-                            }
-                        });
-                    }
-                });
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                    }
-                });
-
-                AlertDialog dialog = builder.create();    // 알림창 객체 생성
-                dialog.show();    // 알림창 띄우기
-            }
-        };
-
-        btn.setOnClickListener(onDeleteClickListener);
     }
 
     private void setVisibilityFilterLayout(boolean isChecked) {
         int FLAG;
-        if (isChecked) FLAG = View.VISIBLE;
+        if(isChecked) FLAG = View.VISIBLE;
         else FLAG = View.GONE;
         ageFilterLayout.setVisibility(FLAG);
         heightFilterLayout.setVisibility(FLAG);
@@ -461,7 +357,6 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         Log.i("value is", "" + newVal);
     }
 
-    //지금하는거
     public void show_numPick() {
 
         final Dialog d = new Dialog(ProfileModifyActivity.this);
@@ -478,62 +373,41 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         TextView b1 = (TextView) d.findViewById(R.id.button1);
         TextView b2 = (TextView) d.findViewById(R.id.button2);
 
-//        final NumberPicker np = (NumberPicker) d.findViewById(R.id.numberPicker1);
-//        np.setMaxValue(100); // max value 100
-//        np.setMinValue(19);   // min value 0
-//        np.setValue(25);
-//        np.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);  //데이터 선택시 edittext 방지
-//        np.setWrapSelectorWheel(false);
-//        np.setOnValueChangedListener(this);
-
-//        final NumberPicker np2 = (NumberPicker) d.findViewById(R.id.numberPicker2);
-//        np2.setMaxValue(100); // max value 100
-//        np2.setMinValue(19);   // min value 0
-//        np2.setValue(25);
-//        np2.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);  //데이터 선택시 edittext 방지
-//        np2.setWrapSelectorWheel(false);
-//        np2.setOnValueChangedListener(this);
 
         // 지금 하려는 부분
         final NumberPicker numberpicker1 = (NumberPicker) d.findViewById(R.id.numberPicker1);
-        numberpicker1.setMinValue(19);
-        numberpicker1.setMaxValue(200);
-        numberpicker1.setValue(25);
+        numberpicker1.setMinValue(20);
+        numberpicker1.setMaxValue(99);
+        numberpicker1.setValue(Integer.parseInt(agePick.getText().toString()));
         numberpicker1.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
         numberpicker1.setWrapSelectorWheel(false);
-//        setDividerColor(numberpicker1, Color.WHITE);
         numberpicker1.setOnValueChangedListener(this);
-//        agePick.setTextColor(getResources().getColor(R.color.colorPrimary));
-//        agePick.setTextColorResource(R.color.colorPrimary);
 
         final NumberPicker numberpicker2 = (NumberPicker) d.findViewById(R.id.numberPicker2);
-        numberpicker2.setMinValue(100);
+        numberpicker2.setMinValue(150);
         numberpicker2.setMaxValue(200);
-        numberpicker2.setValue(175);
+        numberpicker2.setValue(Integer.parseInt(heightPick.getText().toString()));
         numberpicker2.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
         numberpicker2.setWrapSelectorWheel(false);
-//        setDividerColor(numberpicker2, Color.WHITE);
         numberpicker2.setOnValueChangedListener(this);
 
 
         final NumberPicker numberpicker3 = (NumberPicker) d.findViewById(R.id.numberPicker3);
         numberpicker3.setMinValue(40);
-        numberpicker3.setMaxValue(150);
-        numberpicker3.setValue(65);
+        numberpicker3.setMaxValue(130);
+        numberpicker3.setValue(Integer.parseInt(weightPick.getText().toString()));
         numberpicker3.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
         numberpicker3.setWrapSelectorWheel(false);
-//        setDividerColor(numberpicker3, Color.WHITE);
-//        numberpicker3.setOnValueChangedListener(this);
+        numberpicker3.setOnValueChangedListener(this);
 
         final NumberPicker numberpicker4 = (NumberPicker) d.findViewById(R.id.numberPicker4);
         numberpicker4.setMinValue(0); //from array first value
         numberpicker4.setMaxValue(values.length - 1); //to array last value
-        numberpicker4.setValue(values.length - 3);
         numberpicker4.setDisplayedValues(values);
+        numberpicker4.setValue(Arrays.asList(values).indexOf(bodyTypePick.getText()));
         numberpicker4.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
         numberpicker4.setWrapSelectorWheel(false);
-//        setDividerColor(numberpicker4, Color.WHITE);
-//        numberpicker4.setOnValueChangedListener(this);
+        numberpicker4.setOnValueChangedListener(this);
 
         b1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -543,9 +417,13 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
                 heightPick.setText(Integer.toString(numberpicker2.getValue()));
                 weightPick.setText(Integer.toString(numberpicker3.getValue()));
                 bodyTypePick.setText(values[numberpicker4.getValue()]);
+
                 d.dismiss();
+
+
             }
         });
+
 
         b2.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -554,13 +432,17 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
             }
         });
         d.show();
+
+
+
+
     }
 
 
     public void show(final TextView min_filter, final TextView max_filter, FILTER filterType) {
 
         final Dialog d = new Dialog(ProfileModifyActivity.this);
-        d.setContentView(R.layout.profile_modify_age_dialog);
+        d.setContentView(R.layout.profile_modify_filter_dialog);
 
         // Dialog 사이즈 조절 하기
         ViewGroup.LayoutParams params = d.getWindow().getAttributes();
@@ -579,25 +461,25 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         np.setValue(Integer.parseInt(min_filter.getText().toString()));
         np.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);  //데이터 선택시 edittext 방지
         np.setWrapSelectorWheel(false);
+        np.setOnValueChangedListener(this);
 
         final NumberPicker np2 = (NumberPicker) d.findViewById(R.id.numberPicker2);
         np2.setMaxValue(maxBoundary[filterType.ordinal()]); // max value 100
-        np2.setMinValue(np.getValue());   // min value 0
+        np2.setMinValue(minBoundary[filterType.ordinal()]);   // min value 0
         np2.setValue(Integer.parseInt(max_filter.getText().toString()));
         np2.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);  //데이터 선택시 edittext 방지
         np2.setWrapSelectorWheel(false);
-
-        // min 값 바뀌면 max의 하한선이 변경
-        np.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-            @Override
-            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-                np2.setMinValue(newVal);
-            }
-        });
+        np2.setOnValueChangedListener(this);
 
         b1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                int pos = np.getValue();
+                int pos2 = np2.getValue();
+                if(pos > pos2 ){
+                    Toast.makeText(getBaseContext(), "범위가 잘못되었습니다.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 min_filter.setText(String.valueOf(np.getValue())); //set the value to textview
                 d.dismiss();
                 max_filter.setText(String.valueOf(np2.getValue())); //set the value to textview
@@ -617,7 +499,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
     public void showBodyType() {
 
         final Dialog d = new Dialog(ProfileModifyActivity.this);
-        d.setContentView(R.layout.profile_modify_bodytype_dialog);
+        d.setContentView(R.layout.profile_modify_filter_bt_dialog);
 
         // Dialog 사이즈 조절 하기
         ViewGroup.LayoutParams params = d.getWindow().getAttributes();
@@ -634,16 +516,16 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 
         np.setMinValue(0); //from array first value
         np.setMaxValue(values.length - 1); //to array last value
-        np.setValue(Arrays.asList(values).indexOf(min_bodytype_filter.getText().toString()));
+        np.setValue(Arrays.asList(values).indexOf(min_bodytype_filter.getText()));
         np.setDisplayedValues(values);
         np.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
         np.setWrapSelectorWheel(false);
         np.setOnValueChangedListener(this);
 
         final NumberPicker np2 = (NumberPicker) d.findViewById(R.id.numberPicker2);
-        np2.setMinValue(np.getValue()); //from array first value
+        np2.setMinValue(0); //from array first value
         np2.setMaxValue(values.length - 1); //to array last value
-        np2.setValue(Arrays.asList(values).indexOf(max_bodytype_filter.getText().toString()));
+        np2.setValue(Arrays.asList(values).indexOf(max_bodytype_filter.getText()));
         np2.setDisplayedValues(values);
         np2.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
         np2.setWrapSelectorWheel(false);
@@ -655,7 +537,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
                 int pos = np.getValue();
                 int pos2 = np2.getValue();
                 if(pos > pos2 ){
-                    Toast.makeText(getBaseContext(), "BodyType Filter Setting Value is Wrong, Fix BodyType Filter", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getBaseContext(), "범위가 잘못되었습니다.", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 min_bodytype_filter.setText(values[pos]); //set the value to textview
@@ -706,9 +588,16 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 
         // Create a storage reference from our app
         StorageReference storageRef = FirebaseStorage.getInstance().getReference();
-
-        String profilePicPath = getPicPath(modifingPic);
-
+        String profilePicPath = FireBaseUtil.getInstance().getParentPath();
+        if (modifingPic == profilePic1) {
+            profilePicPath += "profilePic1.jpg";
+        } else if (modifingPic == profilePic2) {
+            profilePicPath += "profilePic2.jpg";
+        } else if (modifingPic == profilePic3) {
+            profilePicPath += "profilePic3.jpg";
+        } else if (modifingPic == profilePic4) {
+            profilePicPath += "profilePic4.jpg";
+        }
         final StorageReference spaceRef = storageRef.child(profilePicPath);
 
         UploadTask uploadTask = spaceRef.putFile(outputFileUri);
@@ -751,24 +640,6 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 
     }
 
-    @NonNull
-    private String getPicPath(ImageView targetImage) {
-        String profilePicPath = FireBaseUtil.getInstance().getParentPath();
-        if (targetImage == profilePic1) {
-            profilePicPath += "profilePic1.jpg";
-        } else if (targetImage == profilePic2) {
-            profilePicPath += "profilePic2.jpg";
-        } else if (targetImage == profilePic3) {
-            profilePicPath += "profilePic3.jpg";
-        } else if (targetImage == profilePic4) {
-            profilePicPath += "profilePic4.jpg";
-        } else {
-            new Exception("Not Found Picture Path").printStackTrace();
-            return null;
-        }
-        return profilePicPath;
-    }
-
     @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(TypekitContextWrapper.wrap(newBase));
@@ -786,13 +657,13 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         // validation
         try {
             if(_idText.getText().toString().equals("")){
-                throw new Exception("ID is Empty, Input ID");
+                throw new Exception("아이디는 공백일 수 없습니다.");
             }
 
             String minBT = min_bodytype_filter.getText().toString();
             String maxBT = max_bodytype_filter.getText().toString();
             if(Arrays.asList(values).indexOf(minBT) > Arrays.asList(values).indexOf(maxBT) ){
-                throw new Exception("BodyType Filter Setting Value is Wrong, Fix BodyType Filter");
+                throw new Exception("범위가 잘못되었습니다.");
             }
         } catch (Exception e){
             Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
@@ -826,9 +697,6 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         user.setBodyType(bodyTypePick.getText().toString());
         user.setIntro(introEditText.getText().toString());
         user.setUseFilter(filterSwitch.isChecked());
-        user.setLockPic2(lock2Toggle.isChecked());
-        user.setLockPic3(lock3Toggle.isChecked());
-        user.setLockPic4(lock4Toggle.isChecked());
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
