@@ -1,7 +1,9 @@
 package com.example.kwoncheolhyeok.core.ProfileModifyActivity;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -60,18 +62,10 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 
     Toolbar toolbar = null;
 
-
     TextView agePick = null;
     TextView heightPick = null;
     TextView weightPick = null;
     TextView bodyTypePick = null;
-
-    ToggleButton lock1 = null;
-    ToggleButton lock2 = null;
-    ToggleButton lock3 = null;
-    ToggleButton lock4 = null;
-
-    static Dialog d;
 
     private TextView min_age_filter, max_age_filter, min_height_filter, max_height_filter, min_weight_filter, max_weight_filter, min_bodytype_filter, max_bodytype_filter;
 
@@ -108,15 +102,32 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
     @Bind(R.id.BODY_TYPE_FILTER1)
     RelativeLayout bodyTypeFilterLayout;
 
+    @Bind(R.id.lock2)
+    ToggleButton lock2Toggle;
+
+    @Bind(R.id.lock3)
+    ToggleButton lock3Toggle;
+
+    @Bind(R.id.lock4)
+    ToggleButton lock4Toggle;
+
+    @Bind(R.id.delete2)
+    ImageView delete2Image;
+
+    @Bind(R.id.delete3)
+    ImageView delete3Image;
+
+    @Bind(R.id.delete4)
+    ImageView delete4Image;
 
 
     final String[] values = {"Underweight", "Skinny", "Standard", "Muscular", "Overweight"};
 
     // filter boundary
-    enum FILTER {AGE, HEIGHT, WEIGHT, BODYTYPE};
+    enum FILTER {AGE, HEIGHT, WEIGHT};
 
-    private static final int minBoundary[] = {20 , 100, 40, 4};
-    private static final int maxBoundary[] = {99, 220, 140, 4};
+    private static final int minBoundary[] = {20 , 100, 40};
+    private static final int maxBoundary[] = {99, 220, 140};
 
     // 카메라관련 인자
     private static final int REQUEST_TAKE_PHOTO = 1;
@@ -128,7 +139,6 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 
     // User Info
     User user;
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -249,7 +259,6 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
                 showBodyType();
             }
         });
-
         max_bodytype_filter = (TextView) findViewById(R.id.max_bodytype_filter);
         max_bodytype_filter.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -317,6 +326,68 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
                 setVisibilityFilterLayout(isChecked);
             }
         });
+
+        /* pic lock */
+        lock2Toggle.setChecked(user.isLockPic2());
+        lock3Toggle.setChecked(user.isLockPic3());
+        lock4Toggle.setChecked(user.isLockPic4());
+
+        /* onClick del btn */
+        setOnDelPicBtnClickListener(delete2Image, profilePic2);
+        setOnDelPicBtnClickListener(delete3Image, profilePic3);
+        setOnDelPicBtnClickListener(delete4Image, profilePic4);
+
+    }
+
+    private void setOnDelPicBtnClickListener(final ImageView btn, final ImageView targetPic) {
+        View.OnClickListener onDeleteClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(ProfileModifyActivity.this);
+                builder.setTitle("Delete Picture");
+                builder.setMessage("Do you want delete Picture?");
+                builder.setCancelable(false);
+                builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        // 사진 삭제
+                        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+                        String picPath = getPicPath(targetPic);
+                        StorageReference desertRef = storageRef.child(picPath);
+
+                        // Delete the file
+                        CoreProgress.getInstance().startProgressDialog(ProfileModifyActivity.this);
+                        desertRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                // File deleted successfully
+                                Log.d(getClass().getName(),"Delete Pic Success");
+                                targetPic.setImageResource(R.drawable.a);
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception exception) {
+                                // Uh-oh, an error occurred!
+                                Log.d(getClass().getName(),"Delete Pic Fail");
+                            }
+                        }).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                CoreProgress.getInstance().stopProgressDialog();
+                            }
+                        });
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                    }
+                });
+
+                AlertDialog dialog = builder.create();    // 알림창 객체 생성
+                dialog.show();    // 알림창 띄우기
+            }
+        };
+
+        btn.setOnClickListener(onDeleteClickListener);
     }
 
     private void setVisibilityFilterLayout(boolean isChecked) {
@@ -417,13 +488,9 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
                 heightPick.setText(Integer.toString(numberpicker2.getValue()));
                 weightPick.setText(Integer.toString(numberpicker3.getValue()));
                 bodyTypePick.setText(values[numberpicker4.getValue()]);
-
                 d.dismiss();
-
-
             }
         });
-
 
         b2.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -432,10 +499,6 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
             }
         });
         d.show();
-
-
-
-
     }
 
 
@@ -461,15 +524,21 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         np.setValue(Integer.parseInt(min_filter.getText().toString()));
         np.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);  //데이터 선택시 edittext 방지
         np.setWrapSelectorWheel(false);
-        np.setOnValueChangedListener(this);
 
         final NumberPicker np2 = (NumberPicker) d.findViewById(R.id.numberPicker2);
         np2.setMaxValue(maxBoundary[filterType.ordinal()]); // max value 100
-        np2.setMinValue(minBoundary[filterType.ordinal()]);   // min value 0
+        np2.setMinValue(np.getValue());   // min value 0
         np2.setValue(Integer.parseInt(max_filter.getText().toString()));
         np2.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);  //데이터 선택시 edittext 방지
         np2.setWrapSelectorWheel(false);
-        np2.setOnValueChangedListener(this);
+
+        // min 값 바뀌면 max의 하한선이 변경
+        np.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+            @Override
+            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                np2.setMinValue(newVal);
+            }
+        });
 
         b1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -523,7 +592,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         np.setOnValueChangedListener(this);
 
         final NumberPicker np2 = (NumberPicker) d.findViewById(R.id.numberPicker2);
-        np2.setMinValue(0); //from array first value
+        np2.setMinValue(np.getValue()); //from array first value
         np2.setMaxValue(values.length - 1); //to array last value
         np2.setValue(Arrays.asList(values).indexOf(max_bodytype_filter.getText()));
         np2.setDisplayedValues(values);
@@ -588,16 +657,9 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 
         // Create a storage reference from our app
         StorageReference storageRef = FirebaseStorage.getInstance().getReference();
-        String profilePicPath = FireBaseUtil.getInstance().getParentPath();
-        if (modifingPic == profilePic1) {
-            profilePicPath += "profilePic1.jpg";
-        } else if (modifingPic == profilePic2) {
-            profilePicPath += "profilePic2.jpg";
-        } else if (modifingPic == profilePic3) {
-            profilePicPath += "profilePic3.jpg";
-        } else if (modifingPic == profilePic4) {
-            profilePicPath += "profilePic4.jpg";
-        }
+
+        String profilePicPath = getPicPath(modifingPic);
+
         final StorageReference spaceRef = storageRef.child(profilePicPath);
 
         UploadTask uploadTask = spaceRef.putFile(outputFileUri);
@@ -638,6 +700,24 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
             }
         });
 
+    }
+
+    @NonNull
+    private String getPicPath(ImageView targetImage) {
+        String profilePicPath = FireBaseUtil.getInstance().getParentPath();
+        if (targetImage == profilePic1) {
+            profilePicPath += "profilePic1.jpg";
+        } else if (targetImage == profilePic2) {
+            profilePicPath += "profilePic2.jpg";
+        } else if (targetImage == profilePic3) {
+            profilePicPath += "profilePic3.jpg";
+        } else if (targetImage == profilePic4) {
+            profilePicPath += "profilePic4.jpg";
+        } else {
+            new Exception("Not Found Picture Path").printStackTrace();
+            return null;
+        }
+        return profilePicPath;
     }
 
     @Override
@@ -697,6 +777,9 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         user.setBodyType(bodyTypePick.getText().toString());
         user.setIntro(introEditText.getText().toString());
         user.setUseFilter(filterSwitch.isChecked());
+        user.setLockPic2(lock2Toggle.isChecked());
+        user.setLockPic3(lock3Toggle.isChecked());
+        user.setLockPic4(lock4Toggle.isChecked());
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
