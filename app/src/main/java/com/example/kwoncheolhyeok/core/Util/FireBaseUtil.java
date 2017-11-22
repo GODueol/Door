@@ -1,16 +1,14 @@
 package com.example.kwoncheolhyeok.core.Util;
 
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
+import android.os.Build;
 import android.support.annotation.NonNull;
-import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.example.kwoncheolhyeok.core.R;
-import com.firebase.ui.storage.images.FirebaseImageLoader;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -30,32 +28,24 @@ public class FireBaseUtil {
     }
 
     public void setImage(String filePath, final ImageView targetImageView) {
-
         StorageReference storageReference = FirebaseStorage.getInstance().getReference().child(filePath);
-
-        Glide.with(targetImageView.getContext() /* context */)
-//                .using(new FirebaseImageLoader())
+        Glide.with(targetImageView.getContext())
                 .load(storageReference)
                 .into(targetImageView);
-/*
-        FirebaseStorage.getInstance().getReference().child(filePath)
-                .getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri) {
-                // Got the download URL for 'users/me/profile.png'
-                Glide.with(targetImageView.getContext() *//* context *//*)
-                        .load(uri)
-                        .into(targetImageView);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                // Handle any errors
-                Log.d(this.getClass().getName(), exception.getMessage());
-                targetImageView.setImageResource(R.drawable.a);
-            }
-        });
-        */
+    }
+
+    public void setBackgroundImage(String filePath, final View targetView) {
+        StorageReference storageReference = FirebaseStorage.getInstance().getReference().child(filePath);
+        Glide.with(targetView.getContext())
+                .load(storageReference)
+                .into(new SimpleTarget<Drawable>() {
+                    @Override
+                    public void onResourceReady(Drawable drawable, Transition<? super Drawable> transition) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                            targetView.setBackground(drawable);
+                        }
+                    }
+                });
     }
 
     @NonNull

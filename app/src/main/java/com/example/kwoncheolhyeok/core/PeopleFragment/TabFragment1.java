@@ -44,7 +44,7 @@ public class TabFragment1 extends android.support.v4.app.Fragment {
 
         View view = inflater.inflate(R.layout.tab_fragment_1, container, false);
 
-        gridView = (GridView) view.findViewById(R.id.gridview);
+        gridView = view.findViewById(R.id.gridview);
         imageAdapter = new ImageAdapter(getContext());
         gridView.setAdapter(imageAdapter);
 
@@ -52,26 +52,17 @@ public class TabFragment1 extends android.support.v4.app.Fragment {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
                 Intent p = new Intent(getActivity().getApplicationContext(), FullImageActivity.class);
                 p.putExtra("id", position);
                 p.putExtra("item", imageAdapter.getItem(position));
-
                 startActivity(p);
-
             }
         });
 
         refreshLocation();
 
         // 스와이프로 위치 새로고침
-        final SwipeRefreshLayout mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_layout);
-        mSwipeRefreshLayout.setColorSchemeResources(
-                android.R.color.holo_blue_bright,
-                android.R.color.holo_green_light,
-                android.R.color.holo_orange_light,
-                android.R.color.holo_red_light
-        );
+        final SwipeRefreshLayout mSwipeRefreshLayout = view.findViewById(R.id.swipe_layout);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -83,8 +74,8 @@ public class TabFragment1 extends android.support.v4.app.Fragment {
                 mSwipeRefreshLayout.setRefreshing(false);
             }
         });
-        mUser = DataContainer.getInstance().getUser();
 
+        mUser = DataContainer.getInstance().getUser();  // user 정보 가져옴
         BusProvider.getInstance().register(this); // Otto 등록
 
         return view;
@@ -149,6 +140,7 @@ public class TabFragment1 extends android.support.v4.app.Fragment {
                 System.out.println(String.format("Key %s is no longer in the search area", key));
             }
 
+            @SuppressLint("DefaultLocale")
             @Override
             public void onKeyMoved(String key, GeoLocation location) {
                 System.out.println(String.format("Key %s moved within the search area to [%f,%f]", key, location.latitude, location.longitude));
@@ -174,8 +166,7 @@ public class TabFragment1 extends android.support.v4.app.Fragment {
         int minBodyType = Arrays.asList(DataContainer.bodyTypes).indexOf(mUser.getBodyTypeBoundary().getMin());
         int maxBodyType = Arrays.asList(DataContainer.bodyTypes).indexOf(mUser.getBodyTypeBoundary().getMax());
         int bodyType = Arrays.asList(DataContainer.bodyTypes).indexOf(oUser.getBodyType());
-        if(!(minBodyType <= bodyType && bodyType <= maxBodyType)) return false;
-        return true;
+        return minBodyType <= bodyType && bodyType <= maxBodyType;
     }
 
     private void saveMyGPS() {

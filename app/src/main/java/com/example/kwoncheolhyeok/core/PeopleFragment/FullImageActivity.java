@@ -18,22 +18,24 @@ import com.google.firebase.appindexing.Action;
 import com.google.firebase.appindexing.FirebaseUserActions;
 import com.google.firebase.appindexing.builders.Actions;
 
+import java.util.ArrayList;
+
 
 public class FullImageActivity extends AppCompatActivity implements View.OnClickListener {
 
-    int position;
     Toolbar toolbar = null;
 
     RelativeLayout core_enter = null;
     ImageView page1,page2,page3,page4;
     ImageView pic_open, message_white, add_friends, block_friends;
+    ArrayList<String> picPaths = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.full_image_activity_main);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         // 툴바 뒤로가기 버튼
@@ -43,13 +45,13 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
 
 
         //Tab Fragment 1에서 받아온 썸네일 이미지를 이 액티비티로 받아옴
-        page1 = (ImageView) findViewById(R.id.image1);
+        page1 = findViewById(R.id.image1);
         page1.setOnClickListener(this);
-        page2 = (ImageView) findViewById(R.id.image2);
+        page2 = findViewById(R.id.image2);
         page2.setOnClickListener(this);
-        page3 = (ImageView) findViewById(R.id.image3);
+        page3 = findViewById(R.id.image3);
         page3.setOnClickListener(this);
-        page4 = (ImageView) findViewById(R.id.image4);
+        page4 = findViewById(R.id.image4);
         page4.setOnClickListener(this);
 
         Intent p = getIntent();
@@ -58,15 +60,26 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         User user = item.getUser();
 
         // 프사 출력
-        FireBaseUtil fbUtil = FireBaseUtil.getInstance();
-        fbUtil.setImage(fbUtil.getParentPath(uuid) + "profilePic1.jpg", page1);
-        fbUtil.setImage(fbUtil.getParentPath(uuid) + "profilePic2.jpg", page2);
-        fbUtil.setImage(fbUtil.getParentPath(uuid) + "profilePic3.jpg", page3);
-        fbUtil.setImage(fbUtil.getParentPath(uuid) + "profilePic4.jpg", page4);
 
+        FireBaseUtil fbUtil = FireBaseUtil.getInstance();
+        picPaths.add(fbUtil.getParentPath(uuid) + "profilePic1.jpg");
+        picPaths.add(fbUtil.getParentPath(uuid) + "profilePic2.jpg");
+        picPaths.add(fbUtil.getParentPath(uuid) + "profilePic3.jpg");
+        picPaths.add(fbUtil.getParentPath(uuid) + "profilePic4.jpg");
+
+        ImageView imageViews[] = {page1, page2, page3, page4};
+        for (int i=0; i<imageViews.length; i++){
+            fbUtil.setImage(picPaths.get(i), imageViews[i]);
+        }
+
+//        fbUtil.setImage(fbUtil.getParentPath(uuid) + "profilePic1.jpg", page);
+//        fbUtil.setImage(fbUtil.getParentPath(uuid) + "profilePic2.jpg", page2);
+//        fbUtil.setImage(fbUtil.getParentPath(uuid) + "profilePic3.jpg", page3);
+//        fbUtil.setImage(fbUtil.getParentPath(uuid) + "profilePic4.jpg", page4);
+//
 
         //개인 화면에서 코어 액티비티로 넘어감
-        core_enter =(RelativeLayout)findViewById(R.id.core_enter_layout);
+        core_enter = findViewById(R.id.core_enter_layout);
         core_enter.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
@@ -75,7 +88,6 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         });
 
     }
-
 
     // 뒤로가기 버튼 기능
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -112,6 +124,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
     @Override
     public void onClick(View view) {
         Intent myIntent = new Intent(getApplicationContext(),DetailImageActivity.class);
+        myIntent.putExtra("picPaths", picPaths);
         switch (view.getId()){
             case R.id.image1:
                 myIntent.putExtra("page",0);

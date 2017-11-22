@@ -10,11 +10,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.kwoncheolhyeok.core.R;
+import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
 
 /**
  * Created by songmho on 2015-01-02.
  */
-public class page1 extends android.support.v4.app.Fragment {
+public class page extends android.support.v4.app.Fragment {
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,27 +25,19 @@ public class page1 extends android.support.v4.app.Fragment {
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         View view = inflater.inflate(R.layout.full_image_4_page, container, false);
+        if(getArguments() != null) {
+            String picPath = getArguments().getString("picPath");
 
-//        LinearLayout linearLayout=(LinearLayout)inflater.inflate(R.layout.full_image_4_page,container,false);
+            RelativeLayout background = view.findViewById(R.id.background);
 
-
-        RelativeLayout background=(RelativeLayout)view.findViewById(R.id.background);
-        TextView page_num=(TextView)view.findViewById(R.id.page_num);
-
-//        Intent intent = getIntent();
-//        byte[] arr = getIntent().getByteArrayExtra("image");
-
-//        Bitmap bitmap=(Bitmap)this.getIntent().getParcelableExtra("Bitmap");
-//        ImageView imageView= (ImageView) linearLayout.findViewById(R.id.image);
-//        imageView.setImageBitmap(bitmap);
-
-
-
-        page_num.setText(String.valueOf(1));
-//        imageView.setColorFilter(0xff6dc6d2);
-//        background.setBackground(new ColorDrawable(0xff6dc6d2));
+            // 사진 출력
+            FireBaseUtil fbUtil = FireBaseUtil.getInstance();
+            fbUtil.setBackgroundImage(picPath, background);
+            int position = getArguments().getInt("position");
+            TextView page_num= view.findViewById(R.id.page_num);
+            page_num.setText(String.valueOf(position));
+        }
 
         return view;
     }

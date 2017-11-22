@@ -1,8 +1,11 @@
 package com.example.kwoncheolhyeok.core.PeopleFragment.FullImageViewPager;
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+
+import java.util.ArrayList;
 
 /**
  * Created by godueol on 2017. 11. 11..
@@ -10,44 +13,30 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 public class DetailImageViewPagerAdapter extends FragmentPagerAdapter {
 
+    private ArrayList<String> picPaths;
 
-
-
-    private static final int PAGE_NUMBER = 4;
-
-    public DetailImageViewPagerAdapter(FragmentManager fm) {
+    DetailImageViewPagerAdapter(FragmentManager fm, ArrayList<String> picPaths) {
         super(fm);
+        this.picPaths = picPaths;
     }
-    Fragment cur_fragment=new Fragment();   //현재 Viewpager가 가리키는 Fragment를 받을 변수 선언
 
     @Override
     public Fragment getItem(int position) {
-        if(position<0 || PAGE_NUMBER<=position)        //가리키는 페이지가 0 이하거나 MAX_PAGE보다 많을 시 null로 리턴
+        if(position<0 || picPaths.size()<=position)        //가리키는 페이지가 0 이하거나 MAX_PAGE보다 많을 시 null로 리턴
             return null;
-        switch (position){              //포지션에 맞는 Fragment찾아서 cur_fragment변수에 대입
-            case 0:
-                cur_fragment=new page1();
-                break;
 
-            case 1:
-                cur_fragment=new page2();
-                break;
-
-            case 2:
-                cur_fragment=new page3();
-                break;
-
-            case 3:
-                cur_fragment=new page4();
-                break;
-        }
+        Fragment cur_fragment = new page();
+        Bundle args = new Bundle();
+        args.putString("picPath",picPaths.get(position));
+        args.putInt("position", position);
+        cur_fragment.setArguments(args);
 
         return cur_fragment;
     }
 
     @Override
     public int getCount() {
-        return PAGE_NUMBER;
+        return picPaths.size();
     }
 
 }
