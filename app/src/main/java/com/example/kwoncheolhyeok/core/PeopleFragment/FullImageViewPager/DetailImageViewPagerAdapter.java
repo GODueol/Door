@@ -25,7 +25,7 @@ public class DetailImageViewPagerAdapter extends FragmentPagerAdapter {
         if(position<0 || picPaths.size()<=position)        //가리키는 페이지가 0 이하거나 MAX_PAGE보다 많을 시 null로 리턴
             return null;
 
-        Fragment cur_fragment = new page();
+        Fragment cur_fragment = new PagerPage();
         Bundle args = new Bundle();
         args.putString("picPath",picPaths.get(position));
         args.putInt("position", position);

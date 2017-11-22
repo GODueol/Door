@@ -72,7 +72,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
             fbUtil.setImage(picPaths.get(i), imageViews[i]);
         }
 
-//        fbUtil.setImage(fbUtil.getParentPath(uuid) + "profilePic1.jpg", page);
+//        fbUtil.setImage(fbUtil.getParentPath(uuid) + "profilePic1.jpg", PagerPage);
 //        fbUtil.setImage(fbUtil.getParentPath(uuid) + "profilePic2.jpg", page2);
 //        fbUtil.setImage(fbUtil.getParentPath(uuid) + "profilePic3.jpg", page3);
 //        fbUtil.setImage(fbUtil.getParentPath(uuid) + "profilePic4.jpg", page4);
@@ -127,19 +127,19 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         myIntent.putExtra("picPaths", picPaths);
         switch (view.getId()){
             case R.id.image1:
-                myIntent.putExtra("page",0);
+                myIntent.putExtra("PagerPage",0);
                 startActivity(myIntent);
                 break;
             case R.id.image2:
-                myIntent.putExtra("page",1);
+                myIntent.putExtra("PagerPage",1);
                 startActivity(myIntent);
                 break;
             case R.id.image3:
-                myIntent.putExtra("page",2);
+                myIntent.putExtra("PagerPage",2);
                 startActivity(myIntent);
                 break;
             case R.id.image4:
-                myIntent.putExtra("page",3);
+                myIntent.putExtra("PagerPage",3);
                 startActivity(myIntent);
                 break;
         }

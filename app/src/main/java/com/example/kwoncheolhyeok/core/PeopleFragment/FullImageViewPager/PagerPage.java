@@ -15,7 +15,7 @@ import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
 /**
  * Created by songmho on 2015-01-02.
  */
-public class page extends android.support.v4.app.Fragment {
+public class PagerPage extends android.support.v4.app.Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
