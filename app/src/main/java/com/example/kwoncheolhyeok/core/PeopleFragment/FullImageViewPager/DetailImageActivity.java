@@ -22,7 +22,7 @@ public class DetailImageActivity extends AppCompatActivity {
         Intent intent = getIntent();
         picPaths = intent.getStringArrayListExtra("picPaths");
 
-        int pagenumber = intent.getIntExtra("page",1);
+        int pagenumber = intent.getIntExtra("PagerPage",1);
         mAdapter = new DetailImageViewPagerAdapter(getSupportFragmentManager(), picPaths);
         ViewPager viewPager=(ViewPager)findViewById(R.id.viewpager);        //Viewpager 선언 및 초기화
         viewPager.setAdapter(mAdapter);     //선언한 viewpager에 adapter를 연결
