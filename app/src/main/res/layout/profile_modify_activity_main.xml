@@ -292,9 +292,9 @@
                 android:bufferType="editable"
                 android:focusableInTouchMode="true"
                 android:gravity="center"
-                android:maxLength="13"
+                android:maxLength="10"
                 android:maxLines="1"
-                android:text="CheolHyeok Kwon"
+                android:text="NickName"
                 android:textColor="#FFFFFF"
                 android:textSize="15dp"
                 android:theme="@style/Theme.App.Base" />

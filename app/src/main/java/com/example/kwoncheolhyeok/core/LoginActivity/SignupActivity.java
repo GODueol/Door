@@ -274,7 +274,7 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
             throw new Exception("비밀번호는 6자리 이상 12자리 이하로 설정해주세요.");
         } else if (reEnterPassword.isEmpty() || reEnterPassword.length() < 6 || reEnterPassword.length() > 12 || !(reEnterPassword.equals(password))) {
             throw new Exception("패스워드가 일치하지 않습니다.");
-        } else if (ID.isEmpty() || ID.length() < 2) {
+        } else if (ID.isEmpty() || ID.length() < 2 || ID.length() > 10 ) {
             throw new Exception("두 자리 이상의 아이디로 작성해주세요.");
         } else if (Age.isEmpty() || Age.length() != 2 || Integer.parseInt(Age)>100) {
             throw new Exception("올바른 나이를 작성해주세요.");

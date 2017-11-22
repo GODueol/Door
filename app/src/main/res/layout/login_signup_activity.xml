@@ -79,7 +79,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPersonName"
-                android:hint="ID" />
+                android:maxLength="10"
+                android:maxLines="1"
+                android:hint="NickName" />
         </android.support.design.widget.TextInputLayout>
 
 
