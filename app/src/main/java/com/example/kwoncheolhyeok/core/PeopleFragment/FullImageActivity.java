@@ -4,10 +4,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.example.kwoncheolhyeok.core.CorePage.CoreActivity;
 import com.example.kwoncheolhyeok.core.Entity.User;
@@ -20,6 +22,9 @@ import com.google.firebase.appindexing.builders.Actions;
 
 import java.util.ArrayList;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 
 public class FullImageActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -30,10 +35,26 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
     ImageView pic_open, message_white, add_friends, block_friends;
     ArrayList<String> picPaths = new ArrayList<>();
 
+    @Bind(R.id.text_physical)
+    TextView textPhysical;
+
+    @Bind(R.id.text_introduce)
+    TextView textIntroduce;
+
+    @Bind(R.id.text_id)
+    TextView textId;
+
+    @Bind(R.id.full_image_view)
+    ImageView fullImageView;
+
+    @Bind(R.id.distance)
+    TextView distanceText;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.full_image_activity_main);
+        ButterKnife.bind(this);
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -57,26 +78,18 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         Intent p = getIntent();
         ImageAdapter.Item item = (ImageAdapter.Item) p.getSerializableExtra("item");
         String uuid = item.getUuid();
-        User user = item.getUser();
 
-        // 프사 출력
-
+        // 사진 출력
         FireBaseUtil fbUtil = FireBaseUtil.getInstance();
         picPaths.add(fbUtil.getParentPath(uuid) + "profilePic1.jpg");
         picPaths.add(fbUtil.getParentPath(uuid) + "profilePic2.jpg");
         picPaths.add(fbUtil.getParentPath(uuid) + "profilePic3.jpg");
         picPaths.add(fbUtil.getParentPath(uuid) + "profilePic4.jpg");
-
         ImageView imageViews[] = {page1, page2, page3, page4};
         for (int i=0; i<imageViews.length; i++){
             fbUtil.setImage(picPaths.get(i), imageViews[i]);
         }
-
-//        fbUtil.setImage(fbUtil.getParentPath(uuid) + "profilePic1.jpg", PagerPage);
-//        fbUtil.setImage(fbUtil.getParentPath(uuid) + "profilePic2.jpg", page2);
-//        fbUtil.setImage(fbUtil.getParentPath(uuid) + "profilePic3.jpg", page3);
-//        fbUtil.setImage(fbUtil.getParentPath(uuid) + "profilePic4.jpg", page4);
-//
+        fbUtil.setImage(picPaths.get(0), fullImageView);    // 프사
 
         //개인 화면에서 코어 액티비티로 넘어감
         core_enter = findViewById(R.id.core_enter_layout);
@@ -86,6 +99,13 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
                 startActivityForResult(new Intent(FullImageActivity.this,CoreActivity.class), 0);
             }
         });
+
+        // 개인정보 Set
+        User user = item.getUser();
+        textId.setText(user.getId());
+        textPhysical.setText(TextUtils.join(" / ", new String[]{user.getAge(), user.getHeight(), user.getWeight(), user.getBodyType()}));
+        textIntroduce.setText(user.getIntro());
+        distanceText.setText(String.format("%.1f", item.getDistance()/1000));
 
     }
 
