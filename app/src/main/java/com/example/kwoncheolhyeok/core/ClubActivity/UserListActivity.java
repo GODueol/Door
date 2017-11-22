@@ -1,6 +1,5 @@
 package com.example.kwoncheolhyeok.core.ClubActivity;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -9,7 +8,6 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.example.kwoncheolhyeok.core.R;
-import com.tsengvn.typekit.TypekitContextWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,13 +20,6 @@ public class UserListActivity  extends AppCompatActivity {
 
     Toolbar toolbar = null;
     private ListView club_member_list;
-
-
-    // 기본 폰트 고정
-    @Override
-    protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(TypekitContextWrapper.wrap(newBase));
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

@@ -2,7 +2,6 @@ package com.example.kwoncheolhyeok.core.ProfileModifyActivity;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -35,12 +34,12 @@ import com.example.kwoncheolhyeok.core.Entity.IntBoundary;
 import com.example.kwoncheolhyeok.core.Entity.StringBoundary;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.Event.RefreshLocationEvent;
+import com.example.kwoncheolhyeok.core.Event.SetProfilePicEvent;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.BusProvider;
 import com.example.kwoncheolhyeok.core.Util.CoreProgress;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
-import com.example.kwoncheolhyeok.core.Event.SetProfilePicEvent;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -51,7 +50,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.tsengvn.typekit.TypekitContextWrapper;
 
 import java.util.Arrays;
 
@@ -717,12 +715,6 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         }
         return profilePicPath;
     }
-
-    @Override
-    protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(TypekitContextWrapper.wrap(newBase));
-    }
-
 
     private void showImage(Bitmap bitmap) {
         Drawable bitmapDrawable = new BitmapDrawable(getResources(), bitmap);

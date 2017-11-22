@@ -1,6 +1,5 @@
 package com.example.kwoncheolhyeok.core.MessageActivity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -10,7 +9,6 @@ import android.widget.ExpandableListView;
 
 import com.example.kwoncheolhyeok.core.FriendsActivity.ExpandableListAdapter;
 import com.example.kwoncheolhyeok.core.R;
-import com.tsengvn.typekit.TypekitContextWrapper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,13 +23,6 @@ public class MessageActivity extends AppCompatActivity {
     ExpandableListView expListView;
     List<String> listDataHeader;
     HashMap<String, List<String>> listDataChild;
-
-
-    // 기본 폰트 고정
-    @Override
-    protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(TypekitContextWrapper.wrap(newBase));
-    }
 
     /*
    * Preparing the list data

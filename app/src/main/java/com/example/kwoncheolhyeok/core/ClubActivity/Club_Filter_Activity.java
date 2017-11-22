@@ -1,13 +1,11 @@
 package com.example.kwoncheolhyeok.core.ClubActivity;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.example.kwoncheolhyeok.core.R;
-import com.tsengvn.typekit.TypekitContextWrapper;
 
 /**
  * Created by KwonCheolHyeok on 2017-01-14.
@@ -16,12 +14,6 @@ import com.tsengvn.typekit.TypekitContextWrapper;
 public class Club_Filter_Activity extends AppCompatActivity {
 
     Toolbar toolbar = null;
-
-    // 기본 폰트 고정
-    @Override
-    protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(TypekitContextWrapper.wrap(newBase));
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

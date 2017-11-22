@@ -1,8 +1,6 @@
 package com.example.kwoncheolhyeok.core.LoginActivity;
 
-import android.content.Context;
 import android.content.Intent;
-import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -27,7 +25,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.tsengvn.typekit.TypekitContextWrapper;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -51,12 +48,6 @@ public class LoginActivity extends AppCompatActivity {
     TextView _loginButton;
     @Bind(R.id.link_signup)
     TextView _signupLink;
-
-    // 기본 폰트 고정
-    @Override
-    protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(TypekitContextWrapper.wrap(newBase));
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

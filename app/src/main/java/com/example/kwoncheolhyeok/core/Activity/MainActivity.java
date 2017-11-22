@@ -1,6 +1,5 @@
 package com.example.kwoncheolhyeok.core.Activity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -24,6 +23,7 @@ import android.widget.TextView;
 
 import com.example.kwoncheolhyeok.core.ClubActivity.Club_Filter_Activity;
 import com.example.kwoncheolhyeok.core.CorePage.CoreActivity;
+import com.example.kwoncheolhyeok.core.Event.SetProfilePicEvent;
 import com.example.kwoncheolhyeok.core.FriendsActivity.FriednsActivity;
 import com.example.kwoncheolhyeok.core.LoginActivity.LoginActivity;
 import com.example.kwoncheolhyeok.core.MessageActivity.MessageActivity;
@@ -33,10 +33,8 @@ import com.example.kwoncheolhyeok.core.Util.BusProvider;
 import com.example.kwoncheolhyeok.core.Util.CloseActivityHandler;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
-import com.example.kwoncheolhyeok.core.Event.SetProfilePicEvent;
 import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.otto.Subscribe;
-import com.tsengvn.typekit.TypekitContextWrapper;
 
 /**
  *
@@ -56,12 +54,6 @@ public class MainActivity extends AppCompatActivity
     ImageView profileImage;
 
     private CloseActivityHandler closeActivityHandler;
-
-    // 기본 폰트 고정
-    @Override
-    protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(TypekitContextWrapper.wrap(newBase));
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

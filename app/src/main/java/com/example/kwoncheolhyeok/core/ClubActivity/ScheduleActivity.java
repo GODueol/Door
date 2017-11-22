@@ -1,6 +1,5 @@
 package com.example.kwoncheolhyeok.core.ClubActivity;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -14,7 +13,6 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 
 import com.example.kwoncheolhyeok.core.R;
-import com.tsengvn.typekit.TypekitContextWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,12 +29,6 @@ public class ScheduleActivity extends AppCompatActivity {
     private ListView club_schedule_list;
 
     ImageButton FAB;
-
-    // 기본 폰트 고정
-    @Override
-    protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(TypekitContextWrapper.wrap(newBase));
-    }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override

@@ -1,10 +1,7 @@
 package com.example.kwoncheolhyeok.core.PeopleFragment;
 
-import android.content.Context;
 import android.content.Intent;
-import android.media.Image;
 import android.os.Bundle;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -20,10 +17,6 @@ import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
 import com.google.firebase.appindexing.Action;
 import com.google.firebase.appindexing.FirebaseUserActions;
 import com.google.firebase.appindexing.builders.Actions;
-import com.tsengvn.typekit.TypekitContextWrapper;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class FullImageActivity extends AppCompatActivity implements View.OnClickListener {
@@ -34,12 +27,6 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
     RelativeLayout core_enter = null;
     ImageView page1,page2,page3,page4;
     ImageView pic_open, message_white, add_friends, block_friends;
-
-    // 기본 폰트 고정
-    @Override
-    protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(TypekitContextWrapper.wrap(newBase));
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

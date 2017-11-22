@@ -1,6 +1,5 @@
 package com.example.kwoncheolhyeok.core.ClubActivity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -14,7 +13,6 @@ import android.widget.ListView;
 
 import com.example.kwoncheolhyeok.core.MessageActivity.MessageActivity;
 import com.example.kwoncheolhyeok.core.R;
-import com.tsengvn.typekit.TypekitContextWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,12 +32,6 @@ public class ClubActivity  extends AppCompatActivity implements View.OnClickList
     ImageButton FAB;
 
     private ListView club_timeline_contents_list;
-
-    // 기본 폰트 고정
-    @Override
-    protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(TypekitContextWrapper.wrap(newBase));
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

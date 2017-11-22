@@ -1,18 +1,16 @@
 package com.example.kwoncheolhyeok.core.Activity;
 
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.GPSInfo;
 import com.example.kwoncheolhyeok.core.Util.addrConvertor;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.example.kwoncheolhyeok.core.R;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
@@ -23,7 +21,6 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.tsengvn.typekit.TypekitContextWrapper;
 
 /**
  * Created by KwonCheolHyeok on 2016-11-25.
@@ -34,12 +31,6 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.On
     private GoogleMap mGoogleMap;
     private LatLng mLatLng;
     private GPSInfo mGPSInfo;
-
-    // 기본 폰트 고정
-    @Override
-    protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(TypekitContextWrapper.wrap(newBase));
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

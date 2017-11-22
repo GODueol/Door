@@ -8,9 +8,11 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.example.kwoncheolhyeok.core.R;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 /**
  * Created by gimbyeongjin on 2017. 10. 6..
@@ -28,12 +30,20 @@ public class FireBaseUtil {
     }
 
     public void setImage(String filePath, final ImageView targetImageView) {
+
+        StorageReference storageReference = FirebaseStorage.getInstance().getReference().child(filePath);
+
+        Glide.with(targetImageView.getContext() /* context */)
+//                .using(new FirebaseImageLoader())
+                .load(storageReference)
+                .into(targetImageView);
+/*
         FirebaseStorage.getInstance().getReference().child(filePath)
                 .getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
                 // Got the download URL for 'users/me/profile.png'
-                Glide.with(targetImageView.getContext() /* context */)
+                Glide.with(targetImageView.getContext() *//* context *//*)
                         .load(uri)
                         .into(targetImageView);
             }
@@ -45,6 +55,7 @@ public class FireBaseUtil {
                 targetImageView.setImageResource(R.drawable.a);
             }
         });
+        */
     }
 
     @NonNull
