@@ -9,12 +9,13 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
 
 public class ImageAdapter extends BaseAdapter {
 
@@ -77,35 +78,40 @@ public class ImageAdapter extends BaseAdapter {
 
     }
 
-    static class Item {
+    static class Item implements Serializable {
+
         float distance;
         String uuid;
+        User user;
 
-        Item(float distance, String uuid) {
+        Item(float distance, String uuid, User user) {
             this.distance = distance;
             this.uuid = uuid;
+            this.user = user;
+        }
+
+        public float getDistance() {
+            return distance;
+        }
+
+        public void setDistance(float distance) {
+            this.distance = distance;
+        }
+
+        public String getUuid() {
+            return uuid;
+        }
+
+        public void setUuid(String uuid) {
+            this.uuid = uuid;
+        }
+
+        public User getUser() {
+            return user;
+        }
+
+        public void setUser(User user) {
+            this.user = user;
         }
     }
 }
-
-
-//mItems.add(new Item("CORE 24", R.drawable.a));
-//        mItems.add(new Item("CORE 45", R.drawable.b));
-//        mItems.add(new Item("CORE 66", R.drawable.c));
-//        mItems.add(new Item("CORE 75", R.drawable.d));
-//        mItems.add(new Item("CORE 102", R.drawable.e));
-//        mItems.add(new Item("CORE 302", R.drawable.f));
-//        mItems.add(new Item("CORE 51", R.drawable.g));
-//        mItems.add(new Item("CORE 18", R.drawable.h));
-//        mItems.add(new Item("CORE 7", R.drawable.i));
-//        mItems.add(new Item("CORE 95", R.drawable.j));
-//        mItems.add(new Item("CORE 244", R.drawable.k));
-//        mItems.add(new Item("CORE 109", R.drawable.l));
-//        mItems.add(new Item("CORE 142", R.drawable.m));
-//        mItems.add(new Item("CORE 78", R.drawable.n));
-//        mItems.add(new Item("CORE 93", R.drawable.o));
-//        mItems.add(new Item("CORE 79", R.drawable.p));
-//        mItems.add(new Item("CORE 51", R.drawable.q));
-//        mItems.add(new Item("CORE 63", R.drawable.r));
-//        mItems.add(new Item("CORE 101", R.drawable.s));
-//        mItems.add(new Item("CORE 30", R.drawable.t));

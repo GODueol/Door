@@ -1,10 +1,12 @@
 package com.example.kwoncheolhyeok.core.Entity;
 
+import java.io.Serializable;
+
 /**
  * Created by gimbyeongjin on 2017. 8. 13..
  */
 
-public class User {
+public class User implements Serializable{
 
     public User() {
     }

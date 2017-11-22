@@ -13,8 +13,10 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.example.kwoncheolhyeok.core.CorePage.CoreActivity;
+import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.PeopleFragment.FullImageViewPager.DetailImageActivity;
 import com.example.kwoncheolhyeok.core.R;
+import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
 import com.google.firebase.appindexing.Action;
 import com.google.firebase.appindexing.FirebaseUserActions;
 import com.google.firebase.appindexing.builders.Actions;
@@ -54,18 +56,6 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
 
 
         //Tab Fragment 1에서 받아온 썸네일 이미지를 이 액티비티로 받아옴
-        Intent p = getIntent();
-        position = p.getExtras().getInt("id");
-
-        ImageAdapter imageAdapter = new ImageAdapter(this);
-        List<ImageView> images = new ArrayList<ImageView>();
-
-        for (int i = 0; i < imageAdapter.getCount(); i++) {
-            ImageView imageView = new ImageView(this);
-            imageView.setImageResource((int) imageAdapter.getItemId(i));
-            imageView.setScaleType(ImageView.ScaleType.CENTER);
-            images.add(imageView);
-        }
         page1 = (ImageView) findViewById(R.id.image1);
         page1.setOnClickListener(this);
         page2 = (ImageView) findViewById(R.id.image2);
@@ -74,13 +64,19 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         page3.setOnClickListener(this);
         page4 = (ImageView) findViewById(R.id.image4);
         page4.setOnClickListener(this);
-        //FullImageAdapter 객체를 생성해 썸네일 풀 이미지를 한장씩 넘길 수 있게 함
-        FullImagePagerAdapter pageradapter = new FullImagePagerAdapter(images);
-        ViewPager viewpager = (ViewPager) findViewById(R.id.pager1);
-        viewpager.setAdapter(pageradapter);
 
-        //해당 썸네일을 클릭했을 때 그 이미지가 나올 수 있게 해줌
-        viewpager.setCurrentItem(position);
+        Intent p = getIntent();
+        ImageAdapter.Item item = (ImageAdapter.Item) p.getSerializableExtra("item");
+        String uuid = item.getUuid();
+        User user = item.getUser();
+
+        // 프사 출력
+        FireBaseUtil fbUtil = FireBaseUtil.getInstance();
+        fbUtil.setImage(fbUtil.getParentPath(uuid) + "profilePic1.jpg", page1);
+        fbUtil.setImage(fbUtil.getParentPath(uuid) + "profilePic2.jpg", page2);
+        fbUtil.setImage(fbUtil.getParentPath(uuid) + "profilePic3.jpg", page3);
+        fbUtil.setImage(fbUtil.getParentPath(uuid) + "profilePic4.jpg", page4);
+
 
         //개인 화면에서 코어 액티비티로 넘어감
         core_enter =(RelativeLayout)findViewById(R.id.core_enter_layout);

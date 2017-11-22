@@ -1,10 +1,12 @@
 package com.example.kwoncheolhyeok.core.Entity;
 
+import java.io.Serializable;
+
 /**
  * Created by gimbyeongjin on 2017. 10. 6..
  */
 
-public class IntBoundary {
+public class IntBoundary implements Serializable {
     int max;
     int min;
 

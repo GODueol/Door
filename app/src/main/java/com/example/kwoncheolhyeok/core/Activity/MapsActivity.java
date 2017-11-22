@@ -73,7 +73,6 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.On
 
             @Override
             public void onError(Status status) {
-                // TODO: Handle the error.
                 Log.i("app", "An error occurred: " + status);
             }
         });

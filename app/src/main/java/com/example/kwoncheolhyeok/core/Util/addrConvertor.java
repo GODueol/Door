@@ -52,7 +52,6 @@ public class addrConvertor {
         try {
             addr = coder.getFromLocationName(address, 5);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }// 몇개 까지의 주소를 원하는지 지정 1~5개 정도가 적당
         if (addr != null) {

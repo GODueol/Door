@@ -55,6 +55,7 @@ public class TabFragment1 extends android.support.v4.app.Fragment {
 
                 Intent p = new Intent(getActivity().getApplicationContext(), FullImageActivity.class);
                 p.putExtra("id", position);
+                p.putExtra("item", imageAdapter.getItem(position));
 
                 startActivity(p);
 
@@ -117,7 +118,7 @@ public class TabFragment1 extends android.support.v4.app.Fragment {
                         User oUser = dataSnapshot.getValue(User.class);
                         if(!isOnFilter(oUser)) return;  // 필터링
                         Log.d(getClass().toString(),String.format("Key %s entered the search area at [%f,%f]", key, geoLocation.latitude, geoLocation.longitude));
-                        addItemToGrid(key, geoLocation);
+                        addItemToGrid(key, geoLocation, oUser);
                     }
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
@@ -126,7 +127,7 @@ public class TabFragment1 extends android.support.v4.app.Fragment {
                 });
             }
 
-            private void addItemToGrid(String key, GeoLocation geoLocation) {
+            private void addItemToGrid(String key, GeoLocation geoLocation, User oUser) {
                 // key로 프사url, 거리 가져옴
                 Location targetLocation = new Location("");//provider name is unnecessary
                 targetLocation.setLatitude(geoLocation.latitude);//your coords of course
@@ -136,7 +137,7 @@ public class TabFragment1 extends android.support.v4.app.Fragment {
 
                 // grid에 사진, distance추가
                 if(imageAdapter != null){
-                    imageAdapter.addItem(new ImageAdapter.Item(distance, key));
+                    imageAdapter.addItem(new ImageAdapter.Item(distance, key, oUser));
                     gridView.invalidateViews();
                 } else {
                     Log.d(getTag(), "imageAdapter is null");
