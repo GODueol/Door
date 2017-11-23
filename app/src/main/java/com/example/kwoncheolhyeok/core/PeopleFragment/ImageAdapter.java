@@ -12,16 +12,21 @@ import android.widget.TextView;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
+import com.example.kwoncheolhyeok.core.Util.IndexedTreeMap;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 
 public class ImageAdapter extends BaseAdapter {
 
-    private List<Item> mItems = new ArrayList<>();
+    private IndexedTreeMap<Item, Boolean> mItems = new IndexedTreeMap<>(new Comparator<Item>() {
+        @Override
+        public int compare(Item item, Item t1) {
+            if(item.distance == t1.distance) return item.getUuid().compareTo(t1.getUuid());
+            return (int) (item.distance - t1.distance);
+        }
+    });
+
     private final LayoutInflater mInflater;
 
     ImageAdapter(Context context) {
@@ -29,15 +34,7 @@ public class ImageAdapter extends BaseAdapter {
     }
 
     void addItem(Item item){
-        mItems.add(item);
-        // Distance 기준 정렬
-        Collections.sort(mItems, new Comparator<Item>() {
-
-            @Override
-            public int compare(Item item1, Item item2 ){
-                return (int) (item1.distance - item2.distance);
-            }
-        }) ;
+        mItems.put(item,true);
     }
 
     @Override
@@ -47,7 +44,7 @@ public class ImageAdapter extends BaseAdapter {
 
     @Override
     public Item getItem(int i) {
-        return mItems.get(i);
+        return mItems.getEntry(i).getKey();
     }
 
     @Override
@@ -80,7 +77,7 @@ public class ImageAdapter extends BaseAdapter {
 
         // 프사 출력
         FireBaseUtil fbUtil = FireBaseUtil.getInstance();
-        fbUtil.setImage(fbUtil.getParentPath(item.uuid) + "profilePic1.jpg", picture);
+        fbUtil.setImage(fbUtil.getParentPath(item.getUuid()) + "profilePic1.jpg", picture);
 
         // 거리 출력
         name.setText(String.format("%.1fkm", item.distance/1000));
@@ -90,10 +87,9 @@ public class ImageAdapter extends BaseAdapter {
 
     void clear() {
         mItems.clear();
-
     }
 
-    static class Item implements Serializable {
+    public static class Item implements Serializable {
 
         float distance;
         String uuid;
