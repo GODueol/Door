@@ -1,16 +1,16 @@
 package com.example.kwoncheolhyeok.core.Util;
 
-import android.graphics.drawable.Drawable;
-import android.os.Build;
+import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.view.View;
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.transition.Transition;
+import com.bumptech.glide.request.RequestListener;
+import com.example.kwoncheolhyeok.core.R;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 /**
  * Created by gimbyeongjin on 2017. 10. 6..
@@ -28,24 +28,48 @@ public class FireBaseUtil {
     }
 
     public void setImage(String filePath, final ImageView targetImageView) {
-        StorageReference storageReference = FirebaseStorage.getInstance().getReference().child(filePath);
-        Glide.with(targetImageView.getContext())
-                .load(storageReference)
-                .into(targetImageView);
+        try {
+            FirebaseStorage.getInstance().getReference().child(filePath)
+                    .getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    // Got the download URL for 'users/me/profile.png'
+                    Glide.with(targetImageView.getContext() /* context */)
+                            .load(uri)
+                            .into(targetImageView);
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    // Handle any errors
+                    Log.d(this.getClass().getName(), exception.getMessage());
+                    targetImageView.setImageResource(R.drawable.a);
+                }
+            });
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
-    public void setBackgroundImage(String filePath, final View targetView) {
-        StorageReference storageReference = FirebaseStorage.getInstance().getReference().child(filePath);
-        Glide.with(targetView.getContext())
-                .load(storageReference)
-                .into(new SimpleTarget<Drawable>() {
-                    @Override
-                    public void onResourceReady(Drawable drawable, Transition<? super Drawable> transition) {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                            targetView.setBackground(drawable);
-                        }
-                    }
-                });
+    public void setImage(String filePath, final ImageView targetImageView, final RequestListener requestListener) {
+        FirebaseStorage.getInstance().getReference().child(filePath)
+                .getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                // Got the download URL for 'users/me/profile.png'
+                Glide.with(targetImageView.getContext() /* context */)
+                        .load(uri).listener(requestListener)
+                        .into(targetImageView);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle any errors
+                Log.d(this.getClass().getName(), exception.getMessage());
+                targetImageView.setImageResource(R.drawable.a);
+            }
+        });
+
     }
 
     @NonNull

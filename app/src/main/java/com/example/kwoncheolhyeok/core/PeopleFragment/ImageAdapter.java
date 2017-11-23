@@ -51,8 +51,13 @@ public class ImageAdapter extends BaseAdapter {
         View v = view;
         ImageView picture;
         TextView name;
-
-        Item item = getItem(i);
+        Item item;
+        try {
+            item = getItem(i);
+        } catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
 
         if (v == null) {
             v = mInflater.inflate(R.layout.square_grid_view, viewGroup, false);

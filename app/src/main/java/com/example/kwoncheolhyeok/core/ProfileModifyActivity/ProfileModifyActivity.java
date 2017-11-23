@@ -129,7 +129,6 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
     private static final int REQUEST_TAKE_PHOTO = 1;
     private static final int REQUEST_GALLERY = 2;
     private static final int REQUEST_CODE_PROFILE_IMAGE_CROP = 3;
-    private Uri outputFileUri;
     private LoadPicture loadPicture;
     private ImageView modifingPic;
 
@@ -639,7 +638,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_GALLERY) {
-                outputFileUri = data.getData();
+                Uri outputFileUri = data.getData();
 
                 // 서버에 Upload
                 uploadPic(outputFileUri);
@@ -654,7 +653,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         // Create a storage reference from our app
         StorageReference storageRef = FirebaseStorage.getInstance().getReference();
 
-        String profilePicPath = getPicPath(modifingPic);
+        final String profilePicPath = getPicPath(modifingPic);
 
         final StorageReference spaceRef = storageRef.child(profilePicPath);
 
@@ -668,25 +667,15 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                // 로컬에 출력
-                @SuppressWarnings("VisibleForTests") Uri uri = taskSnapshot.getDownloadUrl();
 
-                try {
-                    Glide.with(modifingPic.getContext() /* context */)
-                            .load(uri)
-                            .into(modifingPic);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Toast.makeText(getBaseContext(), "Upload Fail", Toast.LENGTH_SHORT).show();
-                }
-
-                FireBaseUtil.getInstance().setImage(uri.toString(), modifingPic);
-                Toast.makeText(getBaseContext(), "Upload Complete", Toast.LENGTH_SHORT).show();
+                Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                Glide.with(ProfileModifyActivity.this).load(downloadUrl).into(modifingPic);
 
                 // 첫번째 사진일 경우는 프로필 사진 변경 이벤트 발생
                 if (modifingPic == profilePic1) {
                     BusProvider.getInstance().post(new SetProfilePicEvent());
                 }
+                Toast.makeText(getBaseContext(), "Upload Complete", Toast.LENGTH_SHORT).show();
             }
         }).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
             @Override
