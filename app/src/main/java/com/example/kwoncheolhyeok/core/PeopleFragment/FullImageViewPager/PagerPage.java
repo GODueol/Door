@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 
 import com.bumptech.glide.load.DataSource;
@@ -41,7 +42,7 @@ public class PagerPage extends android.support.v4.app.Fragment {
             String picPath = getArguments().getString("picPath");
             scrollView = view.findViewById(R.id.scrollView);
             imageView = view.findViewById(R.id.pictureImage);
-            final LinearLayout background = view.findViewById(R.id.background);
+            final RelativeLayout background = view.findViewById(R.id.background);
 
             FireBaseUtil fbUtil = FireBaseUtil.getInstance();
             fbUtil.setImage(picPath, imageView, new RequestListener<Drawable>() {
