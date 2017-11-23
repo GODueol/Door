@@ -16,6 +16,8 @@ import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.CoreProgress;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -25,6 +27,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.sql.Date;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -124,7 +128,7 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    private void getUserInfo(FirebaseUser user) {
+    private void getUserInfo(final FirebaseUser user) {
         if (user != null) {
 
             CoreProgress.getInstance().startProgressDialog(this);
@@ -133,20 +137,46 @@ public class LoginActivity extends AppCompatActivity {
             Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
 
             // user 정보 읽어오기
-            userRef.child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            userRef.child(user.getUid());
+            userRef.addListenerForSingleValueEvent(new ValueEventListener() {
 
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
 
-                    User user = dataSnapshot.getValue(User.class);
-                    DataContainer.getInstance().setUser(user);
-                    onLoginSuccess();
+                    final User mUser = dataSnapshot.getValue(User.class);
+                    mUser.setLoginDate(new Date(System.currentTimeMillis()));
+                    DataContainer.getInstance().setUser(mUser);
+
+                    // 로그인 시간 Update
+                    FirebaseDatabase.getInstance().getReference("users").child(user.getUid()).setValue(mUser)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    DataContainer.getInstance().setUser(mUser);  // 로컬 저장
+                                    onLoginSuccess();
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(getApplicationContext(), "Save Fail", Toast.LENGTH_SHORT).show();
+                                    Log.d(getApplication().getClass().getName(), e.getMessage());
+                                }
+                            })
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    CoreProgress.getInstance().stopProgressDialog();
+                                }
+                            });
+
+
                 }
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
-                    Toast.makeText(getApplicationContext(),"Getting UserInfo Cancelled",Toast.LENGTH_SHORT).show();
-                    Log.d(getApplication().getClass().getName(),databaseError.getMessage());
+                    Toast.makeText(getApplicationContext(), "Getting UserInfo Cancelled", Toast.LENGTH_SHORT).show();
+                    Log.d(getApplication().getClass().getName(), databaseError.getMessage());
 
                 }
             });

@@ -1,6 +1,7 @@
 package com.example.kwoncheolhyeok.core.Entity;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Created by gimbyeongjin on 2017. 8. 13..
@@ -25,6 +26,16 @@ public class User implements Serializable{
     IntBoundary heightBoundary;
     IntBoundary weightBoundary;
     StringBoundary bodyTypeBoundary;
+
+    Date loginDate;
+
+    public Date getLoginDate() {
+        return loginDate;
+    }
+
+    public void setLoginDate(Date loginDate) {
+        this.loginDate = loginDate;
+    }
 
     boolean isLockPic2;
     boolean isLockPic3;

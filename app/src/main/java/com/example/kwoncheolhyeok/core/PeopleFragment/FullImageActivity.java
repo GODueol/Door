@@ -20,6 +20,7 @@ import com.google.firebase.appindexing.Action;
 import com.google.firebase.appindexing.FirebaseUserActions;
 import com.google.firebase.appindexing.builders.Actions;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import butterknife.Bind;
@@ -49,6 +50,9 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
 
     @Bind(R.id.distance)
     TextView distanceText;
+
+    @Bind(R.id.login_time)
+    TextView loginTime;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -106,6 +110,10 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         textPhysical.setText(TextUtils.join(" / ", new String[]{user.getAge(), user.getHeight(), user.getWeight(), user.getBodyType()}));
         textIntroduce.setText(user.getIntro());
         distanceText.setText(String.format("%.1f", item.getDistance()/1000));
+        if(user.getLoginDate() != null) {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yy.MM.dd HH:mm");
+            loginTime.setText( dateFormat.format(user.getLoginDate()));
+        }
 
     }
 
