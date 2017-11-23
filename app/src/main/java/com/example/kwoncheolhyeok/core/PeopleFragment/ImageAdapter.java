@@ -15,6 +15,8 @@ import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class ImageAdapter extends BaseAdapter {
@@ -28,6 +30,14 @@ public class ImageAdapter extends BaseAdapter {
 
     void addItem(Item item){
         mItems.add(item);
+        // Distance 기준 정렬
+        Collections.sort(mItems, new Comparator<Item>() {
+
+            @Override
+            public int compare(Item item1, Item item2 ){
+                return (int) (item1.distance - item2.distance);
+            }
+        }) ;
     }
 
     @Override
