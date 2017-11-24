@@ -25,6 +25,7 @@
         android:layout_marginTop="5dp"
         android:layout_marginLeft="10dp"
         android:text="ChangRim"
+        android:textSize="15.5dp"
         android:textStyle="bold"
         />
 
@@ -61,6 +62,7 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:text="안녕하세요 반갑습니다"
+        android:textSize="15.5dp"
         />
 
     <ImageView

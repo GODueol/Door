@@ -107,7 +107,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         // 개인정보 Set
         User user = item.getUser();
         textId.setText(user.getId());
-        textPhysical.setText(TextUtils.join(" / ", new String[]{user.getAge(), user.getHeight(), user.getWeight(), user.getBodyType()}));
+        textPhysical.setText(TextUtils.join("/", new String[]{user.getAge(), user.getHeight(), user.getWeight(), user.getBodyType()}));
         textIntroduce.setText(user.getIntro());
         distanceText.setText(String.format("%.1f", item.getDistance()/1000));
         if(user.getLoginDate() != null) {

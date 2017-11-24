@@ -31,6 +31,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:layout_gravity="center"
-        android:text="Core@google.com" />
+        android:text="Core@Core.com"
+        android:textSize="14.5dp"/>
 
 </LinearLayout>

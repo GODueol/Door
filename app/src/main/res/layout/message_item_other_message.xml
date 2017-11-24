@@ -39,6 +39,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="hello_world"
+            android:textSize="15.5dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
     </com.example.kwoncheolhyeok.core.MessageActivity.chat_message_view.ChatMessageView>
 

@@ -107,11 +107,13 @@
             android:id="@+id/text_introduce"
             android:layout_width="match_parent"
             android:layout_height="110dp"
-            android:paddingTop="5dp"
+            android:paddingTop="10dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:layout_alignParentBottom="true"
             android:text="Introduce place"
+            android:textSize="15.5dp"
+
             android:textColor="@android:color/white"
             />
         <!-- 글자수 제한 : android:maxLength="198" -->
@@ -123,9 +125,9 @@
             android:layout_above="@+id/text_introduce"
             android:paddingTop="5dp"
             android:paddingLeft="10dp"
-            android:text="26 / 172 / 67 / Standard"
+            android:text="26 /174 /64 /Standard"
+            android:textSize="13.5dp"
             android:textColor="@android:color/white"
-            android:textStyle="bold"
             />
         
         <View
@@ -146,6 +148,8 @@
             android:paddingTop="5dp"
             android:paddingLeft="10dp"
             android:text="Kwon Cheol Hyeok"
+            android:textSize="15.5dp"
+
             android:textColor="@android:color/white"
             android:textStyle="bold"
             />

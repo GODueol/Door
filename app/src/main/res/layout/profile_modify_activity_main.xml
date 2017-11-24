@@ -471,6 +471,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dip"
                     android:text="AGE"
+                    android:textSize="15dp"
                     android:textColor="#FFFFFF"
                     android:textStyle="bold" />
 
@@ -493,6 +494,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="80dp"
+                    android:textSize="15dp"
                     android:text="min"
                     android:textColor="@color/text_white" />
 
@@ -502,6 +504,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="59dp"
                     android:text="~"
+                    android:textSize="15dp"
                     android:textColor="@color/text_white" />
 
                 <TextView
@@ -510,6 +513,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="20dp"
+                    android:textSize="15dp"
                     android:text="max"
                     android:textColor="@color/text_white" />
 
@@ -527,6 +531,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dip"
+                    android:textSize="15dp"
                     android:text="HEIGHT"
                     android:textColor="#FFFFFF"
                     android:textStyle="bold" />
@@ -552,6 +557,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="80dp"
+                    android:textSize="15dp"
                     android:text="min"
                     android:textColor="@color/text_white" />
 
@@ -561,6 +567,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="59dp"
                     android:text="~"
+                    android:textSize="15dp"
                     android:textColor="@color/text_white" />
 
                 <TextView
@@ -569,6 +576,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="20dp"
+                    android:textSize="15dp"
                     android:text="max"
                     android:textColor="@color/text_white" />
             </RelativeLayout>
@@ -586,6 +594,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dip"
                     android:text="WEIGHT"
+                    android:textSize="15dp"
                     android:textColor="#FFFFFF"
                     android:textStyle="bold" />
 
@@ -607,6 +616,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="80dp"
+                android:textSize="15dp"
                 android:text="min"
                 android:textColor="@color/text_white" />
 
@@ -616,6 +626,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="59dp"
                 android:text="~"
+                android:textSize="15dp"
                 android:textColor="@color/text_white" />
 
             <TextView
@@ -625,6 +636,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="20dp"
                 android:text="max"
+                android:textSize="15dp"
                 android:textColor="@color/text_white" />
 
         </RelativeLayout>
@@ -642,6 +654,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dip"
                     android:text="BODY TYPE"
+                    android:textSize="15dp"
                     android:textColor="#FFFFFF"
                     android:textStyle="bold" />
 
@@ -662,16 +675,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:layout_marginRight="110dp"
+                android:layout_marginRight="130dp"
                 android:text="min"
+                android:textSize="15dp"
                 android:textColor="@color/text_white" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:layout_marginRight="97dp"
+                android:layout_marginRight="114dp"
                 android:text="~"
+                android:textSize="15dp"
                 android:textColor="@color/text_white" />
 
             <TextView
@@ -681,6 +696,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="20dp"
                 android:text="max"
+                android:textSize="15dp"
                 android:textColor="@color/text_white" />
 
         </RelativeLayout>

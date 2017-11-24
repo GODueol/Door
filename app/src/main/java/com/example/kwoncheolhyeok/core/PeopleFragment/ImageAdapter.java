@@ -81,6 +81,7 @@ public class ImageAdapter extends BaseAdapter {
 
         // 거리 출력
         name.setText(String.format("%.1fkm", item.distance/1000));
+        name.setTextSize((float) 15.5);
 
         return v;
     }

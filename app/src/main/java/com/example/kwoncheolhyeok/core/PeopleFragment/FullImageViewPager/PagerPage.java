@@ -61,7 +61,6 @@ public class PagerPage extends android.support.v4.app.Fragment {
                     return false;
                 }
             });
-
         }
         return view;
     }

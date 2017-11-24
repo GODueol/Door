@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <group
         android:id="@+id/menu_top"
@@ -8,19 +9,27 @@
         <item
             android:id="@+id/nav_People"
             android:icon="@drawable/people"
-            android:title="People" />
+            android:title="People"
+            app:theme="@style/NavigationViewStyle"
+            />
         <item
             android:id="@+id/nav_mycore"
             android:icon="@drawable/core"
-            android:title="My Core" />
+            android:title="My Core"
+            app:theme="@style/NavigationViewStyle"
+            />
         <item
             android:id="@+id/nav_message"
             android:icon="@drawable/message"
-            android:title="Message" />
+            android:title="Message"
+            app:theme="@style/NavigationViewStyle"
+            />
         <item
             android:id="@+id/nav_friends"
             android:icon="@drawable/friends"
-            android:title="Friends" />
+            android:title="Friends"
+            app:theme="@style/NavigationViewStyle"
+            />
 
     </group>
 
@@ -33,7 +42,9 @@
         <item
             android:id="@+id/nav_setting"
             android:icon="@drawable/setting"
-            android:title="Setting" />
+            android:title="Setting"
+            app:theme="@style/NavigationViewStyle"
+            />
 
     <!--</group>-->
 
@@ -42,11 +53,13 @@
         <item
             android:id="@+id/nav_coreplus"
             android:title="Core+"
+            app:theme="@style/NavigationViewStyle"
             />
 
         <item
             android:id="@+id/nav_logout"
             android:title="Logout"
+            app:theme="@style/NavigationViewStyle"
             />
     </group>
 

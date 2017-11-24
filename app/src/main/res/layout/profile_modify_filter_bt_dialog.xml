@@ -16,13 +16,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="min"
+            android:textSize="15dp"
             android:layout_marginRight="108dp"
             />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="max"/>
+            android:text="max"
+            android:textSize="15dp"
+            />
 
     </LinearLayout>
 
@@ -40,6 +43,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_marginRight="70dp"
+        android:theme="@style/NumberPickerText"
         />
 
     <NumberPicker
@@ -47,6 +51,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
+        android:theme="@style/NumberPickerText"
         />
 
     </LinearLayout>
@@ -67,6 +72,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Set"
+        android:textSize="15dp"
+
         android:layout_weight="0.5"
         android:layout_marginRight="10dp"
         />
@@ -78,6 +85,8 @@
         android:layout_weight="0.5"
         android:layout_marginLeft="10dp"
         android:text="Cancel"
+        android:textSize="15dp"
+
         />
 
     </LinearLayout>
