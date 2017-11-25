@@ -64,6 +64,7 @@ public class TabFragment1 extends android.support.v4.app.Fragment {
         // 스와이프로 위치 새로고침
         final SwipeRefreshLayout mSwipeRefreshLayout = view.findViewById(R.id.swipe_layout);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+
             @Override
             public void onRefresh() {
                 // 위치 새로고침

@@ -297,6 +297,8 @@
                 android:text="NickName"
                 android:textColor="#FFFFFF"
                 android:textSize="15dp"
+                android:cursorVisible="false"
+                android:background="@android:color/transparent"
                 android:theme="@style/Theme.App.Base" />
 
             <View
@@ -413,16 +415,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/introduce_nouse"
-                android:layout_marginLeft="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
                 android:focusableInTouchMode="true"
                 android:gravity="left"
                 android:maxLength="200"
                 android:maxLines="5"
+                android:lineSpacingExtra="5dip"
+                android:background="@android:color/transparent"
                 android:text="소개란"
                 android:textColor="#FFFFFF"
                 android:textSize="15dp"
-                android:theme="@style/Theme.App.Base" />
+                android:cursorVisible="false"
+                android:theme="@style/Theme.App.Base"
+                />
 
             <View
                 android:id="@+id/section_line5"
