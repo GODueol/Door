@@ -23,7 +23,7 @@ public class DataContainer {
     private DataContainer() {
     }
 
-    User user;
+    User user = null;
 
     public User getUser() {
         return user;

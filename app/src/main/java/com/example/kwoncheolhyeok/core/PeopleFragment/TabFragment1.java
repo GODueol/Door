@@ -173,9 +173,10 @@ public class TabFragment1 extends android.support.v4.app.Fragment {
 
     private boolean isOnFilter(User oUser) {
         if(!mUser.isUseFilter()) return true;   // 필터 적용여부
-        if(!(mUser.getAgeBoundary().getMin() <= oUser.getAgeByInt() && oUser.getAgeByInt() <= mUser.getAgeBoundary().getMax())) return false;
-        if(!(mUser.getHeightBoundary().getMin() <= oUser.getHeightByInt() && oUser.getHeightByInt() <= mUser.getHeightBoundary().getMax())) return false;
-        if(!(mUser.getWeightBoundary().getMin() <= oUser.getWeightByInt() && oUser.getWeightByInt() <= mUser.getWeightBoundary().getMax())) return false;
+
+        if(!(mUser.getAgeBoundary().getMin() <= Integer.parseInt(oUser.getAge()) && Integer.parseInt(oUser.getAge()) <= mUser.getAgeBoundary().getMax())) return false;
+        if(!(mUser.getHeightBoundary().getMin() <= Integer.parseInt(oUser.getHeight()) && Integer.parseInt(oUser.getHeight()) <= mUser.getHeightBoundary().getMax())) return false;
+        if(!(mUser.getWeightBoundary().getMin() <= Integer.parseInt(oUser.getWeight()) && Integer.parseInt(oUser.getWeight()) <= mUser.getWeightBoundary().getMax())) return false;
         int minBodyType = Arrays.asList(DataContainer.bodyTypes).indexOf(mUser.getBodyTypeBoundary().getMin());
         int maxBodyType = Arrays.asList(DataContainer.bodyTypes).indexOf(mUser.getBodyTypeBoundary().getMax());
         int bodyType = Arrays.asList(DataContainer.bodyTypes).indexOf(oUser.getBodyType());
@@ -194,9 +195,9 @@ public class TabFragment1 extends android.support.v4.app.Fragment {
             @Override
             public void onComplete(String key, DatabaseError error) {
                 if (error != null) {
-                    Toast.makeText(getContext(),"There was an error saving the location to GeoFire: " + error,Toast.LENGTH_SHORT).show();
+                    if(getActivity()!= null) Toast.makeText(getActivity(),"There was an error saving the location to GeoFire: " + error,Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(getContext(),"Location saved on server successfully! ",Toast.LENGTH_SHORT).show();
+                    if(getActivity()!= null) Toast.makeText(getActivity(),"Location saved on server successfully! ",Toast.LENGTH_SHORT).show();
                 }
             }
         });

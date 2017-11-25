@@ -142,35 +142,9 @@ public class LoginActivity extends AppCompatActivity {
 
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-
-                    final User mUser = dataSnapshot.getValue(User.class);
-                    mUser.setLoginDate(new Date(System.currentTimeMillis()));
+                    User mUser = dataSnapshot.getValue(User.class);
                     DataContainer.getInstance().setUser(mUser);
-
-                    // 로그인 시간 Update
-                    FirebaseDatabase.getInstance().getReference("users").child(user.getUid()).setValue(mUser)
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    DataContainer.getInstance().setUser(mUser);  // 로컬 저장
-                                    onLoginSuccess();
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(getApplicationContext(), "Save Fail", Toast.LENGTH_SHORT).show();
-                                    Log.d(getApplication().getClass().getName(), e.getMessage());
-                                }
-                            })
-                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    CoreProgress.getInstance().stopProgressDialog();
-                                }
-                            });
-
-
+                    onLoginSuccess();
                 }
 
                 @Override

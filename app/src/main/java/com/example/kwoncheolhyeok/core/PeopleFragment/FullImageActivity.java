@@ -22,6 +22,7 @@ import com.google.firebase.appindexing.builders.Actions;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -110,9 +111,10 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         textPhysical.setText(TextUtils.join("/", new String[]{user.getAge(), user.getHeight(), user.getWeight(), user.getBodyType()}));
         textIntroduce.setText(user.getIntro());
         distanceText.setText(String.format("%.1f", item.getDistance()/1000));
-        if(user.getLoginDate() != null) {
+
+        if(user.getLoginDate() != 0) {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yy.MM.dd HH:mm");
-            loginTime.setText( dateFormat.format(user.getLoginDate()));
+            loginTime.setText( dateFormat.format(new Date(user.getLoginDate())));
         }
 
     }

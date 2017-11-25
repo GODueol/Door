@@ -3,43 +3,39 @@ package com.example.kwoncheolhyeok.core.Entity;
 import java.io.Serializable;
 import java.util.Date;
 
-/**
- * Created by gimbyeongjin on 2017. 8. 13..
- */
-
 public class User implements Serializable{
 
     public User() {
     }
 
-    String email = "";
-    String id = "";
-    String age;
-    String height;
-    String weight;
-    String bodyType;
+    private String email = "";
+    private String id = "";
+    private String age;
+    private String height;
+    private String weight;
+    private String bodyType;
 
-    String intro;
+    private String intro;
 
 
-    IntBoundary ageBoundary;
-    IntBoundary heightBoundary;
-    IntBoundary weightBoundary;
-    StringBoundary bodyTypeBoundary;
+    private IntBoundary ageBoundary;
+    private IntBoundary heightBoundary;
+    private IntBoundary weightBoundary;
+    private StringBoundary bodyTypeBoundary;
 
-    Date loginDate;
+    private long loginDate;
 
-    public Date getLoginDate() {
+    public long getLoginDate() {
         return loginDate;
     }
 
-    public void setLoginDate(Date loginDate) {
+    public void setLoginDate(long loginDate) {
         this.loginDate = loginDate;
     }
 
-    boolean isLockPic2;
-    boolean isLockPic3;
-    boolean isLockPic4;
+    private boolean isLockPic2;
+    private boolean isLockPic3;
+    private boolean isLockPic4;
 
     public boolean isLockPic2() {
         return isLockPic2;
@@ -65,7 +61,7 @@ public class User implements Serializable{
         isLockPic4 = lockPic4;
     }
 
-    boolean isUseFilter;
+    private boolean isUseFilter;
 
     public boolean isUseFilter() {
         return isUseFilter;
@@ -172,15 +168,4 @@ public class User implements Serializable{
         this.weight = weight;
     }
 
-    public int getAgeByInt(){
-        return Integer.parseInt(age);
-    }
-
-    public int getHeightByInt(){
-        return Integer.parseInt(height);
-    }
-
-    public int getWeightByInt(){
-        return Integer.parseInt(weight);
-    }
 }
