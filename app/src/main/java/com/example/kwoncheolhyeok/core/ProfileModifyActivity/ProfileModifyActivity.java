@@ -334,8 +334,8 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
             max_height_filter.setText(Integer.toString(maxBoundary[FILTER.HEIGHT.ordinal()]));
             min_height_filter.setText(Integer.toString(minBoundary[FILTER.HEIGHT.ordinal()]));
 
-            max_bodytype_filter.setText(DataContainer.bodyTypes[0]);
-            min_bodytype_filter.setText(DataContainer.bodyTypes[4]);
+            max_bodytype_filter.setText(DataContainer.bodyTypes[4]);
+            min_bodytype_filter.setText(DataContainer.bodyTypes[0]);
         }
 
         /* filter_switch */
