@@ -89,17 +89,29 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
     @Bind(R.id.filter_switch)
     Switch filterSwitch;
 
-    @Bind(R.id.AGE_FILTER1)
+    @Bind(R.id.AGE_FILTER)
     RelativeLayout ageFilterLayout;
 
-    @Bind(R.id.HEIGHT_FILTER1)
+    @Bind(R.id.HEIGHT_FILTER)
     RelativeLayout heightFilterLayout;
 
-    @Bind(R.id.WEIGHT_FILTER1)
+    @Bind(R.id.WEIGHT_FILTER)
     RelativeLayout weightFilterLayout;
 
-    @Bind(R.id.BODY_TYPE_FILTER1)
+    @Bind(R.id.BODY_TYPE_FILTER)
     RelativeLayout bodyTypeFilterLayout;
+
+    @Bind(R.id.AGE_FILTER1)
+    RelativeLayout ageFilterLayout1;
+
+    @Bind(R.id.HEIGHT_FILTER1)
+    RelativeLayout heightFilterLayout1;
+
+    @Bind(R.id.WEIGHT_FILTER1)
+    RelativeLayout weightFilterLayout1;
+
+    @Bind(R.id.BODY_TYPE_FILTER1)
+    RelativeLayout bodyTypeFilterLayout1;
 
     @Bind(R.id.lock2)
     ToggleButton lock2Toggle;
@@ -310,6 +322,20 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 
         } catch (Exception e) {
             e.printStackTrace();
+
+            // 초기 유저라서 아직 셋팅이 안된 케이스
+            // 디폴트 값으로 설정
+            max_age_filter.setText(Integer.toString(maxBoundary[FILTER.AGE.ordinal()]));
+            min_age_filter.setText(Integer.toString(minBoundary[FILTER.AGE.ordinal()]));
+
+            max_weight_filter.setText(Integer.toString(maxBoundary[FILTER.WEIGHT.ordinal()]));
+            min_weight_filter.setText(Integer.toString(minBoundary[FILTER.WEIGHT.ordinal()]));
+
+            max_height_filter.setText(Integer.toString(maxBoundary[FILTER.HEIGHT.ordinal()]));
+            min_height_filter.setText(Integer.toString(minBoundary[FILTER.HEIGHT.ordinal()]));
+
+            max_bodytype_filter.setText(DataContainer.bodyTypes[0]);
+            min_bodytype_filter.setText(DataContainer.bodyTypes[4]);
         }
 
         /* filter_switch */
@@ -393,6 +419,11 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         heightFilterLayout.setVisibility(FLAG);
         weightFilterLayout.setVisibility(FLAG);
         bodyTypeFilterLayout.setVisibility(FLAG);
+        ageFilterLayout1.setVisibility(FLAG);
+        heightFilterLayout1.setVisibility(FLAG);
+        weightFilterLayout1.setVisibility(FLAG);
+        bodyTypeFilterLayout1.setVisibility(FLAG);
+
     }
 
     // 넘버씨커 디바이더 색 바꾸기
@@ -587,7 +618,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         np.setOnValueChangedListener(this);
 
         final NumberPicker np2 = (NumberPicker) d.findViewById(R.id.numberPicker2);
-        np2.setMinValue(np.getValue()); //from array first value
+        np2.setMinValue(0); //from array first value
         np2.setMaxValue(DataContainer.bodyTypes.length - 1); //to array last value
         np2.setValue(Arrays.asList(DataContainer.bodyTypes).indexOf(max_bodytype_filter.getText()));
         np2.setDisplayedValues(DataContainer.bodyTypes);
