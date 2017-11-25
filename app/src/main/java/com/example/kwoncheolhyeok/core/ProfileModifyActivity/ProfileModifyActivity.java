@@ -1,17 +1,15 @@
 package com.example.kwoncheolhyeok.core.ProfileModifyActivity;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -29,6 +27,10 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.example.kwoncheolhyeok.core.Camera.LoadPicture;
 import com.example.kwoncheolhyeok.core.Entity.IntBoundary;
 import com.example.kwoncheolhyeok.core.Entity.StringBoundary;
@@ -37,7 +39,6 @@ import com.example.kwoncheolhyeok.core.Event.RefreshLocationEvent;
 import com.example.kwoncheolhyeok.core.Event.SetProfilePicEvent;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.BusProvider;
-import com.example.kwoncheolhyeok.core.Util.CoreProgress;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -55,6 +56,8 @@ import java.util.Arrays;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+
+import static com.example.kwoncheolhyeok.core.Util.CoreProgress.getInstance;
 
 
 public class ProfileModifyActivity extends AppCompatActivity implements NumberPicker.OnValueChangeListener {
@@ -132,28 +135,26 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
     ImageView delete4Image;
 
     // filter boundary
-    enum FILTER {AGE, HEIGHT, WEIGHT};
+    enum FILTER {AGE, HEIGHT, WEIGHT}
 
     private static final int minBoundary[] = {20 , 100, 40};
     private static final int maxBoundary[] = {99, 220, 140};
 
-    // 카메라관련 인자
-    private static final int REQUEST_TAKE_PHOTO = 1;
     private static final int REQUEST_GALLERY = 2;
-    private static final int REQUEST_CODE_PROFILE_IMAGE_CROP = 3;
     private LoadPicture loadPicture;
-    private ImageView modifingPic;
+    private ImageView modifyingPic;
 
     // User Info
     User user;
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.profile_modify_activity_main);
         ButterKnife.bind(this);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //액션바 아이콘을 업 네비게이션 형태로 표시합니다.
@@ -180,7 +181,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 //            }
 //        });
 
-        agePick = (TextView) findViewById(R.id.numberPicker1);
+        agePick = findViewById(R.id.numberPicker1);
         agePick.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -188,7 +189,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
             }
         });
 
-        heightPick = (TextView) findViewById(R.id.numberPicker2);
+        heightPick = findViewById(R.id.numberPicker2);
         heightPick.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -196,7 +197,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
             }
         });
 
-        weightPick = (TextView) findViewById(R.id.numberPicker3);
+        weightPick = findViewById(R.id.numberPicker3);
         weightPick.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -204,7 +205,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
             }
         });
 
-        bodyTypePick = (TextView) findViewById(R.id.numberPicker4);
+        bodyTypePick = findViewById(R.id.numberPicker4);
         bodyTypePick.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -214,14 +215,14 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 
 
         // 필터 다이얼로그 열기
-        min_age_filter = (TextView) findViewById(R.id.min_age_filter);
+        min_age_filter = findViewById(R.id.min_age_filter);
         min_age_filter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 show(min_age_filter, max_age_filter, FILTER.AGE);
             }
         });
-        max_age_filter = (TextView) findViewById(R.id.max_age_filter);
+        max_age_filter = findViewById(R.id.max_age_filter);
         max_age_filter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -229,14 +230,14 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
             }
         });
 
-        min_height_filter = (TextView) findViewById(R.id.min_height_filter);
+        min_height_filter = findViewById(R.id.min_height_filter);
         min_height_filter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 show(min_height_filter, max_height_filter, FILTER.HEIGHT);
             }
         });
-        max_height_filter = (TextView) findViewById(R.id.max_height_filter);
+        max_height_filter = findViewById(R.id.max_height_filter);
         max_height_filter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -244,14 +245,14 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
             }
         });
 
-        min_weight_filter = (TextView) findViewById(R.id.min_weight_filter);
+        min_weight_filter = findViewById(R.id.min_weight_filter);
         min_weight_filter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 show(min_weight_filter, max_weight_filter, FILTER.WEIGHT);
             }
         });
-        max_weight_filter = (TextView) findViewById(R.id.max_weight_filter);
+        max_weight_filter = findViewById(R.id.max_weight_filter);
         max_weight_filter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -259,14 +260,14 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
             }
         });
 
-        min_bodytype_filter = (TextView) findViewById(R.id.min_bodytype_filter);
+        min_bodytype_filter = findViewById(R.id.min_bodytype_filter);
         min_bodytype_filter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showBodyType();
             }
         });
-        max_bodytype_filter = (TextView) findViewById(R.id.max_bodytype_filter);
+        max_bodytype_filter = findViewById(R.id.max_bodytype_filter);
         max_bodytype_filter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -297,7 +298,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 
             @Override
             public void onClick(View v) {
-                modifingPic = (ImageView) v;
+                modifyingPic = (ImageView) v;
                 loadPicture.onGallery();
             }
         };
@@ -376,7 +377,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
                         StorageReference desertRef = storageRef.child(picPath);
 
                         // Delete the file
-                        CoreProgress.getInstance().startProgressDialog(ProfileModifyActivity.this);
+                        getInstance().startProgressDialog(ProfileModifyActivity.this);
                         desertRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
@@ -393,7 +394,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
                         }).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
-                                CoreProgress.getInstance().stopProgressDialog();
+                                getInstance().stopProgressDialog();
                             }
                         });
                     }
@@ -426,28 +427,6 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 
     }
 
-    // 넘버씨커 디바이더 색 바꾸기
-    private void setDividerColor(NumberPicker numberpicker, int color) {
-
-        java.lang.reflect.Field[] pickerFields = NumberPicker.class.getDeclaredFields();
-        for (java.lang.reflect.Field pf : pickerFields) {
-            if (pf.getName().equals("mSelectionDivider")) {
-                pf.setAccessible(true);
-                try {
-                    ColorDrawable colorDrawable = new ColorDrawable(color);
-                    pf.set(numberpicker, colorDrawable);
-                } catch (IllegalArgumentException e) {
-                    e.printStackTrace();
-                } catch (Resources.NotFoundException e) {
-                    e.printStackTrace();
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                }
-                break;
-            }
-        }
-    }
-
     //implements 부분 구현
     @Override
     public void onValueChange(NumberPicker numberPicker, int oldVal, int newVal) {
@@ -467,12 +446,12 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 
         d.show();
 
-        TextView b1 = (TextView) d.findViewById(R.id.button1);
-        TextView b2 = (TextView) d.findViewById(R.id.button2);
+        TextView b1 = d.findViewById(R.id.button1);
+        TextView b2 = d.findViewById(R.id.button2);
 
 
         // 지금 하려는 부분
-        final NumberPicker numberpicker1 = (NumberPicker) d.findViewById(R.id.numberPicker1);
+        final NumberPicker numberpicker1 = d.findViewById(R.id.numberPicker1);
         numberpicker1.setMinValue(20);
         numberpicker1.setMaxValue(99);
         numberpicker1.setValue(Integer.parseInt(agePick.getText().toString()));
@@ -480,7 +459,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         numberpicker1.setWrapSelectorWheel(false);
         numberpicker1.setOnValueChangedListener(this);
 
-        final NumberPicker numberpicker2 = (NumberPicker) d.findViewById(R.id.numberPicker2);
+        final NumberPicker numberpicker2 = d.findViewById(R.id.numberPicker2);
         numberpicker2.setMinValue(100);
         numberpicker2.setMaxValue(220);
         numberpicker2.setValue(Integer.parseInt(heightPick.getText().toString()));
@@ -489,7 +468,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         numberpicker2.setOnValueChangedListener(this);
 
 
-        final NumberPicker numberpicker3 = (NumberPicker) d.findViewById(R.id.numberPicker3);
+        final NumberPicker numberpicker3 = d.findViewById(R.id.numberPicker3);
         numberpicker3.setMinValue(40);
         numberpicker3.setMaxValue(140);
         numberpicker3.setValue(Integer.parseInt(weightPick.getText().toString()));
@@ -497,7 +476,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         numberpicker3.setWrapSelectorWheel(false);
         numberpicker3.setOnValueChangedListener(this);
 
-        final NumberPicker numberpicker4 = (NumberPicker) d.findViewById(R.id.numberPicker4);
+        final NumberPicker numberpicker4 = d.findViewById(R.id.numberPicker4);
         numberpicker4.setMinValue(0); //from array first value
         numberpicker4.setMaxValue(DataContainer.bodyTypes.length - 1); //to array last value
         numberpicker4.setDisplayedValues(DataContainer.bodyTypes);
@@ -507,6 +486,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         numberpicker4.setOnValueChangedListener(this);
 
         b1.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onClick(View v) {
 
@@ -541,17 +521,17 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 
         d.show();
 
-        TextView b1 = (TextView) d.findViewById(R.id.button1);
-        TextView b2 = (TextView) d.findViewById(R.id.button2);
+        TextView b1 = d.findViewById(R.id.button1);
+        TextView b2 = d.findViewById(R.id.button2);
 
-        final NumberPicker np = (NumberPicker) d.findViewById(R.id.numberPicker1);
+        final NumberPicker np = d.findViewById(R.id.numberPicker1);
         np.setMaxValue(maxBoundary[filterType.ordinal()]); // max value 100
         np.setMinValue(minBoundary[filterType.ordinal()]);   // min value 0
         np.setValue(Integer.parseInt(min_filter.getText().toString()));
         np.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);  //데이터 선택시 edittext 방지
         np.setWrapSelectorWheel(false);
 
-        final NumberPicker np2 = (NumberPicker) d.findViewById(R.id.numberPicker2);
+        final NumberPicker np2 = d.findViewById(R.id.numberPicker2);
         np2.setMaxValue(maxBoundary[filterType.ordinal()]); // max value 100
         np2.setMinValue(np.getValue());   // min value 0
         np2.setValue(Integer.parseInt(max_filter.getText().toString()));
@@ -604,10 +584,10 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 
         d.show();
 
-        TextView b1 = (TextView) d.findViewById(R.id.button1);
-        TextView b2 = (TextView) d.findViewById(R.id.button2);
+        TextView b1 = d.findViewById(R.id.button1);
+        TextView b2 = d.findViewById(R.id.button2);
 
-        final NumberPicker np = (NumberPicker) d.findViewById(R.id.numberPicker1);
+        final NumberPicker np = d.findViewById(R.id.numberPicker1);
 
         np.setMinValue(0); //from array first value
         np.setMaxValue(DataContainer.bodyTypes.length - 1); //to array last value
@@ -617,7 +597,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         np.setWrapSelectorWheel(false);
         np.setOnValueChangedListener(this);
 
-        final NumberPicker np2 = (NumberPicker) d.findViewById(R.id.numberPicker2);
+        final NumberPicker np2 = d.findViewById(R.id.numberPicker2);
         np2.setMinValue(0); //from array first value
         np2.setMaxValue(DataContainer.bodyTypes.length - 1); //to array last value
         np2.setValue(Arrays.asList(DataContainer.bodyTypes).indexOf(max_bodytype_filter.getText()));
@@ -679,12 +659,12 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 
     private void uploadPic(final Uri outputFileUri) {
 
-        CoreProgress.getInstance().startProgressDialog(this);
+        getInstance().startProgressDialog(this);
 
         // Create a storage reference from our app
         StorageReference storageRef = FirebaseStorage.getInstance().getReference();
 
-        final String profilePicPath = getPicPath(modifingPic);
+        final String profilePicPath = getPicPath(modifyingPic);
 
         final StorageReference spaceRef = storageRef.child(profilePicPath);
 
@@ -700,19 +680,25 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
                 Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                Glide.with(ProfileModifyActivity.this).load(downloadUrl).into(modifingPic);
+                Glide.with(ProfileModifyActivity.this).load(downloadUrl).listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        getInstance().stopProgressDialog();
+                        return false;
+                    }
+                }).into(modifyingPic);
 
                 // 첫번째 사진일 경우는 프로필 사진 변경 이벤트 발생
-                if (modifingPic == profilePic1) {
+                if (modifyingPic == profilePic1) {
                     BusProvider.getInstance().post(new SetProfilePicEvent());
                 }
                 Toast.makeText(getBaseContext(), "Upload Complete", Toast.LENGTH_SHORT).show();
-            }
-        }).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                // 프로그레스바 중단
-                CoreProgress.getInstance().stopProgressDialog();
+
             }
         });
 
@@ -736,13 +722,8 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         return profilePicPath;
     }
 
-    private void showImage(Bitmap bitmap) {
-        Drawable bitmapDrawable = new BitmapDrawable(getResources(), bitmap);
-        modifingPic.setImageDrawable(bitmapDrawable);
-    }
-
     public void save(View view) {
-        CoreProgress.getInstance().startProgressDialog(this);
+        getInstance().startProgressDialog(this);
 
         // validation
         try {
@@ -757,7 +738,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
             }
         } catch (Exception e){
             Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
-            CoreProgress.getInstance().stopProgressDialog();
+            getInstance().stopProgressDialog();
             return;
         }
 
@@ -823,7 +804,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
                     .addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
-                            CoreProgress.getInstance().stopProgressDialog();
+                            getInstance().stopProgressDialog();
                         }
                     });
         } else {
