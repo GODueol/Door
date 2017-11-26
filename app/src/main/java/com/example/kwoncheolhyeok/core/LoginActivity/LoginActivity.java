@@ -109,10 +109,6 @@ public class LoginActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
 
-                        // If sign in fails, display a message to the user. If sign in succeeds
-                        // the auth state listener will be notified and logic to handle the
-                        // signed in user can be handled in the listener.
-
                         if (task.isSuccessful()) {
                             FirebaseUser user = mAuth.getCurrentUser();
 
@@ -137,8 +133,7 @@ public class LoginActivity extends AppCompatActivity {
             Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
 
             // user 정보 읽어오기
-            userRef.child(user.getUid());
-            userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            userRef.child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
 
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -208,8 +203,6 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        getUserInfo(currentUser);
     }
 
     @Override

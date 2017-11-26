@@ -155,7 +155,7 @@ public class MainActivity extends AppCompatActivity
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if(user == null) return;
         User mUser = DataContainer.getInstance().getUser();
-        if(mUser == null) {
+        if(mUser == null || mUser.getEmail().isEmpty() || mUser.getEmail().equals("")) {
             Toast.makeText(getApplicationContext(), "로그인 실패", Toast.LENGTH_SHORT).show();
             logout();
             return;

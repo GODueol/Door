@@ -1,15 +1,14 @@
 package com.example.kwoncheolhyeok.core.Entity;
 
 import java.io.Serializable;
-import java.util.Date;
 
 public class User implements Serializable{
 
     public User() {
     }
 
-    private String email = "";
-    private String id = "";
+    private String email;// = "";
+    private String id;// = "";
     private String age;
     private String height;
     private String weight;
