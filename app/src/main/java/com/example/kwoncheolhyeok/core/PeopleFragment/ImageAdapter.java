@@ -9,9 +9,9 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.R;
-import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
 import com.example.kwoncheolhyeok.core.Util.IndexedTreeMap;
 
 import java.io.Serializable;
@@ -52,12 +52,16 @@ public class ImageAdapter extends BaseAdapter {
         return 0;
     }
 
+    static class ViewHolder{
+        ImageView imageView;
+        TextView textView;
+    }
+
     @SuppressLint("DefaultLocale")
     @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
-        View v = view;
-        ImageView picture;
-        TextView name;
+    public View getView(int i, View v, ViewGroup viewGroup) {
+        ViewHolder holder = null;
+
         Item item;
         try {
             item = getItem(i);
@@ -68,20 +72,24 @@ public class ImageAdapter extends BaseAdapter {
 
         if (v == null) {
             v = mInflater.inflate(R.layout.square_grid_view, viewGroup, false);
-            v.setTag(R.id.picture, v.findViewById(R.id.picture));
-            v.setTag(R.id.text, v.findViewById(R.id.text));
+
+            holder = new ViewHolder();
+            holder.imageView = v.findViewById(R.id.picture);
+            holder.textView = v.findViewById(R.id.text);
+            v.setTag(holder);
+        } else {
+            holder = (ViewHolder) v.getTag();
         }
 
-        picture = (ImageView) v.getTag(R.id.picture);
-        name = (TextView) v.getTag(R.id.text);
-
         // 프사 출력
-        FireBaseUtil fbUtil = FireBaseUtil.getInstance();
-        fbUtil.setImage(fbUtil.getParentPath(item.getUuid()) + "profilePic1.jpg", picture);
+
+        Glide.with(mInflater.getContext() /* context */)
+                .load(item.getPicUrl())
+                .into(holder.imageView);
 
         // 거리 출력
-        name.setText(String.format("%.1fkm", item.distance/1000));
-        name.setTextSize((float) 15.5);
+        holder.textView.setText(String.format("%.1fkm", item.distance/1000));
+        holder.textView.setTextSize((float) 15.5);
 
         return v;
     }
@@ -95,11 +103,27 @@ public class ImageAdapter extends BaseAdapter {
         float distance;
         String uuid;
         User user;
+        String picUrl;
 
         Item(float distance, String uuid, User user) {
             this.distance = distance;
             this.uuid = uuid;
             this.user = user;
+        }
+
+        public Item(float distance, String uuid, User user, String picUrl) {
+            this.distance = distance;
+            this.uuid = uuid;
+            this.user = user;
+            this.picUrl = picUrl;
+        }
+
+        public String getPicUrl() {
+            return picUrl;
+        }
+
+        public void setPicUrl(String picUrl) {
+            this.picUrl = picUrl;
         }
 
         public float getDistance() {

@@ -42,8 +42,9 @@ public class FireBaseUtil {
                 @Override
                 public void onFailure(@NonNull Exception exception) {
                     // Handle any errors
-                    Log.d(this.getClass().getName(), exception.getMessage());
+//                    Log.d(this.getClass().getName(), exception.getMessage());
                     targetImageView.setImageResource(R.drawable.a);
+                    exception.printStackTrace();
                 }
             });
         } catch (Exception e){
@@ -52,23 +53,28 @@ public class FireBaseUtil {
     }
 
     public void setImage(String filePath, final ImageView targetImageView, final RequestListener requestListener) {
-        FirebaseStorage.getInstance().getReference().child(filePath)
-                .getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri) {
-                // Got the download URL for 'users/me/profile.png'
-                Glide.with(targetImageView.getContext() /* context */)
-                        .load(uri).listener(requestListener)
-                        .into(targetImageView);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                // Handle any errors
-                Log.d(this.getClass().getName(), exception.getMessage());
-                targetImageView.setImageResource(R.drawable.a);
-            }
-        });
+        try {
+            FirebaseStorage.getInstance().getReference().child(filePath)
+                    .getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    // Got the download URL for 'users/me/profile.png'
+                    Glide.with(targetImageView.getContext() /* context */)
+                            .load(uri).listener(requestListener)
+                            .into(targetImageView);
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    // Handle any errors
+//                Log.d(this.getClass().getName(), exception.getMessage());
+                    targetImageView.setImageResource(R.drawable.a);
+                    exception.printStackTrace();
+                }
+            });
+        } catch (Exception e){
+            e.printStackTrace();
+        }
 
     }
 

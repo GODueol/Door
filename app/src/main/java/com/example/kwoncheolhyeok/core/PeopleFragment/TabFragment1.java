@@ -3,6 +3,7 @@ package com.example.kwoncheolhyeok.core.PeopleFragment;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
@@ -24,11 +25,13 @@ import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQuery;
 import com.firebase.geofire.GeoQueryEventListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
@@ -131,18 +134,26 @@ public class TabFragment1 extends android.support.v4.app.Fragment {
                 });
             }
 
-            private void addItemToGrid(String key, GeoLocation geoLocation, User oUser) {
+            private void addItemToGrid(final String key, GeoLocation geoLocation, final User oUser) {
                 // key로 프사url, 거리 가져옴
                 Location targetLocation = new Location("");//provider name is unnecessary
                 targetLocation.setLatitude(geoLocation.latitude);//your coords of course
                 targetLocation.setLongitude(geoLocation.longitude);
 
-                float distance = location.distanceTo(targetLocation);
+                final float distance = location.distanceTo(targetLocation);
 
                 // grid에 사진, distance추가
                 if(imageAdapter != null){
-                    imageAdapter.addItem(new ImageAdapter.Item(distance, key, oUser));
-                    gridView.invalidateViews();
+
+                    FirebaseStorage.getInstance().getReference().child(FireBaseUtil.getInstance().getParentPath(key) + "profilePic1.jpg")
+                            .getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+
+                            imageAdapter.addItem(new ImageAdapter.Item(distance, key, oUser, uri.toString()));
+                            gridView.invalidateViews();
+                        }
+                    });
                 } else {
                     Log.d(getTag(), "imageAdapter is null");
                 }
