@@ -420,7 +420,7 @@
                 android:focusableInTouchMode="true"
                 android:gravity="left"
                 android:maxLength="130"
-                android:maxLines="5"
+                android:maxLines="7"
                 android:lineSpacingExtra="5dip"
                 android:textColor="#FFFFFF"
                 android:textSize="15dp"
