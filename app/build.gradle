@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-
+apply plugin: 'io.fabric'
 
 android {
     compileSdkVersion 26
@@ -45,6 +45,10 @@ dependencies {
     compile 'com.android.support:support-v4:26.1.0'
     compile 'com.github.bumptech.glide:glide:4.1.1'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.1.1'
+    compile('com.crashlytics.sdk.android:crashlytics:2.7.1@aar') {
+        transitive = true
+    }
+    compile 'com.google.firebase:firebase-core:11.4.2'
 }
 apply plugin: 'com.google.gms.google-services'
 
