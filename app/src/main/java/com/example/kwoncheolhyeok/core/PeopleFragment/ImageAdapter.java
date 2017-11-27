@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.R;
+import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.IndexedTreeMap;
 
 import java.io.Serializable;
@@ -21,9 +22,11 @@ public class ImageAdapter extends BaseAdapter {
 
     private IndexedTreeMap<Item, Boolean> mItems = new IndexedTreeMap<>(new Comparator<Item>() {
         @Override
-        public int compare(Item item, Item t1) {
-            if(item.distance == t1.distance) return item.getUuid().compareTo(t1.getUuid());
-            return (int) (item.distance - t1.distance);
+        public int compare(Item item1, Item item2) {
+            if(item2.getUuid().equals(DataContainer.getInstance().getUid())) return 1;   // 1. 본인계정
+            if(item1.getUuid().equals(DataContainer.getInstance().getUid())) return -1;   // 1. 본인계정
+            if(item1.distance != item2.distance) return (int) (item1.distance - item2.distance);    // 2. 거리
+            return item1.getUuid().compareTo(item2.getUuid());  // 3. uuid
         }
     });
 
@@ -60,8 +63,7 @@ public class ImageAdapter extends BaseAdapter {
     @SuppressLint("DefaultLocale")
     @Override
     public View getView(int i, View v, ViewGroup viewGroup) {
-        ViewHolder holder = null;
-
+        ViewHolder holder;
         Item item;
         try {
             item = getItem(i);
@@ -105,13 +107,7 @@ public class ImageAdapter extends BaseAdapter {
         User user;
         String picUrl;
 
-        Item(float distance, String uuid, User user) {
-            this.distance = distance;
-            this.uuid = uuid;
-            this.user = user;
-        }
-
-        public Item(float distance, String uuid, User user, String picUrl) {
+        Item(float distance, String uuid, User user, String picUrl) {
             this.distance = distance;
             this.uuid = uuid;
             this.user = user;

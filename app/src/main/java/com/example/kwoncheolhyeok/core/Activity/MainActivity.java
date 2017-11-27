@@ -1,5 +1,6 @@
 package com.example.kwoncheolhyeok.core.Activity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -47,8 +48,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.otto.Subscribe;
 
-import java.sql.Date;
-
 /**
  *
  * drawer / viewpager drag duplication issue 
@@ -76,8 +75,8 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         // (Main View)네비게이션바 관련
-        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        drawer = findViewById(R.id.drawer_layout);
+        toolbar = findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
 
@@ -99,9 +98,10 @@ public class MainActivity extends AppCompatActivity
             }
         });
         //Navigation view
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         drawer.setOnTouchListener(new View.OnTouchListener() {
+            @SuppressLint("ClickableViewAccessibility")
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 changeToggleIcon();
@@ -111,13 +111,13 @@ public class MainActivity extends AppCompatActivity
 
         // people,board,club 스와이프 탭 view 관련
         // final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
-        viewPager = (ViewPager) findViewById(R.id.pager);
+        viewPager = findViewById(R.id.pager);
         viewPager.setAdapter(new TabPagerAdapter(
                 getSupportFragmentManager(),
                 getResources().getStringArray(R.array.titles_tab)));
 
         //TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
-        tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        tabLayout = findViewById(R.id.tab_layout);
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         tabLayout.setupWithViewPager(viewPager);
 
@@ -125,7 +125,7 @@ public class MainActivity extends AppCompatActivity
 
         //네비게이션 뷰 내의 프로필 사진 클릭시 프로필 편집
         View headerview = navigationView.getHeaderView(0);
-        profileImage = (ImageView) headerview.findViewById(R.id.profile_image);
+        profileImage = headerview.findViewById(R.id.profile_image);
         profileImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -139,7 +139,7 @@ public class MainActivity extends AppCompatActivity
         setProfilePic(profileImage);
 
         // 이메일 Set
-        TextView emailText = (TextView) headerview.findViewById(R.id.textView);
+        TextView emailText = headerview.findViewById(R.id.textView);
         try {
             emailText.setText(DataContainer.getInstance().getUser().getEmail());
         } catch (Exception e) {
@@ -191,7 +191,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -239,7 +239,7 @@ public class MainActivity extends AppCompatActivity
 
 
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
         int id = item.getItemId();
 
@@ -284,10 +284,20 @@ public class MainActivity extends AppCompatActivity
     public void ToggleIconSet(){
         Drawable drawable = ResourcesCompat.getDrawable(getResources(), R.drawable.icon, getTheme());
         Drawable drawable2 = ResourcesCompat.getDrawable(getResources(), R.drawable.icon2, getTheme());
-        Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
-        Bitmap bitmap2 = ((BitmapDrawable) drawable2).getBitmap();
-        icon_open = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 85, 85, true));
-        icon_close = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap2, 85, 85, true));
+        Bitmap bitmap = null;
+        if (drawable != null) {
+            bitmap = ((BitmapDrawable) drawable).getBitmap();
+        }
+        Bitmap bitmap2 = null;
+        if (drawable2 != null) {
+            bitmap2 = ((BitmapDrawable) drawable2).getBitmap();
+        }
+        if (bitmap != null) {
+            icon_open = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 85, 85, true));
+        }
+        if (bitmap2 != null) {
+            icon_close = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap2, 85, 85, true));
+        }
     }
     /**
      * 토클 이미지 변경
