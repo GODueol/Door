@@ -3,9 +3,9 @@ package com.example.kwoncheolhyeok.core.PeopleFragment.FullImageViewPager;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 
 import com.example.kwoncheolhyeok.core.R;
 
@@ -16,6 +16,8 @@ public class DetailImageActivity extends AppCompatActivity {
 
     DetailImageViewPagerAdapter mAdapter;
     ArrayList<String> picPaths = new ArrayList<>();
+
+    TabLayout tabLayout = null;
 
 
     @Override
@@ -31,6 +33,10 @@ public class DetailImageActivity extends AppCompatActivity {
         ViewPager viewPager=(ViewPager)findViewById(R.id.viewpager);        //Viewpager 선언 및 초기화
         viewPager.setAdapter(mAdapter);     //선언한 viewpager에 adapter를 연결
         viewPager.setCurrentItem(pagenumber);
+
+        // Viewpager indicator
+        tabLayout = (TabLayout) findViewById(R.id.tabDots);
+        tabLayout.setupWithViewPager(viewPager, true);
 
     }
 
