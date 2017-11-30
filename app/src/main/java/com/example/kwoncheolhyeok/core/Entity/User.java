@@ -22,6 +22,25 @@ public class User implements Serializable{
     private IntBoundary weightBoundary;
     private StringBoundary bodyTypeBoundary;
 
+    private PictureUrls picUrls = new PictureUrls();
+    private IsLockPictures isLockPics = new IsLockPictures();
+
+    public PictureUrls getPicUrls() {
+        return picUrls;
+    }
+
+    public void setPicUrls(PictureUrls picUrls) {
+        this.picUrls = picUrls;
+    }
+
+    public IsLockPictures getIsLockPics() {
+        return isLockPics;
+    }
+
+    public void setIsLockPics(IsLockPictures isLockPics) {
+        this.isLockPics = isLockPics;
+    }
+
     private long loginDate;
 
     public long getLoginDate() {

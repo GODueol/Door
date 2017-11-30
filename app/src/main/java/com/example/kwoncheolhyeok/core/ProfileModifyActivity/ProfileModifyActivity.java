@@ -52,6 +52,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import butterknife.Bind;
@@ -133,6 +134,8 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 
     @Bind(R.id.delete4)
     ImageView delete4Image;
+    private ImageView[] profilePics;
+    private ToggleButton[] lockButtons;
 
     // filter boundary
     enum FILTER {AGE, HEIGHT, WEIGHT}
@@ -160,26 +163,6 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //액션바 아이콘을 업 네비게이션 형태로 표시합니다.
         getSupportActionBar().setDisplayShowHomeEnabled(true); //홈 아이콘을 숨김처리합니다.
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
-
-//        lock1 = (ToggleButton) findViewById(R.id.lock1);
-//        lock1.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View arg0) {
-//                if(lock1.isChecked()){
-//                    Toast.makeText(new ProfileModifyActivity(), "1번 사진이 잠김", Toast.LENGTH_SHORT).show();
-//                }
-//                else
-//                {Toast.makeText(new ProfileModifyActivity(), "1번 사진이 열림", Toast.LENGTH_SHORT).show();}
-//                }
-//        });
-
-//        numberpicker_layout = (LinearLayout) findViewById(R.id.numberPicker_layout);
-//        numberpicker_layout.setOnClickListener(new View.OnClickListener(){
-//            @Override
-//            public void onClick(View view) {
-//                show_numPick();
-//            }
-//        });
 
         agePick = findViewById(R.id.numberPicker1);
         agePick.setOnClickListener(new View.OnClickListener() {
@@ -213,6 +196,8 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
             }
         });
 
+        profilePics = new ImageView[]{profilePic1, profilePic2, profilePic3, profilePic4};
+        lockButtons = new ToggleButton[]{null, lock2Toggle, lock3Toggle, lock4Toggle};
 
         // 필터 다이얼로그 열기
         min_age_filter = findViewById(R.id.min_age_filter);
@@ -286,11 +271,12 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         introEditText.setText(user.getIntro());
 
         // Load the image using Glide
-        FireBaseUtil fbUtil = FireBaseUtil.getInstance();
-        fbUtil.setImage(fbUtil.getParentPath() + "profilePic1.jpg", profilePic1);
-        fbUtil.setImage(fbUtil.getParentPath() + "profilePic2.jpg", profilePic2);
-        fbUtil.setImage(fbUtil.getParentPath() + "profilePic3.jpg", profilePic3);
-        fbUtil.setImage(fbUtil.getParentPath() + "profilePic4.jpg", profilePic4);
+        ArrayList<String> picUrlList = user.getPicUrls().toArray();
+        for (int i=0; i<profilePics.length; i++){
+            String url = picUrlList.get(i);
+            if(url == null) continue;
+            Glide.with(getBaseContext()).load(url).into(profilePics[i]);
+        }
 
         // Set Event of Getting Picture
         loadPicture = new LoadPicture(this, this);
@@ -359,6 +345,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         setOnDelPicBtnClickListener(delete3Image, profilePic3);
         setOnDelPicBtnClickListener(delete4Image, profilePic4);
 
+
     }
 
     private void setOnDelPicBtnClickListener(final ImageView btn, final ImageView targetPic) {
@@ -384,6 +371,8 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
                                 // File deleted successfully
                                 Log.d(getClass().getName(),"Delete Pic Success");
                                 targetPic.setImageResource(R.drawable.a);
+                                removeUserPicUrl(targetPic);    // Url 지울때는 순서를 지켜줘야함
+                                BusProvider.getInstance().post(new RefreshLocationEvent());
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
@@ -410,6 +399,20 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         };
 
         btn.setOnClickListener(onDeleteClickListener);
+    }
+
+    private void removeUserPicUrl(ImageView targetPic) {
+        if(targetPic == profilePic1) {
+            user.getPicUrls().setPicUrl1(null);
+        } else if(targetPic == profilePic2) {
+            user.getPicUrls().setPicUrl2(null);
+        } else if(targetPic == profilePic3) {
+            user.getPicUrls().setPicUrl3(null);
+        } else if(targetPic == profilePic4) {
+            user.getPicUrls().setPicUrl4(null);
+        }
+        DataContainer.getInstance().setUser(user);
+        FirebaseDatabase.getInstance().getReference("users").child(DataContainer.getInstance().getUid()).setValue(user);
     }
 
     private void setVisibilityFilterLayout(boolean isChecked) {
@@ -680,6 +683,10 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
                 Uri downloadUrl = taskSnapshot.getDownloadUrl();
+
+                // downloadUrl 저장
+                saveUserPicUrl(downloadUrl);
+
                 Glide.with(ProfileModifyActivity.this).load(downloadUrl).listener(new RequestListener<Drawable>() {
                     @Override
                     public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
@@ -702,6 +709,21 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
             }
         });
 
+    }
+
+    private void saveUserPicUrl(Uri downloadUrl) {
+        if(modifyingPic == profilePic1) {
+            user.getPicUrls().setPicUrl1(downloadUrl.toString());
+        } else if(modifyingPic == profilePic2) {
+            user.getPicUrls().setPicUrl2(downloadUrl.toString());
+        } else if(modifyingPic == profilePic3) {
+            user.getPicUrls().setPicUrl3(downloadUrl.toString());
+        } else if(modifyingPic == profilePic4) {
+            user.getPicUrls().setPicUrl4(downloadUrl.toString());
+        }
+        DataContainer.getInstance().setUser(user);
+        FirebaseDatabase.getInstance().getReference("users").child(DataContainer.getInstance().getUid()).setValue(user);
+        BusProvider.getInstance().post(new RefreshLocationEvent());
     }
 
     @NonNull
@@ -768,23 +790,26 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         user.setBodyType(bodyTypePick.getText().toString());
         user.setIntro(introEditText.getText().toString());
         user.setUseFilter(filterSwitch.isChecked());
+
         user.setLockPic2(lock2Toggle.isChecked());
         user.setLockPic3(lock3Toggle.isChecked());
         user.setLockPic4(lock4Toggle.isChecked());
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        user.getIsLockPics().setIsLockPic2(lock2Toggle.isChecked());
+        user.getIsLockPics().setIsLockPic3(lock3Toggle.isChecked());
+        user.getIsLockPics().setIsLockPic4(lock4Toggle.isChecked());
 
-        if (user != null) {
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (firebaseUser != null) {
             // User is signed in
-            Log.d(this.getClass().getName(), "onAuthStateChanged:signed_in:" + user.getUid());
+            Log.d(this.getClass().getName(), "onAuthStateChanged:signed_in:" + firebaseUser.getUid());
 
             // 파이어베이스 저장
-            final User mUser = this.user;
-            FirebaseDatabase.getInstance().getReference("users").child(user.getUid()).setValue(mUser)
+            FirebaseDatabase.getInstance().getReference("users").child(firebaseUser.getUid()).setValue(user)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
-                            DataContainer.getInstance().setUser(mUser);  // 로컬 저장
+                            DataContainer.getInstance().setUser(user);  // 로컬 저장
                             Toast.makeText(getApplicationContext(), "Save Success", Toast.LENGTH_SHORT).show();
 
                             // 성공시 백버튼

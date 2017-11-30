@@ -1,5 +1,6 @@
 package com.example.kwoncheolhyeok.core.PeopleFragment;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.kwoncheolhyeok.core.CorePage.CoreActivity;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.PeopleFragment.FullImageViewPager.DetailImageActivity;
@@ -55,6 +57,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
     @Bind(R.id.login_time)
     TextView loginTime;
 
+    @SuppressLint("DefaultLocale")
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,17 +87,6 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         ImageAdapter.Item item = (ImageAdapter.Item) p.getSerializableExtra("item");
         String uuid = item.getUuid();
 
-        // 사진 출력
-        FireBaseUtil fbUtil = FireBaseUtil.getInstance();
-        picPaths.add(fbUtil.getParentPath(uuid) + "profilePic1.jpg");
-        picPaths.add(fbUtil.getParentPath(uuid) + "profilePic2.jpg");
-        picPaths.add(fbUtil.getParentPath(uuid) + "profilePic3.jpg");
-        picPaths.add(fbUtil.getParentPath(uuid) + "profilePic4.jpg");
-        ImageView imageViews[] = {page1, page2, page3, page4};
-        for (int i=0; i<imageViews.length; i++){
-            fbUtil.setImage(picPaths.get(i), imageViews[i]);
-        }
-        fbUtil.setImage(picPaths.get(0), fullImageView);    // 프사
 
         //개인 화면에서 코어 액티비티로 넘어감
         core_enter = findViewById(R.id.core_enter_layout);
@@ -112,11 +104,29 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         textIntroduce.setText(user.getIntro());
         distanceText.setText(String.format("%.1f", item.getDistance()/1000));
 
+        // 로그인 시간
         if(user.getLoginDate() != 0) {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yy.MM.dd HH:mm");
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormat = new SimpleDateFormat("yy.MM.dd HH:mm");
             loginTime.setText( dateFormat.format(new Date(user.getLoginDate())));
         }
 
+        // 사진 출력
+        FireBaseUtil fbUtil = FireBaseUtil.getInstance();
+        picPaths.add(fbUtil.getParentPath(uuid) + "profilePic1.jpg");
+        picPaths.add(fbUtil.getParentPath(uuid) + "profilePic2.jpg");
+        picPaths.add(fbUtil.getParentPath(uuid) + "profilePic3.jpg");
+        picPaths.add(fbUtil.getParentPath(uuid) + "profilePic4.jpg");
+
+        ImageView profilePics[] = {page1, page2, page3, page4};
+        ArrayList<String> picUrlList = user.getPicUrls().toNotNullArray();
+        for (int i=0; i<picUrlList.size(); i++){
+            String url = picUrlList.get(i);
+            if(url == null) continue;
+            Glide.with(getBaseContext()).load(url).into(profilePics[i]);
+            if(i==0){ // 프사
+                Glide.with(getBaseContext()).load(url).into(fullImageView);
+            }
+        }
     }
 
     // 뒤로가기 버튼 기능

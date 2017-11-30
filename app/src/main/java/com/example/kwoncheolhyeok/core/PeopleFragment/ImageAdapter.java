@@ -26,7 +26,7 @@ public class ImageAdapter extends BaseAdapter {
             if(item2.getUuid().equals(DataContainer.getInstance().getUid())) return 1;   // 1. 본인계정
             if(item1.getUuid().equals(DataContainer.getInstance().getUid())) return -1;   // 1. 본인계정
             if(item1.distance != item2.distance) return (int) (item1.distance - item2.distance);    // 2. 거리
-            return item1.getUuid().compareTo(item2.getUuid());  // 3. uuid
+            return 0;
         }
     });
 
@@ -114,7 +114,7 @@ public class ImageAdapter extends BaseAdapter {
             this.picUrl = picUrl;
         }
 
-        public String getPicUrl() {
+        String getPicUrl() {
             return picUrl;
         }
 
@@ -122,7 +122,7 @@ public class ImageAdapter extends BaseAdapter {
             this.picUrl = picUrl;
         }
 
-        public float getDistance() {
+        float getDistance() {
             return distance;
         }
 
@@ -130,7 +130,7 @@ public class ImageAdapter extends BaseAdapter {
             this.distance = distance;
         }
 
-        public String getUuid() {
+        String getUuid() {
             return uuid;
         }
 

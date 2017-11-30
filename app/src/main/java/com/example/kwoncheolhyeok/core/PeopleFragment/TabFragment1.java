@@ -3,7 +3,6 @@ package com.example.kwoncheolhyeok.core.PeopleFragment;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.location.Location;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
@@ -25,13 +24,11 @@ import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQuery;
 import com.firebase.geofire.GeoQueryEventListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
@@ -68,18 +65,16 @@ public class TabFragment1 extends android.support.v4.app.Fragment {
 
         // 스와이프로 위치 새로고침
         final SwipeRefreshLayout mSwipeRefreshLayout = view.findViewById(R.id.swipe_layout);
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-
+        SwipeRefreshLayout.OnRefreshListener onRefreshListener = new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 // 위치 새로고침
-                imageAdapter.clear();
-                gridView.invalidateViews();
-                refreshLocation();
+                refreshGrid(null);
 
                 mSwipeRefreshLayout.setRefreshing(false);
             }
-        });
+        };
+        mSwipeRefreshLayout.setOnRefreshListener(onRefreshListener);
 
         mUser = DataContainer.getInstance().getUser();  // user 정보 가져옴
 
@@ -98,7 +93,7 @@ public class TabFragment1 extends android.support.v4.app.Fragment {
     }
 
     @Subscribe
-    public void finishLoad(RefreshLocationEvent pushEvent) {
+    public void refreshGrid(RefreshLocationEvent pushEvent) {
         imageAdapter.clear();
         gridView.invalidateViews();
         refreshLocation();
@@ -143,17 +138,10 @@ public class TabFragment1 extends android.support.v4.app.Fragment {
                 final float distance = location.distanceTo(targetLocation);
 
                 // grid에 사진, distance추가
+
                 if(imageAdapter != null){
-
-                    FirebaseStorage.getInstance().getReference().child(FireBaseUtil.getInstance().getParentPath(key) + "profilePic1.jpg")
-                            .getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                        @Override
-                        public void onSuccess(Uri uri) {
-
-                            imageAdapter.addItem(new ImageAdapter.Item(distance, key, oUser, uri.toString()));
-                            gridView.invalidateViews();
-                        }
-                    });
+                    imageAdapter.addItem(new ImageAdapter.Item(distance, key, oUser, oUser.getPicUrls().getPicUrl1()));
+                    gridView.invalidateViews();
                 } else {
                     Log.d(getTag(), "imageAdapter is null");
                 }

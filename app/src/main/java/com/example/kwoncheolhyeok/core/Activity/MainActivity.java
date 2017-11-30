@@ -25,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.kwoncheolhyeok.core.ClubActivity.Club_Filter_Activity;
 import com.example.kwoncheolhyeok.core.CorePage.CoreActivity;
 import com.example.kwoncheolhyeok.core.Entity.User;
@@ -38,7 +39,6 @@ import com.example.kwoncheolhyeok.core.Util.BusProvider;
 import com.example.kwoncheolhyeok.core.Util.CloseActivityHandler;
 import com.example.kwoncheolhyeok.core.Util.CoreProgress;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
-import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -184,8 +184,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void setProfilePic(ImageView profileImage) {
-        FireBaseUtil fbUtil = FireBaseUtil.getInstance();
-        fbUtil.setImage(fbUtil.getParentPath() + "profilePic1.jpg", profileImage);
+        String picUrl1 = DataContainer.getInstance().getUser().getPicUrls().getPicUrl1();
+        if(picUrl1 == null) return;
+        Glide.with(getBaseContext()).load(picUrl1).into(profileImage);
     }
 
 
