@@ -2,12 +2,14 @@ package com.example.kwoncheolhyeok.core.Entity;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PictureUrls implements Serializable {
-    private String picUrl1;
-    private String picUrl2;
-    private String picUrl3;
-    private String picUrl4;
+    String picUrl1;
+    String picUrl2;
+    String picUrl3;
+    String picUrl4;
 
     public String getPicUrl1() {
         return picUrl1;
@@ -17,7 +19,7 @@ public class PictureUrls implements Serializable {
         this.picUrl1 = picUrl1;
     }
 
-    private String getPicUrl2() {
+    public String getPicUrl2() {
         return picUrl2;
     }
 
@@ -25,7 +27,7 @@ public class PictureUrls implements Serializable {
         this.picUrl2 = picUrl2;
     }
 
-    private String getPicUrl3() {
+    public String getPicUrl3() {
         return picUrl3;
     }
 
@@ -33,7 +35,7 @@ public class PictureUrls implements Serializable {
         this.picUrl3 = picUrl3;
     }
 
-    private String getPicUrl4() {
+    public String getPicUrl4() {
         return picUrl4;
     }
 
@@ -41,6 +43,14 @@ public class PictureUrls implements Serializable {
         this.picUrl4 = picUrl4;
     }
 
+    public Map<String, String> toMap(){
+        Map<String, String> map = new HashMap();
+        map.put("picUrl1", getPicUrl1());
+        map.put("picUrl2", getPicUrl2());
+        map.put("picUrl3", getPicUrl3());
+        map.put("picUrl4", getPicUrl4());
+        return map;
+    }
     public ArrayList<String> toArray(){
         ArrayList<String> booleans = new ArrayList<>();
         booleans.add(getPicUrl1());

@@ -37,7 +37,6 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
     RelativeLayout core_enter = null;
     ImageView page1,page2,page3,page4;
     ImageView pic_open, message_white, add_friends, block_friends;
-    ArrayList<String> picPaths = new ArrayList<>();
 
     @Bind(R.id.text_physical)
     TextView textPhysical;
@@ -111,12 +110,6 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         }
 
         // 사진 출력
-        FireBaseUtil fbUtil = FireBaseUtil.getInstance();
-        picPaths.add(fbUtil.getParentPath(uuid) + "profilePic1.jpg");
-        picPaths.add(fbUtil.getParentPath(uuid) + "profilePic2.jpg");
-        picPaths.add(fbUtil.getParentPath(uuid) + "profilePic3.jpg");
-        picPaths.add(fbUtil.getParentPath(uuid) + "profilePic4.jpg");
-
         ImageView profilePics[] = {page1, page2, page3, page4};
         ArrayList<String> picUrlList = user.getPicUrls().toNotNullArray();
         for (int i=0; i<picUrlList.size(); i++){
@@ -164,7 +157,6 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
     @Override
     public void onClick(View view) {
         Intent myIntent = new Intent(getApplicationContext(),DetailImageActivity.class);
-        myIntent.putExtra("picPaths", picPaths);
         switch (view.getId()){
             case R.id.image1:
                 myIntent.putExtra("PagerPage",0);
