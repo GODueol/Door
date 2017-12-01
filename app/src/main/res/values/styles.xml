@@ -152,5 +152,15 @@
         <item name="android:textSize">14.5dp</item>
     </style>
 
+    <!--AlertDialog style(delete picture)-->
+    <style name="MyAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <!-- Used for the buttons -->
+        <item name="colorAccent">@color/skyblue</item>
+        <!-- Used for the title and text -->
+        <item name="android:textColorPrimary">@color/black</item>
+        <!-- Used for the background -->
+        <item name="android:background">@color/white</item>
+    </style>
+
 </resources>
 

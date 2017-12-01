@@ -13,6 +13,7 @@
         >
 
         <TextView
+            android:id="@+id/btn_min"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="min"
@@ -21,6 +22,7 @@
             />
 
         <TextView
+            android:id="@+id/btn_max"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="max"

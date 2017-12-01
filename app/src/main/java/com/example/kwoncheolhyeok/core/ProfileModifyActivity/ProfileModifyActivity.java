@@ -352,39 +352,28 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         View.OnClickListener onDeleteClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(ProfileModifyActivity.this);
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(ProfileModifyActivity.this, R.style.MyAlertDialogStyle);
+                builder.setIcon(R.drawable.icon);
                 builder.setTitle("Delete Picture");
-                builder.setMessage("Do you want delete Picture?");
+                builder.setMessage(" Do you want delete Picture?");
                 builder.setCancelable(false);
                 builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        final boolean[] asyncSuccessFlag = {false, false};  // 비동기 완료 확인
-
                         // 사진 삭제
                         StorageReference storageRef = FirebaseStorage.getInstance().getReference();
                         String picPath = getPicPath(targetPic);
                         StorageReference desertRef = storageRef.child(picPath);
 
-                        // 프로그레스바 Start
+                        // Delete the file
                         getInstance().startProgressDialog(ProfileModifyActivity.this);
-
-                        // 사진 Url 삭제
-                        removeUserPicUrl(targetPic, new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                asyncSuccessFlag[0] = true;
-                                if(!isSuccessAllAsync(asyncSuccessFlag)) return;
-                                getInstance().stopProgressDialog();
-                            }
-                        });    // Url 지울때는 순서를 지켜줘야함
-
-                        // 사진 Storage 삭제
                         desertRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
                                 // File deleted successfully
                                 Log.d(getClass().getName(),"Delete Pic Success");
                                 targetPic.setImageResource(R.drawable.a);
+                                removeUserPicUrl(targetPic);    // Url 지울때는 순서를 지켜줘야함
                                 BusProvider.getInstance().post(new RefreshLocationEvent());
                             }
                         }).addOnFailureListener(new OnFailureListener() {
@@ -396,15 +385,11 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
                         }).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
-                                asyncSuccessFlag[1] = true;
-                                if(!isSuccessAllAsync(asyncSuccessFlag)) return;
                                 getInstance().stopProgressDialog();
                             }
                         });
-
                     }
                 });
-
                 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                     }
@@ -418,14 +403,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         btn.setOnClickListener(onDeleteClickListener);
     }
 
-    private boolean isSuccessAllAsync(boolean[] asyncSuccessFlag) {
-        for (boolean b : asyncSuccessFlag) {
-            if(!b) return false;
-        }
-        return true;
-    }
-
-    private void removeUserPicUrl(ImageView targetPic, OnSuccessListener<? super Void> listener) {
+    private void removeUserPicUrl(ImageView targetPic) {
         if(targetPic == profilePic1) {
             user.getPicUrls().setPicUrl1(null);
         } else if(targetPic == profilePic2) {
@@ -436,17 +414,17 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
             user.getPicUrls().setPicUrl4(null);
         }
         DataContainer.getInstance().setUser(user);
-        FirebaseDatabase.getInstance().getReference("users").child(DataContainer.getInstance().getUid()).setValue(user).addOnSuccessListener(listener);
+        FirebaseDatabase.getInstance().getReference("users").child(DataContainer.getInstance().getUid()).setValue(user);
     }
 
     private void setVisibilityFilterLayout(boolean isChecked) {
         int FLAG;
         if(isChecked) FLAG = View.VISIBLE;
         else FLAG = View.GONE;
-        ageFilterLayout.setVisibility(FLAG);
-        heightFilterLayout.setVisibility(FLAG);
-        weightFilterLayout.setVisibility(FLAG);
-        bodyTypeFilterLayout.setVisibility(FLAG);
+//        ageFilterLayout.setVisibility(FLAG);
+//        heightFilterLayout.setVisibility(FLAG);
+//        weightFilterLayout.setVisibility(FLAG);
+//        bodyTypeFilterLayout.setVisibility(FLAG);
         ageFilterLayout1.setVisibility(FLAG);
         heightFilterLayout1.setVisibility(FLAG);
         weightFilterLayout1.setVisibility(FLAG);
@@ -535,7 +513,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
     }
 
 
-    public void show(final TextView min_filter, final TextView max_filter, FILTER filterType) {
+    public void show(final TextView min_filter, final TextView max_filter, final FILTER filterType) {
 
         final Dialog d = new Dialog(ProfileModifyActivity.this);
         d.setContentView(R.layout.profile_modify_filter_dialog);
@@ -551,9 +529,19 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         TextView b1 = d.findViewById(R.id.button1);
         TextView b2 = d.findViewById(R.id.button2);
 
+        TextView btn_min = d.findViewById(R.id.btn_min);
+        TextView btn_max = d.findViewById(R.id.btn_max);
+
         final NumberPicker np = d.findViewById(R.id.numberPicker1);
         np.setMaxValue(maxBoundary[filterType.ordinal()]); // max value 100
         np.setMinValue(minBoundary[filterType.ordinal()]);   // min value 0
+        btn_min.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                np.setValue(minBoundary[filterType.ordinal()]);
+            }
+        });
+
         np.setValue(Integer.parseInt(min_filter.getText().toString()));
         np.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);  //데이터 선택시 edittext 방지
         np.setWrapSelectorWheel(false);
@@ -561,6 +549,12 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         final NumberPicker np2 = d.findViewById(R.id.numberPicker2);
         np2.setMaxValue(maxBoundary[filterType.ordinal()]); // max value 100
         np2.setMinValue(np.getValue());   // min value 0
+        btn_max.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                np2.setValue(maxBoundary[filterType.ordinal()]);
+            }
+        });
         np2.setValue(Integer.parseInt(max_filter.getText().toString()));
         np2.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);  //데이터 선택시 edittext 방지
         np2.setWrapSelectorWheel(false);
@@ -614,11 +608,20 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         TextView b1 = d.findViewById(R.id.button1);
         TextView b2 = d.findViewById(R.id.button2);
 
+        TextView btn_min = d.findViewById(R.id.btn_min);
+        TextView btn_max = d.findViewById(R.id.btn_max);
+
         final NumberPicker np = d.findViewById(R.id.numberPicker1);
 
         np.setMinValue(0); //from array first value
         np.setMaxValue(DataContainer.bodyTypes.length - 1); //to array last value
         np.setValue(Arrays.asList(DataContainer.bodyTypes).indexOf(min_bodytype_filter.getText()));
+        btn_min.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                np.setValue(0);
+            }
+        });
         np.setDisplayedValues(DataContainer.bodyTypes);
         np.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
         np.setWrapSelectorWheel(false);
@@ -627,6 +630,12 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         final NumberPicker np2 = d.findViewById(R.id.numberPicker2);
         np2.setMinValue(0); //from array first value
         np2.setMaxValue(DataContainer.bodyTypes.length - 1); //to array last value
+        btn_max.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                np2.setValue(DataContainer.bodyTypes.length - 1);
+            }
+        });
         np2.setValue(Arrays.asList(DataContainer.bodyTypes).indexOf(max_bodytype_filter.getText()));
         np2.setDisplayedValues(DataContainer.bodyTypes);
         np2.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
@@ -685,14 +694,16 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
     }
 
     private void uploadPic(final Uri outputFileUri) {
-        getInstance().startProgressDialog(this);    // 프로그레스 바 시작
+
+        getInstance().startProgressDialog(this);
 
         // Create a storage reference from our app
         StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+
         final String profilePicPath = getPicPath(modifyingPic);
+
         final StorageReference spaceRef = storageRef.child(profilePicPath);
 
-        // 사진 Storage 등록
         UploadTask uploadTask = spaceRef.putFile(outputFileUri);
         uploadTask.addOnFailureListener(new OnFailureListener() {
             @Override
@@ -709,28 +720,27 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
                     public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                         return false;
                     }
+
                     @Override
                     public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        saveUserPicUrl(downloadUrl, new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                getInstance().stopProgressDialog(); // 프레그레스바 종료
-                                BusProvider.getInstance().post(new RefreshLocationEvent()); // 그리드 리프레시
-                                if (modifyingPic == profilePic1) { // 첫번째 사진일 경우는 프로필 사진 변경 이벤트 발생
-                                    BusProvider.getInstance().post(new SetProfilePicEvent());
-                                }
-                                Toast.makeText(getBaseContext(), "Upload Complete", Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                        saveUserPicUrl(downloadUrl);
+                        getInstance().stopProgressDialog();
                         return false;
                     }
                 }).into(modifyingPic);
+
+                // 첫번째 사진일 경우는 프로필 사진 변경 이벤트 발생
+                if (modifyingPic == profilePic1) {
+                    BusProvider.getInstance().post(new SetProfilePicEvent());
+                }
+                Toast.makeText(getBaseContext(), "Upload Complete", Toast.LENGTH_SHORT).show();
+
             }
         });
 
     }
 
-    private void saveUserPicUrl(Uri downloadUrl, OnSuccessListener<? super Void> listener) {
+    private void saveUserPicUrl(Uri downloadUrl) {
         if(modifyingPic == profilePic1) {
             user.getPicUrls().setPicUrl1(downloadUrl.toString());
         } else if(modifyingPic == profilePic2) {
@@ -741,7 +751,8 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
             user.getPicUrls().setPicUrl4(downloadUrl.toString());
         }
         DataContainer.getInstance().setUser(user);
-        FirebaseDatabase.getInstance().getReference("users").child(DataContainer.getInstance().getUid()).setValue(user).addOnSuccessListener(listener);
+        FirebaseDatabase.getInstance().getReference("users").child(DataContainer.getInstance().getUid()).setValue(user);
+        BusProvider.getInstance().post(new RefreshLocationEvent());
     }
 
     @NonNull
