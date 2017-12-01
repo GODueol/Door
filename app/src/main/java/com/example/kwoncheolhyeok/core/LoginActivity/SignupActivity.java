@@ -277,7 +277,8 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
         } else if (Weight.isEmpty() || Weight.length() < 2 || Weight.length() > 3 || Integer.parseInt(Weight) < 40 || Integer.parseInt(Weight) > 140) {
             throw new Exception("올바른 몸무게로 작성해주세요.");
         } else if (Bodytype.isEmpty()) {
-            throw new Exception("바디타입을 설정해주세요.");
+            _bodyType.setText("Standard");
+//            throw new Exception("바디타입을 설정해주세요.");
         }
     }
 
