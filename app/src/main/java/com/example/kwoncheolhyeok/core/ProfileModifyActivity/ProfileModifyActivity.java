@@ -358,20 +358,33 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
                 builder.setCancelable(false);
                 builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
+                        final boolean[] asyncSuccessFlag = {false, false};  // 비동기 완료 확인
+
                         // 사진 삭제
                         StorageReference storageRef = FirebaseStorage.getInstance().getReference();
                         String picPath = getPicPath(targetPic);
                         StorageReference desertRef = storageRef.child(picPath);
 
-                        // Delete the file
+                        // 프로그레스바 Start
                         getInstance().startProgressDialog(ProfileModifyActivity.this);
+
+                        // 사진 Url 삭제
+                        removeUserPicUrl(targetPic, new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                asyncSuccessFlag[0] = true;
+                                if(!isSuccessAllAsync(asyncSuccessFlag)) return;
+                                getInstance().stopProgressDialog();
+                            }
+                        });    // Url 지울때는 순서를 지켜줘야함
+
+                        // 사진 Storage 삭제
                         desertRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
                                 // File deleted successfully
                                 Log.d(getClass().getName(),"Delete Pic Success");
                                 targetPic.setImageResource(R.drawable.a);
-                                removeUserPicUrl(targetPic);    // Url 지울때는 순서를 지켜줘야함
                                 BusProvider.getInstance().post(new RefreshLocationEvent());
                             }
                         }).addOnFailureListener(new OnFailureListener() {
@@ -383,11 +396,15 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
                         }).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
+                                asyncSuccessFlag[1] = true;
+                                if(!isSuccessAllAsync(asyncSuccessFlag)) return;
                                 getInstance().stopProgressDialog();
                             }
                         });
+
                     }
                 });
+
                 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                     }
@@ -401,7 +418,14 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         btn.setOnClickListener(onDeleteClickListener);
     }
 
-    private void removeUserPicUrl(ImageView targetPic) {
+    private boolean isSuccessAllAsync(boolean[] asyncSuccessFlag) {
+        for (boolean b : asyncSuccessFlag) {
+            if(!b) return false;
+        }
+        return true;
+    }
+
+    private void removeUserPicUrl(ImageView targetPic, OnSuccessListener<? super Void> listener) {
         if(targetPic == profilePic1) {
             user.getPicUrls().setPicUrl1(null);
         } else if(targetPic == profilePic2) {
@@ -412,7 +436,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
             user.getPicUrls().setPicUrl4(null);
         }
         DataContainer.getInstance().setUser(user);
-        FirebaseDatabase.getInstance().getReference("users").child(DataContainer.getInstance().getUid()).setValue(user);
+        FirebaseDatabase.getInstance().getReference("users").child(DataContainer.getInstance().getUid()).setValue(user).addOnSuccessListener(listener);
     }
 
     private void setVisibilityFilterLayout(boolean isChecked) {
@@ -661,16 +685,14 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
     }
 
     private void uploadPic(final Uri outputFileUri) {
-
-        getInstance().startProgressDialog(this);
+        getInstance().startProgressDialog(this);    // 프로그레스 바 시작
 
         // Create a storage reference from our app
         StorageReference storageRef = FirebaseStorage.getInstance().getReference();
-
         final String profilePicPath = getPicPath(modifyingPic);
-
         final StorageReference spaceRef = storageRef.child(profilePicPath);
 
+        // 사진 Storage 등록
         UploadTask uploadTask = spaceRef.putFile(outputFileUri);
         uploadTask.addOnFailureListener(new OnFailureListener() {
             @Override
@@ -687,27 +709,28 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
                     public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                         return false;
                     }
-
                     @Override
                     public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        saveUserPicUrl(downloadUrl);
-                        getInstance().stopProgressDialog();
+                        saveUserPicUrl(downloadUrl, new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                getInstance().stopProgressDialog(); // 프레그레스바 종료
+                                BusProvider.getInstance().post(new RefreshLocationEvent()); // 그리드 리프레시
+                                if (modifyingPic == profilePic1) { // 첫번째 사진일 경우는 프로필 사진 변경 이벤트 발생
+                                    BusProvider.getInstance().post(new SetProfilePicEvent());
+                                }
+                                Toast.makeText(getBaseContext(), "Upload Complete", Toast.LENGTH_SHORT).show();
+                            }
+                        });
                         return false;
                     }
                 }).into(modifyingPic);
-
-                // 첫번째 사진일 경우는 프로필 사진 변경 이벤트 발생
-                if (modifyingPic == profilePic1) {
-                    BusProvider.getInstance().post(new SetProfilePicEvent());
-                }
-                Toast.makeText(getBaseContext(), "Upload Complete", Toast.LENGTH_SHORT).show();
-
             }
         });
 
     }
 
-    private void saveUserPicUrl(Uri downloadUrl) {
+    private void saveUserPicUrl(Uri downloadUrl, OnSuccessListener<? super Void> listener) {
         if(modifyingPic == profilePic1) {
             user.getPicUrls().setPicUrl1(downloadUrl.toString());
         } else if(modifyingPic == profilePic2) {
@@ -718,8 +741,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
             user.getPicUrls().setPicUrl4(downloadUrl.toString());
         }
         DataContainer.getInstance().setUser(user);
-        FirebaseDatabase.getInstance().getReference("users").child(DataContainer.getInstance().getUid()).setValue(user);
-        BusProvider.getInstance().post(new RefreshLocationEvent());
+        FirebaseDatabase.getInstance().getReference("users").child(DataContainer.getInstance().getUid()).setValue(user).addOnSuccessListener(listener);
     }
 
     @NonNull
