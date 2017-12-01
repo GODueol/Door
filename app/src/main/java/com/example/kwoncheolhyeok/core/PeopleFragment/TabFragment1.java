@@ -142,6 +142,7 @@ public class TabFragment1 extends android.support.v4.app.Fragment {
                 if(imageAdapter != null){
                     imageAdapter.addItem(new ImageAdapter.Item(distance, key, oUser, oUser.getPicUrls().getPicUrl1()));
                     gridView.invalidateViews();
+                    Log.d(getTag(), "addItemToGrid : " + key );
                 } else {
                     Log.d(getTag(), "imageAdapter is null");
                 }

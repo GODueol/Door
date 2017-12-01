@@ -55,6 +55,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
 
     @Bind(R.id.login_time)
     TextView loginTime;
+    private ArrayList<String> picUrlList;
 
     @SuppressLint("DefaultLocale")
     @Override
@@ -84,7 +85,6 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
 
         Intent p = getIntent();
         ImageAdapter.Item item = (ImageAdapter.Item) p.getSerializableExtra("item");
-        String uuid = item.getUuid();
 
 
         //개인 화면에서 코어 액티비티로 넘어감
@@ -111,7 +111,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
 
         // 사진 출력
         ImageView profilePics[] = {page1, page2, page3, page4};
-        ArrayList<String> picUrlList = user.getPicUrls().toNotNullArray();
+        picUrlList = user.getPicUrls().toNotNullArray();
         for (int i=0; i<picUrlList.size(); i++){
             String url = picUrlList.get(i);
             if(url == null) continue;
@@ -157,6 +157,8 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
     @Override
     public void onClick(View view) {
         Intent myIntent = new Intent(getApplicationContext(),DetailImageActivity.class);
+        myIntent.putExtra("picUrlList", picUrlList);
+        if(picUrlList.size() == 0) return;
         switch (view.getId()){
             case R.id.image1:
                 myIntent.putExtra("PagerPage",0);

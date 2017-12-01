@@ -16,7 +16,7 @@ import java.util.ArrayList;
 public class DetailImageActivity extends AppCompatActivity {
 
     DetailImageViewPagerAdapter mAdapter;
-    ArrayList<String> picPaths;
+    ArrayList<String> picUrlList;
 
     TabLayout tabLayout = null;
 
@@ -27,10 +27,10 @@ public class DetailImageActivity extends AppCompatActivity {
         setContentView(R.layout.full_image_4_activity);
 
         Intent intent = getIntent();
-        picPaths = DataContainer.getInstance().getUser().getPicUrls().toNotNullArray();
+        picUrlList = intent.getStringArrayListExtra("picUrlList");
 
         int pagenumber = intent.getIntExtra("PagerPage",1);
-        mAdapter = new DetailImageViewPagerAdapter(getSupportFragmentManager(), picPaths);
+        mAdapter = new DetailImageViewPagerAdapter(getSupportFragmentManager(), picUrlList);
         ViewPager viewPager= findViewById(R.id.viewpager);        //Viewpager 선언 및 초기화
         viewPager.setAdapter(mAdapter);     //선언한 viewpager에 adapter를 연결
         viewPager.setCurrentItem(pagenumber);
