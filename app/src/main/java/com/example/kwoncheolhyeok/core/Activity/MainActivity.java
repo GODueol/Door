@@ -78,8 +78,6 @@ public class MainActivity extends AppCompatActivity
         // (Main View)네비게이션바 관련
         drawer = findViewById(R.id.drawer_layout);
         toolbar = findViewById(R.id.toolbar);
-//        AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
-//        params.setScrollFlags(0);
 
         setSupportActionBar(toolbar);
 
