@@ -56,7 +56,8 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/toolbar"
-        android:background="#616161">
+        android:background="@drawable/profile_modify_background"
+        >
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -77,11 +78,10 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/section_line1"
                 android:layout_centerInParent="true"
-                android:layout_marginLeft="5dp"
                 android:layout_marginTop="10dp"
                 android:text="Picture"
                 android:textColor="#FFFFFF"
-                android:textSize="20dp"
+                android:textSize="17dp"
                 android:textStyle="bold"
                 />
 
@@ -275,11 +275,10 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/section_line2"
                 android:layout_centerInParent="true"
-                android:layout_marginLeft="5dp"
                 android:layout_marginTop="10dp"
                 android:text="NickName"
                 android:textColor="#FFFFFF"
-                android:textSize="20dp"
+                android:textSize="17dp"
                 android:textStyle="bold" />
 
             <EditText
@@ -297,7 +296,7 @@
                 android:text="NickName"
                 android:hint="닉네임을 입력하세요"
                 android:textColor="#FFFFFF"
-                android:textSize="15dp"
+                android:textSize="18dp"
                 android:theme="@style/Theme.App.Base" />
 
             <View
@@ -320,7 +319,7 @@
                 android:layout_marginTop="10dp"
                 android:text="Age / Height / Weight / BodyType"
                 android:textColor="#FFFFFF"
-                android:textSize="20dp"
+                android:textSize="17dp"
                 android:textStyle="bold" />
 
             <LinearLayout
@@ -339,7 +338,7 @@
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
                     android:text="Age"
-                    android:textSize="20dp"
+                    android:textSize="19dp"
                     android:textColor="@color/white"
                     android:layout_marginRight="15dp"
                     android:theme="@style/AppTheme.Picker" />
@@ -351,7 +350,7 @@
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
                     android:text="Height"
-                    android:textSize="20dp"
+                    android:textSize="19dp"
                     android:textColor="@color/white"
                     android:layout_marginRight="15dp"
                     android:theme="@style/AppTheme.Picker"
@@ -365,7 +364,7 @@
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
                     android:textColor="@color/white"
-                    android:textSize="20dp"
+                    android:textSize="19dp"
                     android:text="Weight"
                     android:layout_marginRight="15dp"
                     android:theme="@style/AppTheme.Picker"
@@ -378,7 +377,7 @@
                     android:layout_height="wrap_content"
                     android:text="Bodytype"
                     android:textColor="@color/white"
-                    android:textSize="20dp"
+                    android:textSize="19dp"
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
                     android:theme="@style/AppTheme.Picker"
@@ -393,7 +392,7 @@
                 android:layout_below="@+id/numberPicker_layout"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="25dp"
                 android:background="#FFFFFF"></View>
 
             <TextView
@@ -402,11 +401,10 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/section_line4"
                 android:layout_centerInParent="true"
-                android:layout_marginLeft="5dp"
                 android:layout_marginTop="10dp"
                 android:text="Introduce"
                 android:textColor="#FFFFFF"
-                android:textSize="20dp"
+                android:textSize="17dp"
                 android:textStyle="bold" />
 
             <EditText
@@ -423,7 +421,7 @@
                 android:maxLines="7"
                 android:lineSpacingExtra="5dip"
                 android:textColor="#FFFFFF"
-                android:textSize="15dp"
+                android:textSize="16dp"
                 android:hint="자신을 소개해주세요"
                 android:theme="@style/Theme.App.Base"
                 />
@@ -444,11 +442,10 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/section_line5"
                 android:layout_centerInParent="true"
-                android:layout_marginLeft="5dp"
                 android:layout_marginTop="10dp"
                 android:text="Filter"
                 android:textColor="#FFFFFF"
-                android:textSize="20dp"
+                android:textSize="17dp"
                 android:textStyle="bold" />
 
             <Switch
@@ -475,7 +472,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dip"
                     android:text="AGE"
-                    android:textSize="15dp"
+                    android:textSize="16dp"
                     android:textColor="#FFFFFF"
                     android:textStyle="bold" />
 
@@ -498,7 +495,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="80dp"
-                    android:textSize="15dp"
+                    android:textSize="16dp"
                     android:text="min"
                     android:textColor="@color/text_white" />
 
@@ -517,7 +514,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="20dp"
-                    android:textSize="15dp"
+                    android:textSize="16dp"
                     android:text="max"
                     android:textColor="@color/text_white" />
 
@@ -535,7 +532,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dip"
-                    android:textSize="15dp"
+                    android:textSize="16dp"
                     android:text="HEIGHT"
                     android:textColor="#FFFFFF"
                     android:textStyle="bold" />
@@ -561,7 +558,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="80dp"
-                    android:textSize="15dp"
+                    android:textSize="16dp"
                     android:text="min"
                     android:textColor="@color/text_white" />
 
@@ -580,7 +577,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="20dp"
-                    android:textSize="15dp"
+                    android:textSize="16dp"
                     android:text="max"
                     android:textColor="@color/text_white" />
             </RelativeLayout>
@@ -598,7 +595,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dip"
                     android:text="WEIGHT"
-                    android:textSize="15dp"
+                    android:textSize="16dp"
                     android:textColor="#FFFFFF"
                     android:textStyle="bold" />
 
@@ -620,7 +617,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="80dp"
-                android:textSize="15dp"
+                android:textSize="16dp"
                 android:text="min"
                 android:textColor="@color/text_white" />
 
@@ -640,7 +637,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="20dp"
                 android:text="max"
-                android:textSize="15dp"
+                android:textSize="16dp"
                 android:textColor="@color/text_white" />
 
         </RelativeLayout>
@@ -658,7 +655,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dip"
                     android:text="BODY TYPE"
-                    android:textSize="15dp"
+                    android:textSize="16dp"
                     android:textColor="#FFFFFF"
                     android:textStyle="bold" />
 
@@ -681,7 +678,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="130dp"
                 android:text="min"
-                android:textSize="15dp"
+                android:textSize="16dp"
                 android:textColor="@color/text_white" />
 
             <TextView
@@ -700,7 +697,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="20dp"
                 android:text="max"
-                android:textSize="15dp"
+                android:textSize="16dp"
                 android:textColor="@color/text_white" />
 
         </RelativeLayout>
@@ -713,7 +710,7 @@
                 android:layout_marginBottom="20dp"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
-                android:layout_marginTop="25dp"
+                android:layout_marginTop="28dp"
                 android:background="#FFFFFF"></View>
 
         </RelativeLayout>
