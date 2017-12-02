@@ -7,7 +7,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.res.ResourcesCompat;
@@ -67,6 +66,7 @@ public class MainActivity extends AppCompatActivity
     ImageView profileImage;
 
     private CloseActivityHandler closeActivityHandler;
+    private TabPagerAdapter tabPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,20 +113,20 @@ public class MainActivity extends AppCompatActivity
         // people,board,club 스와이프 탭 view 관련
         // final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
         viewPager = findViewById(R.id.pager);
-        viewPager.setAdapter(new TabPagerAdapter(
+        tabPagerAdapter = new TabPagerAdapter(
                 getSupportFragmentManager(),
-                getResources().getStringArray(R.array.titles_tab)));
+                getResources().getStringArray(R.array.titles_tab));
+        viewPager.setAdapter(tabPagerAdapter);
 
         //TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         tabLayout = findViewById(R.id.tab_layout);
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         tabLayout.setupWithViewPager(viewPager);
-
 //        getSupportFragmentManager().beginTransaction().add(R.id.container,new TabFragment2()).commit();
 
         //네비게이션 뷰 내의 프로필 사진 클릭시 프로필 편집
-        View headerview = navigationView.getHeaderView(0);
-        profileImage = headerview.findViewById(R.id.profile_image);
+        View headerView = navigationView.getHeaderView(0);
+        profileImage = headerView.findViewById(R.id.profile_image);
         profileImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -140,7 +140,7 @@ public class MainActivity extends AppCompatActivity
         setProfilePic(profileImage);
 
         // 이메일 Set
-        TextView emailText = headerview.findViewById(R.id.textView);
+        TextView emailText = headerView.findViewById(R.id.textView);
         try {
             emailText.setText(DataContainer.getInstance().getUser().getEmail());
         } catch (Exception e) {
@@ -211,6 +211,18 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        int position = tabPagerAdapter.getPosition();
+        Toast.makeText(getBaseContext(),"position : " + position, Toast.LENGTH_SHORT).show();
+        switch (position) {
+            case 0:
+                break;
+            case 1:
+                break;
+            case 2:
+                break;
+            default:
+                break;
+        }
 
         int id = item.getItemId();
 

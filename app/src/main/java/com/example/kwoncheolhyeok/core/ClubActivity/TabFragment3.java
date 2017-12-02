@@ -1,5 +1,6 @@
 package com.example.kwoncheolhyeok.core.ClubActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -16,6 +17,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TabFragment3 extends android.support.v4.app.Fragment {
+
+    // 싱글톤 패턴
+    @SuppressLint("StaticFieldLeak")
+    private static TabFragment3 mInstance;
+
+    public static TabFragment3 getInstance() {
+        if (mInstance == null) mInstance = new TabFragment3();
+        return mInstance;
+    }
+    @SuppressLint("ValidFragment")
+    private TabFragment3(){};
 
     private ListView club_recommend_list;
     ImageView club1, club2, club3, club4, club5, club6;

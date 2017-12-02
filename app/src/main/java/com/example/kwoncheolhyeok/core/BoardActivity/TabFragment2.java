@@ -1,5 +1,6 @@
 package com.example.kwoncheolhyeok.core.BoardActivity;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.KeyEvent;
@@ -13,6 +14,17 @@ import com.example.kwoncheolhyeok.core.Activity.MainActivity;
 import com.example.kwoncheolhyeok.core.R;
 
 public class TabFragment2 extends android.support.v4.app.Fragment {
+
+    // 싱글톤 패턴
+    @SuppressLint("StaticFieldLeak")
+    private static TabFragment2 mInstance;
+
+    public static TabFragment2 getInstance() {
+        if (mInstance == null) mInstance = new TabFragment2();
+        return mInstance;
+    }
+    @SuppressLint("ValidFragment")
+    private TabFragment2(){};
 
     private WebView webView;
     private Bundle webViewBundle;

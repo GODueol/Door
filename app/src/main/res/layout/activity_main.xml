@@ -27,7 +27,7 @@
             android:minHeight="?attr/actionBarSize"
             android:fitsSystemWindows="true"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:layout_scrollFlags="scroll|enterAlways"
+
         >
         <ImageButton
             android:layout_width="80dp"

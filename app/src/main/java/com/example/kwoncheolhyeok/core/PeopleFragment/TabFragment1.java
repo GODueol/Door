@@ -36,6 +36,17 @@ import java.util.Arrays;
 
 public class TabFragment1 extends android.support.v4.app.Fragment {
 
+    // 싱글톤 패턴
+    @SuppressLint("StaticFieldLeak")
+    private static TabFragment1 mInstance;
+
+    public static TabFragment1 getInstance() {
+        if (mInstance == null) mInstance = new TabFragment1();
+        return mInstance;
+    }
+    @SuppressLint("ValidFragment")
+    private TabFragment1(){};
+
     GridView gridView = null;
     ImageAdapter imageAdapter;
     private User mUser;
