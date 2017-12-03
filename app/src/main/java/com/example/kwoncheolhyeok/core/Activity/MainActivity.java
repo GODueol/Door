@@ -66,7 +66,8 @@ public class MainActivity extends AppCompatActivity
     ImageView profileImage;
 
     private CloseActivityHandler closeActivityHandler;
-    private TabPagerAdapter tabPagerAdapter;
+
+    public int pagePosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,7 +114,7 @@ public class MainActivity extends AppCompatActivity
         // people,board,club 스와이프 탭 view 관련
         // final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
         viewPager = findViewById(R.id.pager);
-        tabPagerAdapter = new TabPagerAdapter(
+        TabPagerAdapter tabPagerAdapter = new TabPagerAdapter(
                 getSupportFragmentManager(),
                 getResources().getStringArray(R.array.titles_tab));
         viewPager.setAdapter(tabPagerAdapter);
@@ -182,6 +183,18 @@ public class MainActivity extends AppCompatActivity
                         CoreProgress.getInstance().stopProgressDialog();
                     }
                 });
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int i, float v, int i1) {}
+            @Override
+            public void onPageSelected(int i) {
+                pagePosition = i;
+            }
+            @Override
+            public void onPageScrollStateChanged(int i) {}
+        });
+
     }
 
     private void setProfilePic(ImageView profileImage) {
@@ -205,25 +218,12 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.activity_main_menu, menu);
+//        getMenuInflater().inflate(R.menu.people_menu, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int position = tabPagerAdapter.getPosition();
-        Toast.makeText(getBaseContext(),"position : " + position, Toast.LENGTH_SHORT).show();
-        switch (position) {
-            case 0:
-                break;
-            case 1:
-                break;
-            case 2:
-                break;
-            default:
-                break;
-        }
-
         int id = item.getItemId();
 
         if (id == R.id.find_map) {
@@ -249,9 +249,26 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        menu.clear();
+        switch (pagePosition) {
+            case 0:
+                getMenuInflater().inflate(R.menu.people_menu, menu);
+                break;
+            case 1:
+                getMenuInflater().inflate(R.menu.board_menu, menu);
+                break;
+            case 2:
+                getMenuInflater().inflate(R.menu.club_menu, menu);
+                break;
+            default:
+                break;
+        }
+        return super.onPrepareOptionsMenu(menu);
+    }
+
     @SuppressWarnings("StatementWithEmptyBody")
-
-
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
@@ -341,6 +358,5 @@ public class MainActivity extends AppCompatActivity
         // 프로필 사진을 다시 받아옴
         setProfilePic(profileImage);
     }
-
 }
 

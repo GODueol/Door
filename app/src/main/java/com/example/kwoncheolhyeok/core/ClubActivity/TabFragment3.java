@@ -86,8 +86,8 @@ public class TabFragment3 extends android.support.v4.app.Fragment {
         club_recommend_list = (ListView) view.findViewById(R.id.club_recommend_list);
 
         List<String> list = new ArrayList<String>();
-        for(int i=0; i<20; i++){
-            list.add(i+"");
+        for (int i = 0; i < 20; i++) {
+            list.add(i + "");
         }
         ClubRecommendListAdapter clubRecommendListAdapter = new ClubRecommendListAdapter(list, getActivity());
         club_recommend_list.setAdapter(clubRecommendListAdapter);
@@ -104,5 +104,4 @@ public class TabFragment3 extends android.support.v4.app.Fragment {
         return view;
 
     }
-
-    }
+}
