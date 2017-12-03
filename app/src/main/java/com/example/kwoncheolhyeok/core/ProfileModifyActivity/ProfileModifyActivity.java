@@ -715,6 +715,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 final Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                saveUserPicUrl(downloadUrl);
                 Glide.with(ProfileModifyActivity.this).load(downloadUrl).listener(new RequestListener<Drawable>() {
                     @Override
                     public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
@@ -723,7 +724,6 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 
                     @Override
                     public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        saveUserPicUrl(downloadUrl);
                         getInstance().stopProgressDialog();
                         return false;
                     }
