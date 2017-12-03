@@ -67,8 +67,6 @@ public class MainActivity extends AppCompatActivity
 
     private CloseActivityHandler closeActivityHandler;
 
-    public int pagePosition;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -118,6 +116,7 @@ public class MainActivity extends AppCompatActivity
                 getSupportFragmentManager(),
                 getResources().getStringArray(R.array.titles_tab));
         viewPager.setAdapter(tabPagerAdapter);
+        viewPager.setCurrentItem(1);
 
         //TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         tabLayout = findViewById(R.id.tab_layout);
@@ -183,18 +182,6 @@ public class MainActivity extends AppCompatActivity
                         CoreProgress.getInstance().stopProgressDialog();
                     }
                 });
-
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int i, float v, int i1) {}
-            @Override
-            public void onPageSelected(int i) {
-                pagePosition = i;
-            }
-            @Override
-            public void onPageScrollStateChanged(int i) {}
-        });
-
     }
 
     private void setProfilePic(ImageView profileImage) {
@@ -213,13 +200,6 @@ public class MainActivity extends AppCompatActivity
 //            super.onBackPressed();
             closeActivityHandler.onBackPressed();
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.people_menu, menu);
-        return true;
     }
 
     @Override
@@ -252,12 +232,12 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.clear();
-        switch (pagePosition) {
+        switch (viewPager.getCurrentItem()) {
             case 0:
-                getMenuInflater().inflate(R.menu.people_menu, menu);
+                getMenuInflater().inflate(R.menu.board_menu, menu);
                 break;
             case 1:
-                getMenuInflater().inflate(R.menu.board_menu, menu);
+                getMenuInflater().inflate(R.menu.people_menu, menu);
                 break;
             case 2:
                 getMenuInflater().inflate(R.menu.club_menu, menu);
@@ -348,7 +328,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         BusProvider.getInstance().unregister(this);
-
         super.onDestroy();
     }
 

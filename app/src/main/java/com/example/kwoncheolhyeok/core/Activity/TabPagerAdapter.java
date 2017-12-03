@@ -31,11 +31,11 @@ public class TabPagerAdapter extends FragmentPagerAdapter {
         this.position = position;
         switch (position) {
             case 0:
-                TabFragment1 tab1 = TabFragment1.getInstance();
-                return tab1;
-            case 1:
                 TabFragment2 tab2 = TabFragment2.getInstance();
                 return tab2;
+            case 1:
+                TabFragment1 tab1 = TabFragment1.getInstance();
+                return tab1;
             case 2:
                 TabFragment3 tab3 = TabFragment3.getInstance();
                 return tab3;
