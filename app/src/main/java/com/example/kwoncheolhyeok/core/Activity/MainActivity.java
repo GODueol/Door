@@ -193,9 +193,10 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+//        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
+            changeToggleIcon();
+
         } else {
 //            super.onBackPressed();
             closeActivityHandler.onBackPressed();
@@ -277,8 +278,7 @@ public class MainActivity extends AppCompatActivity
             logout();
         }
 
-       // DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+        changeToggleIcon();
 
         return true;
     }
