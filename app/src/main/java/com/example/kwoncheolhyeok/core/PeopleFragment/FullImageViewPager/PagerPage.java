@@ -18,11 +18,12 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.example.kwoncheolhyeok.core.R;
+import com.github.chrisbanes.photoview.PhotoView;
 
 public class PagerPage extends android.support.v4.app.Fragment {
 
     ScrollView scrollView;
-    ImageView imageView;
+    PhotoView imageView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
