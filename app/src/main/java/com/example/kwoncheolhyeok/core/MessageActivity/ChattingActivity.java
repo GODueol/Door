@@ -143,5 +143,14 @@ public class ChattingActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     };
 
+
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        menu.clear();
+        getMenuInflater().inflate(R.menu.board_menu, menu);
+
+        return super.onPrepareOptionsMenu(menu);
+    }
 }
 
