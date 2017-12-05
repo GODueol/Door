@@ -38,24 +38,25 @@
         android:id="@+id/send_message_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingTop="6dp"
+        android:paddingBottom="6dp"
         android:layout_alignParentBottom="true"
-        android:background="#FFFFFF"
+        android:background="@color/tr_gray35"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
-        <ImageView
+        <ImageButton
             android:id="@+id/iv_image"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_marginLeft="10dp"
-            android:src="@drawable/ic_launcher" />
+            android:layout_marginLeft="3dp"
+            android:background="@drawable/album" />
 
         <EditText
             android:id="@+id/et_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
+            android:layout_marginRight="8dp"
             android:layout_weight="1"
             android:theme="@style/Theme.App.Base"
             android:ems="10"
@@ -65,15 +66,27 @@
             android:maxLength="500"
             />
 
-        <Button
+        <!--<Button-->
+            <!--android:id="@+id/btn_send"-->
+            <!--android:background="@color/message_color"-->
+            <!--android:layout_width="50dp"-->
+            <!--android:layout_height="30dp"-->
+            <!--android:layout_marginRight="10dp"-->
+            <!--android:text="Send"-->
+            <!--android:textColor="@color/text_white"-->
+            <!--android:textSize="10dip"/>-->
+
+        <ImageButton
             android:id="@+id/btn_send"
-            android:background="@color/message_color"
-            android:layout_width="50dp"
+            android:layout_width="40dp"
             android:layout_height="30dp"
             android:layout_marginRight="10dp"
-            android:text="Send"
-            android:textColor="@color/text_white"
-            android:textSize="10dip"/>
+            android:background="@drawable/send"
+            />
+
+
+
+
     </LinearLayout>
 
 </RelativeLayout>

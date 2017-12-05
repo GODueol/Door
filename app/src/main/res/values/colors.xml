@@ -28,6 +28,9 @@
         <color name="iron">#CCCCCC</color>
         <color name="white">#FFFFFF</color>
 
+    <color name="tr_gray35">#599E9E9E</color>
+    <color name="tr_gray65">#A69E9E9E</color>
+
     <color name="gray">#9E9E9E</color>
     <color name="gray40">#BDBDBD</color>
     <color name="gray70">#616161</color>

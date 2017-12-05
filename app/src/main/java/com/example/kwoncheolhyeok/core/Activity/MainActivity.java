@@ -257,7 +257,7 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_People) {
 
-            viewPager.setCurrentItem(0);
+            viewPager.setCurrentItem(1);
         } else if (id == R.id.nav_mycore) {
 
             Intent i = new Intent(MainActivity.this, CoreActivity.class);

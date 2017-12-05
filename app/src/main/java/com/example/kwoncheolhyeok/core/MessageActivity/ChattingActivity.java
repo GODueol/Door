@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 
@@ -20,9 +21,9 @@ public class ChattingActivity extends AppCompatActivity {
     Toolbar toolbar = null;
 
     private ListView mListView;
-    private Button mButtonSend;
+    private ImageButton mButtonSend;
     private EditText mEditTextMessage;
-    private ImageView mImageView;
+    private ImageButton mImageView;
 
     private ChatMessageAdapter mAdapter;
 
@@ -40,9 +41,9 @@ public class ChattingActivity extends AppCompatActivity {
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
 
         mListView = (ListView) findViewById(R.id.listView);
-        mButtonSend = (Button) findViewById(R.id.btn_send);
+        mButtonSend = (ImageButton) findViewById(R.id.btn_send);
         mEditTextMessage = (EditText) findViewById(R.id.et_message);
-        mImageView = (ImageView) findViewById(R.id.iv_image);
+        mImageView = (ImageButton) findViewById(R.id.iv_image);
 
         mAdapter = new ChatMessageAdapter(this, new ArrayList<ChatMessage>());
         mListView.setAdapter(mAdapter);
