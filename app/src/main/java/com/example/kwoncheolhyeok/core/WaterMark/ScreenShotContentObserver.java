@@ -96,7 +96,7 @@ public class ScreenShotContentObserver extends ContentObserver {
         }
         Bitmap newBitmap = AssUtil.getOverlayBitmap(context, bitmap, text);
         bitmap.recycle();
-        newBitmap = AssUtil.getOverlayBitmap2(context, newBitmap, "Hello. Capture with Android Screenshot Service :)");
+        newBitmap = AssUtil.getOverlayBitmap2(context, newBitmap, "본인 의지와 무관한 아웃팅은 명예훼손으로 처벌받을 수 있습니다");
         AssUtil.saveImage(context, newBitmap, fileName);
         newBitmap.recycle();
     }
