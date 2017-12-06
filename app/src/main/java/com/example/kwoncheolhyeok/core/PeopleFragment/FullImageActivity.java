@@ -15,9 +15,9 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.kwoncheolhyeok.core.CorePage.CoreActivity;
 import com.example.kwoncheolhyeok.core.Entity.User;
+import com.example.kwoncheolhyeok.core.MyApplcation;
 import com.example.kwoncheolhyeok.core.PeopleFragment.FullImageViewPager.DetailImageActivity;
 import com.example.kwoncheolhyeok.core.R;
-import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
 import com.google.firebase.appindexing.Action;
 import com.google.firebase.appindexing.FirebaseUserActions;
 import com.google.firebase.appindexing.builders.Actions;
@@ -62,6 +62,9 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.full_image_activity_main);
+
+        MyApplcation.getInstance().allowUserSaveScreenshot(true);
+
         ButterKnife.bind(this);
 
         toolbar = findViewById(R.id.toolbar);
@@ -178,5 +181,17 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
                 break;
         }
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        MyApplcation.getInstance().registerScreenshotObserver();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        MyApplcation.getInstance().unregisterScreenshotObserver();
     }
 }

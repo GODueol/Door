@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.example.kwoncheolhyeok.core.MyApplcation;
 import com.example.kwoncheolhyeok.core.R;
 
 import java.util.ArrayList;
@@ -31,6 +32,8 @@ public class CoreActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         // Get the view from new_activity.xml
         setContentView(R.layout.core_activity);
+
+        MyApplcation.getInstance().allowUserSaveScreenshot(false);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -74,7 +77,17 @@ public class CoreActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     };
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        MyApplcation.getInstance().registerScreenshotObserver();
+    }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        MyApplcation.getInstance().unregisterScreenshotObserver();
+    }
 
 
 }

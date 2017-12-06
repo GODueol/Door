@@ -4,12 +4,11 @@ package com.example.kwoncheolhyeok.core.PeopleFragment.FullImageViewPager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 
 import com.example.kwoncheolhyeok.core.R;
-import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.ViewPagerFixed;
+import com.example.kwoncheolhyeok.core.MyApplcation;
 
 import java.util.ArrayList;
 
@@ -21,11 +20,12 @@ public class DetailImageActivity extends AppCompatActivity {
 
     TabLayout tabLayout = null;
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.full_image_4_activity);
+
+        MyApplcation.getInstance().allowUserSaveScreenshot(true);
 
         Intent intent = getIntent();
         picUrlList = intent.getStringArrayListExtra("picUrlList");
@@ -42,4 +42,15 @@ public class DetailImageActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        MyApplcation.getInstance().registerScreenshotObserver();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        MyApplcation.getInstance().unregisterScreenshotObserver();
+    }
 }

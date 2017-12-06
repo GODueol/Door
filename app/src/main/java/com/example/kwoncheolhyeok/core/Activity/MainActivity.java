@@ -33,6 +33,7 @@ import com.example.kwoncheolhyeok.core.Event.SetProfilePicEvent;
 import com.example.kwoncheolhyeok.core.FriendsActivity.FriednsActivity;
 import com.example.kwoncheolhyeok.core.LoginActivity.LoginActivity;
 import com.example.kwoncheolhyeok.core.MessageActivity.MessageActivity;
+import com.example.kwoncheolhyeok.core.MyApplcation;
 import com.example.kwoncheolhyeok.core.ProfileModifyActivity.ProfileModifyActivity;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.BusProvider;
@@ -73,6 +74,8 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
+
+        MyApplcation.getInstance().allowUserSaveScreenshot(true);
 
         // (Main View)네비게이션바 관련
         drawer = findViewById(R.id.drawer_layout);
@@ -336,6 +339,18 @@ public class MainActivity extends AppCompatActivity
         // 이벤트가 발생한뒤 수행할 작업
         // 프로필 사진을 다시 받아옴
         setProfilePic(profileImage);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        MyApplcation.getInstance().registerScreenshotObserver();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        MyApplcation.getInstance().unregisterScreenshotObserver();
     }
 }
 

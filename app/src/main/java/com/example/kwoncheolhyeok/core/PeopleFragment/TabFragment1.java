@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.Event.RefreshLocationEvent;
+import com.example.kwoncheolhyeok.core.MyApplcation;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.BusProvider;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
@@ -213,6 +214,7 @@ public class TabFragment1 extends android.support.v4.app.Fragment {
             }
         });
     }
+
 }
 
 

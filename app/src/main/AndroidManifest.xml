@@ -23,7 +23,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:name=".Util.CustomFontApp"
+        android:name=".MyApplcation"
         android:largeHeap="true"
         >
 
@@ -53,6 +53,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service
+            android:name=".WaterMark.ASS"
+            android:process=":remote">
+            <intent-filter>
+                <action android:name="abc.def.ghi" />
+            </intent-filter>
+        </service>
 
         <activity
             android:name=".LoginActivity.LoginActivity"
