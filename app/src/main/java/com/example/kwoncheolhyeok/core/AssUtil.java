@@ -6,8 +6,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -15,7 +17,9 @@ import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.util.TypedValue;
+import android.widget.ImageView;
 
+import com.example.kwoncheolhyeok.core.Util.BitmapUtil;
 import com.example.kwoncheolhyeok.core.WaterMark.ScreenShotContentObserver;
 
 import java.io.File;
@@ -66,6 +70,17 @@ public class AssUtil {
         mTextPaint.setShadowLayer(5f, 0f, 1f, Color.DKGRAY);
 
         StaticLayout mTextLayout = new StaticLayout(text, mTextPaint, canvas.getWidth() - AssUtil.dpToPx(87), Layout.Alignment.ALIGN_CENTER, 1.0f, 0.3f, true);
+
+        // 코어 아이콘 박기
+        Resources r = context.getResources();
+        Bitmap icon = BitmapFactory.decodeResource(r, R.drawable.icon);
+        Bitmap resizeIcon = BitmapUtil.resizeBitmapImageFn(icon,100);
+        Paint paint = new Paint(); //페인트 객체 선언
+        paint.setAlpha(68);
+        canvas.drawBitmap(resizeIcon, (canvas.getWidth() / 2) - (resizeIcon.getWidth() / 2),
+                result.getHeight() - AssUtil.dpToPx(72) - resizeIcon.getHeight(), paint);
+
+
         canvas.save();
 
         float textX = (canvas.getWidth() / 2) - (mTextLayout.getWidth() / 2);
@@ -73,6 +88,9 @@ public class AssUtil {
 
         canvas.translate(textX, textY);
         mTextLayout.draw(canvas);
+
+
+
         canvas.restore();
         return result;
     }
