@@ -36,9 +36,11 @@ public class AssUtil {
         float scale = context.getResources().getDisplayMetrics().density;
         Canvas canvas = new Canvas(result);
         TextPaint mTextPaint = new TextPaint();
+
+        // "이 화면은 코어 앱에서 촬영된 화면입니다" 부분
         mTextPaint.setTextSize((int) (16 * scale));
         mTextPaint.setColor(Color.RED);
-        mTextPaint.setAlpha(38);
+        mTextPaint.setAlpha(30);
         StaticLayout mTextLayout = new StaticLayout(text, mTextPaint, canvas.getWidth() + 700, Layout.Alignment.ALIGN_CENTER, 1.1f, 0.3f, true);
         canvas.save();
 
@@ -56,10 +58,11 @@ public class AssUtil {
         float scale = context.getResources().getDisplayMetrics().density;
         Canvas canvas = new Canvas(result);
 
+        // "본인 의지와 무관한 아웃팅은~" 부분
         TextPaint mTextPaint = new TextPaint();
-        mTextPaint.setTextSize((int) (12 * scale));
+        mTextPaint.setTextSize((int) (14 * scale));
         mTextPaint.setColor(Color.WHITE);
-        mTextPaint.setAlpha(204);
+        mTextPaint.setAlpha(1000);
         mTextPaint.setShadowLayer(5f, 0f, 1f, Color.DKGRAY);
 
         StaticLayout mTextLayout = new StaticLayout(text, mTextPaint, canvas.getWidth() - AssUtil.dpToPx(87), Layout.Alignment.ALIGN_CENTER, 1.0f, 0.3f, true);

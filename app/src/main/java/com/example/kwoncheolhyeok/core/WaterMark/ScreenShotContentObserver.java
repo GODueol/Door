@@ -29,7 +29,7 @@ public class ScreenShotContentObserver extends ContentObserver {
     private static final String SORT_ORDER = MediaStore.Images.Media.DATE_ADDED + " DESC";
 
     public static final String FILE_POSTFIX = "FROM_ASS";
-    private static final String WATERMARK = "이 화면은 CORE 앱에서 촬영된 화면입니다";
+    private static final String WATERMARK = "이 화면은 CORE 앱에서 캡쳐된 화면입니다";
     private ScreenShotListener mListener;
     private ContentResolver mContentResolver;
     private String lastPath;
@@ -96,7 +96,7 @@ public class ScreenShotContentObserver extends ContentObserver {
         }
         Bitmap newBitmap = AssUtil.getOverlayBitmap(context, bitmap, text);
         bitmap.recycle();
-        newBitmap = AssUtil.getOverlayBitmap2(context, newBitmap, "본인 의지와 무관한 아웃팅은 명예훼손으로 처벌받을 수 있습니다");
+        newBitmap = AssUtil.getOverlayBitmap2(context, newBitmap, "본인 의지와 무관한 아웃팅은 \n 명예훼손으로 처벌받을 수 있습니다");
         AssUtil.saveImage(context, newBitmap, fileName);
         newBitmap.recycle();
     }
