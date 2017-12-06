@@ -12,7 +12,14 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 
+import com.example.kwoncheolhyeok.core.MessageActivity.chat_message_view.util.MessageVO;
 import com.example.kwoncheolhyeok.core.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -27,6 +34,9 @@ public class ChattingActivity extends AppCompatActivity {
 
     private ChatMessageAdapter mAdapter;
 
+    private DatabaseReference mDatabase;
+    private FirebaseAuth mAuth;
+    private String userId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +49,10 @@ public class ChattingActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //액션바 아이콘을 업 네비게이션 형태로 표시합니다.
         getSupportActionBar().setDisplayShowHomeEnabled(true); //홈 아이콘을 숨김처리합니다.
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
+
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mAuth = FirebaseAuth.getInstance();
+        userId =  mAuth.getUid();
 
         mListView = (ListView) findViewById(R.id.listView);
         mButtonSend = (ImageButton) findViewById(R.id.btn_send);
@@ -56,14 +70,10 @@ public class ChattingActivity extends AppCompatActivity {
                 if (TextUtils.isEmpty(message)) {
                     return;
                 }
+                writeMessage(userId,0,"kaikai",message,0);
+                //newMessage();
                 sendMessage(message);
                 mEditTextMessage.setText("");
-//              mEditTextMessage.getBackground().mutate().setColorFilter(getResources().getColor(R.color.text_white), PorterDuff.Mode.SRC_ATOP);
-
-//                //Edit text 길이제한
-//                InputFilter[] FilterArray = new InputFilter[1];
-//                FilterArray[0] = new InputFilter.LengthFilter(500);
-//                mEditTextMessage.setFilters(FilterArray);
             }
         });
 
@@ -80,7 +90,7 @@ public class ChattingActivity extends AppCompatActivity {
     private void sendMessage(String message) {
         ChatMessage chatMessage = new ChatMessage(message, true, false);
         mAdapter.add(chatMessage);
-
+        writeMessage(userId,0,"kaikai",message,0);
         mimicOtherMessage(message);
     }
 
@@ -101,6 +111,28 @@ public class ChattingActivity extends AppCompatActivity {
         mAdapter.add(chatMessage);
     }
 
+    private void writeMessage(String userId, int img, String nickname, String content, int editimg) {
+        MessageVO message = new MessageVO(img,nickname, content,editimg);
+
+        mDatabase.child("message").child(userId).setValue(message);
+    }
+
+    private void newMessage() {
+        FirebaseDatabase.getInstance().getReference().child("users").child(userId)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        // Get user information
+                        MessageVO user = dataSnapshot.getValue(MessageVO.class);
+                       // sendMessage(user.getContent());
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+    }
 //    private void scrollMyListViewToBottom() {
 //        mListView.post(new Runnable() {
 //            @Override

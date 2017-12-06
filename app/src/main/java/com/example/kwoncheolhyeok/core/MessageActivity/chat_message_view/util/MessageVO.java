@@ -13,6 +13,18 @@ public class MessageVO {
     private String content;
     private int editimg;
 
+
+    public MessageVO(){
+    }
+
+
+    public MessageVO(int img, String nickname, String content, int editimg){
+        this.img = img;
+        this.nickname = nickname;
+        this.content = content;
+        this.editimg = editimg;
+    }
+
     public void setDate(String date) {
         this.date = date;
     }
