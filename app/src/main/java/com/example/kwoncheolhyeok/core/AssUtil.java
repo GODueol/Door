@@ -76,19 +76,18 @@ public class AssUtil {
         Bitmap icon = BitmapFactory.decodeResource(r, R.drawable.icon);
         Bitmap resizeIcon = BitmapUtil.resizeBitmapImageFn(icon,100);
         Paint paint = new Paint(); //페인트 객체 선언
-        paint.setAlpha(68);
+        paint.setAlpha(700);
         canvas.drawBitmap(resizeIcon, (canvas.getWidth() / 2) - (resizeIcon.getWidth() / 2),
-                result.getHeight() - AssUtil.dpToPx(72) - resizeIcon.getHeight(), paint);
-
+                result.getHeight() - AssUtil.dpToPx(85) - resizeIcon.getHeight(), paint);
 
         canvas.save();
 
-        float textX = (canvas.getWidth() / 2) - (mTextLayout.getWidth() / 2);
-        float textY = result.getHeight() - AssUtil.dpToPx(72);
+        // "본인 의지와 무관한 아웃팅은~" 부분 위치 조정
+        float textX = (canvas.getWidth() / 2) - (mTextLayout.getWidth() / 2); //센터
+        float textY = result.getHeight() - AssUtil.dpToPx(78); //높이
 
         canvas.translate(textX, textY);
         mTextLayout.draw(canvas);
-
 
 
         canvas.restore();
