@@ -60,12 +60,12 @@ public class PictureUrls implements Serializable {
         return booleans;
     }
 
-    public ArrayList<String> toNotNullArray(){
+    public ArrayList<String> toNotNullArray(IsLockPictures isLockPictures){
         ArrayList<String> booleans = new ArrayList<>();
-        if(getPicUrl1() != null) booleans.add(getPicUrl1());
-        if(getPicUrl2() != null) booleans.add(getPicUrl2());
-        if(getPicUrl3() != null) booleans.add(getPicUrl3());
-        if(getPicUrl4() != null) booleans.add(getPicUrl4());
+        if(getPicUrl1() != null && !isLockPictures.getIsLockPic1()) booleans.add(getPicUrl1());
+        if(getPicUrl2() != null && !isLockPictures.getIsLockPic2()) booleans.add(getPicUrl2());
+        if(getPicUrl3() != null && !isLockPictures.getIsLockPic3()) booleans.add(getPicUrl3());
+        if(getPicUrl4() != null && !isLockPictures.getIsLockPic4()) booleans.add(getPicUrl4());
         return booleans;
     }
 }

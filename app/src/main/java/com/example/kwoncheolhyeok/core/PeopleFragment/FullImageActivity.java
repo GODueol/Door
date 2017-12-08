@@ -114,7 +114,9 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
 
         // 사진 출력
         ImageView profilePics[] = {page1, page2, page3, page4};
-        picUrlList = user.getPicUrls().toNotNullArray();
+
+        picUrlList = user.getPicUrls().toNotNullArray(user.getIsLockPics());
+
         for (int i=0; i<picUrlList.size(); i++){
             String url = picUrlList.get(i);
             if(url == null) continue;
