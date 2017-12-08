@@ -1,5 +1,7 @@
 package com.example.kwoncheolhyeok.core.Entity;
 
+import com.example.kwoncheolhyeok.core.Util.DataContainer;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -62,11 +64,12 @@ public class PictureUrls implements Serializable {
 
     public ArrayList<String> toNotNullArray(IsLockPictures isLockPictures, Map<String, Long> unLockUsers, String uuid){
         // Lock한 사진은 안나오고, 해제한 유저는 사진 나오도록 필터링
+        String myUuid = DataContainer.getInstance().getUid();
         ArrayList<String> booleans = new ArrayList<>();
-        if(getPicUrl1() != null && (!isLockPictures.getIsLockPic1() || unLockUsers.containsKey(uuid)) ) booleans.add(getPicUrl1());
-        if(getPicUrl2() != null && (!isLockPictures.getIsLockPic2() || unLockUsers.containsKey(uuid)) ) booleans.add(getPicUrl2());
-        if(getPicUrl3() != null && (!isLockPictures.getIsLockPic3() || unLockUsers.containsKey(uuid)) ) booleans.add(getPicUrl3());
-        if(getPicUrl4() != null && (!isLockPictures.getIsLockPic4() || unLockUsers.containsKey(uuid)) ) booleans.add(getPicUrl4());
+        if(getPicUrl1() != null && (uuid.equals(myUuid) || (!isLockPictures.getIsLockPic1() || unLockUsers.containsKey(myUuid))) ) booleans.add(getPicUrl1());
+        if(getPicUrl2() != null && (uuid.equals(myUuid) || (!isLockPictures.getIsLockPic2() || unLockUsers.containsKey(myUuid))) ) booleans.add(getPicUrl2());
+        if(getPicUrl3() != null && (uuid.equals(myUuid) || (!isLockPictures.getIsLockPic3() || unLockUsers.containsKey(myUuid))) ) booleans.add(getPicUrl3());
+        if(getPicUrl4() != null && (uuid.equals(myUuid) || (!isLockPictures.getIsLockPic4() || unLockUsers.containsKey(myUuid))) ) booleans.add(getPicUrl4());
         return booleans;
     }
 }

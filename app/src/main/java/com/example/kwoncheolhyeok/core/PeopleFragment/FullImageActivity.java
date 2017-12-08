@@ -131,11 +131,18 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
             }
         }
 
+
+
         // 사진 잠금 해제
+        final String myUuid = DataContainer.getInstance().getUid();
+        final User mUser = DataContainer.getInstance().getUser();
+        if(item.getUuid().equals(myUuid)    // 본인
+                || mUser.getUnLockUsers().containsKey(item.getUuid())) {    // 이미 해제한 유저
+            picOpen.setVisibility(View.INVISIBLE);  // 해제버튼 숨김
+        }
         picOpen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 AlertDialog.Builder builder = new AlertDialog.Builder(FullImageActivity.this, R.style.MyAlertDialogStyle);
                 builder.setIcon(R.drawable.icon);
                 builder.setTitle("사진 해제");
@@ -143,9 +150,10 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
                 builder.setCancelable(false);
                 builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        User mUser = DataContainer.getInstance().getUser();
+
                         mUser.getUnLockUsers().put(item.getUuid(), System.currentTimeMillis());
-                        FirebaseDatabase.getInstance().getReference("users").child(DataContainer.getInstance().getUid()).setValue(mUser);
+                        FirebaseDatabase.getInstance().getReference("users").child(myUuid).setValue(mUser);
+                        picOpen.setVisibility(View.INVISIBLE);  // 해제버튼 숨김
                     }
                 });
                 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
