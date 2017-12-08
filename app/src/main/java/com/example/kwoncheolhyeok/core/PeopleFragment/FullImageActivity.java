@@ -1,6 +1,8 @@
 package com.example.kwoncheolhyeok.core.PeopleFragment;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -18,9 +20,11 @@ import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.MyApplcation;
 import com.example.kwoncheolhyeok.core.PeopleFragment.FullImageViewPager.DetailImageActivity;
 import com.example.kwoncheolhyeok.core.R;
+import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.google.firebase.appindexing.Action;
 import com.google.firebase.appindexing.FirebaseUserActions;
 import com.google.firebase.appindexing.builders.Actions;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -36,7 +40,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
 
     RelativeLayout core_enter = null;
     ImageView page1,page2,page3,page4;
-    ImageView pic_open, message_white, add_friends, block_friends;
+    ImageView message_white, add_friends, block_friends;
 
     @Bind(R.id.text_physical)
     TextView textPhysical;
@@ -56,6 +60,9 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
     @Bind(R.id.login_time)
     TextView loginTime;
     private ArrayList<String> picUrlList;
+
+    @Bind(R.id.pic_open)
+    ImageView picOpen;
 
     @SuppressLint("DefaultLocale")
     @Override
@@ -87,7 +94,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         page4.setOnClickListener(this);
 
         Intent p = getIntent();
-        ImageAdapter.Item item = (ImageAdapter.Item) p.getSerializableExtra("item");
+        final ImageAdapter.Item item = (ImageAdapter.Item) p.getSerializableExtra("item");
 
 
         //개인 화면에서 코어 액티비티로 넘어감
@@ -100,7 +107,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         });
 
         // 개인정보 Set
-        User user = item.getUser();
+        final User user = item.getUser();
         textId.setText(user.getId());
         textPhysical.setText(TextUtils.join("/", new String[]{user.getAge(), user.getHeight(), user.getWeight(), user.getBodyType()}));
         textIntroduce.setText(user.getIntro());
@@ -114,9 +121,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
 
         // 사진 출력
         ImageView profilePics[] = {page1, page2, page3, page4};
-
-        picUrlList = user.getPicUrls().toNotNullArray(user.getIsLockPics());
-
+        picUrlList = user.getPicUrls().toNotNullArray(user.getIsLockPics(), user.getUnLockUsers(), item.getUuid());
         for (int i=0; i<picUrlList.size(); i++){
             String url = picUrlList.get(i);
             if(url == null) continue;
@@ -125,6 +130,35 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
                 Glide.with(getBaseContext()).load(url).into(fullImageView);
             }
         }
+
+        // 사진 잠금 해제
+        picOpen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(FullImageActivity.this, R.style.MyAlertDialogStyle);
+                builder.setIcon(R.drawable.icon);
+                builder.setTitle("사진 해제");
+                builder.setMessage("사진을 해제하시겠습니까?");
+                builder.setCancelable(false);
+                builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        User mUser = DataContainer.getInstance().getUser();
+                        mUser.getUnLockUsers().put(item.getUuid(), System.currentTimeMillis());
+                        FirebaseDatabase.getInstance().getReference("users").child(DataContainer.getInstance().getUid()).setValue(mUser);
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                    }
+                });
+
+                AlertDialog dialog = builder.create();    // 알림창 객체 생성
+                dialog.show();    // 알림창 띄우기
+
+
+            }
+        });
     }
 
     // 뒤로가기 버튼 기능

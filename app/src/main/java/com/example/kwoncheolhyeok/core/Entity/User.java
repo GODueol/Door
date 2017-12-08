@@ -1,6 +1,9 @@
 package com.example.kwoncheolhyeok.core.Entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class User implements Serializable{
 
@@ -24,6 +27,16 @@ public class User implements Serializable{
 
     private PictureUrls picUrls = new PictureUrls();
     private IsLockPictures isLockPics = new IsLockPictures();
+
+    private Map<String, Long> unLockUsers = new HashMap<>();    // uuid, 추가 시간
+
+    public Map<String, Long> getUnLockUsers() {
+        return unLockUsers;
+    }
+
+    public void setUnLockUsers(Map<String, Long> unLockUsers) {
+        this.unLockUsers = unLockUsers;
+    }
 
     public PictureUrls getPicUrls() {
         return picUrls;
