@@ -21,6 +21,7 @@ import com.example.kwoncheolhyeok.core.MyApplcation;
 import com.example.kwoncheolhyeok.core.PeopleFragment.FullImageViewPager.DetailImageActivity;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.appindexing.Action;
 import com.google.firebase.appindexing.FirebaseUserActions;
 import com.google.firebase.appindexing.builders.Actions;
@@ -131,29 +132,58 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
             }
         }
 
-
-
         // 사진 잠금 해제
+        setPicLock(item);
+
+    }
+
+    private void setPicLock(final ImageAdapter.Item item) {
         final String myUuid = DataContainer.getInstance().getUid();
         final User mUser = DataContainer.getInstance().getUser();
-        if(item.getUuid().equals(myUuid)    // 본인
-                || mUser.getUnLockUsers().containsKey(item.getUuid())) {    // 이미 해제한 유저
-            picOpen.setVisibility(View.INVISIBLE);  // 해제버튼 숨김
+        if(item.getUuid().equals(myUuid)){  // 본인
+            picOpen.setVisibility(View.INVISIBLE);  // 가림
+            return;
+        }
+        if(!mUser.getUnLockUsers().containsKey(item.getUuid())) {
+            picOpen.setImageResource(R.drawable.picture_lock);
+        }else {
+            picOpen.setImageResource(R.drawable.picture_unlock);
         }
         picOpen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String title, message;
+                final boolean isLock = !mUser.getUnLockUsers().containsKey(item.getUuid());  // 이미 해제한 유저
+                if(isLock){
+                    title = "사진 해제";
+                    message = "사진을 해제하시겠습니까?";
+                } else {
+                    title = "사진 잠금";
+                    message = "사진을 잠그시겠습니까?";
+                }
                 AlertDialog.Builder builder = new AlertDialog.Builder(FullImageActivity.this, R.style.MyAlertDialogStyle);
                 builder.setIcon(R.drawable.icon);
-                builder.setTitle("사진 해제");
-                builder.setMessage("사진을 해제하시겠습니까?");
+                builder.setTitle(title);
+                builder.setMessage(message);
                 builder.setCancelable(false);
                 builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-
-                        mUser.getUnLockUsers().put(item.getUuid(), System.currentTimeMillis());
-                        FirebaseDatabase.getInstance().getReference("users").child(myUuid).setValue(mUser);
-                        picOpen.setVisibility(View.INVISIBLE);  // 해제버튼 숨김
+                        if(isLock){
+                            mUser.getUnLockUsers().put(item.getUuid(), System.currentTimeMillis()); // 해제
+                        } else {
+                            mUser.getUnLockUsers().remove(item.getUuid());  // 잠금
+                        }
+                        FirebaseDatabase.getInstance().getReference("users").child(myUuid).setValue(mUser)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                if(isLock) {
+                                    picOpen.setImageResource(R.drawable.picture_unlock);    // 해제
+                                }else {
+                                    picOpen.setImageResource(R.drawable.picture_lock);  // 잠금
+                                }
+                            }
+                        });
                     }
                 });
                 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -163,7 +193,6 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
 
                 AlertDialog dialog = builder.create();    // 알림창 객체 생성
                 dialog.show();    // 알림창 띄우기
-
 
             }
         });

@@ -2,11 +2,11 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- When selected, use grey -->
     <item
-        android:drawable="@drawable/picture_unlock"
+        android:drawable="@drawable/picture_lock"
         android:state_checked="true" />
     <!-- When not selected, use white-->
     <item
-        android:drawable="@drawable/picture_lock"
+        android:drawable="@drawable/picture_unlock"
         android:state_checked="false"/>
 
 </selector>
