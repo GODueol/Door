@@ -15,7 +15,6 @@ import android.widget.Toast;
 
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.Event.RefreshLocationEvent;
-import com.example.kwoncheolhyeok.core.MyApplcation;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.BusProvider;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
@@ -46,7 +45,7 @@ public class TabFragment1 extends android.support.v4.app.Fragment {
         return mInstance;
     }
     @SuppressLint("ValidFragment")
-    private TabFragment1(){};
+    private TabFragment1(){}
 
     GridView gridView = null;
     ImageAdapter imageAdapter;
@@ -125,14 +124,16 @@ public class TabFragment1 extends android.support.v4.app.Fragment {
         geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
             @SuppressLint("DefaultLocale")
             @Override
-            public void onKeyEntered(final String key, final GeoLocation geoLocation) {
-                DataContainer.getInstance().getUserRef(key).addListenerForSingleValueEvent(new ValueEventListener() {
+            public void onKeyEntered(final String oUuid, final GeoLocation geoLocation) {
+                DataContainer.getInstance().getUserRef(oUuid).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         User oUser = dataSnapshot.getValue(User.class);
-                        if(!isOnFilter(oUser)) return;  // 필터링
-                        Log.d(getClass().toString(),String.format("Key %s entered the search area at [%f,%f]", key, geoLocation.latitude, geoLocation.longitude));
-                        addItemToGrid(key, geoLocation, oUser);
+                        if(isInBlock(oUser, oUuid)) return;  // 블러킹
+                        if(!isInFilter(oUser)) return;  // 필터링
+
+                        Log.d(getClass().toString(),String.format("Key %s entered the search area at [%f,%f]", oUuid, geoLocation.latitude, geoLocation.longitude));
+                        addItemToGrid(oUuid, geoLocation, oUser);
                     }
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
@@ -183,7 +184,12 @@ public class TabFragment1 extends android.support.v4.app.Fragment {
         });
     }
 
-    private boolean isOnFilter(User oUser) {
+    private boolean isInBlock(User oUser, String oUuid) {
+        String mUuid = DataContainer.getInstance().getUid();
+        return oUser.getBlockUsers().containsKey(mUuid) || mUser.getBlockUsers().containsKey(oUuid);
+    }
+
+    private boolean isInFilter(User oUser) {
         if(!mUser.isUseFilter()) return true;   // 필터 적용여부
 
         if(!(mUser.getAgeBoundary().getMin() <= Integer.parseInt(oUser.getAge()) && Integer.parseInt(oUser.getAge()) <= mUser.getAgeBoundary().getMax())) return false;

@@ -15,6 +15,11 @@
     <item
         android:id="@+id/lock_all"
         android:orderInCategory="100"
-        android:title="Lock to All User"
+        android:title="@string/lock_to_all_user"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/unblock_all"
+        android:orderInCategory="100"
+        android:title="@string/unblock_to_all_user"
         app:showAsAction="never"/>
 </menu>

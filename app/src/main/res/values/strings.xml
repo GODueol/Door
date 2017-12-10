@@ -25,6 +25,14 @@
     <string name="standard">standard</string>
     <string name="muscular">muscular</string>
     <string name="overweight">overweight</string>
+    <string name="lock_to_all_user">Lock to All User</string>
+    <string name="unblock_to_all_user">Unblock to All User</string>
+    <string name="people">People</string>
+    <string name="board">Board</string>
+    <string name="find_text">Find Text</string>
+    <string name="club">Club</string>
+    <string name="create">Create</string>
+    <string name="filter">Filter</string>
 
 </resources>
 

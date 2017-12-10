@@ -31,6 +31,7 @@ import com.bumptech.glide.Glide;
 import com.example.kwoncheolhyeok.core.ClubActivity.Club_Filter_Activity;
 import com.example.kwoncheolhyeok.core.CorePage.CoreActivity;
 import com.example.kwoncheolhyeok.core.Entity.User;
+import com.example.kwoncheolhyeok.core.Event.RefreshLocationEvent;
 import com.example.kwoncheolhyeok.core.Event.SetProfilePicEvent;
 import com.example.kwoncheolhyeok.core.FriendsActivity.FriednsActivity;
 import com.example.kwoncheolhyeok.core.LoginActivity.LoginActivity;
@@ -240,6 +241,49 @@ public class MainActivity extends AppCompatActivity
                         @Override
                         public void onSuccess(Void aVoid) {
                             DataContainer.getInstance().setUser(user);
+                        }
+                    }).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            CoreProgress.getInstance().stopProgressDialog();
+                        }
+                    });
+                }
+            });
+            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                }
+            });
+
+            AlertDialog dialog = builder.create();    // 알림창 객체 생성
+            dialog.show();    // 알림창 띄우기
+            return true;
+        } else if(id == R.id.unblock_all) {
+            final User user = DataContainer.getInstance().getUser();
+            if(user.getBlockUsers().size()==0) {
+                Toast.makeText(getBaseContext(),"이미 모든 유저 블락이 해제되어있습니다",Toast.LENGTH_SHORT).show();
+                return true;
+            }
+
+            // 다이얼로그
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this, R.style.MyAlertDialogStyle);
+            builder.setIcon(R.drawable.icon);
+            builder.setTitle("모든 유저 블락 해제");
+            builder.setMessage("모든 유저 대상으로 블럭을 해제하시겠습니까?");
+            builder.setCancelable(false);
+            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                    CoreProgress.getInstance().startProgressDialog(MainActivity.this);
+                    user.getBlockUsers().clear();
+                    FirebaseDatabase.getInstance().getReference("users").child(DataContainer.getInstance().getUid()).setValue(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            DataContainer.getInstance().setUser(user);
+                            BusProvider.getInstance().post(new RefreshLocationEvent());
+                        }
+                    }).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
                             CoreProgress.getInstance().stopProgressDialog();
                         }
                     });
