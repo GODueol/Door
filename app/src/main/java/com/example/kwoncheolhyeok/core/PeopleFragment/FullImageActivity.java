@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.kwoncheolhyeok.core.CorePage.CoreActivity;
@@ -140,14 +142,20 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
     private void setPicLock(final ImageAdapter.Item item) {
         final String myUuid = DataContainer.getInstance().getUid();
         final User mUser = DataContainer.getInstance().getUser();
+
+        // 아이콘 크기 설정
+        picOpen.getLayoutParams().width = (int) getResources().getDimension(R.dimen.image_lock_height);
+        picOpen.getLayoutParams().height = (int) getResources().getDimension(R.dimen.image_lock_width);
+
         if(item.getUuid().equals(myUuid)){  // 본인
             picOpen.setVisibility(View.INVISIBLE);  // 가림
+
             return;
         }
         if(!mUser.getUnLockUsers().containsKey(item.getUuid())) {
-            picOpen.setImageResource(R.drawable.picture_lock);
+            picOpen.setImageResource(R.drawable.picture_unlock); // "이 아이콘을 클릭하면 사진을 해제하겠다"
         }else {
-            picOpen.setImageResource(R.drawable.picture_unlock);
+            picOpen.setImageResource(R.drawable.picture_lock); // "이 아이콘을 클릭하면 사진을 잠그겠다"
         }
         picOpen.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -156,10 +164,10 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
                 final boolean isLock = !mUser.getUnLockUsers().containsKey(item.getUuid());  // 이미 해제한 유저
                 if(isLock){
                     title = "사진 해제";
-                    message = "사진을 해제하시겠습니까?";
+                    message = "이 회원에게 당신의 잠긴 사진을 공개하시겠습니까?";
                 } else {
                     title = "사진 잠금";
-                    message = "사진을 잠그시겠습니까?";
+                    message = "이 회원에게 당신의 사진을 잠그시겠습니까?";
                 }
                 AlertDialog.Builder builder = new AlertDialog.Builder(FullImageActivity.this, R.style.MyAlertDialogStyle);
                 builder.setIcon(R.drawable.icon);
@@ -170,17 +178,20 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
                     public void onClick(DialogInterface dialog, int whichButton) {
                         if(isLock){
                             mUser.getUnLockUsers().put(item.getUuid(), System.currentTimeMillis()); // 해제
+                            Toast.makeText(FullImageActivity.this, "잠긴 사진을 열었습니다.", Toast.LENGTH_SHORT).show();
                         } else {
                             mUser.getUnLockUsers().remove(item.getUuid());  // 잠금
+                            Toast.makeText(FullImageActivity.this, "사진을 비공개 합니다.", Toast.LENGTH_SHORT).show();
+
                         }
                         FirebaseDatabase.getInstance().getReference("users").child(myUuid).setValue(mUser)
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
                                 if(isLock) {
-                                    picOpen.setImageResource(R.drawable.picture_unlock);    // 해제
+                                    picOpen.setImageResource(R.drawable.picture_lock);    // 해제하기 (현재 사진이 잠겼다는 것을 암시함)
                                 }else {
-                                    picOpen.setImageResource(R.drawable.picture_lock);  // 잠금
+                                    picOpen.setImageResource(R.drawable.picture_unlock);  // 잠금 (현재 사진이 해제되어 있다는 암시함)
                                 }
                             }
                         });
