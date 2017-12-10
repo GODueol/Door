@@ -1,6 +1,8 @@
 package com.example.kwoncheolhyeok.core.Activity;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -216,6 +218,41 @@ public class MainActivity extends AppCompatActivity
             return true;
         } else if (id == R.id.find_id) {
             return true;
+        } else if (id == R.id.lock_all) {
+
+            final User user = DataContainer.getInstance().getUser();
+            if(user.getUnLockUsers().size()==0) {
+                Toast.makeText(getBaseContext(),"이미 모든 유저에게 사진 잠금이 설정되어있습니다",Toast.LENGTH_SHORT).show();
+                return true;
+            }
+
+            // 다이얼로그
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this, R.style.MyAlertDialogStyle);
+            builder.setIcon(R.drawable.icon);
+            builder.setTitle("모든 유저 사진 잠금");
+            builder.setMessage("모든 유저 대상으로 사진을 잠그시겠습니까?");
+            builder.setCancelable(false);
+            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                    CoreProgress.getInstance().startProgressDialog(MainActivity.this);
+                    user.getUnLockUsers().clear();
+                    FirebaseDatabase.getInstance().getReference("users").child(DataContainer.getInstance().getUid()).setValue(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            DataContainer.getInstance().setUser(user);
+                            CoreProgress.getInstance().stopProgressDialog();
+                        }
+                    });
+                }
+            });
+            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                }
+            });
+
+            AlertDialog dialog = builder.create();    // 알림창 객체 생성
+            dialog.show();    // 알림창 띄우기
+            return true;
         }
 
         if (id == R.id.find_text) {
@@ -229,6 +266,7 @@ public class MainActivity extends AppCompatActivity
             startActivityForResult(i, 0);
             return true;
         }
+
 
         return super.onOptionsItemSelected(item);
     }

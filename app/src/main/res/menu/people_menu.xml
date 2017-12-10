@@ -12,4 +12,9 @@
         android:orderInCategory="100"
         android:title="@string/find_id"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/lock_all"
+        android:orderInCategory="100"
+        android:title="Lock to All User"
+        app:showAsAction="never"/>
 </menu>

@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -20,8 +21,11 @@ import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.MyApplcation;
 import com.example.kwoncheolhyeok.core.PeopleFragment.FullImageViewPager.DetailImageActivity;
 import com.example.kwoncheolhyeok.core.R;
+import com.example.kwoncheolhyeok.core.Util.CoreProgress;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.appindexing.Action;
 import com.google.firebase.appindexing.FirebaseUserActions;
 import com.google.firebase.appindexing.builders.Actions;
@@ -168,6 +172,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
                 builder.setCancelable(false);
                 builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
+                        CoreProgress.getInstance().startProgressDialog(FullImageActivity.this);
                         if(isLock){
                             mUser.getUnLockUsers().put(item.getUuid(), System.currentTimeMillis()); // 해제
                         } else {
@@ -182,6 +187,11 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
                                 }else {
                                     picOpen.setImageResource(R.drawable.picture_lock);  // 잠금
                                 }
+                            }
+                        }).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                CoreProgress.getInstance().stopProgressDialog();
                             }
                         });
                     }
