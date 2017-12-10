@@ -30,6 +30,16 @@ public class User implements Serializable{
 
     private Map<String, Long> unLockUsers = new HashMap<>();    // uuid, 추가 시간
 
+    private Map<String, Long> blockUsers = new HashMap<>();    // uuid, 추가 시간
+
+    public Map<String, Long> getBlockUsers() {
+        return blockUsers;
+    }
+
+    public void setBlockUsers(Map<String, Long> blockUsers) {
+        this.blockUsers = blockUsers;
+    }
+
     public Map<String, Long> getUnLockUsers() {
         return unLockUsers;
     }

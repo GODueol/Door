@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -17,13 +18,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.kwoncheolhyeok.core.Activity.MainActivity;
 import com.example.kwoncheolhyeok.core.CorePage.CoreActivity;
 import com.example.kwoncheolhyeok.core.Entity.User;
+import com.example.kwoncheolhyeok.core.Event.RefreshLocationEvent;
 import com.example.kwoncheolhyeok.core.MyApplcation;
 import com.example.kwoncheolhyeok.core.PeopleFragment.FullImageViewPager.DetailImageActivity;
 import com.example.kwoncheolhyeok.core.R;
+import com.example.kwoncheolhyeok.core.Util.BusProvider;
+import com.example.kwoncheolhyeok.core.Util.CoreProgress;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.appindexing.Action;
 import com.google.firebase.appindexing.FirebaseUserActions;
 import com.google.firebase.appindexing.builders.Actions;
@@ -66,6 +73,9 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
 
     @Bind(R.id.pic_open)
     ImageView picOpen;
+
+    @Bind(R.id.block_friends)
+    ImageView blockFriends;
 
     @SuppressLint("DefaultLocale")
     @Override
@@ -137,6 +147,46 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         // 사진 잠금 해제
         setPicLock(item);
 
+        blockFriends.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // 다이얼로그
+                AlertDialog.Builder builder = new AlertDialog.Builder(FullImageActivity.this, R.style.MyAlertDialogStyle);
+                builder.setIcon(R.drawable.icon);
+                builder.setTitle("유저 차단");
+                builder.setMessage("해당 유저를 차단하시겠습니까?");
+                builder.setCancelable(false);
+                builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        CoreProgress.getInstance().startProgressDialog(FullImageActivity.this);
+                        // blockUsers 추가
+                        final User mUser = DataContainer.getInstance().getUser();
+                        mUser.getBlockUsers().put(item.getUuid(), System.currentTimeMillis());
+                        FirebaseDatabase.getInstance().getReference("users").child(DataContainer.getInstance().getUid()).setValue(mUser).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                DataContainer.getInstance().setUser(mUser);
+                                BusProvider.getInstance().post(new RefreshLocationEvent());
+                                finish();
+                            }
+                        }).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                CoreProgress.getInstance().stopProgressDialog();
+                            }
+                        });
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                    }
+                });
+
+                AlertDialog dialog = builder.create();    // 알림창 객체 생성
+                dialog.show();    // 알림창 띄우기
+            }
+        });
+
     }
 
     private void setPicLock(final ImageAdapter.Item item) {
@@ -176,6 +226,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
                 builder.setCancelable(false);
                 builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
+                        CoreProgress.getInstance().startProgressDialog(FullImageActivity.this);
                         if(isLock){
                             mUser.getUnLockUsers().put(item.getUuid(), System.currentTimeMillis()); // 해제
                             Toast.makeText(FullImageActivity.this, "잠긴 사진을 열었습니다.", Toast.LENGTH_SHORT).show();
@@ -193,6 +244,11 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
                                 }else {
                                     picOpen.setImageResource(R.drawable.picture_unlock);  // 잠금 (현재 사진이 해제되어 있다는 암시함)
                                 }
+                            }
+                        }).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                CoreProgress.getInstance().stopProgressDialog();
                             }
                         });
                     }

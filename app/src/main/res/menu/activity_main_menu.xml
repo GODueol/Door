@@ -6,8 +6,8 @@
     <item
         android:id="@+id/people_menu"
         android:orderInCategory="100"
-        android:title="People"
-        android:showAsAction="never">
+        android:title="@string/people"
+        app:showAsAction="never">
     <menu>
     <item
         android:id="@+id/find_map"
@@ -26,33 +26,33 @@
     <item
         android:id="@+id/board_menu"
         android:orderInCategory="100"
-        android:showAsAction="never"
-        android:title="Board" >
+        android:title="@string/board"
+        app:showAsAction="never">
         <menu>
             <item
                 android:id="@+id/find_text"
                 android:orderInCategory="100"
-                android:showAsAction="never"
-                android:title="Find Text"/>
+                android:title="@string/find_text"
+                app:showAsAction="never" />
         </menu>
     </item>
 
     <item
         android:id="@+id/club_menu"
         android:orderInCategory="100"
-        android:title="Club"
-        android:showAsAction="never">
+        android:title="@string/club"
+        app:showAsAction="never">
         <menu>
             <item
                 android:id="@+id/club_create"
                 android:orderInCategory="100"
-                android:title="Create"
+                android:title="@string/create"
                 app:showAsAction="never" />
 
             <item
                 android:id="@+id/club_filter"
                 android:orderInCategory="100"
-                android:title="Filter"
+                android:title="@string/filter"
                 app:showAsAction="never"/>
         </menu>
     </item>
