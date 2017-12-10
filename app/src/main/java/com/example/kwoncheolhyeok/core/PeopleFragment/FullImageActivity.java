@@ -143,7 +143,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         final String myUuid = DataContainer.getInstance().getUid();
         final User mUser = DataContainer.getInstance().getUser();
 
-        // 아이콘 크기 설정
+        // 아이콘 크기 설정ㅇㅁㄴㄹ
         picOpen.getLayoutParams().width = (int) getResources().getDimension(R.dimen.image_lock_height);
         picOpen.getLayoutParams().height = (int) getResources().getDimension(R.dimen.image_lock_width);
 
