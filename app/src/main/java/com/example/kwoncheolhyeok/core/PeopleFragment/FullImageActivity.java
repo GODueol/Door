@@ -122,7 +122,8 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         // 개인정보 Set
         final User user = item.getUser();
         textId.setText(user.getId());
-        textPhysical.setText(TextUtils.join("/", new String[]{user.getAge(), user.getHeight(), user.getWeight(), user.getBodyType()}));
+        textPhysical.setText(TextUtils.join("/", new String[]{Integer.toString(user.getAge()), Integer.toString(user.getHeight()),
+                Integer.toString(user.getWeight()), user.getBodyType()}));
         textIntroduce.setText(user.getIntro());
         distanceText.setText(String.format("%.1f", item.getDistance()/1000));
 
@@ -193,7 +194,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         final String myUuid = DataContainer.getInstance().getUid();
         final User mUser = DataContainer.getInstance().getUser();
 
-        // 아이콘 크기 설정ㅇㅁㄴㄹ
+        // 아이콘 크기 설정
         picOpen.getLayoutParams().width = (int) getResources().getDimension(R.dimen.image_lock_height);
         picOpen.getLayoutParams().height = (int) getResources().getDimension(R.dimen.image_lock_width);
 

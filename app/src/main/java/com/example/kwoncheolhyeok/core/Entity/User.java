@@ -1,7 +1,6 @@
 package com.example.kwoncheolhyeok.core.Entity;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,9 +11,9 @@ public class User implements Serializable{
 
     private String email;// = "";
     private String id;// = "";
-    private String age;
-    private String height;
-    private String weight;
+    private int age;
+    private int height;
+    private int weight;
     private String bodyType;
 
     private String intro;
@@ -72,34 +71,6 @@ public class User implements Serializable{
 
     public void setLoginDate(long loginDate) {
         this.loginDate = loginDate;
-    }
-
-    private boolean isLockPic2;
-    private boolean isLockPic3;
-    private boolean isLockPic4;
-
-    public boolean isLockPic2() {
-        return isLockPic2;
-    }
-
-    public void setLockPic2(boolean lockPic2) {
-        isLockPic2 = lockPic2;
-    }
-
-    public boolean isLockPic3() {
-        return isLockPic3;
-    }
-
-    public void setLockPic3(boolean lockPic3) {
-        isLockPic3 = lockPic3;
-    }
-
-    public boolean isLockPic4() {
-        return isLockPic4;
-    }
-
-    public void setLockPic4(boolean lockPic4) {
-        isLockPic4 = lockPic4;
     }
 
     private boolean isUseFilter;
@@ -160,7 +131,7 @@ public class User implements Serializable{
         this.bodyType = bodyType;
     }
 
-    public User(String email, String id, String age, String height, String weight, String bodyType) {
+    public User(String email, String id, int age, int height, int weight, String bodyType) {
         this.email = email;
         this.id = id;
         this.age = age;
@@ -185,28 +156,27 @@ public class User implements Serializable{
         this.id = id;
     }
 
-    public String getAge() {
+    public int getAge() {
         return age;
     }
 
-    public void setAge(String age) {
+    public void setAge(int age) {
         this.age = age;
     }
 
-    public String getHeight() {
+    public int getHeight() {
         return height;
     }
 
-    public void setHeight(String height) {
+    public void setHeight(int height) {
         this.height = height;
     }
 
-    public String getWeight() {
+    public int getWeight() {
         return weight;
     }
 
-    public void setWeight(String weight) {
+    public void setWeight(int weight) {
         this.weight = weight;
     }
-
 }

@@ -192,9 +192,9 @@ public class TabFragment1 extends android.support.v4.app.Fragment {
     private boolean isInFilter(User oUser) {
         if(!mUser.isUseFilter()) return true;   // 필터 적용여부
 
-        if(!(mUser.getAgeBoundary().getMin() <= Integer.parseInt(oUser.getAge()) && Integer.parseInt(oUser.getAge()) <= mUser.getAgeBoundary().getMax())) return false;
-        if(!(mUser.getHeightBoundary().getMin() <= Integer.parseInt(oUser.getHeight()) && Integer.parseInt(oUser.getHeight()) <= mUser.getHeightBoundary().getMax())) return false;
-        if(!(mUser.getWeightBoundary().getMin() <= Integer.parseInt(oUser.getWeight()) && Integer.parseInt(oUser.getWeight()) <= mUser.getWeightBoundary().getMax())) return false;
+        if(!(mUser.getAgeBoundary().getMin() <= oUser.getAge() && oUser.getAge() <= mUser.getAgeBoundary().getMax())) return false;
+        if(!(mUser.getHeightBoundary().getMin() <= oUser.getHeight() && oUser.getHeight() <= mUser.getHeightBoundary().getMax())) return false;
+        if(!(mUser.getWeightBoundary().getMin() <= oUser.getWeight() && oUser.getWeight() <= mUser.getWeightBoundary().getMax())) return false;
         int minBodyType = Arrays.asList(DataContainer.bodyTypes).indexOf(mUser.getBodyTypeBoundary().getMin());
         int maxBodyType = Arrays.asList(DataContainer.bodyTypes).indexOf(mUser.getBodyTypeBoundary().getMax());
         int bodyType = Arrays.asList(DataContainer.bodyTypes).indexOf(oUser.getBodyType());

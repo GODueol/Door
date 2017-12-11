@@ -134,8 +134,6 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 
     @Bind(R.id.delete4)
     ImageView delete4Image;
-    private ImageView[] profilePics;
-    private ToggleButton[] lockButtons;
 
     // filter boundary
     enum FILTER {AGE, HEIGHT, WEIGHT}
@@ -196,8 +194,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
             }
         });
 
-        profilePics = new ImageView[]{profilePic1, profilePic2, profilePic3, profilePic4};
-        lockButtons = new ToggleButton[]{null, lock2Toggle, lock3Toggle, lock4Toggle};
+        ImageView[] profilePics = new ImageView[]{profilePic1, profilePic2, profilePic3, profilePic4};
 
         // 필터 다이얼로그 열기
         min_age_filter = findViewById(R.id.min_age_filter);
@@ -264,15 +261,15 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         // 개인정보 Setting
         user = DataContainer.getInstance().getUser();
         _idText.setText(user.getId());
-        agePick.setText(user.getAge());
-        heightPick.setText(user.getHeight());
-        weightPick.setText(user.getWeight());
+        agePick.setText(Integer.toString(user.getAge()));
+        heightPick.setText(Integer.toString(user.getHeight()));
+        weightPick.setText(Integer.toString(user.getWeight()));
         bodyTypePick.setText(user.getBodyType());
         introEditText.setText(user.getIntro());
 
         // Load the image using Glide
         ArrayList<String> picUrlList = user.getPicUrls().toArray();
-        for (int i=0; i<profilePics.length; i++){
+        for (int i = 0; i< profilePics.length; i++){
             String url = picUrlList.get(i);
             if(url == null) continue;
             Glide.with(getBaseContext()).load(url).into(profilePics[i]);
@@ -336,9 +333,9 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         });
 
         /* pic lock */
-        lock2Toggle.setChecked(user.isLockPic2());
-        lock3Toggle.setChecked(user.isLockPic3());
-        lock4Toggle.setChecked(user.isLockPic4());
+        lock2Toggle.setChecked(user.getIsLockPics().getIsLockPic1());
+        lock3Toggle.setChecked(user.getIsLockPics().getIsLockPic2());
+        lock4Toggle.setChecked(user.getIsLockPics().getIsLockPic3());
 
         /* onClick del btn */
         setOnDelPicBtnClickListener(delete2Image, profilePic2);
@@ -813,16 +810,12 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 
         // Save User Info
         user.setId(_idText.getText().toString());
-        user.setAge(agePick.getText().toString());
-        user.setHeight(heightPick.getText().toString());
-        user.setWeight(weightPick.getText().toString());
+        user.setAge(Integer.parseInt(agePick.getText().toString()));
+        user.setHeight(Integer.parseInt(heightPick.getText().toString()));
+        user.setWeight(Integer.parseInt(weightPick.getText().toString()));
         user.setBodyType(bodyTypePick.getText().toString());
         user.setIntro(introEditText.getText().toString());
         user.setUseFilter(filterSwitch.isChecked());
-
-        user.setLockPic2(lock2Toggle.isChecked());
-        user.setLockPic3(lock3Toggle.isChecked());
-        user.setLockPic4(lock4Toggle.isChecked());
 
         user.getIsLockPics().setIsLockPic2(lock2Toggle.isChecked());
         user.getIsLockPics().setIsLockPic3(lock3Toggle.isChecked());

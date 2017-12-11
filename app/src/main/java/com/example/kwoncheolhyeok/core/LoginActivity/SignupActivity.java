@@ -1,5 +1,6 @@
 package com.example.kwoncheolhyeok.core.LoginActivity;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -83,7 +84,7 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
         ButterKnife.bind(this);
 
 
-        bodytype = (EditText) findViewById(R.id.input_bodytype);
+        bodytype = findViewById(R.id.input_bodytype);
         bodytype.setFocusable(false);
         bodytype.setClickable(false);
         bodytype.setOnClickListener(new View.OnClickListener() {
@@ -156,10 +157,10 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
 
         d.show();
 
-        TextView b1 = (TextView) d.findViewById(R.id.button1);
-        TextView b2 = (TextView) d.findViewById(R.id.button2);
+        TextView b1 = d.findViewById(R.id.button1);
+        TextView b2 = d.findViewById(R.id.button2);
 
-        final NumberPicker np = (NumberPicker) d.findViewById(R.id.numberPicker1);
+        final NumberPicker np = d.findViewById(R.id.numberPicker1);
 
         np.setMinValue(0); //from array first value
         np.setMaxValue(values.length - 1); //to array last value
@@ -167,7 +168,7 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
         np.setDisplayedValues(values);
         np.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
         np.setWrapSelectorWheel(false);
-        np.setOnValueChangedListener((NumberPicker.OnValueChangeListener) this);
+        np.setOnValueChangedListener(this);
 
 
         b1.setOnClickListener(new View.OnClickListener() {
@@ -207,11 +208,10 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
 
         final String email = _emailText.getText().toString();
         String password = _passwordText.getText().toString();
-        String reEnterPassword = _reEnterPasswordText.getText().toString();
         final String id = _IDText.getText().toString();
-        final String age = _ageText.getText().toString();
-        final String height = _heightText.getText().toString();
-        final String weight = _weightText.getText().toString();
+        final int age = Integer.parseInt(_ageText.getText().toString());
+        final int height = Integer.parseInt(_heightText.getText().toString());
+        final int weight = Integer.parseInt(_weightText.getText().toString());
         final String bodyType = _bodyType.getText().toString();
         mUser = new User(email, id, age, height, weight, bodyType);
 
@@ -249,6 +249,7 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
         CoreProgress.getInstance().stopProgressDialog();
     }
 
+    @SuppressLint("SetTextI18n")
     public void validate() throws Exception {
 
         String email = _emailText.getText().toString();
