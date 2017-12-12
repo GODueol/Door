@@ -5,8 +5,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import com.example.kwoncheolhyeok.core.PeopleFragment.TabFragment1;
-import com.example.kwoncheolhyeok.core.BoardActivity.TabFragment2;
-import com.example.kwoncheolhyeok.core.ClubActivity.TabFragment3;
 
 public class TabPagerAdapter extends FragmentPagerAdapter {
 
@@ -31,14 +29,14 @@ public class TabPagerAdapter extends FragmentPagerAdapter {
         this.position = position;
         switch (position) {
             case 0:
-                TabFragment2 tab2 = TabFragment2.getInstance();
-                return tab2;
-            case 1:
                 TabFragment1 tab1 = TabFragment1.getInstance();
                 return tab1;
-            case 2:
-                TabFragment3 tab3 = TabFragment3.getInstance();
-                return tab3;
+//            case 1:
+//                TabFragment1 tab1 = TabFragment1.getInstance();
+//                return tab1;
+//            case 2:
+//                TabFragment3 tab3 = TabFragment3.getInstance();
+//                return tab3;
             default:
                 return null;
         }

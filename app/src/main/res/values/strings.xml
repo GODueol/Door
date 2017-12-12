@@ -9,9 +9,9 @@
     <string name="Join_this_club">Join</string>
 
     <string-array name="titles_tab">
-        <item>Board</item>
+        <!--<item>Board</item>-->
         <item>People</item>
-        <item>Club</item>
+        <!--<item>Club</item>-->
     </string-array>
 
     <!-- Action Bar action items -->

@@ -28,7 +28,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.kwoncheolhyeok.core.ClubActivity.Club_Filter_Activity;
 import com.example.kwoncheolhyeok.core.CorePage.CoreActivity;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.Event.RefreshLocationEvent;
@@ -122,13 +121,12 @@ public class MainActivity extends AppCompatActivity
                 getSupportFragmentManager(),
                 getResources().getStringArray(R.array.titles_tab));
         viewPager.setAdapter(tabPagerAdapter);
-        viewPager.setCurrentItem(1);
+        viewPager.setCurrentItem(0);
 
-        //TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
-        tabLayout = findViewById(R.id.tab_layout);
-        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-        tabLayout.setupWithViewPager(viewPager);
-//        getSupportFragmentManager().beginTransaction().add(R.id.container,new TabFragment2()).commit();
+//        //TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+//        tabLayout = findViewById(R.id.tab_layout);
+//        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+//        tabLayout.setupWithViewPager(viewPager);
 
         //네비게이션 뷰 내의 프로필 사진 클릭시 프로필 편집
         View headerView = navigationView.getHeaderView(0);
@@ -299,17 +297,17 @@ public class MainActivity extends AppCompatActivity
             return true;
         }
 
-        if (id == R.id.find_text) {
-            return true;
-        }
-
-        if (id == R.id.club_create) {
-            return true;
-        } else if (id == R.id.club_filter) {
-            Intent i = new Intent(MainActivity.this, Club_Filter_Activity.class);
-            startActivityForResult(i, 0);
-            return true;
-        }
+//        if (id == R.id.find_text) {
+//            return true;
+//        }
+//
+//        if (id == R.id.club_create) {
+//            return true;
+//        } else if (id == R.id.club_filter) {
+////            Intent i = new Intent(MainActivity.this, Club_Filter_Activity.class);
+////            startActivityForResult(i, 0);
+//            return true;
+//        }
 
 
         return super.onOptionsItemSelected(item);
@@ -319,15 +317,15 @@ public class MainActivity extends AppCompatActivity
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.clear();
         switch (viewPager.getCurrentItem()) {
+//            case 0:
+//                getMenuInflater().inflate(R.menu.board_menu, menu);
+//                break;
             case 0:
-                getMenuInflater().inflate(R.menu.board_menu, menu);
-                break;
-            case 1:
                 getMenuInflater().inflate(R.menu.people_menu, menu);
                 break;
-            case 2:
-                getMenuInflater().inflate(R.menu.club_menu, menu);
-                break;
+//            case 2:
+//                getMenuInflater().inflate(R.menu.club_menu, menu);
+//                break;
             default:
                 break;
         }
@@ -342,7 +340,7 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_People) {
 
-            viewPager.setCurrentItem(1);
+            viewPager.setCurrentItem(0);
         } else if (id == R.id.nav_mycore) {
 
             Intent i = new Intent(MainActivity.this, CoreActivity.class);

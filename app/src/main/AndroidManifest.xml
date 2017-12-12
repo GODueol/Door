@@ -136,37 +136,6 @@
             >
         </activity>
 
-        <activity
-            android:name=".ClubActivity.ClubActivity"
-            android:windowSoftInputMode="stateAlwaysHidden"
-            android:screenOrientation="portrait"
-            >
-        </activity>
-
-        <activity
-            android:name=".ClubActivity.UserListActivity"
-            android:screenOrientation="portrait"
-            >
-        </activity>
-
-        <activity
-            android:name=".ClubActivity.ScheduleActivity"
-            android:screenOrientation="portrait"
-            >
-        </activity>
-
-        <activity
-            android:name=".ClubActivity.ClubSettingActivity"
-            android:screenOrientation="portrait"
-            >
-        </activity>
-
-        <activity
-            android:name=".ClubActivity.Club_Filter_Activity"
-            android:screenOrientation="portrait"
-            >
-        </activity>
-
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
