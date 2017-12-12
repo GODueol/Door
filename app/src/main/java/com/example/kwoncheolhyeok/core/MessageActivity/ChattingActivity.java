@@ -1,19 +1,35 @@
 package com.example.kwoncheolhyeok.core.MessageActivity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import com.example.kwoncheolhyeok.core.Activity.MainActivity;
+import com.example.kwoncheolhyeok.core.Activity.MapsActivity;
+import com.example.kwoncheolhyeok.core.Entity.User;
+import com.example.kwoncheolhyeok.core.Event.RefreshLocationEvent;
 import com.example.kwoncheolhyeok.core.MessageActivity.chat_message_view.util.MessageVO;
 import com.example.kwoncheolhyeok.core.R;
+import com.example.kwoncheolhyeok.core.Util.BusProvider;
+import com.example.kwoncheolhyeok.core.Util.CoreProgress;
+import com.example.kwoncheolhyeok.core.Util.DataContainer;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -143,12 +159,12 @@ public class ChattingActivity extends AppCompatActivity {
 //        });
 //    }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.activity_main_menu, menu);
-        return true;
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.activity_main_menu, menu);
+//        return true;
+//    }
 
 //    @Override
 //    public boolean onOptionsItemSelected(MenuItem item) {
@@ -167,6 +183,14 @@ public class ChattingActivity extends AppCompatActivity {
 
     // 뒤로가기 버튼 기능
     public boolean onOptionsItemSelected(android.view.MenuItem item) {
+
+        int id = item.getItemId();
+
+        if (id == R.id.find_text) {
+            Toast.makeText(this, "흐음..", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+
         switch (item.getItemId()) {
             case android.R.id.home:
                 // NavUtils.navigateUpFromSameTask(this);
@@ -177,7 +201,6 @@ public class ChattingActivity extends AppCompatActivity {
     };
 
 
-
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.clear();
@@ -185,5 +208,6 @@ public class ChattingActivity extends AppCompatActivity {
 
         return super.onPrepareOptionsMenu(menu);
     }
+
 }
 
