@@ -72,7 +72,7 @@ public class TabFragment1 extends android.support.v4.app.Fragment {
             }
         });
 
-        refreshLocation();
+        refreshGrid(null);
 
         // 스와이프로 위치 새로고침
         final SwipeRefreshLayout mSwipeRefreshLayout = view.findViewById(R.id.swipe_layout);
@@ -105,12 +105,9 @@ public class TabFragment1 extends android.support.v4.app.Fragment {
 
     @Subscribe
     public void refreshGrid(RefreshLocationEvent pushEvent) {
+        // 데이터 비움
         imageAdapter.clear();
-        gridView.invalidateViews();
-        refreshLocation();
-    }
 
-    private void refreshLocation() {
         // 현재 자신의 위치를 가져옴
         saveMyGPS();
 
@@ -154,7 +151,8 @@ public class TabFragment1 extends android.support.v4.app.Fragment {
 
                 if(imageAdapter != null){
                     imageAdapter.addItem(new ImageAdapter.Item(distance, key, oUser, oUser.getPicUrls().getPicUrl1()));
-                    gridView.invalidateViews();
+                    imageAdapter.notifyDataSetChanged();
+//                    gridView.invalidateViews();
                     Log.d(getTag(), "addItemToGrid : " + key );
                 } else {
                     Log.d(getTag(), "imageAdapter is null");
@@ -164,12 +162,15 @@ public class TabFragment1 extends android.support.v4.app.Fragment {
             @Override
             public void onKeyExited(String key) {
                 System.out.println(String.format("Key %s is no longer in the search area", key));
+                // 아이템 삭제
+
             }
 
             @SuppressLint("DefaultLocale")
             @Override
             public void onKeyMoved(String key, GeoLocation location) {
                 System.out.println(String.format("Key %s moved within the search area to [%f,%f]", key, location.latitude, location.longitude));
+                // 아이템 갱신
             }
 
             @Override
