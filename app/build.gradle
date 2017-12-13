@@ -25,8 +25,8 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
     //noinspection GradleCompatible
-    compile 'com.android.support:design:24.2.1'
-    compile 'com.android.support:appcompat-v7:26.1.0'
+    compile 'com.android.support:design:26.+'
+    compile 'com.android.support:appcompat-v7:26.+'
     compile files('libs/universal-image-loader-1.2.1.jar')
     compile 'com.jakewharton:butterknife:7.0.1'
     compile project(':heartbutton_library')

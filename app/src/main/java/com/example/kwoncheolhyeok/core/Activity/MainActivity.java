@@ -134,7 +134,6 @@ public class MainActivity extends AppCompatActivity
         profileImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 Intent i2 = new Intent(MainActivity.this, ProfileModifyActivity.class);
                 startActivity(i2);
             }

@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -55,22 +56,21 @@ public class Core_List_Adapter extends BaseAdapter {
             holder.core_pic = (ImageView) convertView.findViewById(R.id.core_pic);
             holder.core_img = (ImageView) convertView.findViewById(R.id.core_img);
 
-
             holder.core_id = (TextView) convertView.findViewById(R.id.core_id);
+            holder.core_subprofile=(TextView)convertView.findViewById(R.id.sub_profile);
             holder.core_date = (TextView) convertView.findViewById(R.id.core_date);
             holder.core_contents = (TextView) convertView.findViewById(R.id.core_contents);
+
+            holder.core_media=(TextView)convertView.findViewById(R.id.media_player_txt);
+            holder.core_setting=(ImageButton)convertView.findViewById(R.id.setting);
+
+            holder.core_heart_count = (TextView) convertView.findViewById(R.id.heart_count_txt);
+            holder.core_heart=(ImageButton)convertView.findViewById(R.id.heart_count);
 
         }
         else{
             holder = (Core_List_Adapter.Holder) convertView.getTag();
         }
-
-//         Listview 안의 숫자를 text를 표시해줌
-
-//        final String content = String.valueOf(getItem(position));
-//
-//        holder.listItem.setText(content);
-//        convertView.setTag(holder);
 
 
         return convertView;
@@ -80,8 +80,8 @@ public class Core_List_Adapter extends BaseAdapter {
 
 
         ImageView core_pic, core_img ;
-
-        public TextView core_id, core_date, core_contents ;
+        ImageButton core_setting, core_heart;
+        public TextView core_id, core_subprofile, core_date, core_contents, core_media, core_heart_count;
 
     }
 }

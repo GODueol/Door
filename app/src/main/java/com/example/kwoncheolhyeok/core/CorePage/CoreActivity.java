@@ -1,31 +1,40 @@
 package com.example.kwoncheolhyeok.core.CorePage;
 
 
+import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.SeekBar;
+import android.widget.TextView;
 
+import com.example.kwoncheolhyeok.core.Activity.MainActivity;
+import com.example.kwoncheolhyeok.core.Activity.MapsActivity;
+import com.example.kwoncheolhyeok.core.LoginActivity.LoginActivity;
 import com.example.kwoncheolhyeok.core.MyApplcation;
 import com.example.kwoncheolhyeok.core.R;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 
 public class CoreActivity extends AppCompatActivity {
 
     Toolbar toolbar = null;
-
     private ListView core_list_view;
 
-//    // 기본 폰트 고정
-//    @Override
-//    protected void attachBaseContext(Context newBase) {
-//        super.attachBaseContext(TypekitContextWrapper.wrap(newBase));
-//    }
+    TextView media_player = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -33,10 +42,29 @@ public class CoreActivity extends AppCompatActivity {
         // Get the view from new_activity.xml
         setContentView(R.layout.core_activity);
 
+        //스크린샷 방지
         MyApplcation.getInstance().allowUserSaveScreenshot(false);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+
+            }
+        });
+
+        media_player = (TextView) findViewById(R.id.media_player);
+        media_player.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(CoreActivity.this, audioactivity.class);
+                startActivity(i);
+            }
+        });
 
         // 툴바 뒤로가기 버튼
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //액션바 아이콘을 업 네비게이션 형태로 표시합니다.

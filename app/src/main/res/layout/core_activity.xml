@@ -1,37 +1,63 @@
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
->
+    android:layout_height="match_parent">
+
 
     <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:background="@color/text_white"
-            android:minHeight="?attr/actionBarSize"
-            android:fitsSystemWindows="true"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            >
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="@color/text_white"
+        android:fitsSystemWindows="true"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-            <ImageButton
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:scaleType="centerCrop"
-                android:layout_gravity="center"
-                android:background="@drawable/nav_core"/>
+        <ImageButton
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_gravity="center"
+            android:background="@drawable/nav_core"
+            android:scaleType="centerCrop" />
 
-        </android.support.v7.widget.Toolbar>
 
-        <ListView
-            android:id="@+id/core_listview"
-            android:layout_below="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:divider="#00000000"
-            android:cacheColorHint="#00000000"
-            android:scrollbarStyle="outsideOverlay">
-        </ListView>
+
+    </android.support.v7.widget.Toolbar>
+
+    <TextView
+        android:id="@+id/media_player"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="미플고"
+        android:layout_alignParentTop="true"
+        android:layout_alignRight="@+id/fab"
+        android:layout_alignEnd="@+id/fab"
+        android:layout_marginTop="17dp"
+        />
+
+    <ListView
+        android:id="@+id/core_listview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar"
+        android:cacheColorHint="#00000000"
+        android:divider="#00000000"
+        android:scrollbarStyle="outsideOverlay"></ListView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/icon"
+        app:backgroundTint="@color/skyblue"
+        app:borderWidth="0dp"
+        app:elevation="6dp"
+        app:fabSize="normal"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="40dp"
+        android:layout_marginRight="20dp"
+    />
 
 </RelativeLayout>
