@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity
     //View people, board, club;
 
     ViewPager viewPager = null;
-//    TabLayout tabLayout = null;
+    TabLayout tabLayout = null;
     Drawable icon_open,icon_close;
     ImageView profileImage;
 
@@ -208,14 +208,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.people_menu, menu);
-        return super.onPrepareOptionsMenu(menu);
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
+
         if (id == R.id.find_map) {
             Intent i = new Intent(MainActivity.this, MapsActivity.class);
             startActivityForResult(i, 0);
@@ -302,10 +297,40 @@ public class MainActivity extends AppCompatActivity
             return true;
         }
 
+//        if (id == R.id.find_text) {
+//            return true;
+//        }
+//
+//        if (id == R.id.club_create) {
+//            return true;
+//        } else if (id == R.id.club_filter) {
+////            Intent i = new Intent(MainActivity.this, Club_Filter_Activity.class);
+////            startActivityForResult(i, 0);
+//            return true;
+//        }
+
+
         return super.onOptionsItemSelected(item);
     }
 
-
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        menu.clear();
+        switch (viewPager.getCurrentItem()) {
+//            case 0:
+//                getMenuInflater().inflate(R.menu.board_menu, menu);
+//                break;
+            case 0:
+                getMenuInflater().inflate(R.menu.people_menu, menu);
+                break;
+//            case 2:
+//                getMenuInflater().inflate(R.menu.club_menu, menu);
+//                break;
+            default:
+                break;
+        }
+        return super.onPrepareOptionsMenu(menu);
+    }
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override

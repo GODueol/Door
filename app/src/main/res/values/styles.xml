@@ -12,7 +12,8 @@
         <item name="android:actionOverflowButtonStyle">@style/MyActionButtonOverflow</item>
 
         <!--액션바 메뉴 눌렀을 때 툴바 밑으로 나오게 함-->
-        <item name="android:actionMenuTextColor">@color/white</item>
+        <item name="android:actionMenuTextColor">@color/text_white</item>
+        <item name="android:popupMenuStyle">@style/PopupMenu.Example</item>
         <item name="actionOverflowMenuStyle">@style/OverflowMenu</item>
     </style>
 
@@ -45,22 +46,50 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
-
+    <!--액션바 메뉴 눌렀을 때 툴바 밑으로 나오게 함-->
+    <style name="PopupMenu.Example" parent="@android:style/Widget.Holo.Light.ListPopupWindow">
+        <item name="android:popupBackground">#efefef</item>
+    </style>
     <style name="OverflowMenu" parent="Widget.AppCompat.PopupMenu.Overflow">
         <item name="overlapAnchor">false</item>
         <item name="android:overlapAnchor" tools:targetApi="lollipop">false</item>
         <item name="android:dropDownVerticalOffset">0dip</item>
         <item name="android:dropDownHorizontalOffset">0dip</item>
         <item name="android:popupBackground">@color/tr_black75</item>
-        <!--<item name="android:actionMenuTextColor">@color/black</item>-->
-    </style>
 
+    </style>
 
     <!--클럽 필터 체크박스 스타일-->
     <style name="MyCheckBox" parent="Theme.AppCompat.Light">
         <item name="colorControlNormal">@color/black</item>
         <item name="colorControlActivated">@color/text_white</item>
     </style>
+
+    <!--로그인 화면 스타일-->
+    <style name="AppTheme.Dark.Dialog" parent="Theme.AppCompat.Dialog">
+        <item name="colorAccent">@color/text_white</item>
+        <item name="android:textColorPrimary">#CCCCCC</item>
+        <item name="android:background">#E43F3F</item>
+    </style>
+    <style name="AppTheme.Dark" parent="Theme.AppCompat.NoActionBar">
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="colorAccent">@color/accent</item>
+
+        <item name="android:windowBackground">@color/primary</item>
+
+        <item name="colorControlNormal">@color/iron</item>
+        <item name="colorControlActivated">@color/white</item>
+        <item name="colorControlHighlight">@color/white</item>
+        <item name="android:textColorHint">@color/iron</item>
+
+        <item name="colorButtonNormal">@color/primary_darker</item>
+        <item name="android:colorButtonNormal" tools:targetApi="lollipop">@color/primary_darker</item>
+    </style>
+
+
+
+
 
     //로그인 화면 Edit text 의 Email과 Password 색 바꾸기
     <style name="TextLabel" parent="TextAppearance.AppCompat">
