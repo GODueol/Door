@@ -333,9 +333,9 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         });
 
         /* pic lock */
-        lock2Toggle.setChecked(user.getIsLockPics().getIsLockPic1());
-        lock3Toggle.setChecked(user.getIsLockPics().getIsLockPic2());
-        lock4Toggle.setChecked(user.getIsLockPics().getIsLockPic3());
+        lock2Toggle.setChecked(user.getIsLockPics().getIsLockPic2());
+        lock3Toggle.setChecked(user.getIsLockPics().getIsLockPic3());
+        lock4Toggle.setChecked(user.getIsLockPics().getIsLockPic4());
 
         /* onClick del btn */
         setOnDelPicBtnClickListener(delete2Image, profilePic2);
