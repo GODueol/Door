@@ -38,5 +38,6 @@
     <color name="gray40">#BDBDBD</color>
     <color name="gray70">#616161</color>
     <color name="skyblue">#29B6F6</color>
+    <color name="tr_skyblue">#A629B6F6</color>
 
 </resources>
