@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -18,8 +19,8 @@ public class audioactivity extends AppCompatActivity {
 
     private TextView textMaxTime;
     private TextView textCurrentPosition;
-    private Button buttonPause;
-    private Button buttonStart;
+    private ImageButton buttonPause;
+    private ImageButton buttonStart;
     private SeekBar seekBar;
     private Handler threadHandler = new Handler();
 
@@ -32,8 +33,8 @@ public class audioactivity extends AppCompatActivity {
 
         this.textCurrentPosition = (TextView)this.findViewById(R.id.textView_currentPosion);
         this.textMaxTime=(TextView) this.findViewById(R.id.textView_maxTime);
-        this.buttonStart= (Button) this.findViewById(R.id.button_start);
-        this.buttonPause= (Button) this.findViewById(R.id.button_pause);
+        this.buttonStart= (ImageButton) this.findViewById(R.id.button_start);
+        this.buttonPause= (ImageButton) this.findViewById(R.id.button_pause);
 
         this.buttonPause.setEnabled(false);
 
