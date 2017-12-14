@@ -1,10 +1,14 @@
 package com.example.kwoncheolhyeok.core.FriendsActivity;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ExpandableListView;
+import android.widget.Toast;
 
 import com.example.kwoncheolhyeok.core.R;
 
@@ -88,6 +92,38 @@ public class FriednsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         // Get the view from new_activity.xml
         setContentView(R.layout.friends_activity);
+
+        // bottomTab
+        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                String msg;
+                switch (item.getItemId()) {
+                    case R.id.navigation_receive:
+                        msg = "receive";
+                        Toast.makeText(getApplicationContext(),msg,Toast.LENGTH_SHORT).show();
+                        return true;
+                    case R.id.navigation_send:
+                        msg = "send";
+                        Toast.makeText(getApplicationContext(),msg,Toast.LENGTH_SHORT).show();
+                        return true;
+                    case R.id.navigation_friends:
+                        msg = "friends";
+                        Toast.makeText(getApplicationContext(),msg,Toast.LENGTH_SHORT).show();
+                        return true;
+                    case R.id.navigation_recent:
+                        msg = "recent";
+                        Toast.makeText(getApplicationContext(),msg,Toast.LENGTH_SHORT).show();
+                        return true;
+                    case R.id.navigation_block:
+                        msg = "block";
+                        Toast.makeText(getApplicationContext(),msg,Toast.LENGTH_SHORT).show();
+                        return true;
+                }
+                return false;
+            }
+        });
 
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
