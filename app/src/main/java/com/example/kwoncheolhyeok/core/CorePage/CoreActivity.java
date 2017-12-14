@@ -75,7 +75,7 @@ public class CoreActivity extends AppCompatActivity {
         core_list_view = (ListView) findViewById(R.id.core_listview);
 
         List<String> list = new ArrayList<String>();
-        for(int i=0; i<10; i++){
+        for(int i=0; i<3; i++){
             list.add(i+"");
         }
         Core_List_Adapter Core_List_Adapter = new Core_List_Adapter(list, this);
