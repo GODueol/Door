@@ -5,17 +5,20 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.example.kwoncheolhyeok.core.Activity.MainActivity;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.R;
-import com.example.kwoncheolhyeok.core.Util.CoreProgress;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.setPermission;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.ProviderQueryResult;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -24,6 +27,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.gun0912.tedpermission.PermissionListener;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -51,45 +55,69 @@ public class IntroActivity extends Activity {
 
     private void getUserInfo(final FirebaseUser user) {
         if (user != null) {
-
-            // User is signed in
-            Log.d(getApplication().getClass().getName(), "onAuthStateChanged:signed_in:" + user.getUid());
-
-            // user 정보 읽어오기
-            DatabaseReference userRef = database.getReference("users");
-            String uuid = user.getUid();
-            userRef.child(uuid).addListenerForSingleValueEvent(new ValueEventListener() {
-
+            FirebaseAuth mAuth = FirebaseAuth.getInstance();
+            if(user.getEmail() == null) {
+                Log.d(getApplication().getClass().getName(), "계정없음:" + user.getUid());
+                logout();
+                return;
+            }
+            mAuth.fetchProvidersForEmail(user.getEmail()).addOnCompleteListener(new OnCompleteListener<ProviderQueryResult>() {
                 @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    User mUser = dataSnapshot.getValue(User.class);
-                    DataContainer.getInstance().setUser(mUser);
-                    onLoginSuccess();
-                }
+                public void onComplete(@NonNull Task<ProviderQueryResult> task) {
+                    List<String> provider = task.getResult().getProviders();
+                    if(provider == null || provider.isEmpty()) { // 계정이 없는 경우
+                        Log.d(getApplication().getClass().getName(), "계정없음:" + user.getUid());
+                        logout();
+                        return;
+                    }
 
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    Toast.makeText(getApplicationContext(),"Getting UserInfo Cancelled",Toast.LENGTH_SHORT).show();
-                    Log.d(getApplication().getClass().getName(),databaseError.getMessage());
-                }
+                    // User is signed in
+                    Log.d(getApplication().getClass().getName(), "onAuthStateChanged:signed_in:" + user.getUid());
 
+                    // user 정보 읽어오기
+                    DatabaseReference userRef = database.getReference("users");
+                    String uuid = user.getUid();
+                    userRef.child(uuid).addListenerForSingleValueEvent(new ValueEventListener() {
+
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            User mUser = dataSnapshot.getValue(User.class);
+                            DataContainer.getInstance().setUser(mUser);
+                            onLoginSuccess();
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            Toast.makeText(getApplicationContext(),"Getting UserInfo Cancelled",Toast.LENGTH_SHORT).show();
+                            Log.d(getApplication().getClass().getName(),databaseError.getMessage());
+                        }
+
+                    });
+                }
             });
-
-
         } else {
             // User is signed out
             Log.d(getApplication().getClass().getName(), "onAuthStateChanged:signed_out");
 
-            new Handler().postDelayed(new Runnable() {
-                public void run() {
-                    Intent intent = new Intent(IntroActivity.this, LoginActivity.class);
-                    startActivity(intent);
-                    // 뒤로가기 했을경우 안나오도록 없애주기 >> finish!!
-                    finish();
-                }
-            }, 1800);
+            goToLoginActivity();
 
         }
+    }
+
+    private void logout() {
+        FirebaseAuth.getInstance().signOut();
+        goToLoginActivity();
+    }
+
+    private void goToLoginActivity() {
+        new Handler().postDelayed(new Runnable() {
+            public void run() {
+                Intent intent = new Intent(IntroActivity.this, LoginActivity.class);
+                startActivity(intent);
+                // 뒤로가기 했을경우 안나오도록 없애주기 >> finish!!
+                finish();
+            }
+        }, 1800);
     }
 
     public void onLoginSuccess() {
@@ -112,8 +140,5 @@ public class IntroActivity extends Activity {
             Toast.makeText(getApplication(), "권한이 없으면 앱을 실행할 수 없습니다.",Toast.LENGTH_SHORT).show();
         }
     };
-
-    /******************구글맵 메소드(+권한) 끝**********************/
-
 }
 
