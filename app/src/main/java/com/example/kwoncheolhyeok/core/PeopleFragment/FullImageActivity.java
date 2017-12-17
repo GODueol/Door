@@ -131,7 +131,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
 
         // 로그인 시간
         if(user.getLoginDate() != 0) {
-            @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormat = new SimpleDateFormat("yy.MM.dd HH:mm");
+            SimpleDateFormat dateFormat = DataContainer.dateFormat;
             loginTime.setText( dateFormat.format(new Date(user.getLoginDate())));
         }
 

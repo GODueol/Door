@@ -23,7 +23,7 @@ import java.util.Map;
 public class FriendsActivity extends AppCompatActivity {
 
     Toolbar toolbar = null;
-    private ArrayList<User> users;
+    private ArrayList<userListAdapter.Item> items;
     private userListAdapter adapter;
 
     /*
@@ -44,10 +44,10 @@ public class FriendsActivity extends AppCompatActivity {
                 String msg;
                 switch (item.getItemId()) {
                     case R.id.navigation_receive:
-                        setRecyclerView(users, adapter, "followingUsers");
+                        setRecyclerView(items, adapter, "followingUsers");
                         return true;
                     case R.id.navigation_send:
-                        setRecyclerView(users, adapter, "followerUsers");
+                        setRecyclerView(items, adapter, "followerUsers");
                         return true;
                     case R.id.navigation_friends:
                         msg = "friends";
@@ -75,36 +75,36 @@ public class FriendsActivity extends AppCompatActivity {
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
 
         // 리사이클뷰
-        User mUser = DataContainer.getInstance().getUser();
         final RecyclerView recyclerView = findViewById(R.id.friendsRecyclerView);
-        users = new ArrayList<>();
-        adapter = new userListAdapter(users);
+        items = new ArrayList<>();
+
+        adapter = new userListAdapter(items);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
 
-        // setRecyclerView
-        setRecyclerView(users, adapter, "followingUsers");
+        // setRecyclerView (default)
+        setRecyclerView(items, adapter, "followingUsers");
 
     }
 
-    private void setRecyclerView(final ArrayList<User> users, final userListAdapter adapter, String field) {
+    private void setRecyclerView(final ArrayList<userListAdapter.Item> items, final userListAdapter adapter, String field) {
         DataContainer.getInstance().getMyUserRef().child(field).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Map<String, Long> friendsUuidMap = (Map<String, Long>) dataSnapshot.getValue();
-                users.clear();
+                final Map<String, Long> friendsUuidMap = (Map<String, Long>) dataSnapshot.getValue();
+                items.clear();
                 if(friendsUuidMap == null) {
                     adapter.notifyDataSetChanged();
                     return;
                 }
-                for(String oUuid : friendsUuidMap.keySet()){
+                for(final String oUuid : friendsUuidMap.keySet()){
                     DataContainer.getInstance().getUsersRef().child(oUuid).addListenerForSingleValueEvent(new ValueEventListener() {
 
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             User oUser = dataSnapshot.getValue(User.class);
-                            users.add(oUser);
+                            items.add(new userListAdapter.Item(oUser,friendsUuidMap.get(oUuid)));
                             adapter.notifyDataSetChanged();
                         }
 
