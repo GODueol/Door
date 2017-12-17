@@ -35,6 +35,26 @@ public class User implements Serializable{
 
     private Map<String, Long> followerUsers = new HashMap<>();    // uuid, 추가 시간
 
+    private Map<String, Long> friendUsers = new HashMap<>();    // uuid, 추가 시간
+
+    private Map<String, Long> recentUsers = new HashMap<>();    // uuid, 추가 시간
+
+    public Map<String, Long> getRecentUsers() {
+        return recentUsers;
+    }
+
+    public void setRecentUsers(Map<String, Long> recentUsers) {
+        this.recentUsers = recentUsers;
+    }
+
+    public Map<String, Long> getFriendUsers() {
+        return friendUsers;
+    }
+
+    public void setFriendUsers(Map<String, Long> friendUsers) {
+        this.friendUsers = friendUsers;
+    }
+
     public Map<String, Long> getFollowingUsers() {
         return followingUsers;
     }

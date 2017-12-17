@@ -107,7 +107,7 @@ public class ImageAdapter extends BaseAdapter {
         User user;
         String picUrl;
 
-        Item(float distance, String uuid, User user, String picUrl) {
+        public Item(float distance, String uuid, User user, String picUrl) {
             this.distance = distance;
             this.uuid = uuid;
             this.user = user;

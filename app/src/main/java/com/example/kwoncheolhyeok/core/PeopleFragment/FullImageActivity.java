@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -26,13 +27,20 @@ import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.BusProvider;
 import com.example.kwoncheolhyeok.core.Util.CoreProgress;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
+import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
+import com.example.kwoncheolhyeok.core.Util.GPSInfo;
+import com.firebase.geofire.GeoFire;
+import com.firebase.geofire.GeoLocation;
+import com.firebase.geofire.LocationCallback;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.appindexing.Action;
 import com.google.firebase.appindexing.FirebaseUserActions;
 import com.google.firebase.appindexing.builders.Actions;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -127,7 +135,24 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         textPhysical.setText(TextUtils.join("/", new String[]{Integer.toString(user.getAge()), Integer.toString(user.getHeight()),
                 Integer.toString(user.getWeight()), user.getBodyType()}));
         textIntroduce.setText(user.getIntro());
-        distanceText.setText(String.format("%.1f", item.getDistance()/1000));
+
+        // 거리 Set
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(FireBaseUtil.currentLocationPath);
+        GeoFire geoFire = new GeoFire(ref);
+        final Location location = GPSInfo.getmInstance(getApplication()).getGPSLocation();
+        geoFire.getLocation(item.getUuid(), new LocationCallback() {
+            @Override
+            public void onLocationResult(String s, GeoLocation geoLocation) {
+                Location targetLocation = new Location("");//provider name is unnecessary
+                targetLocation.setLatitude(geoLocation.latitude);//your coords of course
+                targetLocation.setLongitude(geoLocation.longitude);
+                final float distance = location.distanceTo(targetLocation);
+                distanceText.setText(String.format("%.1f", distance/1000));
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
 
         // 로그인 시간
         if(user.getLoginDate() != 0) {
@@ -154,10 +179,10 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         setBlock(item);
 
         // 팔로우
-        setFriends(item);
+        setFollowing(item);
     }
 
-    private void setFriends(final ImageAdapter.Item item) {
+    private void setFollowing(final ImageAdapter.Item item) {
         final String myUuid = DataContainer.getInstance().getUid();
         if(item.getUuid().equals(myUuid)){  // 본인
             addFriends.setVisibility(View.INVISIBLE);  // 가림
@@ -177,7 +202,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
                         CoreProgress.getInstance().startProgressDialog(FullImageActivity.this);
                         // 내 following 추가, 유저 follower c추가
                         final User mUser = DataContainer.getInstance().getUser();
-
+                        final User oUser = item.getUser();
                         DatabaseReference mDatabase = DataContainer.getInstance().getUsersRef();
                         Map<String, Object> childUpdates = new HashMap<>();
 
@@ -185,8 +210,21 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
                         mUser.getFollowingUsers().put(item.getUuid(), now);
                         childUpdates.put("/" + myUuid + "/followingUsers", mUser.getFollowingUsers());
 
-                        item.getUser().getFollowerUsers().put(myUuid, now);
-                        childUpdates.put("/" + item.getUuid() + "/followerUsers", item.getUser().getFollowerUsers());
+                        oUser.getFollowerUsers().put(myUuid, now);
+                        childUpdates.put("/" + item.getUuid() + "/followerUsers", oUser.getFollowerUsers());
+
+                        // 상대방이 팔로우 되어있으면 친구에 추가
+                        if(oUser.getFollowingUsers().containsKey(myUuid)){
+                            mUser.getFriendUsers().put(item.getUuid(), now);
+                            childUpdates.put("/" + myUuid + "/friendUsers", mUser.getFollowingUsers());
+
+                            oUser.getFriendUsers().put(myUuid, now);
+                            childUpdates.put("/" + item.getUuid() + "/friendUsers", oUser.getFollowerUsers());
+
+                            Toast.makeText(getApplicationContext(),"Add Friend : " + oUser.getId(),Toast.LENGTH_SHORT).show();
+                        }
+
+                        // 데이터 한꺼번에 업데이트
                         mDatabase.updateChildren(childUpdates).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {

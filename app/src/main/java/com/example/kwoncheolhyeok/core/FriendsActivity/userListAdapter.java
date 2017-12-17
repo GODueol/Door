@@ -1,6 +1,7 @@
 package com.example.kwoncheolhyeok.core.FriendsActivity;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -12,6 +13,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.MessageActivity.chat_message_view.util.messageRecyclerAdapter;
+import com.example.kwoncheolhyeok.core.PeopleFragment.FullImageActivity;
+import com.example.kwoncheolhyeok.core.PeopleFragment.ImageAdapter;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 
@@ -39,14 +42,25 @@ public class userListAdapter extends RecyclerView.Adapter<userListAdapter.userHo
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(userHolder userHolder, int i) {
-        Item item = items.get(i);
-        User user = item.getUser();
+        final Item item = items.get(i);
+        final User user = item.getUser();
         Glide.with(userHolder.profilePicImage.getContext()).load(user.getPicUrls().getPicUrl1()).into(userHolder.profilePicImage);
         userHolder.idText.setText(user.getId());
         userHolder.subProfileText.setText(TextUtils.join("/", new String[]{Integer.toString(user.getAge()), Integer.toString(user.getHeight()),
                 Integer.toString(user.getWeight()), user.getBodyType()}));
         SimpleDateFormat dateFormat = DataContainer.dateFormat;
         userHolder.dateText.setText( dateFormat.format(new Date(item.getDate())));
+
+        userHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent p = new Intent(view.getContext(), FullImageActivity.class);
+
+                p.putExtra("item", new ImageAdapter.Item(0, item.getUuid(), user, ""));
+
+                view.getContext().startActivity(p);
+            }
+        });
     }
 
     @Override
@@ -71,10 +85,20 @@ public class userListAdapter extends RecyclerView.Adapter<userListAdapter.userHo
     public static class Item {
         User user;
         long date;
+        String uuid;
 
-        public Item(User user, long date) {
+        public Item(User user, long date, String uuid) {
             this.user = user;
             this.date = date;
+            this.uuid = uuid;
+        }
+
+        public String getUuid() {
+            return uuid;
+        }
+
+        public void setUuid(String uuid) {
+            this.uuid = uuid;
         }
 
         public User getUser() {

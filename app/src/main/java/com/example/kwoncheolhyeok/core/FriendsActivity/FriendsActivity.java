@@ -8,7 +8,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.R;
@@ -44,22 +43,19 @@ public class FriendsActivity extends AppCompatActivity {
                 String msg;
                 switch (item.getItemId()) {
                     case R.id.navigation_receive:
-                        setRecyclerView(items, adapter, "followingUsers");
-                        return true;
-                    case R.id.navigation_send:
                         setRecyclerView(items, adapter, "followerUsers");
                         return true;
+                    case R.id.navigation_send:
+                        setRecyclerView(items, adapter, "followingUsers");
+                        return true;
                     case R.id.navigation_friends:
-                        msg = "friends";
-                        Toast.makeText(getApplicationContext(),msg,Toast.LENGTH_SHORT).show();
+                        setRecyclerView(items, adapter, "friendUsers");
                         return true;
                     case R.id.navigation_recent:
-                        msg = "recent";
-                        Toast.makeText(getApplicationContext(),msg,Toast.LENGTH_SHORT).show();
+                        setRecyclerView(items, adapter, "recentUsers");
                         return true;
                     case R.id.navigation_block:
-                        msg = "block";
-                        Toast.makeText(getApplicationContext(),msg,Toast.LENGTH_SHORT).show();
+                        setRecyclerView(items, adapter, "blockUsers");
                         return true;
                 }
                 return false;
@@ -84,7 +80,7 @@ public class FriendsActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
         // setRecyclerView (default)
-        setRecyclerView(items, adapter, "followingUsers");
+        navigation.setSelectedItemId(R.id.navigation_receive);
 
     }
 
@@ -104,7 +100,7 @@ public class FriendsActivity extends AppCompatActivity {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             User oUser = dataSnapshot.getValue(User.class);
-                            items.add(new userListAdapter.Item(oUser,friendsUuidMap.get(oUuid)));
+                            items.add(new userListAdapter.Item(oUser, friendsUuidMap.get(oUuid), oUuid));
                             adapter.notifyDataSetChanged();
                         }
 
