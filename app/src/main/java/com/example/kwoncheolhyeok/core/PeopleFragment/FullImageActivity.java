@@ -33,7 +33,6 @@ import com.google.firebase.appindexing.Action;
 import com.google.firebase.appindexing.FirebaseUserActions;
 import com.google.firebase.appindexing.builders.Actions;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -179,7 +178,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
                         // 내 following 추가, 유저 follower c추가
                         final User mUser = DataContainer.getInstance().getUser();
 
-                        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference("users");
+                        DatabaseReference mDatabase = DataContainer.getInstance().getUsersRef();
                         Map<String, Object> childUpdates = new HashMap<>();
 
                         long now = System.currentTimeMillis();
@@ -235,7 +234,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
                         // blockUsers 추가
                         final User mUser = DataContainer.getInstance().getUser();
                         mUser.getBlockUsers().put(item.getUuid(), System.currentTimeMillis());
-                        FirebaseDatabase.getInstance().getReference("users").child(DataContainer.getInstance().getUid()).setValue(mUser).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        DataContainer.getInstance().getUsersRef().child(DataContainer.getInstance().getUid()).setValue(mUser).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
                                 DataContainer.getInstance().setUser(mUser);
@@ -306,7 +305,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
                             Toast.makeText(FullImageActivity.this, "사진을 비공개 합니다.", Toast.LENGTH_SHORT).show();
 
                         }
-                        FirebaseDatabase.getInstance().getReference("users").child(myUuid).setValue(mUser)
+                        DataContainer.getInstance().getUsersRef().child(myUuid).setValue(mUser)
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {

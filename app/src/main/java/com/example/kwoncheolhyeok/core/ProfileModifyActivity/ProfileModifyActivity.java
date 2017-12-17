@@ -47,7 +47,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -411,7 +410,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
             user.getPicUrls().setPicUrl4(null);
         }
         DataContainer.getInstance().setUser(user);
-        FirebaseDatabase.getInstance().getReference("users").child(DataContainer.getInstance().getUid()).setValue(user);
+        DataContainer.getInstance().getUsersRef().child(DataContainer.getInstance().getUid()).setValue(user);
     }
 
     private void setVisibilityFilterLayout(boolean isChecked) {
@@ -748,7 +747,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
             user.getPicUrls().setPicUrl4(downloadUrl.toString());
         }
         DataContainer.getInstance().setUser(user);
-        FirebaseDatabase.getInstance().getReference("users").child(DataContainer.getInstance().getUid()).setValue(user);
+        DataContainer.getInstance().getUsersRef().child(DataContainer.getInstance().getUid()).setValue(user);
         BusProvider.getInstance().post(new RefreshLocationEvent());
     }
 
@@ -827,7 +826,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
             Log.d(this.getClass().getName(), "onAuthStateChanged:signed_in:" + firebaseUser.getUid());
 
             // 파이어베이스 저장
-            FirebaseDatabase.getInstance().getReference("users").child(firebaseUser.getUid()).setValue(user)
+            DataContainer.getInstance().getUsersRef().child(firebaseUser.getUid()).setValue(user)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {

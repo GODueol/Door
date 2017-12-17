@@ -1,7 +1,5 @@
 package com.example.kwoncheolhyeok.core.Util;
 
-import android.location.Location;
-
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -38,10 +36,15 @@ public class DataContainer {
     }
 
     public DatabaseReference getUserRef(String uuid){
-        return FirebaseDatabase.getInstance().getReference("users").child(uuid);
+        return getUsersRef().child(uuid);
     }
 
-    public static DataContainer getOurInstance() {
-        return ourInstance;
+    public DatabaseReference getMyUserRef(){
+        return getUserRef(getUid());
     }
+
+    public DatabaseReference getUsersRef(){
+        return FirebaseDatabase.getInstance().getReference("users");
+    }
+
 }

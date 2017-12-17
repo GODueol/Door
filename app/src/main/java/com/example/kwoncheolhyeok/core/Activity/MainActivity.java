@@ -10,7 +10,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.TabLayout;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
@@ -32,7 +31,7 @@ import com.example.kwoncheolhyeok.core.CorePage.CoreActivity;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.Event.RefreshLocationEvent;
 import com.example.kwoncheolhyeok.core.Event.SetProfilePicEvent;
-import com.example.kwoncheolhyeok.core.FriendsActivity.FriednsActivity;
+import com.example.kwoncheolhyeok.core.FriendsActivity.FriendsActivity;
 import com.example.kwoncheolhyeok.core.LoginActivity.LoginActivity;
 import com.example.kwoncheolhyeok.core.MessageActivity.MessageActivity;
 import com.example.kwoncheolhyeok.core.MyApplcation;
@@ -48,7 +47,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.otto.Subscribe;
 
 /**
@@ -64,7 +62,6 @@ public class MainActivity extends AppCompatActivity
     //View people, board, club;
 
     ViewPager viewPager = null;
-    TabLayout tabLayout = null;
     Drawable icon_open,icon_close;
     ImageView profileImage;
 
@@ -165,7 +162,7 @@ public class MainActivity extends AppCompatActivity
             return;
         }
         mUser.setLoginDate(System.currentTimeMillis());
-        FirebaseDatabase.getInstance().getReference("users").child(user.getUid()).setValue(mUser)
+        DataContainer.getInstance().getUsersRef().child(user.getUid()).setValue(mUser)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
@@ -234,7 +231,7 @@ public class MainActivity extends AppCompatActivity
                 public void onClick(DialogInterface dialog, int whichButton) {
                     CoreProgress.getInstance().startProgressDialog(MainActivity.this);
                     user.getUnLockUsers().clear();
-                    FirebaseDatabase.getInstance().getReference("users").child(DataContainer.getInstance().getUid()).setValue(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    DataContainer.getInstance().getUsersRef().child(DataContainer.getInstance().getUid()).setValue(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
                             DataContainer.getInstance().setUser(user);
@@ -272,7 +269,7 @@ public class MainActivity extends AppCompatActivity
                 public void onClick(DialogInterface dialog, int whichButton) {
                     CoreProgress.getInstance().startProgressDialog(MainActivity.this);
                     user.getBlockUsers().clear();
-                    FirebaseDatabase.getInstance().getReference("users").child(DataContainer.getInstance().getUid()).setValue(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    DataContainer.getInstance().getUsersRef().child(DataContainer.getInstance().getUid()).setValue(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
                             DataContainer.getInstance().setUser(user);
@@ -351,7 +348,7 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_friends) {
 
-            Intent i = new Intent(MainActivity.this, FriednsActivity.class);
+            Intent i = new Intent(MainActivity.this, FriendsActivity.class);
             startActivity(i);
 
         } else if (id == R.id.nav_setting) {
