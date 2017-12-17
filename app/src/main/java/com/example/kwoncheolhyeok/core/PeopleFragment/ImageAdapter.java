@@ -98,6 +98,7 @@ public class ImageAdapter extends BaseAdapter {
 
     void clear() {
         mItems.clear();
+        notifyDataSetChanged();
     }
 
     public static class Item implements Serializable {
