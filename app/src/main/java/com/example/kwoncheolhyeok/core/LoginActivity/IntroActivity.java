@@ -38,6 +38,7 @@ public class IntroActivity extends Activity {
     /** Called when the activity is first created. */
 
     FirebaseDatabase database = FirebaseDatabase.getInstance();
+    private FirebaseUser currentUser;
 
     @Override
     protected void onStart() {
@@ -129,7 +130,7 @@ public class IntroActivity extends Activity {
     PermissionListener GPSPermission = new PermissionListener() {
         @Override
         public void onPermissionGranted() {
-            FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+            currentUser = FirebaseAuth.getInstance().getCurrentUser();
             getUserInfo(currentUser);
             Toast.makeText(getApplication(), "위치 권한가져옴",Toast.LENGTH_SHORT).show();
         }
@@ -140,5 +141,13 @@ public class IntroActivity extends Activity {
             Toast.makeText(getApplication(), "권한이 없으면 앱을 실행할 수 없습니다.",Toast.LENGTH_SHORT).show();
         }
     };
+
+    @Override
+    public void onBackPressed() {
+        // 계정있으면 로그아웃
+        if(currentUser != null){
+            logout();
+        }
+    }
 }
 
