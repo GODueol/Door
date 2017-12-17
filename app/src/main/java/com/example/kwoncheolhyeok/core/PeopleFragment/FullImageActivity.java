@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -18,7 +17,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.kwoncheolhyeok.core.Activity.MainActivity;
 import com.example.kwoncheolhyeok.core.CorePage.CoreActivity;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.Event.RefreshLocationEvent;
@@ -34,11 +32,14 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.appindexing.Action;
 import com.google.firebase.appindexing.FirebaseUserActions;
 import com.google.firebase.appindexing.builders.Actions;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -50,7 +51,6 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
 
     RelativeLayout core_enter = null;
     ImageView page1,page2,page3,page4;
-    ImageView message_white, add_friends, block_friends;
 
     @Bind(R.id.text_physical)
     TextView textPhysical;
@@ -76,6 +76,9 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
 
     @Bind(R.id.block_friends)
     ImageView blockFriends;
+
+    @Bind(R.id.add_friends)
+    ImageView addFriends;
 
     @SuppressLint("DefaultLocale")
     @Override
@@ -148,6 +151,75 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         // 사진 잠금 해제
         setPicLock(item);
 
+        // 블락
+        setBlock(item);
+
+        // 팔로우
+        setFriends(item);
+    }
+
+    private void setFriends(final ImageAdapter.Item item) {
+        final String myUuid = DataContainer.getInstance().getUid();
+        if(item.getUuid().equals(myUuid)){  // 본인
+            addFriends.setVisibility(View.INVISIBLE);  // 가림
+            return;
+        }
+        addFriends.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // 다이얼로그
+                AlertDialog.Builder builder = new AlertDialog.Builder(FullImageActivity.this, R.style.MyAlertDialogStyle);
+                builder.setIcon(R.drawable.icon);
+                builder.setTitle("팔로우");
+                builder.setMessage("해당 유저를 팔로우하시겠습니까?");
+                builder.setCancelable(false);
+                builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        CoreProgress.getInstance().startProgressDialog(FullImageActivity.this);
+                        // 내 following 추가, 유저 follower c추가
+                        final User mUser = DataContainer.getInstance().getUser();
+
+                        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference("users");
+                        Map<String, Object> childUpdates = new HashMap<>();
+
+                        long now = System.currentTimeMillis();
+                        mUser.getFollowingUsers().put(item.getUuid(), now);
+                        childUpdates.put("/" + myUuid + "/followingUsers", mUser.getFollowingUsers());
+
+                        item.getUser().getFollowerUsers().put(myUuid, now);
+                        childUpdates.put("/" + item.getUuid() + "/followerUsers", item.getUser().getFollowerUsers());
+                        mDatabase.updateChildren(childUpdates).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                DataContainer.getInstance().setUser(mUser);
+                                BusProvider.getInstance().post(new RefreshLocationEvent());
+                                finish();
+                            }
+                        }).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                CoreProgress.getInstance().stopProgressDialog();
+                            }
+                        });
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                    }
+                });
+
+                AlertDialog dialog = builder.create();    // 알림창 객체 생성
+                dialog.show();    // 알림창 띄우기
+            }
+        });
+    }
+
+    private void setBlock(final ImageAdapter.Item item) {
+        final String myUuid = DataContainer.getInstance().getUid();
+        if(item.getUuid().equals(myUuid)){  // 본인
+            blockFriends.setVisibility(View.INVISIBLE);  // 가림
+            return;
+        }
         blockFriends.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -187,7 +259,6 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
                 dialog.show();    // 알림창 띄우기
             }
         });
-
     }
 
     private void setPicLock(final ImageAdapter.Item item) {
@@ -200,7 +271,6 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
 
         if(item.getUuid().equals(myUuid)){  // 본인
             picOpen.setVisibility(View.INVISIBLE);  // 가림
-
             return;
         }
         if(!mUser.getUnLockUsers().containsKey(item.getUuid())) {

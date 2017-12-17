@@ -4,13 +4,16 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.Toast;
 
+import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.R;
+import com.example.kwoncheolhyeok.core.Util.DataContainer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,8 +33,8 @@ public class FriednsActivity extends AppCompatActivity {
     */
 
     private void prepareListData() {
-        listDataHeader = new ArrayList<String>();
-        listDataChild = new HashMap<String, List<String>>();
+        listDataHeader = new ArrayList<>();
+        listDataChild = new HashMap<>();
 
         // Adding child data
         listDataHeader.add("Friend request (receive)");
@@ -41,7 +44,7 @@ public class FriednsActivity extends AppCompatActivity {
         listDataHeader.add("Block list");
 
         // Adding child data
-        List<String> Friend_request_receive = new ArrayList<String>();
+        List<String> Friend_request_receive = new ArrayList<>();
         Friend_request_receive.add("The Shawshank Redemption");
         Friend_request_receive.add("The Godfather");
         Friend_request_receive.add("The Godfather: Part II");
@@ -50,7 +53,7 @@ public class FriednsActivity extends AppCompatActivity {
         Friend_request_receive.add("The Dark Knight");
         Friend_request_receive.add("12 Angry Men");
 
-        List<String> Friend_request_send = new ArrayList<String>();
+        List<String> Friend_request_send = new ArrayList<>();
         Friend_request_send.add("The Conjuring");
         Friend_request_send.add("Despicable Me 2");
         Friend_request_send.add("Turbo");
@@ -58,21 +61,21 @@ public class FriednsActivity extends AppCompatActivity {
         Friend_request_send.add("Red 2");
         Friend_request_send.add("The Wolverine");
 
-        List<String> Friends_list = new ArrayList<String>();
+        List<String> Friends_list = new ArrayList<>();
         Friends_list.add("2 Guns");
         Friends_list.add("The Smurfs 2");
         Friends_list.add("The Spectacular Now");
         Friends_list.add("The Canyons");
         Friends_list.add("Europa Report");
 
-        List<String> Viewed_me_list = new ArrayList<String>();
+        List<String> Viewed_me_list = new ArrayList<>();
         Viewed_me_list.add("2 Guns");
         Viewed_me_list.add("The Smurfs 2");
         Viewed_me_list.add("The Spectacular Now");
         Viewed_me_list.add("The Canyons");
         Viewed_me_list.add("Europa Report");
 
-        List<String> Block_list = new ArrayList<String>();
+        List<String> Block_list = new ArrayList<>();
         Block_list.add("2 Guns");
         Block_list.add("The Smurfs 2");
         Block_list.add("The Spectacular Now");
@@ -94,7 +97,7 @@ public class FriednsActivity extends AppCompatActivity {
         setContentView(R.layout.friends_activity);
 
         // bottomTab
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -126,15 +129,28 @@ public class FriednsActivity extends AppCompatActivity {
         });
 
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //액션바 아이콘을 업 네비게이션 형태로 표시합니다.
         getSupportActionBar().setDisplayShowHomeEnabled(true); //홈 아이콘을 숨김처리합니다.
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
 
+        // 리사이클뷰
+        RecyclerView recyclerView = findViewById(R.id.friendsRecyclerView);
+        ArrayList<User> users = new ArrayList<>();
+        users.add(DataContainer.getInstance().getUser());   // test
+        userListAdapter adapter = new userListAdapter(users);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(adapter);
+
+
+
+
+        /*
         // get the listview
-        expListView = (ExpandableListView) findViewById(R.id.lvExp);
+        expListView = findViewById(R.id.lvExp);
 
         // preparing list data
         prepareListData();
@@ -199,6 +215,7 @@ public class FriednsActivity extends AppCompatActivity {
                 return false;
             }
         });
+        */
     }
 
     // 뒤로가기 버튼 기능
@@ -210,7 +227,7 @@ public class FriednsActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
-    };
+    }
 
 
 }

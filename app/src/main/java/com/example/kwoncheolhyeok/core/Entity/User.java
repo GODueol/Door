@@ -9,8 +9,8 @@ public class User implements Serializable{
     public User() {
     }
 
-    private String email;// = "";
-    private String id;// = "";
+    private String email;
+    private String id;
     private int age;
     private int height;
     private int weight;
@@ -30,6 +30,26 @@ public class User implements Serializable{
     private Map<String, Long> unLockUsers = new HashMap<>();    // uuid, 추가 시간
 
     private Map<String, Long> blockUsers = new HashMap<>();    // uuid, 추가 시간
+
+    private Map<String, Long> followingUsers = new HashMap<>();    // uuid, 추가 시간
+
+    private Map<String, Long> followerUsers = new HashMap<>();    // uuid, 추가 시간
+
+    public Map<String, Long> getFollowingUsers() {
+        return followingUsers;
+    }
+
+    public void setFollowingUsers(Map<String, Long> followingUsers) {
+        this.followingUsers = followingUsers;
+    }
+
+    public Map<String, Long> getFollowerUsers() {
+        return followerUsers;
+    }
+
+    public void setFollowerUsers(Map<String, Long> followerUsers) {
+        this.followerUsers = followerUsers;
+    }
 
     public Map<String, Long> getBlockUsers() {
         return blockUsers;
