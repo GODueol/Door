@@ -130,11 +130,11 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         });
 
         // 개인정보 Set
-        final User user = item.getUser();
-        textId.setText(user.getId());
-        textPhysical.setText(TextUtils.join("/", new String[]{Integer.toString(user.getAge()), Integer.toString(user.getHeight()),
-                Integer.toString(user.getWeight()), user.getBodyType()}));
-        textIntroduce.setText(user.getIntro());
+        User oUser = item.getUser();
+        textId.setText(oUser.getId());
+        textPhysical.setText(TextUtils.join("/", new String[]{Integer.toString(oUser.getAge()), Integer.toString(oUser.getHeight()),
+                Integer.toString(oUser.getWeight()), oUser.getBodyType()}));
+        textIntroduce.setText(oUser.getIntro());
 
         // 거리 Set
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(FireBaseUtil.currentLocationPath);
@@ -155,14 +155,14 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         });
 
         // 로그인 시간
-        if(user.getLoginDate() != 0) {
+        if(oUser.getLoginDate() != 0) {
             SimpleDateFormat dateFormat = DataContainer.dateFormat;
-            loginTime.setText( dateFormat.format(new Date(user.getLoginDate())));
+            loginTime.setText( dateFormat.format(new Date(oUser.getLoginDate())));
         }
 
         // 사진 출력
         ImageView profilePics[] = {page1, page2, page3, page4};
-        picUrlList = user.getPicUrls().toNotNullArray(user.getIsLockPics(), user.getUnLockUsers(), item.getUuid());
+        picUrlList = oUser.getPicUrls().toNotNullArray(oUser.getIsLockPics(), oUser.getUnLockUsers(), item.getUuid());
         for (int i=0; i<picUrlList.size(); i++){
             String url = picUrlList.get(i);
             if(url == null) continue;
@@ -180,6 +180,12 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
 
         // 팔로우
         setFollowing(item);
+
+        // 최근본 유저 추가
+        // TODO : 데이터 관리 필요 >> 기준 : 갯수 or 날짜
+        User mUser = DataContainer.getInstance().getUser();
+        mUser.getRecentUsers().put(item.getUuid(),System.currentTimeMillis());
+        DataContainer.getInstance().getMyUserRef().setValue(mUser);
     }
 
     private void setFollowing(final ImageAdapter.Item item) {

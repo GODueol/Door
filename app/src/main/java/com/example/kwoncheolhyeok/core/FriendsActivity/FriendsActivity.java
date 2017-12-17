@@ -85,7 +85,7 @@ public class FriendsActivity extends AppCompatActivity {
     }
 
     private void setRecyclerView(final ArrayList<userListAdapter.Item> items, final userListAdapter adapter, String field) {
-        DataContainer.getInstance().getMyUserRef().child(field).addValueEventListener(new ValueEventListener() {
+        DataContainer.getInstance().getMyUserRef().child(field).orderByValue().addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 final Map<String, Long> friendsUuidMap = (Map<String, Long>) dataSnapshot.getValue();
