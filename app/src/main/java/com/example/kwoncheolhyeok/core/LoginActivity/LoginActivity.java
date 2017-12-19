@@ -13,7 +13,7 @@ import android.widget.Toast;
 import com.example.kwoncheolhyeok.core.Activity.MainActivity;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.R;
-import com.example.kwoncheolhyeok.core.Util.CoreProgress;
+import com.example.kwoncheolhyeok.core.Util.UiUtil;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -92,7 +92,7 @@ public class LoginActivity extends AppCompatActivity {
 
         _loginButton.setEnabled(false);
 
-        CoreProgress.getInstance().startProgressDialog(this);
+        UiUtil.getInstance().startProgressDialog(this);
 
         String email = _emailText.getText().toString();
         String password = _passwordText.getText().toString();
@@ -122,7 +122,7 @@ public class LoginActivity extends AppCompatActivity {
     private void getUserInfo(final FirebaseUser user) {
         if (user != null) {
 
-            CoreProgress.getInstance().startProgressDialog(this);
+            UiUtil.getInstance().startProgressDialog(this);
 
             // User is signed in
             Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
@@ -174,13 +174,13 @@ public class LoginActivity extends AppCompatActivity {
         startActivityForResult(i, 0);
 
         // 프로그레스 바 종료
-        CoreProgress.getInstance().stopProgressDialog();
+        UiUtil.getInstance().stopProgressDialog();
     }
 
     public void onLoginFailed(Exception e) {
         Toast.makeText(getBaseContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
         _loginButton.setEnabled(true);
-        CoreProgress.getInstance().stopProgressDialog();
+        UiUtil.getInstance().stopProgressDialog();
     }
 
     public void validate() throws Exception {

@@ -1,28 +1,29 @@
 package com.example.kwoncheolhyeok.core.Util;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 
-import com.example.kwoncheolhyeok.core.LoginActivity.LoginActivity;
 import com.example.kwoncheolhyeok.core.R;
 
 /**
  * Created by gimbyeongjin on 2017. 10. 5..
  */
 
-public class CoreProgress {
-    private static final CoreProgress ourInstance = new CoreProgress();
+public class UiUtil {
+    private static final UiUtil ourInstance = new UiUtil();
 
-    public static CoreProgress getInstance() {
+    public static UiUtil getInstance() {
         return ourInstance;
     }
 
-    private Activity activity;
     private ProgressDialog progressDialog;
 
-    private CoreProgress() {
+    private UiUtil() {
     }
 
     public void startProgressDialog(Activity activity) {
@@ -38,5 +39,17 @@ public class CoreProgress {
 
     public void stopProgressDialog(){
         if(progressDialog != null) progressDialog.dismiss();
+    }
+
+    public void showDialog(Context context, String title, String message, DialogInterface.OnClickListener okListener, DialogInterface.OnClickListener cancelListener){
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.MyAlertDialogStyle);
+        builder.setIcon(R.drawable.icon);
+        builder.setTitle(title);
+        builder.setMessage(message);
+        builder.setCancelable(false);
+        builder.setPositiveButton("OK", okListener);
+        builder.setNegativeButton("Cancel", cancelListener);
+        AlertDialog dialog = builder.create();    // 알림창 객체 생성
+        dialog.show();    // 알림창 띄우기
     }
 }

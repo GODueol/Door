@@ -1,7 +1,6 @@
 package com.example.kwoncheolhyeok.core.ProfileModifyActivity;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -41,6 +40,7 @@ import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.BusProvider;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
+import com.example.kwoncheolhyeok.core.Util.UiUtil;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -57,7 +57,7 @@ import java.util.Arrays;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-import static com.example.kwoncheolhyeok.core.Util.CoreProgress.getInstance;
+import static com.example.kwoncheolhyeok.core.Util.UiUtil.getInstance;
 
 
 public class ProfileModifyActivity extends AppCompatActivity implements NumberPicker.OnValueChangeListener {
@@ -135,9 +135,11 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
     ImageView delete4Image;
 
     // filter boundary
-    enum FILTER {AGE, HEIGHT, WEIGHT}
+    enum FILTER {
+        AGE, HEIGHT, WEIGHT
+    }
 
-    private static final int minBoundary[] = {20 , 100, 40};
+    private static final int minBoundary[] = {20, 100, 40};
     private static final int maxBoundary[] = {99, 220, 140};
 
     private static final int REQUEST_GALLERY = 2;
@@ -268,9 +270,9 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 
         // Load the image using Glide
         ArrayList<String> picUrlList = user.getPicUrls().toArray();
-        for (int i = 0; i< profilePics.length; i++){
+        for (int i = 0; i < profilePics.length; i++) {
             String url = picUrlList.get(i);
-            if(url == null) continue;
+            if (url == null) continue;
             Glide.with(getBaseContext()).load(url).into(profilePics[i]);
         }
 
@@ -349,12 +351,8 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
             @Override
             public void onClick(View v) {
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(ProfileModifyActivity.this, R.style.MyAlertDialogStyle);
-                builder.setIcon(R.drawable.icon);
-                builder.setTitle("Delete Picture");
-                builder.setMessage(" Do you want delete Picture?");
-                builder.setCancelable(false);
-                builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                UiUtil.getInstance().showDialog(ProfileModifyActivity.this, "Delete Picture", " Do you want delete Picture?"
+                    , new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         // 사진 삭제
                         StorageReference storageRef = FirebaseStorage.getInstance().getReference();
@@ -367,7 +365,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
                             @Override
                             public void onSuccess(Void aVoid) {
                                 // File deleted successfully
-                                Log.d(getClass().getName(),"Delete Pic Success");
+                                Log.d(getClass().getName(), "Delete Pic Success");
                                 targetPic.setImageResource(R.drawable.a);
                                 removeUserPicUrl(targetPic);    // Url 지울때는 순서를 지켜줘야함
                                 BusProvider.getInstance().post(new RefreshLocationEvent());
@@ -376,7 +374,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
                             @Override
                             public void onFailure(@NonNull Exception exception) {
                                 // Uh-oh, an error occurred!
-                                Log.d(getClass().getName(),"Delete Pic Fail");
+                                Log.d(getClass().getName(), "Delete Pic Fail");
                             }
                         }).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
@@ -385,14 +383,10 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
                             }
                         });
                     }
-                });
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                }, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                     }
                 });
-
-                AlertDialog dialog = builder.create();    // 알림창 객체 생성
-                dialog.show();    // 알림창 띄우기
             }
         };
 
@@ -400,13 +394,13 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
     }
 
     private void removeUserPicUrl(ImageView targetPic) {
-        if(targetPic == profilePic1) {
+        if (targetPic == profilePic1) {
             user.getPicUrls().setPicUrl1(null);
-        } else if(targetPic == profilePic2) {
+        } else if (targetPic == profilePic2) {
             user.getPicUrls().setPicUrl2(null);
-        } else if(targetPic == profilePic3) {
+        } else if (targetPic == profilePic3) {
             user.getPicUrls().setPicUrl3(null);
-        } else if(targetPic == profilePic4) {
+        } else if (targetPic == profilePic4) {
             user.getPicUrls().setPicUrl4(null);
         }
         DataContainer.getInstance().setUser(user);
@@ -415,7 +409,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 
     private void setVisibilityFilterLayout(boolean isChecked) {
         int FLAG;
-        if(isChecked) FLAG = View.VISIBLE;
+        if (isChecked) FLAG = View.VISIBLE;
         else FLAG = View.GONE;
 //        ageFilterLayout.setVisibility(FLAG);
 //        heightFilterLayout.setVisibility(FLAG);
@@ -568,7 +562,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
             public void onClick(View v) {
                 int pos = np.getValue();
                 int pos2 = np2.getValue();
-                if(pos > pos2 ){
+                if (pos > pos2) {
                     Toast.makeText(getBaseContext(), "범위가 잘못되었습니다.", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -643,7 +637,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
             public void onClick(View v) {
                 int pos = np.getValue();
                 int pos2 = np2.getValue();
-                if(pos > pos2 ){
+                if (pos > pos2) {
                     Toast.makeText(getBaseContext(), "범위가 잘못되었습니다.", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -737,13 +731,13 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
     }
 
     private void saveUserPicUrl(Uri downloadUrl) {
-        if(modifyingPic == profilePic1) {
+        if (modifyingPic == profilePic1) {
             user.getPicUrls().setPicUrl1(downloadUrl.toString());
-        } else if(modifyingPic == profilePic2) {
+        } else if (modifyingPic == profilePic2) {
             user.getPicUrls().setPicUrl2(downloadUrl.toString());
-        } else if(modifyingPic == profilePic3) {
+        } else if (modifyingPic == profilePic3) {
             user.getPicUrls().setPicUrl3(downloadUrl.toString());
-        } else if(modifyingPic == profilePic4) {
+        } else if (modifyingPic == profilePic4) {
             user.getPicUrls().setPicUrl4(downloadUrl.toString());
         }
         DataContainer.getInstance().setUser(user);
@@ -774,17 +768,17 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 
         // validation
         try {
-            if(_idText.getText().toString().equals("") || _idText.length()<2 ){
+            if (_idText.getText().toString().equals("") || _idText.length() < 2) {
                 throw new Exception("두 자리 이상의 아이디로 작성해주세요.");
             }
 
             String minBT = min_bodytype_filter.getText().toString();
             String maxBT = max_bodytype_filter.getText().toString();
-            if(Arrays.asList(DataContainer.bodyTypes).indexOf(minBT) > Arrays.asList(DataContainer.bodyTypes).indexOf(maxBT) ){
+            if (Arrays.asList(DataContainer.bodyTypes).indexOf(minBT) > Arrays.asList(DataContainer.bodyTypes).indexOf(maxBT)) {
                 throw new Exception("범위가 잘못되었습니다.");
             }
-        } catch (Exception e){
-            Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
             getInstance().stopProgressDialog();
             return;
         }

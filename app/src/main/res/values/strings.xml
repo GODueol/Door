@@ -34,6 +34,12 @@
     <string name="create">Create</string>
     <string name="filter">Filter</string>
     <string name="friends_button">Friends Button</string>
+    <string name="friends">Friends</string>
+    <string name="recent">Recent</string>
+    <string name="block">Block</string>
+    <string name="receive">Receive</string>
+    <string name="send">Send</string>
+    <string name="follow_cancel">Follow Cancel</string>
 
 
 </resources>

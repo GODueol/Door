@@ -115,7 +115,7 @@ public class ImageAdapter extends BaseAdapter {
             this.picUrl = picUrl;
         }
 
-        String getPicUrl() {
+        public String getPicUrl() {
             return picUrl;
         }
 
@@ -131,7 +131,7 @@ public class ImageAdapter extends BaseAdapter {
             this.distance = distance;
         }
 
-        String getUuid() {
+        public String getUuid() {
             return uuid;
         }
 

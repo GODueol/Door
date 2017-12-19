@@ -1,7 +1,6 @@
 package com.example.kwoncheolhyeok.core.Activity;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -39,8 +38,8 @@ import com.example.kwoncheolhyeok.core.ProfileModifyActivity.ProfileModifyActivi
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.BusProvider;
 import com.example.kwoncheolhyeok.core.Util.CloseActivityHandler;
-import com.example.kwoncheolhyeok.core.Util.CoreProgress;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
+import com.example.kwoncheolhyeok.core.Util.UiUtil;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -179,7 +178,7 @@ public class MainActivity extends AppCompatActivity
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        CoreProgress.getInstance().stopProgressDialog();
+                        UiUtil.getInstance().stopProgressDialog();
                     }
                 });
     }
@@ -222,14 +221,10 @@ public class MainActivity extends AppCompatActivity
             }
 
             // 다이얼로그
-            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this, R.style.MyAlertDialogStyle);
-            builder.setIcon(R.drawable.icon);
-            builder.setTitle("모든 유저 사진 잠금");
-            builder.setMessage("모든 유저 대상으로 사진을 잠그시겠습니까?");
-            builder.setCancelable(false);
-            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            UiUtil.getInstance().showDialog(MainActivity.this, "모든 유저 사진 잠금"
+                    , "모든 유저 대상으로 사진을 잠그시겠습니까?", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int whichButton) {
-                    CoreProgress.getInstance().startProgressDialog(MainActivity.this);
+                    UiUtil.getInstance().startProgressDialog(MainActivity.this);
                     user.getUnLockUsers().clear();
                     DataContainer.getInstance().getUsersRef().child(DataContainer.getInstance().getUid()).setValue(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
@@ -239,18 +234,14 @@ public class MainActivity extends AppCompatActivity
                     }).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
-                            CoreProgress.getInstance().stopProgressDialog();
+                            UiUtil.getInstance().stopProgressDialog();
                         }
                     });
                 }
-            });
-            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            }, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int whichButton) {
                 }
             });
-
-            AlertDialog dialog = builder.create();    // 알림창 객체 생성
-            dialog.show();    // 알림창 띄우기
             return true;
         } else if(id == R.id.unblock_all) {
             final User user = DataContainer.getInstance().getUser();
@@ -260,14 +251,10 @@ public class MainActivity extends AppCompatActivity
             }
 
             // 다이얼로그
-            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this, R.style.MyAlertDialogStyle);
-            builder.setIcon(R.drawable.icon);
-            builder.setTitle("모든 유저 블락 해제");
-            builder.setMessage("모든 유저 대상으로 블럭을 해제하시겠습니까?");
-            builder.setCancelable(false);
-            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            UiUtil.getInstance().showDialog(MainActivity.this, "모든 유저 블락 해제",
+                    "모든 유저 대상으로 블럭을 해제하시겠습니까?", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int whichButton) {
-                    CoreProgress.getInstance().startProgressDialog(MainActivity.this);
+                    UiUtil.getInstance().startProgressDialog(MainActivity.this);
                     user.getBlockUsers().clear();
                     DataContainer.getInstance().getUsersRef().child(DataContainer.getInstance().getUid()).setValue(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
@@ -278,18 +265,14 @@ public class MainActivity extends AppCompatActivity
                     }).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
-                            CoreProgress.getInstance().stopProgressDialog();
+                            UiUtil.getInstance().stopProgressDialog();
                         }
                     });
                 }
-            });
-            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            }, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int whichButton) {
                 }
             });
-
-            AlertDialog dialog = builder.create();    // 알림창 객체 생성
-            dialog.show();    // 알림창 띄우기
             return true;
         }
 
