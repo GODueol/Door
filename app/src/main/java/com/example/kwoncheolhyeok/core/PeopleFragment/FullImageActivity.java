@@ -182,9 +182,22 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         setFollowing(item);
 
         // 최근본 유저 추가
-        // TODO : 데이터 관리 필요 >> 기준 : 갯수 or 날짜
+        setRecent(item);
+
+    }
+
+    private void setRecent(ImageAdapter.Item item) {
         User mUser = DataContainer.getInstance().getUser();
-        mUser.getRecentUsers().put(item.getUuid(),System.currentTimeMillis());
+        Map<String, Long> recentUsers = mUser.getRecentUsers();
+        recentUsers.put(item.getUuid(),System.currentTimeMillis()); // 추가
+        if(recentUsers.size() >= 45){   // 데이터 관리 갯수 45
+            long min = -1;
+            for(String key : recentUsers.keySet()){
+                if(min == -1) min = recentUsers.get(key);
+                else if(min > recentUsers.get(key)) min = recentUsers.get(key);
+            }
+            recentUsers.remove(min);
+        }
         DataContainer.getInstance().getMyUserRef().setValue(mUser);
     }
 
@@ -194,49 +207,89 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
             addFriends.setVisibility(View.INVISIBLE);  // 가림
             return;
         }
+        if(item.getUser().getFollowerUsers().containsKey(myUuid)) {   //  이미 팔로우함
+            addFriends.setImageResource(R.drawable.delete_button); // 팔로우 취소 버튼
+        }else {
+            addFriends.setImageResource(R.drawable.add_friends); // 팔로우 버튼
+        }
+
         addFriends.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // 다이얼로그
+                String title, message;
+                final boolean isFollow = item.getUser().getFollowerUsers().containsKey(myUuid);  // 이미 팔로우한 유저
+                if(isFollow){
+                    title = "팔로우 해제";
+                    message = "해당유저를 팔로우해제하시겠습니까?";
+                } else {
+                    title = "팔로우 신청";
+                    message = "해당유저를 팔로우하시겠습니까?";
+                }
                 AlertDialog.Builder builder = new AlertDialog.Builder(FullImageActivity.this, R.style.MyAlertDialogStyle);
                 builder.setIcon(R.drawable.icon);
-                builder.setTitle("팔로우");
-                builder.setMessage("해당 유저를 팔로우하시겠습니까?");
+                builder.setTitle(title);
+                builder.setMessage(message);
                 builder.setCancelable(false);
                 builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         CoreProgress.getInstance().startProgressDialog(FullImageActivity.this);
+
                         // 내 following 추가, 유저 follower c추가
                         final User mUser = DataContainer.getInstance().getUser();
                         final User oUser = item.getUser();
                         DatabaseReference mDatabase = DataContainer.getInstance().getUsersRef();
                         Map<String, Object> childUpdates = new HashMap<>();
 
-                        long now = System.currentTimeMillis();
-                        mUser.getFollowingUsers().put(item.getUuid(), now);
-                        childUpdates.put("/" + myUuid + "/followingUsers", mUser.getFollowingUsers());
+                        if(isFollow){
+                            // 친구 삭제
 
-                        oUser.getFollowerUsers().put(myUuid, now);
-                        childUpdates.put("/" + item.getUuid() + "/followerUsers", oUser.getFollowerUsers());
+                            mUser.getFollowingUsers().remove(item.getUuid());
+                            childUpdates.put("/" + myUuid + "/followingUsers", mUser.getFollowingUsers());
 
-                        // 상대방이 팔로우 되어있으면 친구에 추가
-                        if(oUser.getFollowingUsers().containsKey(myUuid)){
-                            mUser.getFriendUsers().put(item.getUuid(), now);
-                            childUpdates.put("/" + myUuid + "/friendUsers", mUser.getFollowingUsers());
+                            oUser.getFollowerUsers().remove(myUuid);
+                            childUpdates.put("/" + item.getUuid() + "/followerUsers", oUser.getFollowerUsers());
 
-                            oUser.getFriendUsers().put(myUuid, now);
-                            childUpdates.put("/" + item.getUuid() + "/friendUsers", oUser.getFollowerUsers());
+                            // 상대방이 팔로우 되어있으면 친구 삭제
+                            if(mUser.getFriendUsers().containsKey(item.getUuid())) {
+                                mUser.getFriendUsers().remove(item.getUuid());
+                                childUpdates.put("/" + myUuid + "/friendUsers", mUser.getFollowingUsers());
 
-                            Toast.makeText(getApplicationContext(),"Add Friend : " + oUser.getId(),Toast.LENGTH_SHORT).show();
+                                oUser.getFriendUsers().remove(myUuid);
+                                childUpdates.put("/" + item.getUuid() + "/friendUsers", oUser.getFollowerUsers());
+                            }
+
+                        } else {
+                            // 친구 추가
+                            long now = System.currentTimeMillis();
+                            mUser.getFollowingUsers().put(item.getUuid(), now);
+                            childUpdates.put("/" + myUuid + "/followingUsers", mUser.getFollowingUsers());
+
+                            oUser.getFollowerUsers().put(myUuid, now);
+                            childUpdates.put("/" + item.getUuid() + "/followerUsers", oUser.getFollowerUsers());
+
+                            // 상대방이 팔로우 되어있으면 친구에 추가
+                            if(oUser.getFollowingUsers().containsKey(myUuid)){
+                                mUser.getFriendUsers().put(item.getUuid(), now);
+                                childUpdates.put("/" + myUuid + "/friendUsers", mUser.getFollowingUsers());
+
+                                oUser.getFriendUsers().put(myUuid, now);
+                                childUpdates.put("/" + item.getUuid() + "/friendUsers", oUser.getFollowerUsers());
+
+                                Toast.makeText(getApplicationContext(),"Add Friend : " + oUser.getId(),Toast.LENGTH_SHORT).show();
+                            }
                         }
-
                         // 데이터 한꺼번에 업데이트
                         mDatabase.updateChildren(childUpdates).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
-                                DataContainer.getInstance().setUser(mUser);
-                                BusProvider.getInstance().post(new RefreshLocationEvent());
-                                finish();
+//                                DataContainer.getInstance().setUser(mUser);
+//                                BusProvider.getInstance().post(new RefreshLocationEvent());
+//                                finish();
+                                if(item.getUser().getFollowerUsers().containsKey(myUuid)) {   //  이미 팔로우함
+                                    addFriends.setImageResource(R.drawable.delete_button); // 팔로우 취소 버튼
+                                }else {
+                                    addFriends.setImageResource(R.drawable.add_friends); // 팔로우 버튼
+                                }
                             }
                         }).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
@@ -244,6 +297,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
                                 CoreProgress.getInstance().stopProgressDialog();
                             }
                         });
+
                     }
                 });
                 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -253,6 +307,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
 
                 AlertDialog dialog = builder.create();    // 알림창 객체 생성
                 dialog.show();    // 알림창 띄우기
+
             }
         });
     }

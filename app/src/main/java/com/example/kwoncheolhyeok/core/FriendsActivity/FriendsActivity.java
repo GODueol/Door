@@ -15,6 +15,7 @@ import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -27,6 +28,8 @@ public class FriendsActivity extends AppCompatActivity {
     Toolbar toolbar = null;
     private LinkedList<userListAdapter.Item> items;
     private userListAdapter adapter;
+    private ValueEventListener listener;
+    private Query ref;
 
     /*
     * Preparing the list data
@@ -86,14 +89,15 @@ public class FriendsActivity extends AppCompatActivity {
 
     }
 
-    private void setRecyclerView(final LinkedList<userListAdapter.Item> items, final userListAdapter adapter, String field) {
-        DataContainer.getInstance().getMyUserRef().child(field).orderByValue().addValueEventListener(new ValueEventListener() {
+    private void setRecyclerView(final LinkedList<userListAdapter.Item> items, final userListAdapter adapter, final String field) {
+        items.clear();
+        if(ref != null && listener != null) ref.removeEventListener(listener);  // 이전 리스너 해제
+        ref = DataContainer.getInstance().getMyUserRef().child(field).orderByValue();
+        listener = ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.d(field, "DataChange : " + dataSnapshot.getValue());
                 items.clear();
-                Iterator<DataSnapshot> iterator = dataSnapshot.getChildren().iterator();
-
-
                 for(final DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Log.d("snapshot", snapshot.getValue().toString());
                     final String oUuid = snapshot.getKey();
@@ -111,29 +115,6 @@ public class FriendsActivity extends AppCompatActivity {
                         }
                     });
                 }
-                /*
-                final Map<String, Long> friendsUuidMap = (Map<String, Long>) dataSnapshot.getValue();
-                items.clear();
-                if(friendsUuidMap == null) {
-                    adapter.notifyDataSetChanged();
-                    return;
-                }
-                for(final String oUuid : friendsUuidMap.keySet()){
-                    DataContainer.getInstance().getUsersRef().child(oUuid).addListenerForSingleValueEvent(new ValueEventListener() {
-
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            User oUser = dataSnapshot.getValue(User.class);
-                            items.add(new userListAdapter.Item(oUser, friendsUuidMap.get(oUuid), oUuid));
-                            adapter.notifyDataSetChanged();
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                        }
-                    });
-                }
-                */
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
@@ -153,4 +134,9 @@ public class FriendsActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        adapter.notifyDataSetChanged();
+    }
 }
