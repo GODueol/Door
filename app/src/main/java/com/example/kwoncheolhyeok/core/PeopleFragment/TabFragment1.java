@@ -163,14 +163,23 @@ public class TabFragment1 extends android.support.v4.app.Fragment {
             public void onKeyExited(String key) {
                 System.out.println(String.format("Key %s is no longer in the search area", key));
                 // 아이템 삭제
-
+                imageAdapter.removeItem(key);
+                imageAdapter.notifyDataSetChanged();
             }
 
             @SuppressLint("DefaultLocale")
             @Override
-            public void onKeyMoved(String key, GeoLocation location) {
-                System.out.println(String.format("Key %s moved within the search area to [%f,%f]", key, location.latitude, location.longitude));
+            public void onKeyMoved(String key, GeoLocation geoLocation) {
+                System.out.println(String.format("Key %s moved within the search area to [%f,%f]", key, geoLocation.latitude, geoLocation.longitude));
                 // 아이템 갱신
+                Location targetLocation = new Location("");//provider name is unnecessary
+                targetLocation.setLatitude(geoLocation.latitude);//your coords of course
+                targetLocation.setLongitude(geoLocation.longitude);
+                ImageAdapter.Item item = imageAdapter.getItem(key);
+                imageAdapter.removeItem(key);
+                item.setDistance(location.distanceTo(targetLocation));
+                imageAdapter.addItem(item);
+                imageAdapter.notifyDataSetChanged();
             }
 
             @Override
