@@ -76,9 +76,8 @@ public class IntroActivity extends Activity {
                     Log.d(getApplication().getClass().getName(), "onAuthStateChanged:signed_in:" + user.getUid());
 
                     // user 정보 읽어오기
-                    DatabaseReference userRef = database.getReference("users");
                     String uuid = user.getUid();
-                    userRef.child(uuid).addListenerForSingleValueEvent(new ValueEventListener() {
+                    DataContainer.getInstance().getUsersRef().child(uuid).addListenerForSingleValueEvent(new ValueEventListener() {
 
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {

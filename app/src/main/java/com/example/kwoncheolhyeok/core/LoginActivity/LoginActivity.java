@@ -37,8 +37,7 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
 
     // database
-    FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference userRef = database.getReference("users");
+    DatabaseReference userRef = DataContainer.getInstance().getUsersRef();
 
     @Bind(R.id.input_email)
     EditText _emailText;
