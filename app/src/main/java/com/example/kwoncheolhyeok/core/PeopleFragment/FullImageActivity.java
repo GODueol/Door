@@ -1,7 +1,6 @@
 package com.example.kwoncheolhyeok.core.PeopleFragment;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
@@ -25,10 +24,10 @@ import com.example.kwoncheolhyeok.core.MyApplcation;
 import com.example.kwoncheolhyeok.core.PeopleFragment.FullImageViewPager.DetailImageActivity;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.BusProvider;
-import com.example.kwoncheolhyeok.core.Util.CoreProgress;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
 import com.example.kwoncheolhyeok.core.Util.GPSInfo;
+import com.example.kwoncheolhyeok.core.Util.UiUtil;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.LocationCallback;
@@ -45,7 +44,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 import butterknife.Bind;
@@ -57,7 +55,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
     Toolbar toolbar = null;
 
     RelativeLayout core_enter = null;
-    ImageView page1,page2,page3,page4;
+    ImageView page1, page2, page3, page4;
 
     @Bind(R.id.text_physical)
     TextView textPhysical;
@@ -84,7 +82,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
     @Bind(R.id.block_friends)
     ImageView blockFriends;
 
-    @Bind(R.id.add_friends)
+    @Bind(R.id.item_menu_btn)
     ImageView addFriends;
 
     @SuppressLint("DefaultLocale")
@@ -122,10 +120,10 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
 
         //개인 화면에서 코어 액티비티로 넘어감
         core_enter = findViewById(R.id.core_enter_layout);
-        core_enter.setOnClickListener(new View.OnClickListener(){
+        core_enter.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v){
-                startActivityForResult(new Intent(FullImageActivity.this,CoreActivity.class), 0);
+            public void onClick(View v) {
+                startActivityForResult(new Intent(FullImageActivity.this, CoreActivity.class), 0);
             }
         });
 
@@ -147,27 +145,28 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
                 targetLocation.setLatitude(geoLocation.latitude);//your coords of course
                 targetLocation.setLongitude(geoLocation.longitude);
                 final float distance = location.distanceTo(targetLocation);
-                distanceText.setText(String.format("%.1f", distance/1000));
+                distanceText.setText(String.format("%.1f", distance / 1000));
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }
         });
 
         // 로그인 시간
-        if(oUser.getLoginDate() != 0) {
+        if (oUser.getLoginDate() != 0) {
             SimpleDateFormat dateFormat = DataContainer.dateFormat;
-            loginTime.setText( dateFormat.format(new Date(oUser.getLoginDate())));
+            loginTime.setText(dateFormat.format(new Date(oUser.getLoginDate())));
         }
 
         // 사진 출력
         ImageView profilePics[] = {page1, page2, page3, page4};
         picUrlList = oUser.getPicUrls().toNotNullArray(oUser.getIsLockPics(), oUser.getUnLockUsers(), item.getUuid());
-        for (int i=0; i<picUrlList.size(); i++){
+        for (int i = 0; i < picUrlList.size(); i++) {
             String url = picUrlList.get(i);
-            if(url == null) continue;
+            if (url == null) continue;
             Glide.with(getBaseContext()).load(url).into(profilePics[i]);
-            if(i==0){ // 프사
+            if (i == 0) { // 프사
                 Glide.with(getBaseContext()).load(url).into(fullImageView);
             }
         }
@@ -182,84 +181,88 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         setFollowing(item);
 
         // 최근본 유저 추가
-        // TODO : 데이터 관리 필요 >> 기준 : 갯수 or 날짜
+        setRecent(item);
+
+    }
+
+    private void setRecent(ImageAdapter.Item item) {
         User mUser = DataContainer.getInstance().getUser();
-        mUser.getRecentUsers().put(item.getUuid(),System.currentTimeMillis());
+        Map<String, Long> recentUsers = mUser.getRecentUsers();
+        recentUsers.put(item.getUuid(), System.currentTimeMillis()); // 추가
+        if (recentUsers.size() >= 45) {   // 데이터 관리 갯수 45
+            long min = -1;
+            for (String key : recentUsers.keySet()) {
+                if (min == -1) min = recentUsers.get(key);
+                else if (min > recentUsers.get(key)) min = recentUsers.get(key);
+            }
+            recentUsers.remove(min);
+        }
         DataContainer.getInstance().getMyUserRef().setValue(mUser);
     }
 
     private void setFollowing(final ImageAdapter.Item item) {
         final String myUuid = DataContainer.getInstance().getUid();
-        if(item.getUuid().equals(myUuid)){  // 본인
+        if (item.getUuid().equals(myUuid)) {  // 본인
             addFriends.setVisibility(View.INVISIBLE);  // 가림
             return;
         }
+        if (item.getUser().getFollowerUsers().containsKey(myUuid)) {   //  이미 팔로우함
+            addFriends.setImageResource(R.drawable.delete_button); // 팔로우 취소 버튼
+        } else {
+            addFriends.setImageResource(R.drawable.add_friends); // 팔로우 버튼
+        }
+
         addFriends.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // 다이얼로그
-                AlertDialog.Builder builder = new AlertDialog.Builder(FullImageActivity.this, R.style.MyAlertDialogStyle);
-                builder.setIcon(R.drawable.icon);
-                builder.setTitle("팔로우");
-                builder.setMessage("해당 유저를 팔로우하시겠습니까?");
-                builder.setCancelable(false);
-                builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                String title, message;
+                final boolean isFollow = item.getUser().getFollowerUsers().containsKey(myUuid);  // 이미 팔로우한 유저
+                if (isFollow) {
+                    title = "팔로우 해제";
+                    message = "해당유저를 팔로우해제하시겠습니까?";
+                } else {
+                    title = "팔로우 신청";
+                    message = "해당유저를 팔로우하시겠습니까?";
+                }
+
+                UiUtil.getInstance().showDialog(FullImageActivity.this, title, message, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        CoreProgress.getInstance().startProgressDialog(FullImageActivity.this);
+                        UiUtil.getInstance().startProgressDialog(FullImageActivity.this);
+
                         // 내 following 추가, 유저 follower c추가
-                        final User mUser = DataContainer.getInstance().getUser();
-                        final User oUser = item.getUser();
-                        DatabaseReference mDatabase = DataContainer.getInstance().getUsersRef();
-                        Map<String, Object> childUpdates = new HashMap<>();
-
-                        long now = System.currentTimeMillis();
-                        mUser.getFollowingUsers().put(item.getUuid(), now);
-                        childUpdates.put("/" + myUuid + "/followingUsers", mUser.getFollowingUsers());
-
-                        oUser.getFollowerUsers().put(myUuid, now);
-                        childUpdates.put("/" + item.getUuid() + "/followerUsers", oUser.getFollowerUsers());
-
-                        // 상대방이 팔로우 되어있으면 친구에 추가
-                        if(oUser.getFollowingUsers().containsKey(myUuid)){
-                            mUser.getFriendUsers().put(item.getUuid(), now);
-                            childUpdates.put("/" + myUuid + "/friendUsers", mUser.getFollowingUsers());
-
-                            oUser.getFriendUsers().put(myUuid, now);
-                            childUpdates.put("/" + item.getUuid() + "/friendUsers", oUser.getFollowerUsers());
-
-                            Toast.makeText(getApplicationContext(),"Add Friend : " + oUser.getId(),Toast.LENGTH_SHORT).show();
+                        Task<Void> task = FireBaseUtil.getInstance().follow(item.getUser(), item.getUuid(), isFollow, myUuid);
+                        if(task != null) {
+                            UiUtil.getInstance().stopProgressDialog();
+                            return;
                         }
-
-                        // 데이터 한꺼번에 업데이트
-                        mDatabase.updateChildren(childUpdates).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        task.addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
-                                DataContainer.getInstance().setUser(mUser);
-                                BusProvider.getInstance().post(new RefreshLocationEvent());
-                                finish();
+                                if (item.getUser().getFollowerUsers().containsKey(myUuid)) {   //  이미 팔로우함
+                                    addFriends.setImageResource(R.drawable.delete_button); // 팔로우 취소 버튼
+                                } else {
+                                    addFriends.setImageResource(R.drawable.add_friends); // 팔로우 버튼
+                                }
                             }
                         }).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
-                                CoreProgress.getInstance().stopProgressDialog();
+                                UiUtil.getInstance().stopProgressDialog();
                             }
                         });
+
                     }
-                });
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                }, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                     }
                 });
-
-                AlertDialog dialog = builder.create();    // 알림창 객체 생성
-                dialog.show();    // 알림창 띄우기
             }
         });
     }
 
     private void setBlock(final ImageAdapter.Item item) {
         final String myUuid = DataContainer.getInstance().getUid();
-        if(item.getUuid().equals(myUuid)){  // 본인
+        if (item.getUuid().equals(myUuid)) {  // 본인
             blockFriends.setVisibility(View.INVISIBLE);  // 가림
             return;
         }
@@ -267,14 +270,9 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
             @Override
             public void onClick(View view) {
                 // 다이얼로그
-                AlertDialog.Builder builder = new AlertDialog.Builder(FullImageActivity.this, R.style.MyAlertDialogStyle);
-                builder.setIcon(R.drawable.icon);
-                builder.setTitle("유저 차단");
-                builder.setMessage("해당 유저를 차단하시겠습니까?");
-                builder.setCancelable(false);
-                builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                UiUtil.getInstance().showDialog(FullImageActivity.this, "유저 차단", "해당 유저를 차단하시겠습니까?", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        CoreProgress.getInstance().startProgressDialog(FullImageActivity.this);
+                        UiUtil.getInstance().startProgressDialog(FullImageActivity.this);
                         // blockUsers 추가
                         final User mUser = DataContainer.getInstance().getUser();
                         mUser.getBlockUsers().put(item.getUuid(), System.currentTimeMillis());
@@ -288,18 +286,14 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
                         }).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
-                                CoreProgress.getInstance().stopProgressDialog();
+                                UiUtil.getInstance().stopProgressDialog();
                             }
                         });
                     }
-                });
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                }, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                     }
                 });
-
-                AlertDialog dialog = builder.create();    // 알림창 객체 생성
-                dialog.show();    // 알림창 띄우기
             }
         });
     }
@@ -312,13 +306,13 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         picOpen.getLayoutParams().width = (int) getResources().getDimension(R.dimen.image_lock_height);
         picOpen.getLayoutParams().height = (int) getResources().getDimension(R.dimen.image_lock_width);
 
-        if(item.getUuid().equals(myUuid)){  // 본인
+        if (item.getUuid().equals(myUuid)) {  // 본인
             picOpen.setVisibility(View.INVISIBLE);  // 가림
             return;
         }
-        if(!mUser.getUnLockUsers().containsKey(item.getUuid())) {
+        if (!mUser.getUnLockUsers().containsKey(item.getUuid())) {
             picOpen.setImageResource(R.drawable.picture_unlock); // "이 아이콘을 클릭하면 사진을 해제하겠다"
-        }else {
+        } else {
             picOpen.setImageResource(R.drawable.picture_lock); // "이 아이콘을 클릭하면 사진을 잠그겠다"
         }
         picOpen.setOnClickListener(new View.OnClickListener() {
@@ -326,22 +320,18 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
             public void onClick(View view) {
                 String title, message;
                 final boolean isLock = !mUser.getUnLockUsers().containsKey(item.getUuid());  // 이미 해제한 유저
-                if(isLock){
+                if (isLock) {
                     title = "사진 해제";
                     message = "이 회원에게 당신의 잠긴 사진을 공개하시겠습니까?";
                 } else {
                     title = "사진 잠금";
                     message = "이 회원에게 당신의 사진을 잠그시겠습니까?";
                 }
-                AlertDialog.Builder builder = new AlertDialog.Builder(FullImageActivity.this, R.style.MyAlertDialogStyle);
-                builder.setIcon(R.drawable.icon);
-                builder.setTitle(title);
-                builder.setMessage(message);
-                builder.setCancelable(false);
-                builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+
+                UiUtil.getInstance().showDialog(FullImageActivity.this, title, message, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        CoreProgress.getInstance().startProgressDialog(FullImageActivity.this);
-                        if(isLock){
+                        UiUtil.getInstance().startProgressDialog(FullImageActivity.this);
+                        if (isLock) {
                             mUser.getUnLockUsers().put(item.getUuid(), System.currentTimeMillis()); // 해제
                             Toast.makeText(FullImageActivity.this, "잠긴 사진을 열었습니다.", Toast.LENGTH_SHORT).show();
                         } else {
@@ -351,30 +341,25 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
                         }
                         DataContainer.getInstance().getUsersRef().child(myUuid).setValue(mUser)
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                if(isLock) {
-                                    picOpen.setImageResource(R.drawable.picture_lock);    // 해제하기 (현재 사진이 잠겼다는 것을 암시함)
-                                }else {
-                                    picOpen.setImageResource(R.drawable.picture_unlock);  // 잠금 (현재 사진이 해제되어 있다는 암시함)
-                                }
-                            }
-                        }).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        if (isLock) {
+                                            picOpen.setImageResource(R.drawable.picture_lock);    // 해제하기 (현재 사진이 잠겼다는 것을 암시함)
+                                        } else {
+                                            picOpen.setImageResource(R.drawable.picture_unlock);  // 잠금 (현재 사진이 해제되어 있다는 암시함)
+                                        }
+                                    }
+                                }).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
-                                CoreProgress.getInstance().stopProgressDialog();
+                                UiUtil.getInstance().stopProgressDialog();
                             }
                         });
                     }
-                });
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                }, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                     }
                 });
-
-                AlertDialog dialog = builder.create();    // 알림창 객체 생성
-                dialog.show();    // 알림창 띄우기
-
             }
         });
     }
@@ -413,24 +398,24 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
 
     @Override
     public void onClick(View view) {
-        Intent myIntent = new Intent(getApplicationContext(),DetailImageActivity.class);
+        Intent myIntent = new Intent(getApplicationContext(), DetailImageActivity.class);
         myIntent.putExtra("picUrlList", picUrlList);
-        if(picUrlList.size() == 0) return;
-        switch (view.getId()){
+        if (picUrlList.size() == 0) return;
+        switch (view.getId()) {
             case R.id.image1:
-                myIntent.putExtra("PagerPage",0);
+                myIntent.putExtra("PagerPage", 0);
                 startActivity(myIntent);
                 break;
             case R.id.image2:
-                myIntent.putExtra("PagerPage",1);
+                myIntent.putExtra("PagerPage", 1);
                 startActivity(myIntent);
                 break;
             case R.id.image3:
-                myIntent.putExtra("PagerPage",2);
+                myIntent.putExtra("PagerPage", 2);
                 startActivity(myIntent);
                 break;
             case R.id.image4:
-                myIntent.putExtra("PagerPage",3);
+                myIntent.putExtra("PagerPage", 3);
                 startActivity(myIntent);
                 break;
         }

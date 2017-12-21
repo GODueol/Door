@@ -18,7 +18,7 @@ import android.widget.Toast;
 import com.example.kwoncheolhyeok.core.Activity.MainActivity;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.R;
-import com.example.kwoncheolhyeok.core.Util.CoreProgress;
+import com.example.kwoncheolhyeok.core.Util.UiUtil;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -203,7 +203,7 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
 
         _signupButton.setEnabled(false);
 
-        CoreProgress.getInstance().startProgressDialog(this);
+        UiUtil.getInstance().startProgressDialog(this);
 
         final String email = _emailText.getText().toString();
         String password = _passwordText.getText().toString();
@@ -245,7 +245,7 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
     public void onSignupFailed(Exception e) {
         Toast.makeText(getBaseContext(), "Join Failed : " + e.getMessage(), Toast.LENGTH_LONG).show();
         _signupButton.setEnabled(true);
-        CoreProgress.getInstance().stopProgressDialog();
+        UiUtil.getInstance().stopProgressDialog();
     }
 
     @SuppressLint("SetTextI18n")

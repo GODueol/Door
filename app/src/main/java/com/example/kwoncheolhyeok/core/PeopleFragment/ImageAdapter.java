@@ -20,7 +20,7 @@ import java.util.Comparator;
 
 public class ImageAdapter extends BaseAdapter {
 
-    private IndexedTreeMap<Item, Boolean> mItems = new IndexedTreeMap<>(new Comparator<Item>() {
+    private IndexedTreeMap<Item, String> mItems = new IndexedTreeMap<>(new Comparator<Item>() {
         @Override
         public int compare(Item item1, Item item2) {
             if(item2.getUuid().equals(DataContainer.getInstance().getUid())) return 1;   // 1. 본인계정
@@ -37,7 +37,15 @@ public class ImageAdapter extends BaseAdapter {
     }
 
     void addItem(Item item){
-        mItems.put(item,true);
+        mItems.put(item,item.getUuid());
+    }
+
+    public Item getItem(String uuid){
+        return mItems.getEntry(uuid).getKey();
+    }
+
+    public void removeItem(String uuid){
+        mItems.removeItem(uuid);
     }
 
     @Override
@@ -115,7 +123,7 @@ public class ImageAdapter extends BaseAdapter {
             this.picUrl = picUrl;
         }
 
-        String getPicUrl() {
+        public String getPicUrl() {
             return picUrl;
         }
 
@@ -131,7 +139,7 @@ public class ImageAdapter extends BaseAdapter {
             this.distance = distance;
         }
 
-        String getUuid() {
+        public String getUuid() {
             return uuid;
         }
 

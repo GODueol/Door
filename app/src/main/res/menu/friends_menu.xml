@@ -4,27 +4,27 @@
     <item
         android:id="@+id/navigation_receive"
         android:icon="@drawable/core_icon"
-        android:title="Receive" />
+        android:title="@string/receive" />
 
     <item
         android:id="@+id/navigation_send"
         android:icon="@drawable/core_icon"
-        android:title="Send" />
+        android:title="@string/send" />
 
     <item
         android:id="@+id/navigation_friends"
         android:icon="@drawable/core_icon"
-        android:title="Friends" />
+        android:title="@string/friends" />
 
     <item
         android:id="@+id/navigation_recent"
         android:icon="@drawable/core_icon"
-        android:title="Recent" />
+        android:title="@string/recent" />
 
     <item
         android:id="@+id/navigation_block"
         android:icon="@drawable/core_icon"
-        android:title="Block" />
+        android:title="@string/block" />
 
 
 </menu>
