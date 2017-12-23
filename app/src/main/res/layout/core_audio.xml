@@ -4,6 +4,11 @@
     android:layout_height="wrap_content"
     android:layout_marginTop="8dp">
 
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
     <RelativeLayout
         android:id="@+id/layout1"
         android:layout_width="match_parent"
@@ -101,5 +106,6 @@
 
     </LinearLayout>
 
+    </RelativeLayout>
 
 </RelativeLayout>

@@ -15,6 +15,16 @@
         <item name="android:actionMenuTextColor">@color/text_white</item>
         <item name="android:popupMenuStyle">@style/PopupMenu.Example</item>
         <item name="actionOverflowMenuStyle">@style/OverflowMenu</item>
+
+        <!--툴바 높이 조정-->
+       <item name="actionBarStyle">@style/AppTheme.ActionBar</item>
+
+    </style>
+
+    <!--툴바 높이 조정-->
+    <style name="AppTheme.ActionBar" parent="Widget.AppCompat.Light.ActionBar">
+        <item name="android:height">@dimen/toolbar_height</item>
+        <item name="height">@dimen/toolbar_height</item>
     </style>
 
     <!--edit text 커서 색 & 언더라인 색-->
@@ -23,6 +33,14 @@
         <item name="colorControlActivated">@color/text_white</item>
         <item name="colorControlHighlight">@color/text_white</item>
     </style>
+
+    <!--edit text 커서 색 & 언더라인 색-->
+    <style name="EditText.Color.Black" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorControlNormal">@color/black</item>
+        <item name="colorControlActivated">@color/black</item>
+        <item name="colorControlHighlight">@color/skyblue</item>
+    </style>
+
 
     <style name="AppTheme.Picker" parent="Theme.AppCompat.Light.NoActionBar" >
         <item name="android:textColorPrimary">@android:color/white</item>
@@ -91,7 +109,7 @@
 
 
 
-    //로그인 화면 Edit text 의 Email과 Password 색 바꾸기
+    <!--//로그인 화면 Edit text 의 Email과 Password 색 바꾸기-->
     <style name="TextLabel" parent="TextAppearance.AppCompat">
         <!-- Hint color and label color in FALSE state -->
         <item name="android:textColorHint">@color/text_white</item>
@@ -102,7 +120,7 @@
         <item name="colorControlActivated">@color/text_white</item>
     </style>
 
-    //로그인 화면 Edit text 의 Email과 Password 색 바꾸기
+    <!--//로그인 화면 Edit text 의 Email과 Password 색 바꾸기-->
     <style name="TextLabel2" parent="TextAppearance.AppCompat">
         <!-- Hint color and label color in FALSE state -->
         <item name="android:textColorHint">@color/gray70</item>
@@ -113,8 +131,8 @@
         <item name="colorControlActivated">@color/gray70</item>
     </style>
 
-    //프로그레스바 이미지 센터에서 돌아가게
-    //android:backgroundDimEnabled 가 true면 배경 어두워지고 false면 배경 없이 돌아감
+    <!--//프로그레스바 이미지 센터에서 돌아가게-->
+    <!--//android:backgroundDimEnabled 가 true면 배경 어두워지고 false면 배경 없이 돌아감-->
     <style name="MyTheme" parent="android:Theme.Holo.Dialog">
         <item name="android:alertDialogStyle">@style/CustomAlertDialogStyle</item>
         <item name="android:windowBackground">@color/transparent</item>
@@ -125,7 +143,7 @@
         <item name="android:textSize">12sp</item>
     </style>
 
-    //프로그레스바 이미지 센터에서 돌아가게
+    <!--//프로그레스바 이미지 센터에서 돌아가게-->
     <style name="CustomAlertDialogStyle">
         <item name="android:bottomBright">@color/transparent</item>
         <item name="android:bottomDark">@color/transparent</item>

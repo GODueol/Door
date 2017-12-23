@@ -29,7 +29,8 @@
             android:layout_height="28dp"
             android:layout_centerInParent="true"
             android:background="@drawable/nav_core"
-            android:scaleType="centerCrop" />
+            android:scaleType="centerCrop"
+            />
 
 
         <TextView
@@ -45,6 +46,58 @@
             android:textSize="18sp"
             android:textStyle="bold" />
     </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="60dp"
+        android:padding="10dp"
+        android:layout_marginTop="48.5dp"
+        android:background="@color/white"
+        >
+
+    <RelativeLayout
+        android:id="@+id/edit_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+                >
+
+        <ImageView
+            android:id="@+id/edit_img"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/background_imsi"
+            />
+
+        <EditText
+            android:id="@+id/edit_txt"
+            android:layout_below="@+id/edit_audio"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:theme="@style/EditText.Color.Black"
+            android:background="@android:color/transparent"
+            android:hint="자신을 표현해 보세요."
+            android:lineSpacingExtra="8dip"
+            />
+
+        <TextView
+            android:id="@+id/edit_audio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/edit_img"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="8dp"
+            android:text="미디어 플레이어가 있을 자리"
+            android:textColor="@color/gray40"/>
+
+
+
+    </RelativeLayout>
+
+</ScrollView>
+
 
     <View
         android:id="@+id/fabBGLayout"
@@ -126,18 +179,6 @@
     </LinearLayout>
 
 
-    <!--<android.support.design.widget.FloatingActionButton-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:src="@drawable/ic_add_black_24dp"-->
-    <!--app:backgroundTint="@color/skyblue"-->
-    <!--app:borderWidth="0dp"-->
-    <!--app:elevation="6dp"-->
-    <!--app:fabSize="normal"-->
-    <!--android:layout_marginBottom="40dp"-->
-    <!--android:layout_marginRight="20dp"-->
-    <!--android:layout_gravity="bottom|end"-->
-    <!--/>-->
 
 
 </android.support.design.widget.CoordinatorLayout>
