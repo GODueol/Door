@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -20,6 +21,7 @@ import com.bumptech.glide.Glide;
 import com.example.kwoncheolhyeok.core.CorePage.CoreActivity;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.Event.RefreshLocationEvent;
+import com.example.kwoncheolhyeok.core.MessageActivity.ChattingActivity;
 import com.example.kwoncheolhyeok.core.MyApplcation;
 import com.example.kwoncheolhyeok.core.PeopleFragment.FullImageViewPager.DetailImageActivity;
 import com.example.kwoncheolhyeok.core.R;
@@ -85,6 +87,9 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
     @Bind(R.id.item_menu_btn)
     ImageView addFriends;
 
+    @Bind(R.id.message_white)
+    ImageView message;
+
     @SuppressLint("DefaultLocale")
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -117,7 +122,14 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         Intent p = getIntent();
         final ImageAdapter.Item item = (ImageAdapter.Item) p.getSerializableExtra("item");
 
-
+        message.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(),ChattingActivity.class);
+                intent.putExtra("user", item);
+                startActivity(intent);
+            }
+        });
         //개인 화면에서 코어 액티비티로 넘어감
         core_enter = findViewById(R.id.core_enter_layout);
         core_enter.setOnClickListener(new View.OnClickListener() {
@@ -400,6 +412,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
     public void onClick(View view) {
         Intent myIntent = new Intent(getApplicationContext(), DetailImageActivity.class);
         myIntent.putExtra("picUrlList", picUrlList);
+
         if (picUrlList.size() == 0) return;
         switch (view.getId()) {
             case R.id.image1:
