@@ -35,6 +35,7 @@ public class CoreActivity extends AppCompatActivity {
     private ListView core_list_view;
 
     TextView media_player = null;
+    TextView other_user = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -63,6 +64,15 @@ public class CoreActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(CoreActivity.this, audioactivity.class);
+                startActivity(i);
+            }
+        });
+
+        other_user = (TextView) findViewById(R.id.other_user);
+        other_user.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(CoreActivity.this, otherUser_write_core.class);
                 startActivity(i);
             }
         });

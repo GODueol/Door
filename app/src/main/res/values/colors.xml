@@ -3,31 +3,14 @@
     <color name="colorPrimary">#512DA8</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">@color/skyblue</color>
+    <color name="white">#FFFFFF</color>
     <color name="text_white">#FFFFFF</color>
+    <color name="black">#000000</color>
     <color name="blue">#ff2570ba</color>
     <color name="grey">#f7f7f7</color>
     <color name="message_color">#BBDEF2</color>
 
     <color name="transparent">#00000000</color>
-
-    <!--Fab button color-->
-    <color name="ColorPrimary">#ff2570ba</color>
-
-
-        <color name="primary">#E43F3F</color>
-        <color name="primary_dark">#E12929</color>
-        <color name="primary_darker">#CC1D1D</color>
-        <color name="accent">#FFFFFF</color>
-
-        <color name="black">#000000</color>
-        <color name="jet">#222222</color>
-        <color name="oil">#333333</color>
-        <color name="monsoon">#777777</color>
-        <color name="jumbo">#888888</color>
-        <color name="aluminum">#999999</color>
-        <color name="base">#AAAAAA</color>
-        <color name="iron">#CCCCCC</color>
-        <color name="white">#FFFFFF</color>
 
     <color name="tr_gray35">#599E9E9E</color>
     <color name="tr_gray65">#A69E9E9E</color>
@@ -39,5 +22,29 @@
     <color name="gray70">#616161</color>
     <color name="skyblue">#29B6F6</color>
     <color name="tr_skyblue">#A629B6F6</color>
+
+    <color name="btn_basic">#BFC9CA</color>
+    <color name="btn_yes">#28B463</color>
+    <color name="btn_pass">#F4D03F</color>
+    <color name="btn_no">#E74C3C</color>
+
+
+    <!--Fab button color-->
+    <color name="ColorPrimary">#ff2570ba</color>
+
+
+    <color name="primary">#E43F3F</color>
+    <color name="primary_dark">#E12929</color>
+    <color name="primary_darker">#CC1D1D</color>
+    <color name="accent">#FFFFFF</color>
+
+    <color name="jet">#222222</color>
+    <color name="oil">#333333</color>
+    <color name="monsoon">#777777</color>
+    <color name="jumbo">#888888</color>
+    <color name="aluminum">#999999</color>
+    <color name="base">#AAAAAA</color>
+    <color name="iron">#CCCCCC</color>
+
 
 </resources>
