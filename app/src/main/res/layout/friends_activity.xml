@@ -22,8 +22,10 @@
             android:layout_height="28dp"
             android:scaleType="centerCrop"
             android:layout_gravity="center"
-            android:background="@drawable/nav_friends" android:contentDescription="@string/friends_button"/>
+            android:background="@drawable/nav_friends"
+            android:contentDescription="@string/friends_button"/>
     </android.support.v7.widget.Toolbar>
+
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/friendsRecyclerView"
@@ -47,4 +49,5 @@
         app:menu="@menu/friends_menu"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true" />
+
 </RelativeLayout>
