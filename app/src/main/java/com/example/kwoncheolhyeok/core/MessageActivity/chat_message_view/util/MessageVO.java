@@ -13,10 +13,10 @@ import java.util.Map;
 
 public class MessageVO {
 
-    private int img;
-    private String writer;
-    private String nickname;
     private String content;
+    private int img;
+    private String nickname;
+    private String writer;
 
     public MessageVO(){
     }

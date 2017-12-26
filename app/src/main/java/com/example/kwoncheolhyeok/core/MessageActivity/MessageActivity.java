@@ -1,22 +1,24 @@
 package com.example.kwoncheolhyeok.core.MessageActivity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
-import android.widget.ExpandableListView;
+import android.util.Log;
 
-import com.example.kwoncheolhyeok.core.FriendsActivity.ExpandableListAdapter;
 import com.example.kwoncheolhyeok.core.MessageActivity.chat_message_view.util.MessageVO;
 import com.example.kwoncheolhyeok.core.MessageActivity.chat_message_view.util.messageRecyclerAdapter;
 import com.example.kwoncheolhyeok.core.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class MessageActivity extends AppCompatActivity {
@@ -27,19 +29,9 @@ public class MessageActivity extends AppCompatActivity {
     RecyclerView messageList;
     List<MessageVO> listrowItem;
 
-
-    public void testMessageData(){
-        listrowItem = new ArrayList<MessageVO>();
-
-        for(int i=0; i<10; i++){
-            MessageVO mv = new MessageVO();
-            mv.setNickname("kaikai");
-            mv.setContent("카이카이너모 멋졍"+i);
-            mv.setDate("2016-10-17 18:30");
-            listrowItem.add(mv);
-        }
-    }
-
+    private DatabaseReference chatRoomListRef;
+    private FirebaseAuth mAuth;
+    private String userId;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,37 +47,56 @@ public class MessageActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true); //홈 아이콘을 숨김처리합니다.
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
 
+        mAuth = FirebaseAuth.getInstance();
+        userId = mAuth.getUid();
         // preparing list data
         messageList = (RecyclerView) findViewById(R.id.messagelist);
-        testMessageData();
+        setMessageData();
         messageList.setAdapter(new messageRecyclerAdapter(listrowItem,R.layout.messagelist_row));
         messageList.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         messageList.setItemAnimator(new DefaultItemAnimator());
         /*****************************************************************/
+    }
 
 
-
-
-        // Listview on child click listener
-     /*   expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+    public void setMessageData(){
+        listrowItem = new ArrayList<MessageVO>();
+        chatRoomListRef = FirebaseDatabase.getInstance().getReference("chatRoomList");
+        chatRoomListRef.child(userId).addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                MessageVO chatList = dataSnapshot.getValue(MessageVO.class);
+                Log.d("123",dataSnapshot.getKey());
+                listrowItem.add(chatList);
+            }
 
             @Override
-            public boolean onChildClick(ExpandableListView parent, View v,
-                                        int groupPosition, int childPosition, long id) {
-//				Toast.makeText(getApplicationContext(),listDataHeader.get(groupPosition)+ " : "+ listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition),Toast.LENGTH_SHORT)
-//						.show();
-                Intent i = new Intent(MessageActivity.this, ChattingActivity.class);
-                startActivityForResult(i, 0);
-                return false;
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
             }
-        });*/
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
+
 
     // 뒤로가기 버튼 기능
     public boolean onOptionsItemSelected(android.view.MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                // NavUtils.navigateUpFromSameTask(this);
                 finish();
                 return true;
         }

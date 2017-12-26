@@ -32,7 +32,7 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAwzFjyqeiZCbIXSOSpbfZEXMC6YZeqe48"
+            android:value="AIzaSyC2KgupUUZtkesLhVkwvuRBRo1LpV-R-X8"
             />
         <!--사진 폴더 접근을 위한 provider 설정-->
         <provider
