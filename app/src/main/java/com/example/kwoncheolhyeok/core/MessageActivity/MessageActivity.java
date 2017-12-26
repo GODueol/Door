@@ -34,9 +34,8 @@ public class MessageActivity extends AppCompatActivity {
         for(int i=0; i<10; i++){
             MessageVO mv = new MessageVO();
             mv.setNickname("kaikai");
-            mv.setContent("카이카이너모 멋졍 경수도 너모너모너모 멋쪙 하트하트 경수도 너모너모너모 멋쪙 하트하트 경수도 너모너모너모 멋쪙 하트하트"+i);
+            mv.setContent("카이카이너모 멋졍"+i);
             mv.setDate("2016-10-17 18:30");
-            mv.setEditimg(R.drawable.ic_dehaze_black_24dp);
             listrowItem.add(mv);
         }
     }

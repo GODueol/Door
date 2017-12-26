@@ -40,7 +40,6 @@ public class messageRecyclerAdapter extends  RecyclerView.Adapter<messageRecycle
         MessageVO message = messageList.get(position);
         holder.nickname.setText(message.getNickname());
         holder.content.setText(message.getContent());
-        holder.editImg.setBackgroundResource(message.getEditimg());
     }
 
     @Override
@@ -62,7 +61,6 @@ public class messageRecyclerAdapter extends  RecyclerView.Adapter<messageRecycle
         public ImageView img;
         public TextView nickname;
         public TextView content;
-        public  ImageView editImg;
 
 
         public ViewHolder(View itemView){
@@ -70,7 +68,6 @@ public class messageRecyclerAdapter extends  RecyclerView.Adapter<messageRecycle
 
             content = (TextView) itemView.findViewById(R.id.message_content);
             nickname = (TextView) itemView.findViewById(R.id.name);
-            editImg = (ImageView) itemView.findViewById(R.id.edit_message);
         }
 
     }

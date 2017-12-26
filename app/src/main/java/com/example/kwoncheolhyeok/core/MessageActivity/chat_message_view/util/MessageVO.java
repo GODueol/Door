@@ -17,18 +17,16 @@ public class MessageVO {
     private String writer;
     private String nickname;
     private String content;
-    private int editimg;
 
     public MessageVO(){
     }
 
 
-    public MessageVO(int img,String writer,  String nickname, String content, int editimg){
+    public MessageVO(int img,String writer,  String nickname, String content){
         this.img = img;
         this.writer = writer;
         this.nickname = nickname;
         this.content = content;
-        this.editimg = editimg;
     }
 
 
@@ -38,7 +36,6 @@ public class MessageVO {
         result.put("img", img);
         result.put("nickname", nickname);
         result.put("content", content);
-        result.put("editimg", editimg);
 
         return result;
     }
@@ -47,16 +44,6 @@ public class MessageVO {
     }
 
     private String date;
-
-    public int getEditimg() {
-        return editimg;
-    }
-
-    public void setEditimg(int editimg) {
-        this.editimg = editimg;
-    }
-
-
 
     public int getImg() {
         return img;
