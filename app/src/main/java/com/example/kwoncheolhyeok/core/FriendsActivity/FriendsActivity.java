@@ -17,6 +17,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
 import java.util.LinkedList;
 
@@ -39,7 +40,12 @@ public class FriendsActivity extends AppCompatActivity {
         setContentView(R.layout.friends_activity);
 
         // bottomTab
-        BottomNavigationView navigation = findViewById(R.id.navigation);
+        BottomNavigationViewEx navigation = findViewById(R.id.navigation);
+        navigation.enableAnimation(false);
+        navigation.enableShiftingMode(false);
+        navigation.enableItemShiftingMode(false);
+        navigation.setIconVisibility(false);
+        navigation.setTextSize(15);
         navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -56,9 +62,9 @@ public class FriendsActivity extends AppCompatActivity {
                     case R.id.navigation_recent:
                         setRecyclerView(items, adapter, "recentUsers", R.menu.receive_item_menu);
                         return true;
-                    case R.id.navigation_block:
+                    /*case R.id.navigation_block:
                         setRecyclerView(items, adapter, "blockUsers", R.menu.receive_item_menu);
-                        return true;
+                        return true;*/
                 }
                 return false;
             }

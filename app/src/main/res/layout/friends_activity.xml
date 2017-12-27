@@ -34,7 +34,7 @@
         android:layout_below="@id/toolbar"
         />
 
-    <android.support.design.widget.BottomNavigationView
+    <com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx
         android:id="@+id/navigation"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -48,6 +48,7 @@
         app:itemTextColor="@color/bnv_tab_item_foreground"
         app:menu="@menu/friends_menu"
         android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        />
 
 </RelativeLayout>
