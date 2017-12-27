@@ -747,7 +747,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 
     @NonNull
     private String getPicPath(ImageView targetImage) {
-        String profilePicPath = FireBaseUtil.getInstance().getParentPath();
+        String profilePicPath = FireBaseUtil.getInstance().getStorageProfilePicPath();
         if (targetImage == profilePic1) {
             profilePicPath += "profilePic1.jpg";
         } else if (targetImage == profilePic2) {

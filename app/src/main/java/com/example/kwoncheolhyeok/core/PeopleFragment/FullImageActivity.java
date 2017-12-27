@@ -135,7 +135,9 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         core_enter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(new Intent(FullImageActivity.this, CoreActivity.class), 0);
+                Intent intent = new Intent(FullImageActivity.this, CoreActivity.class);
+                intent.putExtra("uuid", item.getUuid());
+                startActivity(intent);
             }
         });
 

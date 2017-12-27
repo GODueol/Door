@@ -323,6 +323,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_mycore) {
 
             Intent i = new Intent(MainActivity.this, CoreActivity.class);
+            i.putExtra("uuid", DataContainer.getInstance().getUid());
             startActivity(i);
         } else if (id == R.id.nav_message) {
 

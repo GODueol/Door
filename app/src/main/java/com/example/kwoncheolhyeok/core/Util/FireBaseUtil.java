@@ -21,13 +21,13 @@ public class FireBaseUtil {
     }
 
     @NonNull
-    private String getParentPath(String uuid) {
+    private String getStorageProfilePicPath(String uuid) {
         return "profile/pic/" + uuid + "/";
     }
 
     @NonNull
-    public String getParentPath() {
-        return getParentPath(DataContainer.getInstance().getUid());
+    public String getStorageProfilePicPath() {
+        return getStorageProfilePicPath(DataContainer.getInstance().getUid());
     }
 
 

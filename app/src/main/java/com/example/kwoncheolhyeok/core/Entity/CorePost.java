@@ -15,6 +15,15 @@ public class CorePost {
     String videoUrl;
     ArrayList<String> likeUsers = new ArrayList<>();
 
+
+    public CorePost() {
+    }
+
+    public CorePost(String uuid) {
+        this.uuid = uuid;
+        this.writeDate = System.currentTimeMillis();
+    }
+
     public CorePost(String uuid, long writeDate, String text, String pictureUrl, String soundUrl, String videoUrl, ArrayList<String> likeUsers) {
         this.uuid = uuid;
         this.writeDate = writeDate;

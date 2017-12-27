@@ -2,37 +2,26 @@ package com.example.kwoncheolhyeok.core.CorePage;
 
 
 import android.content.Intent;
-import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
-import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.example.kwoncheolhyeok.core.Activity.MainActivity;
-import com.example.kwoncheolhyeok.core.Activity.MapsActivity;
-import com.example.kwoncheolhyeok.core.LoginActivity.LoginActivity;
 import com.example.kwoncheolhyeok.core.MyApplcation;
 import com.example.kwoncheolhyeok.core.R;
-
-import org.w3c.dom.Text;
+import com.example.kwoncheolhyeok.core.Util.DataContainer;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 
 public class CoreActivity extends AppCompatActivity {
 
     Toolbar toolbar = null;
-    private ListView core_list_view;
 
     TextView media_player = null;
     TextView other_user = null;
@@ -43,23 +32,34 @@ public class CoreActivity extends AppCompatActivity {
         // Get the view from new_activity.xml
         setContentView(R.layout.core_activity);
 
+        Intent intent = getIntent();
+        final String uuid = intent.getStringExtra("uuid");
+
         //스크린샷 방지
         MyApplcation.getInstance().allowUserSaveScreenshot(false);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 //                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
-                Intent i = new Intent(CoreActivity.this, CoreWriteActivity.class);
+
+                // 자신, 타인 액티비티 구별
+                Intent i;
+                if(uuid.equals(DataContainer.getInstance().getUid())){
+                    i = new Intent(CoreActivity.this, CoreWriteActivity.class);
+                } else {
+                    i = new Intent(CoreActivity.this, otherUser_write_core.class);
+                }
+
                 startActivity(i);
             }
         });
 
-        media_player = (TextView) findViewById(R.id.media_player);
+        media_player = findViewById(R.id.media_player);
         media_player.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
@@ -68,7 +68,7 @@ public class CoreActivity extends AppCompatActivity {
             }
         });
 
-        other_user = (TextView) findViewById(R.id.other_user);
+        other_user = findViewById(R.id.other_user);
         other_user.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
@@ -83,9 +83,9 @@ public class CoreActivity extends AppCompatActivity {
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
 
 
-        core_list_view = (ListView) findViewById(R.id.core_listview);
+        ListView core_list_view = findViewById(R.id.core_listview);
 
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         for(int i=0; i<3; i++){
             list.add(i+"");
         }
@@ -114,7 +114,7 @@ public class CoreActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
-    };
+    }
 
     @Override
     public void onResume() {
