@@ -254,9 +254,9 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
             return;
         }
         if (item.getUser().getFollowerUsers().containsKey(myUuid)) {   //  이미 팔로우함
-            addFriends.setImageResource(R.drawable.delete_button); // 팔로우 취소 버튼
+            addFriends.setImageResource(R.drawable.unfollow); // 팔로우 취소 버튼
         } else {
-            addFriends.setImageResource(R.drawable.add_friends); // 팔로우 버튼
+            addFriends.setImageResource(R.drawable.follow); // 팔로우 버튼
         }
 
         addFriends.setOnClickListener(new View.OnClickListener() {
@@ -287,9 +287,9 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
                             @Override
                             public void onSuccess(Void aVoid) {
                                 if (item.getUser().getFollowerUsers().containsKey(myUuid)) {   //  이미 팔로우함
-                                    addFriends.setImageResource(R.drawable.delete_button); // 팔로우 취소 버튼
+                                    addFriends.setImageResource(R.drawable.unfollow); // 팔로우 취소 버튼
                                 } else {
-                                    addFriends.setImageResource(R.drawable.add_friends); // 팔로우 버튼
+                                    addFriends.setImageResource(R.drawable.follow); // 팔로우 버튼
                                 }
                             }
                         }).addOnCompleteListener(new OnCompleteListener<Void>() {

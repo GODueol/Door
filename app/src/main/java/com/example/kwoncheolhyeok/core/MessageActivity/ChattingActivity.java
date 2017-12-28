@@ -304,7 +304,7 @@ public class ChattingActivity extends AppCompatActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.clear();
-        getMenuInflater().inflate(R.menu.board_menu, menu);
+        getMenuInflater().inflate(R.menu.find_text_menu, menu);
 
         return super.onPrepareOptionsMenu(menu);
     }

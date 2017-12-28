@@ -2,7 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/follow"
-        android:icon="@drawable/core_icon"
         android:title="Follow" />
 
 </menu>

@@ -218,7 +218,7 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginLeft="20dp"
-                android:src="@drawable/add_friends" />
+                android:src="@drawable/follow" />
             <ImageView
                 android:id="@+id/block_friends"
                 android:layout_width="30dp"
