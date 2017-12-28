@@ -39,9 +39,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.appindexing.Action;
 import com.google.firebase.appindexing.FirebaseUserActions;
 import com.google.firebase.appindexing.builders.Actions;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -122,6 +124,21 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         Intent p = getIntent();
         final ImageAdapter.Item item = (ImageAdapter.Item) p.getSerializableExtra("item");
 
+        DataContainer.getInstance().getUserRef(item.getUuid()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                item.setUser(dataSnapshot.getValue(User.class));
+                setView(item);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void setView(final ImageAdapter.Item item) {
         message.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
@@ -196,7 +213,6 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
 
         // 최근본 유저 추가
         setRecent(item);
-
     }
 
     private void setRecent(ImageAdapter.Item item) {
@@ -245,7 +261,8 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
 
                         // 내 following 추가, 유저 follower c추가
                         Task<Void> task = FireBaseUtil.getInstance().follow(item.getUser(), item.getUuid(), isFollow, myUuid);
-                        if(task != null) {
+                        if(task == null) {
+                            Toast.makeText(getBaseContext(),"오류 발생", Toast.LENGTH_SHORT).show();
                             UiUtil.getInstance().stopProgressDialog();
                             return;
                         }
