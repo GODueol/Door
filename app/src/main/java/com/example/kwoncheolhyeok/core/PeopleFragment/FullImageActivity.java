@@ -48,6 +48,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 import butterknife.Bind;
@@ -124,16 +125,18 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         Intent p = getIntent();
         final ImageAdapter.Item item = (ImageAdapter.Item) p.getSerializableExtra("item");
 
-        DataContainer.getInstance().getUserRef(item.getUuid()).addValueEventListener(new ValueEventListener() {
+        UiUtil.getInstance().startProgressDialog(FullImageActivity.this);
+        DataContainer.getInstance().getUserRef(item.getUuid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                UiUtil.getInstance().stopProgressDialog();
                 item.setUser(dataSnapshot.getValue(User.class));
                 setView(item);
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                UiUtil.getInstance().stopProgressDialog();
             }
         });
     }
@@ -170,6 +173,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         GeoFire geoFire = new GeoFire(ref);
         final Location location = GPSInfo.getmInstance(getApplication()).getGPSLocation();
         geoFire.getLocation(item.getUuid(), new LocationCallback() {
+            @SuppressLint("DefaultLocale")
             @Override
             public void onLocationResult(String s, GeoLocation geoLocation) {
                 Location targetLocation = new Location("");//provider name is unnecessary
@@ -211,23 +215,36 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         // 팔로우
         setFollowing(item);
 
-        // 최근본 유저 추가
-        setRecent(item);
+        // viewedMeUser
+        setViewedMeUsers(item);
     }
 
-    private void setRecent(ImageAdapter.Item item) {
-        User mUser = DataContainer.getInstance().getUser();
-        Map<String, Long> recentUsers = mUser.getRecentUsers();
-        recentUsers.put(item.getUuid(), System.currentTimeMillis()); // 추가
-        if (recentUsers.size() >= 45) {   // 데이터 관리 갯수 45
+    public void setViewedMeUsers(ImageAdapter.Item item) {
+
+        if(item.getUuid().equals(DataContainer.getInstance().getUid())) return; // 자신일 경우
+
+        DatabaseReference oUserViewedMeUsers = DataContainer.getInstance().getUserRef(item.getUuid()).child("viewedMeUsers");
+
+        Map<String, Object> childUpdate = new HashMap<>();
+
+        Map<String, Long> viewedMeUsers = item.getUser().getViewedMeUsers();
+
+        if (viewedMeUsers.size() >= 45) {   // 데이터 관리 갯수 45
             long min = -1;
-            for (String key : recentUsers.keySet()) {
-                if (min == -1) min = recentUsers.get(key);
-                else if (min > recentUsers.get(key)) min = recentUsers.get(key);
+            String minUuid = null;
+            for (String key : viewedMeUsers.keySet()) {
+                if (min == -1 || min > viewedMeUsers.get(key)) {
+                    min = viewedMeUsers.get(key);
+                    minUuid = key;
+                }
             }
-            recentUsers.remove(min);
+            if(minUuid!= null) childUpdate.put(minUuid, null);
         }
-        DataContainer.getInstance().getMyUserRef().setValue(mUser);
+
+        childUpdate.put(DataContainer.getInstance().getUid(), System.currentTimeMillis());  // 추가
+
+        oUserViewedMeUsers.updateChildren(childUpdate);
+
     }
 
     private void setFollowing(final ImageAdapter.Item item) {
@@ -465,4 +482,5 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         super.onPause();
         MyApplcation.getInstance().unregisterScreenshotObserver();
     }
+
 }

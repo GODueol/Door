@@ -39,6 +39,16 @@ public class User implements Serializable{
 
     private Map<String, Long> recentUsers = new HashMap<>();    // uuid, 추가 시간
 
+    private Map<String, Long> viewedMeUsers = new HashMap<>();    // uuid, 추가 시간
+
+    public Map<String, Long> getViewedMeUsers() {
+        return viewedMeUsers;
+    }
+
+    public void setViewedMeUsers(Map<String, Long> viewedMeUsers) {
+        this.viewedMeUsers = viewedMeUsers;
+    }
+
     public Map<String, Long> getRecentUsers() {
         return recentUsers;
     }

@@ -60,7 +60,7 @@ public class FriendsActivity extends AppCompatActivity {
                         setRecyclerView(items, adapter, "friendUsers", R.menu.friends_item_menu);
                         return true;
                     case R.id.navigation_recent:
-                        setRecyclerView(items, adapter, "recentUsers", R.menu.receive_item_menu);
+                        setRecyclerView(items, adapter, "viewedMeUsers", R.menu.receive_item_menu);
                         return true;
                     /*case R.id.navigation_block:
                         setRecyclerView(items, adapter, "blockUsers", R.menu.receive_item_menu);
