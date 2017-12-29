@@ -31,13 +31,14 @@ public class FireBaseUtil {
     }
 
 
-    public Task<Void> follow(final User oUser, String oUuid , boolean isFollow, String myUuid) {
+    public Task<Void> follow(final User oUser, String oUuid , boolean isFollowed) {
+        String myUuid = DataContainer.getInstance().getUid();
         final User mUser = DataContainer.getInstance().getUser();
         //final User oUser = item.getUser();
         DatabaseReference mDatabase = DataContainer.getInstance().getUsersRef();
         Map<String, Object> childUpdates = new HashMap<>();
 
-        if(isFollow){
+        if(isFollowed){
             // 친구 삭제
             if(!mUser.getFollowingUsers().containsKey(oUuid)) return null;
 
@@ -81,4 +82,39 @@ public class FireBaseUtil {
         return mDatabase.updateChildren(childUpdates);
     }
 
+    public Task<Void> block(String oUuid){
+
+        String mUuid = DataContainer.getInstance().getUid();
+        User mUser = DataContainer.getInstance().getUser();
+        long now = System.currentTimeMillis();
+
+        DatabaseReference mDatabase = DataContainer.getInstance().getUsersRef();
+        Map<String, Object> childUpdate = new HashMap<>();
+
+        // block 리스트 삭제
+        // 로컬 상에서 Block 리스트 추가
+        mUser.getBlockUsers().put(oUuid, now);
+        childUpdate.put("/" + mUuid + "/blockUsers/" + oUuid, now);  // DB 상에서 Block 리스트 추가
+
+        // 내 팔로우 관계 모두 삭제(로컬)
+        mUser.getFollowerUsers().remove(oUuid);
+        mUser.getFollowingUsers().remove(oUuid);
+        mUser.getFriendUsers().remove(oUuid);
+        mUser.getViewedMeUsers().remove(oUuid);
+
+        // 내 팔로우 관계 모두 삭제(DB)
+        childUpdate.put("/" + mUuid + "/followerUsers/" + oUuid, null);
+        childUpdate.put("/" + mUuid + "/followingUsers/" + oUuid, null);
+        childUpdate.put("/" + mUuid + "/friendUsers/" + oUuid, null);
+        childUpdate.put("/" + mUuid + "/viewedMeUsers/" + oUuid, null);
+
+        // 친구의 팔로우 관계 모두 삭제(DB)
+        childUpdate.put("/" + oUuid + "/blockUsers/" + mUuid, null);
+        childUpdate.put("/" + oUuid + "/followerUsers/" + mUuid, null);
+        childUpdate.put("/" + oUuid + "/friendUsers/" + mUuid, null);
+        childUpdate.put("/" + oUuid + "/viewedMeUsers/" + mUuid, null);
+
+        return mDatabase.updateChildren(childUpdate);
+
+    }
 }

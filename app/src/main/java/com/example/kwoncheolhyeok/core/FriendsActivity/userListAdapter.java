@@ -92,7 +92,7 @@ public class userListAdapter extends RecyclerView.Adapter<userListAdapter.userHo
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                     UiUtil.getInstance().startProgressDialog((Activity) context);
-                                    Task<Void> task = FireBaseUtil.getInstance().follow(user, item.getUuid(), false, DataContainer.getInstance().getUid());
+                                    Task<Void> task = FireBaseUtil.getInstance().follow(user, item.getUuid(), false);
                                     if(task == null){
                                         Toast.makeText(context, "팔로우 신청 되어있습니다", Toast.LENGTH_SHORT).show();
                                         UiUtil.getInstance().stopProgressDialog();
@@ -119,7 +119,7 @@ public class userListAdapter extends RecyclerView.Adapter<userListAdapter.userHo
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                     UiUtil.getInstance().startProgressDialog((Activity) context);
-                                    Task<Void> task = FireBaseUtil.getInstance().follow(user, item.getUuid(), true, DataContainer.getInstance().getUid());
+                                    Task<Void> task = FireBaseUtil.getInstance().follow(user, item.getUuid(), true);
                                     if(task == null){
                                         Toast.makeText(context, "팔로우 취소 상태입니다", Toast.LENGTH_SHORT).show();
                                         UiUtil.getInstance().stopProgressDialog();
