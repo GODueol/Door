@@ -1,4 +1,4 @@
-package com.example.kwoncheolhyeok.core.Camera;
+package com.example.kwoncheolhyeok.core.Util.Camera;
 
 import android.Manifest;
 import android.app.Activity;
@@ -14,7 +14,6 @@ import android.widget.Toast;
 import com.example.kwoncheolhyeok.core.Util.setPermission;
 import com.gun0912.tedpermission.PermissionListener;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 

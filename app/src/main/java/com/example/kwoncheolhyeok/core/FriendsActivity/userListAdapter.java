@@ -175,7 +175,7 @@ public class userListAdapter extends RecyclerView.Adapter<userListAdapter.userHo
         return items.size();
     }
 
-    class userHolder extends messageRecyclerAdapter.ViewHolder {
+    class userHolder extends RecyclerView.ViewHolder {
         ImageView profilePicImage;
         TextView idText;
         TextView subProfileText;

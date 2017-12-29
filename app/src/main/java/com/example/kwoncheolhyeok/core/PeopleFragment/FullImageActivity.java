@@ -145,7 +145,9 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(),ChattingActivity.class);
-                intent.putExtra("user", item);
+                intent.putExtra("user", item.getUser());
+                intent.putExtra("userUuid", item.getUuid());
+                intent.putExtra("userPicuri", item.getPicUrl());
                 startActivity(intent);
             }
         });
