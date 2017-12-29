@@ -16,6 +16,9 @@ import com.example.kwoncheolhyeok.core.Entity.CorePost;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
+import com.google.firebase.database.FirebaseDatabase;
+import com.like.LikeButton;
+import com.like.OnLikeListener;
 
 import java.util.List;
 
@@ -27,10 +30,12 @@ public class CoreListAdapter extends BaseAdapter {
 
     private List<CoreListItem> posts;
     private Context context;
+    private String cUuid;
 
-    public CoreListAdapter(List<CoreListItem> posts, Context context) {
+    public CoreListAdapter(List<CoreListItem> posts, Context context, String cUuid) {
         this.posts = posts;
         this.context = context;
+        this.cUuid = cUuid;
     }
 
     @Override
@@ -53,7 +58,7 @@ public class CoreListAdapter extends BaseAdapter {
 
         CoreListAdapter.Holder holder = null;
 
-        CoreListItem coreListItem;
+        final CoreListItem coreListItem;
         try {
             coreListItem = getItem(position);
         } catch (Exception e){
@@ -80,7 +85,7 @@ public class CoreListAdapter extends BaseAdapter {
 
             holder.core_heart_count = (TextView) convertView.findViewById(R.id.heart_count_txt);
             holder.core_heart=(ImageButton)convertView.findViewById(R.id.heart_count);
-
+            holder.core_heart_btn = (LikeButton) convertView.findViewById(R.id.core_heart_btn);
             convertView.setTag(holder);
         }
         else{
@@ -89,6 +94,7 @@ public class CoreListAdapter extends BaseAdapter {
 
         User user = coreListItem.getUser();
         CorePost corePost = coreListItem.getCorePost();
+        final String mUuid = DataContainer.getInstance().getUid();
 
         Glide.with(context /* context */)
                 .load(user.getPicUrls().getPicUrl1())
@@ -104,6 +110,26 @@ public class CoreListAdapter extends BaseAdapter {
         holder.core_date.setText(DataContainer.getInstance().convertBeforeHour(corePost.getWriteDate()) + "시간 전");
         holder.core_contents.setText(corePost.getText());
 
+        holder.core_heart_count.setText(Integer.toString(corePost.getLikeUsers().size()));
+        holder.core_heart_btn.setLiked(corePost.getLikeUsers().containsKey(mUuid));
+
+        holder.core_heart_btn.setOnLikeListener(new OnLikeListener() {
+            @Override
+            public void liked(LikeButton likeButton) {
+                FirebaseDatabase.getInstance().getReference().child("posts")
+                        .child(cUuid)
+                        .child(coreListItem.getPostKey())
+                        .child("likeUsers").child(mUuid).setValue(System.currentTimeMillis());
+            }
+
+            @Override
+            public void unLiked(LikeButton likeButton) {
+                FirebaseDatabase.getInstance().getReference().child("posts")
+                        .child(cUuid)
+                        .child(coreListItem.getPostKey())
+                        .child("likeUsers").child(mUuid).setValue(null);
+            }
+        });
         return convertView;
     }
 
@@ -113,6 +139,7 @@ public class CoreListAdapter extends BaseAdapter {
         ImageView core_pic, core_img ;
         ImageButton core_setting, core_heart;
         public TextView core_id, core_subprofile, core_date, core_contents, core_media, core_heart_count;
+        LikeButton core_heart_btn;
 
     }
 

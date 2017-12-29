@@ -95,7 +95,7 @@ public class CoreActivity extends AppCompatActivity {
         final ListView core_list_view = findViewById(R.id.core_listview);
 
         final LinkedList<CoreListItem> list = new LinkedList<>();
-        coreListAdapter = new CoreListAdapter(list, this);
+        coreListAdapter = new CoreListAdapter(list, this, uuid);
         core_list_view.setAdapter(coreListAdapter);
 
         core_list_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -149,6 +149,7 @@ public class CoreActivity extends AppCompatActivity {
                 for(CoreListItem coreListItem : list){
                     if(coreListItem.getPostKey().equals(postKey)){
                         coreListItem.setCorePost(corePost);
+                        coreListAdapter.notifyDataSetChanged();
                         break;
                     }
                 }

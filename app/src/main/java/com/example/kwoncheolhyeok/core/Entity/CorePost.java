@@ -1,6 +1,8 @@
 package com.example.kwoncheolhyeok.core.Entity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by gimbyeongjin on 2017. 12. 14..
@@ -13,7 +15,7 @@ public class CorePost {
     String pictureUrl;
     String soundUrl;
     String videoUrl;
-    ArrayList<String> likeUsers = new ArrayList<>();
+    Map<String, Long> likeUsers = new HashMap<>();
 
 
     public CorePost() {
@@ -24,7 +26,7 @@ public class CorePost {
         this.writeDate = System.currentTimeMillis();
     }
 
-    public CorePost(String uuid, long writeDate, String text, String pictureUrl, String soundUrl, String videoUrl, ArrayList<String> likeUsers) {
+    public CorePost(String uuid, long writeDate, String text, String pictureUrl, String soundUrl, String videoUrl, Map<String, Long> likeUsers) {
         this.uuid = uuid;
         this.writeDate = writeDate;
         this.text = text;
@@ -82,11 +84,11 @@ public class CorePost {
         this.videoUrl = videoUrl;
     }
 
-    public ArrayList<String> getLikeUsers() {
+    public Map<String, Long> getLikeUsers() {
         return likeUsers;
     }
 
-    public void setLikeUsers(ArrayList<String> likeUsers) {
+    public void setLikeUsers(Map<String, Long> likeUsers) {
         this.likeUsers = likeUsers;
     }
 }
