@@ -3,5 +3,8 @@
     <item
         android:id="@+id/follow"
         android:title="Follow" />
+    <item
+        android:id="@+id/block"
+        android:title="@string/block" />
 
 </menu>

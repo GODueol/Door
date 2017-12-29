@@ -11,11 +11,21 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.kwoncheolhyeok.core.Entity.CoreListItem;
+import com.example.kwoncheolhyeok.core.Entity.CorePost;
+import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.ScreenshotSetApplication;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 
@@ -25,6 +35,7 @@ public class CoreActivity extends AppCompatActivity {
 
     TextView media_player = null;
     TextView other_user = null;
+    private CoreListAdapter coreListAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -83,14 +94,11 @@ public class CoreActivity extends AppCompatActivity {
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
 
 
-        ListView core_list_view = findViewById(R.id.core_listview);
+        final ListView core_list_view = findViewById(R.id.core_listview);
 
-        List<String> list = new ArrayList<>();
-        for(int i=0; i<3; i++){
-            list.add(i+"");
-        }
-        Core_List_Adapter Core_List_Adapter = new Core_List_Adapter(list, this);
-        core_list_view.setAdapter(Core_List_Adapter);
+        final LinkedList<CoreListItem> list = new LinkedList<>();
+        coreListAdapter = new CoreListAdapter(list, this);
+        core_list_view.setAdapter(coreListAdapter);
 
         core_list_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view,
@@ -98,6 +106,75 @@ public class CoreActivity extends AppCompatActivity {
 
 //                Intent myIntent = new Intent(getActivity(), ClubActivity.class);
 //                getActivity().startActivity(myIntent);
+
+            }
+        });
+
+        // Post, User Get
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+        mDatabase.child("posts").child(uuid).orderByChild("writeDate").addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                DataContainer dc = DataContainer.getInstance();
+                final CorePost corePost = dataSnapshot.getValue(CorePost.class);
+                final String postKey = dataSnapshot.getKey();
+                final User[] user = new User[1];
+                if(corePost.getUuid().equals(dc.getUid())) {
+                    user[0] = dc.getUser();
+                    addCoreListItem(user[0], corePost, postKey);
+                }
+                else {
+                    dc.getUserRef(corePost.getUuid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            user[0] = dataSnapshot.getValue(User.class);
+                            addCoreListItem(user[0], corePost, postKey);
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+            }
+
+            private void addCoreListItem(User user, CorePost corePost, String postKey) {
+                list.offerFirst(new CoreListItem(user, corePost, postKey));
+                coreListAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                final CorePost corePost = dataSnapshot.getValue(CorePost.class);
+                final String postKey = dataSnapshot.getKey();
+                for(CoreListItem coreListItem : list){
+                    if(coreListItem.getPostKey().equals(postKey)){
+                        coreListItem.setCorePost(corePost);
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                final CorePost corePost = dataSnapshot.getValue(CorePost.class);
+                final String postKey = dataSnapshot.getKey();
+                for(CoreListItem coreListItem : list){
+                    if(coreListItem.getPostKey().equals(postKey)){
+                        list.remove(coreListItem);
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
             }
         });

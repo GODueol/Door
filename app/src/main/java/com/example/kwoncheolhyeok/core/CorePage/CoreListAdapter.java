@@ -1,6 +1,7 @@
 package com.example.kwoncheolhyeok.core.CorePage;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,7 +10,12 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.example.kwoncheolhyeok.core.Entity.CoreListItem;
+import com.example.kwoncheolhyeok.core.Entity.CorePost;
+import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.R;
+import com.example.kwoncheolhyeok.core.Util.DataContainer;
 
 import java.util.List;
 
@@ -17,24 +23,24 @@ import java.util.List;
  * Created by KwonCheolHyeok on 2017-01-17.
  */
 
-public class Core_List_Adapter extends BaseAdapter {
+public class CoreListAdapter extends BaseAdapter {
 
-    private List<String> items;
+    private List<CoreListItem> posts;
     private Context context;
 
-    public Core_List_Adapter(List<String> items, Context context) {
-        this.items = items;
+    public CoreListAdapter(List<CoreListItem> posts, Context context) {
+        this.posts = posts;
         this.context = context;
     }
 
     @Override
     public int getCount() {
-        return items.size();
+        return posts.size();
     }
 
     @Override
-    public Object getItem(int position) {
-        return items.get(position);
+    public CoreListItem getItem(int position) {
+        return posts.get(position);
     }
 
     @Override
@@ -45,14 +51,22 @@ public class Core_List_Adapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        Core_List_Adapter.Holder holder = null;
+        CoreListAdapter.Holder holder = null;
+
+        CoreListItem coreListItem;
+        try {
+            coreListItem = getItem(position);
+        } catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
 
         if(convertView == null){
             LayoutInflater inflater  = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
             convertView = inflater.inflate(R.layout.core_list_item, parent, false);
 
-            holder = new Core_List_Adapter.Holder();
+            holder = new CoreListAdapter.Holder();
             holder.core_pic = (ImageView) convertView.findViewById(R.id.core_pic);
             holder.core_img = (ImageView) convertView.findViewById(R.id.core_img);
 
@@ -67,11 +81,28 @@ public class Core_List_Adapter extends BaseAdapter {
             holder.core_heart_count = (TextView) convertView.findViewById(R.id.heart_count_txt);
             holder.core_heart=(ImageButton)convertView.findViewById(R.id.heart_count);
 
+            convertView.setTag(holder);
         }
         else{
-            holder = (Core_List_Adapter.Holder) convertView.getTag();
+            holder = (CoreListAdapter.Holder) convertView.getTag();
         }
 
+        User user = coreListItem.getUser();
+        CorePost corePost = coreListItem.getCorePost();
+
+        Glide.with(context /* context */)
+                .load(user.getPicUrls().getPicUrl1())
+                .into(holder.core_pic);
+
+        Glide.with(context /* context */)
+                .load(corePost.getPictureUrl())
+                .into(holder.core_img);
+
+        holder.core_id.setText(user.getId());
+        holder.core_subprofile.setText(TextUtils.join("/", new String[]{Integer.toString(user.getAge()), Integer.toString(user.getHeight()),
+                Integer.toString(user.getWeight()), user.getBodyType()}));
+        holder.core_date.setText(DataContainer.getInstance().convertBeforeHour(corePost.getWriteDate()) + "시간 전");
+        holder.core_contents.setText(corePost.getText());
 
         return convertView;
     }
@@ -84,4 +115,5 @@ public class Core_List_Adapter extends BaseAdapter {
         public TextView core_id, core_subprofile, core_date, core_contents, core_media, core_heart_count;
 
     }
+
 }

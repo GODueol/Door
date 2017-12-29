@@ -29,7 +29,6 @@ import com.example.kwoncheolhyeok.core.Util.UiUtil;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -65,8 +64,7 @@ public class userListAdapter extends RecyclerView.Adapter<userListAdapter.userHo
         userHolder.idText.setText(user.getId());
         userHolder.subProfileText.setText(TextUtils.join("/", new String[]{Integer.toString(user.getAge()), Integer.toString(user.getHeight()),
                 Integer.toString(user.getWeight()), user.getBodyType()}));
-        SimpleDateFormat dateFormat = DataContainer.dateFormat;
-        userHolder.dateText.setText( dateFormat.format(new Date(item.getDate())));
+        userHolder.dateText.setText( DataContainer.commonDateFormat.format(new Date(item.getDate())));
 
         userHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -140,8 +138,25 @@ public class userListAdapter extends RecyclerView.Adapter<userListAdapter.userHo
                             });
                             return true;
                         }
-                        else if (i == R.id.navigation_friends) {
-                            //do something
+                        else if (i == R.id.block) {
+                            // Block
+                            UiUtil.getInstance().showDialog(context, "유저 차단", "해당 유저를 차단하시겠습니까?", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    UiUtil.getInstance().startProgressDialog((Activity) context);
+                                    FireBaseUtil.getInstance().block(item.getUuid()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            UiUtil.getInstance().stopProgressDialog();
+                                        }
+                                    });
+                                }
+                            }, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+
+                                }
+                            });
                             return true;
                         }
                         else {

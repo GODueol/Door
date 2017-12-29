@@ -116,6 +116,7 @@ public class CoreWriteActivity  extends AppCompatActivity {
                 String key = mDatabase.child("posts").push().getKey();
 
                 CorePost corePost = new CorePost(mUuid);
+
                 corePost.setText(textContents.getText().toString());
 
                 final DatabaseReference postRef = mDatabase.child("posts").child(mUuid).child(key);
@@ -144,6 +145,7 @@ public class CoreWriteActivity  extends AppCompatActivity {
                             for(Task task : tasks )
                                 if(!task.isComplete()) return;
                             UiUtil.getInstance().stopProgressDialog();  // 프로그레스바 중단
+                            finish();
                         }
                     });
                 }

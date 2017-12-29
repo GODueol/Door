@@ -8,6 +8,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by gimbyeongjin on 2017. 8. 14..
@@ -15,7 +16,7 @@ import java.text.SimpleDateFormat;
 
 public class DataContainer {
     public static final String[] bodyTypes =  {"Underweight", "Skinny", "Standard", "Muscular", "Overweight"};
-    @SuppressLint("SimpleDateFormat") public static final SimpleDateFormat dateFormat = new SimpleDateFormat("yy.MM.dd HH:mm");
+    @SuppressLint("SimpleDateFormat") public static final SimpleDateFormat commonDateFormat = new SimpleDateFormat("yy.MM.dd HH:mm");
 
     private static final DataContainer ourInstance = new DataContainer();
 
@@ -52,4 +53,9 @@ public class DataContainer {
         return FirebaseDatabase.getInstance().getReference("users");
     }
 
+    public int convertBeforeHour(long longDate){
+        long diff = System.currentTimeMillis() - longDate;
+
+        return (int) ( diff / (24 * 60 * 1000) );
+    }
 }

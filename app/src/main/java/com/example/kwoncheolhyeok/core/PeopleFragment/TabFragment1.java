@@ -3,7 +3,9 @@ package com.example.kwoncheolhyeok.core.PeopleFragment;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -159,6 +161,7 @@ public class TabFragment1 extends android.support.v4.app.Fragment {
                 }
             }
 
+            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onKeyExited(String key) {
                 System.out.println(String.format("Key %s is no longer in the search area", key));
@@ -167,6 +170,7 @@ public class TabFragment1 extends android.support.v4.app.Fragment {
                 imageAdapter.notifyDataSetChanged();
             }
 
+            @RequiresApi(api = Build.VERSION_CODES.N)
             @SuppressLint("DefaultLocale")
             @Override
             public void onKeyMoved(String key, GeoLocation geoLocation) {

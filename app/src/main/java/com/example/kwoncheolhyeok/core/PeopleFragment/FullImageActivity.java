@@ -189,7 +189,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
 
         // 로그인 시간
         if (oUser.getLoginDate() != 0) {
-            SimpleDateFormat dateFormat = DataContainer.dateFormat;
+            SimpleDateFormat dateFormat = DataContainer.commonDateFormat;
             loginTime.setText(dateFormat.format(new Date(oUser.getLoginDate())));
         }
 

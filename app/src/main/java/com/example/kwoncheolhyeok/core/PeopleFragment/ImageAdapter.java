@@ -2,6 +2,8 @@ package com.example.kwoncheolhyeok.core.PeopleFragment;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,6 +46,7 @@ public class ImageAdapter extends BaseAdapter {
         return mItems.getEntry(uuid).getKey();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void removeItem(String uuid){
         mItems.removeItem(uuid);
     }

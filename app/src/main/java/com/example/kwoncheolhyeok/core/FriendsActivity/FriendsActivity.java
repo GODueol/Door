@@ -101,8 +101,11 @@ public class FriendsActivity extends AppCompatActivity {
         listener = ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.d(field, "DataChange : " + dataSnapshot.getValue());
+
+                Log.d(field, "DataChange : " + dataSnapshot.getKey() + ',' + dataSnapshot.getValue());
                 items.clear();
+                if(dataSnapshot.getValue() == null) adapter.notifyDataSetChanged();
+
                 for(final DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Log.d("snapshot", snapshot.getValue().toString());
                     final String oUuid = snapshot.getKey();
