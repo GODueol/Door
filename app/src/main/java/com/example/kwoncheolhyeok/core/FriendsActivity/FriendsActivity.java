@@ -50,20 +50,20 @@ public class FriendsActivity extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
+                    case R.id.navigation_friends:
+                        setRecyclerView(items, adapter, "friendUsers", R.menu.friends_set_unfollow);
+                        return true;
                     case R.id.navigation_receive:
-                        setRecyclerView(items, adapter, "followerUsers", R.menu.receive_item_menu);
+                        setRecyclerView(items, adapter, "followerUsers", R.menu.friends_set_follow);
                         return true;
                     case R.id.navigation_send:
-                        setRecyclerView(items, adapter, "followingUsers", R.menu.friends_item_menu);
-                        return true;
-                    case R.id.navigation_friends:
-                        setRecyclerView(items, adapter, "friendUsers", R.menu.friends_item_menu);
+                        setRecyclerView(items, adapter, "followingUsers", R.menu.friends_set_unfollow);
                         return true;
                     case R.id.navigation_recent:
-                        setRecyclerView(items, adapter, "viewedMeUsers", R.menu.receive_item_menu);
+                        setRecyclerView(items, adapter, "viewedMeUsers", R.menu.friends_set_follow);
                         return true;
                     /*case R.id.navigation_block:
-                        setRecyclerView(items, adapter, "blockUsers", R.menu.receive_item_menu);
+                        setRecyclerView(items, adapter, "blockUsers", R.menu.friends_set_follow);
                         return true;*/
                 }
                 return false;
@@ -88,7 +88,7 @@ public class FriendsActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
         // setRecyclerView (default)
-        adapter.setItemMenu(R.menu.receive_item_menu);
+        adapter.setItemMenu(R.menu.friends_set_follow);
         navigation.setSelectedItemId(R.id.navigation_receive);
 
     }
