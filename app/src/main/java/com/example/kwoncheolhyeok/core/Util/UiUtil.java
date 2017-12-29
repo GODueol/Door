@@ -42,14 +42,19 @@ public class UiUtil {
     }
 
     public void showDialog(Context context, String title, String message, DialogInterface.OnClickListener okListener, DialogInterface.OnClickListener cancelListener){
+        showDialog(context, title, message, okListener, cancelListener, "OK", "Cancel");
+    }
+
+    public void showDialog(Context context, String title, String message, DialogInterface.OnClickListener okListener, DialogInterface.OnClickListener cancelListener, String okStr, String cancelStr){
         AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.MyAlertDialogStyle);
         builder.setIcon(R.drawable.icon);
         builder.setTitle(title);
         builder.setMessage(message);
         builder.setCancelable(false);
-        builder.setPositiveButton("OK", okListener);
-        builder.setNegativeButton("Cancel", cancelListener);
+        builder.setPositiveButton(okStr, okListener);
+        builder.setNegativeButton(cancelStr, cancelListener);
         AlertDialog dialog = builder.create();    // 알림창 객체 생성
         dialog.show();    // 알림창 띄우기
     }
+
 }

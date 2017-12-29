@@ -15,7 +15,7 @@ import com.example.kwoncheolhyeok.core.R;
 import java.util.concurrent.TimeUnit;
 
 
-public class audioactivity extends AppCompatActivity {
+public class AudioActivity extends AppCompatActivity {
 
     private TextView textMaxTime;
     private TextView textCurrentPosition;

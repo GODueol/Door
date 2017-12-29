@@ -24,9 +24,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 
 
 public class CoreActivity extends AppCompatActivity {
@@ -74,7 +72,7 @@ public class CoreActivity extends AppCompatActivity {
         media_player.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(CoreActivity.this, audioactivity.class);
+                Intent i = new Intent(CoreActivity.this, AudioActivity.class);
                 startActivity(i);
             }
         });

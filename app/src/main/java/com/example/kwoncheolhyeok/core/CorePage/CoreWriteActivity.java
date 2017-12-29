@@ -1,6 +1,7 @@
 package com.example.kwoncheolhyeok.core.CorePage;
 
 import android.animation.Animator;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -150,6 +151,30 @@ public class CoreWriteActivity  extends AppCompatActivity {
                     });
                 }
 
+            }
+        });
+
+        audioFab_layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // 다이얼로그 녹음, 파일
+                UiUtil.getInstance().showDialog(CoreWriteActivity.this,
+                        "Audio", "선택하세요", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                // TODO : 녹음
+
+                                closeFABMenu();
+                            }
+                        }, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                // TODO : 음성파일 가져오기
+
+                                closeFABMenu();
+                            }
+                        }, "녹음", "음성파일가져오기"
+                );
             }
         });
 
