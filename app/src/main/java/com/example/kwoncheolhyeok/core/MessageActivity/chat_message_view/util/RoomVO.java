@@ -8,8 +8,8 @@ public class RoomVO {
 
 
 
-    private String nickName;
-    private String chatId;
+    private String userUuid;
+    private String chatRoomid;
     private long lastTime;
     private String targetUri;
 
@@ -17,28 +17,28 @@ public class RoomVO {
     public RoomVO(){
     }
 
-    public RoomVO(String nickName, String chatId, long lastTime, String targetUri){
-        this.nickName = nickName;
-        this.chatId = chatId;
+    public RoomVO(String userUuid, String chatRoomid, long lastTime, String targetUri){
+        this.userUuid = userUuid;
+        this.chatRoomid = chatRoomid;
         this.lastTime = lastTime;
         this.targetUri = targetUri;
     }
 
-    public String getNickName() {
-        return nickName;
+    public String getUserUuid() {
+        return userUuid;
     }
 
-    public void setNickName(String nickName) {
-        this.nickName = nickName;
+    public void setUserUuid(String userUuid) {
+        this.userUuid = userUuid;
     }
 
 
-    public String getChatId() {
-        return chatId;
+    public String getChatRoomid() {
+        return chatRoomid;
     }
 
-    public void setChatId(String chatId) {
-        this.chatId = chatId;
+    public void setChatRoomid(String chatRoomid) {
+        this.chatRoomid = chatRoomid;
     }
 
     public long getLastTime() {

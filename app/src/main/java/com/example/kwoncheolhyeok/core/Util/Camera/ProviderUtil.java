@@ -1,4 +1,4 @@
-package com.example.kwoncheolhyeok.core.Camera;
+package com.example.kwoncheolhyeok.core.Util.Camera;
 
 import android.content.Context;
 import android.net.Uri;

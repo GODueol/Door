@@ -16,7 +16,6 @@ import android.widget.Toast;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.MessageActivity.chat_message_view.util.MessageVO;
 import com.example.kwoncheolhyeok.core.MessageActivity.chat_message_view.util.RoomVO;
-import com.example.kwoncheolhyeok.core.PeopleFragment.ImageAdapter;
 import com.example.kwoncheolhyeok.core.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -45,6 +44,8 @@ public class ChattingActivity extends AppCompatActivity {
     private String roomName;
     String targetUuid;
     User targetUser;
+    String targetPicuri;
+
     RoomVO roomVO;
 
     @Override
@@ -120,9 +121,9 @@ public class ChattingActivity extends AppCompatActivity {
 
     public void checkchatRoom() {
         Intent p = getIntent();
-        final ImageAdapter.Item item = (ImageAdapter.Item) p.getSerializableExtra("user");
-        targetUuid = item.getUuid();
-        targetUser = item.getUser();
+        targetUser = (User) p.getSerializableExtra("user");
+        targetUuid = (String) p.getSerializableExtra("userUuid");
+        targetPicuri = (String) p.getSerializableExtra("userPicuri");
         userId = mAuth.getUid();
 
 
@@ -138,12 +139,12 @@ public class ChattingActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 RoomVO checkRoomVO = dataSnapshot.getValue(RoomVO.class);
                 try {
-                    roomName = checkRoomVO.getChatId();
+                    roomName = checkRoomVO.getChatRoomid();
                     long currentTime = System.currentTimeMillis() / 1000;
                     chatRoomRef2.child(targetUuid).child(userId).child("lastTime").setValue(currentTime);
                 } catch (Exception e) {
                     roomName = chatRef.getKey();
-                    setChatRoomList(chatRoomRef, targetUuid, userId, roomName, item.getPicUrl());
+                    setChatRoomList(chatRoomRef, targetUuid, userId, roomName, targetPicuri);
                     setChatRoomList(chatRoomRef2, userId, targetUuid, roomName,targetUser.getPicUrls().getPicUrl1());
                 }
                 FirebaseDatabase.getInstance().getReference().child("chat").child(roomName)

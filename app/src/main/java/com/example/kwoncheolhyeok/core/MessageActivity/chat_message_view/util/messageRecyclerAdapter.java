@@ -6,69 +6,86 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.content.Intent;
 
-import com.example.kwoncheolhyeok.core.MessageActivity.ChattingActivity;
-import com.example.kwoncheolhyeok.core.MessageActivity.MessageActivity;
+import com.bumptech.glide.Glide;
 import com.example.kwoncheolhyeok.core.R;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
  * Created by Administrator on 2017-12-04.
  */
 
-public class messageRecyclerAdapter extends  RecyclerView.Adapter<messageRecyclerAdapter.ViewHolder> implements View.OnClickListener{
+public class messageRecyclerAdapter extends  RecyclerView.Adapter<messageRecyclerAdapter.ViewHolder>{
 
-    private List<MessageVO> messageList;
+    private RecyclerViewClickListener mListener;
+    private List<RoomVO> roomList;
     private int itemLayout;
 
-    public messageRecyclerAdapter(List<MessageVO> items, int itemLayout){
-        this.messageList = items;
+
+
+    public messageRecyclerAdapter(List<RoomVO> items, int itemLayout, RecyclerViewClickListener listener){
+        this.roomList = items;
         this.itemLayout = itemLayout;
+        mListener = listener;
     }
 
     @Override
     public messageRecyclerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(itemLayout,parent,false);
-        view.setOnClickListener(this);
-        return new ViewHolder(view);
+        return new ViewHolder(view, mListener);
     }
 
     @Override
     public void onBindViewHolder(messageRecyclerAdapter.ViewHolder holder, int position) {
-        MessageVO message = messageList.get(position);
-        holder.nickname.setText(message.getNickname());
-        holder.content.setText(message.getContent());
+        RoomVO room = roomList.get(position);
+        holder.nickname.setText(room.getUserUuid());
+        String dateString = new SimpleDateFormat("MM/dd/yyyy").format(new Date(room.getLastTime()));
+        holder.content.setText(dateString);
+        Glide.with(holder.img.getContext()).load(room.getTargetUri()).into(holder.img);
     }
 
     @Override
     public int getItemCount() {
-        return messageList.size();
+        return roomList.size();
     }
 
-    @Override
-    public void onClick(View view) {
-        Intent i = new Intent(view.getContext(), ChattingActivity.class);
-        view.getContext().startActivity(i);
+    public RoomVO getItemRoomVO(int position){
+        return roomList.get(position);
     }
 
     /**
      * 뷰 재활용을 위한 viewHolder
      */
-    public static class ViewHolder extends RecyclerView.ViewHolder{
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         public ImageView img;
         public TextView nickname;
         public TextView content;
+        private RecyclerViewClickListener mListener;
 
 
-        public ViewHolder(View itemView){
+        public ViewHolder(View itemView, RecyclerViewClickListener listener){
             super(itemView);
 
             content = (TextView) itemView.findViewById(R.id.message_content);
             nickname = (TextView) itemView.findViewById(R.id.name);
+            img = (ImageView) itemView.findViewById(R.id.profile_image);
+            mListener = listener;
+            itemView.setOnClickListener(this);
         }
 
+        @Override
+        public void onClick(View view) {
+            mListener.onClick(view, getAdapterPosition());
+        }
+
+    }
+
+    public interface RecyclerViewClickListener {
+
+        void onClick(View view, int position);
     }
 }

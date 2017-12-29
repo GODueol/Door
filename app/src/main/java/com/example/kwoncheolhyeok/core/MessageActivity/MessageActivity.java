@@ -1,5 +1,6 @@
 package com.example.kwoncheolhyeok.core.MessageActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -7,8 +8,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
 
-import com.example.kwoncheolhyeok.core.MessageActivity.chat_message_view.util.MessageVO;
+import com.example.kwoncheolhyeok.core.Entity.User;
+import com.example.kwoncheolhyeok.core.MessageActivity.chat_message_view.util.RoomVO;
 import com.example.kwoncheolhyeok.core.MessageActivity.chat_message_view.util.messageRecyclerAdapter;
 import com.example.kwoncheolhyeok.core.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -17,6 +20,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +31,7 @@ public class MessageActivity extends AppCompatActivity {
 
     messageRecyclerAdapter messageRecyclerAdapter;
     RecyclerView messageList;
-    List<MessageVO> listrowItem;
+    List<RoomVO> listrowItem;
 
     private DatabaseReference chatRoomListRef;
     private FirebaseAuth mAuth;
@@ -49,25 +53,55 @@ public class MessageActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         userId = mAuth.getUid();
+        listrowItem = new ArrayList<RoomVO>();
+
         // preparing list data
+        com.example.kwoncheolhyeok.core.MessageActivity.chat_message_view.util.messageRecyclerAdapter.RecyclerViewClickListener listener = new messageRecyclerAdapter.RecyclerViewClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                final RoomVO item = messageRecyclerAdapter.getItemRoomVO(position);
+                FirebaseDatabase.getInstance().getReference("users").child(item.getUserUuid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        User user = dataSnapshot.getValue(User.class);
+                        Intent intent = new Intent(getApplicationContext(),ChattingActivity.class);
+                        intent.putExtra("user", user);
+                        intent.putExtra("userUuid", item.getUserUuid());
+                        intent.putExtra("userPicuri", item.getTargetUri());
+                        startActivity(intent);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+            }
+        };
+
+        messageRecyclerAdapter = new messageRecyclerAdapter(listrowItem,R.layout.messagelist_row,listener);
         messageList = (RecyclerView) findViewById(R.id.messagelist);
-        setMessageData();
-        messageList.setAdapter(new messageRecyclerAdapter(listrowItem,R.layout.messagelist_row));
+        messageList.setAdapter(messageRecyclerAdapter);
         messageList.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         messageList.setItemAnimator(new DefaultItemAnimator());
+        setMessageData();
+
+
         /*****************************************************************/
     }
 
 
     public void setMessageData(){
-        listrowItem = new ArrayList<MessageVO>();
+
         chatRoomListRef = FirebaseDatabase.getInstance().getReference("chatRoomList");
         chatRoomListRef.child(userId).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                MessageVO chatList = dataSnapshot.getValue(MessageVO.class);
+                RoomVO roomList = dataSnapshot.getValue(RoomVO.class);
                 Log.d("123",dataSnapshot.getKey());
-                listrowItem.add(chatList);
+                listrowItem.add(roomList);
+                messageRecyclerAdapter.notifyDataSetChanged();
             }
 
             @Override
