@@ -21,7 +21,7 @@ import com.example.kwoncheolhyeok.core.CorePage.CoreActivity;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.Event.RefreshLocationEvent;
 import com.example.kwoncheolhyeok.core.MessageActivity.ChattingActivity;
-import com.example.kwoncheolhyeok.core.MyApplcation;
+import com.example.kwoncheolhyeok.core.ScreenshotSetApplication;
 import com.example.kwoncheolhyeok.core.PeopleFragment.FullImageViewPager.DetailImageActivity;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.BusProvider;
@@ -98,7 +98,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         super.onCreate(savedInstanceState);
         setContentView(R.layout.full_image_activity_main);
 
-        MyApplcation.getInstance().allowUserSaveScreenshot(true);
+        ScreenshotSetApplication.getInstance().allowUserSaveScreenshot(true);
 
         ButterKnife.bind(this);
 
@@ -470,13 +470,13 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
     @Override
     public void onResume() {
         super.onResume();
-        MyApplcation.getInstance().registerScreenshotObserver();
+        ScreenshotSetApplication.getInstance().registerScreenshotObserver();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        MyApplcation.getInstance().unregisterScreenshotObserver();
+        ScreenshotSetApplication.getInstance().unregisterScreenshotObserver();
     }
 
 }

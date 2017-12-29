@@ -8,7 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.ViewPagerFixed;
-import com.example.kwoncheolhyeok.core.MyApplcation;
+import com.example.kwoncheolhyeok.core.ScreenshotSetApplication;
 
 import java.util.ArrayList;
 
@@ -25,7 +25,7 @@ public class DetailImageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.full_image_4_activity);
 
-        MyApplcation.getInstance().allowUserSaveScreenshot(true);
+        ScreenshotSetApplication.getInstance().allowUserSaveScreenshot(true);
 
         Intent intent = getIntent();
         picUrlList = intent.getStringArrayListExtra("picUrlList");
@@ -45,12 +45,12 @@ public class DetailImageActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        MyApplcation.getInstance().registerScreenshotObserver();
+        ScreenshotSetApplication.getInstance().registerScreenshotObserver();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        MyApplcation.getInstance().unregisterScreenshotObserver();
+        ScreenshotSetApplication.getInstance().unregisterScreenshotObserver();
     }
 }

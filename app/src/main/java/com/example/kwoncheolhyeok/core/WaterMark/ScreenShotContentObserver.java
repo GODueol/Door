@@ -11,7 +11,7 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Log;
 
-import com.example.kwoncheolhyeok.core.AssUtil;
+import com.example.kwoncheolhyeok.core.ScreenShotSetUtil;
 
 /**
  * Created by soochun on 2017-01-04.
@@ -94,10 +94,10 @@ public class ScreenShotContentObserver extends ContentObserver {
         for (int i = 0; i < 700; i++) {
             text += " " + WATERMARK;
         }
-        Bitmap newBitmap = AssUtil.getOverlayBitmap(context, bitmap, text);
+        Bitmap newBitmap = ScreenShotSetUtil.getOverlayBitmap(context, bitmap, text);
         bitmap.recycle();
-        newBitmap = AssUtil.getOverlayBitmap2(context, newBitmap, "본인 의지와 무관한 아웃팅은 \n 명예훼손으로 처벌받을 수 있습니다");
-        AssUtil.saveImage(context, newBitmap, fileName);
+        newBitmap = ScreenShotSetUtil.getOverlayBitmap2(context, newBitmap, "본인 의지와 무관한 아웃팅은 \n 명예훼손으로 처벌받을 수 있습니다");
+        ScreenShotSetUtil.saveImage(context, newBitmap, fileName);
         newBitmap.recycle();
     }
 

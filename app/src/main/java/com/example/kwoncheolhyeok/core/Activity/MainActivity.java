@@ -33,7 +33,7 @@ import com.example.kwoncheolhyeok.core.Event.SetProfilePicEvent;
 import com.example.kwoncheolhyeok.core.FriendsActivity.FriendsActivity;
 import com.example.kwoncheolhyeok.core.LoginActivity.LoginActivity;
 import com.example.kwoncheolhyeok.core.MessageActivity.MessageActivity;
-import com.example.kwoncheolhyeok.core.MyApplcation;
+import com.example.kwoncheolhyeok.core.ScreenshotSetApplication;
 import com.example.kwoncheolhyeok.core.ProfileModifyActivity.ProfileModifyActivity;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.BusProvider;
@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity
 
         setContentView(R.layout.activity_main);
 
-        MyApplcation.getInstance().allowUserSaveScreenshot(true);
+        ScreenshotSetApplication.getInstance().allowUserSaveScreenshot(true);
 
         // (Main View)네비게이션바 관련
         drawer = findViewById(R.id.drawer_layout);
@@ -404,13 +404,13 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onResume() {
         super.onResume();
-        MyApplcation.getInstance().registerScreenshotObserver();
+        ScreenshotSetApplication.getInstance().registerScreenshotObserver();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        MyApplcation.getInstance().unregisterScreenshotObserver();
+        ScreenshotSetApplication.getInstance().unregisterScreenshotObserver();
     }
 }
 

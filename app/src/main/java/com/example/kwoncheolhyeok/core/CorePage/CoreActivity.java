@@ -11,7 +11,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.example.kwoncheolhyeok.core.MyApplcation;
+import com.example.kwoncheolhyeok.core.ScreenshotSetApplication;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 
@@ -36,7 +36,7 @@ public class CoreActivity extends AppCompatActivity {
         final String uuid = intent.getStringExtra("uuid");
 
         //스크린샷 방지
-        MyApplcation.getInstance().allowUserSaveScreenshot(false);
+        ScreenshotSetApplication.getInstance().allowUserSaveScreenshot(false);
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -119,13 +119,13 @@ public class CoreActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        MyApplcation.getInstance().registerScreenshotObserver();
+        ScreenshotSetApplication.getInstance().registerScreenshotObserver();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        MyApplcation.getInstance().unregisterScreenshotObserver();
+        ScreenshotSetApplication.getInstance().unregisterScreenshotObserver();
     }
 
 

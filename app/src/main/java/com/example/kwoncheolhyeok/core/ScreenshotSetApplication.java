@@ -14,12 +14,12 @@ import com.example.kwoncheolhyeok.core.WaterMark.ASS;
 /**
  * Created by soochun on 2017-01-16.
  */
-public class MyApplcation extends Application {
-    private static final String TAG = MyApplcation.class.getSimpleName();
+public class ScreenshotSetApplication extends Application {
+    private static final String TAG = ScreenshotSetApplication.class.getSimpleName();
     private ServiceConnection mConnection;
     private MyAidl mServiceBinder;
 
-    private static MyApplcation instance;
+    private static ScreenshotSetApplication instance;
 
     @Override
     public void onCreate() {
@@ -43,7 +43,7 @@ public class MyApplcation extends Application {
         getApplicationContext().bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
     }
 
-    public static MyApplcation getInstance() {
+    public static ScreenshotSetApplication getInstance() {
         return instance;
     }
 

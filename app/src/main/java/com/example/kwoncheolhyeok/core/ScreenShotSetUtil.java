@@ -17,7 +17,6 @@ import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.util.TypedValue;
-import android.widget.ImageView;
 
 import com.example.kwoncheolhyeok.core.Util.BitmapUtil;
 import com.example.kwoncheolhyeok.core.WaterMark.ScreenShotContentObserver;
@@ -30,7 +29,7 @@ import java.io.OutputStream;
  * Created by soochun on 2017-01-16.
  */
 
-public class AssUtil {
+public class ScreenShotSetUtil {
     public static int dpToPx(int dp) {
         return (int) (TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, Resources.getSystem().getDisplayMetrics()));
     }
@@ -69,7 +68,7 @@ public class AssUtil {
         mTextPaint.setAlpha(1000);
         mTextPaint.setShadowLayer(5f, 0f, 1f, Color.DKGRAY);
 
-        StaticLayout mTextLayout = new StaticLayout(text, mTextPaint, canvas.getWidth() - AssUtil.dpToPx(87), Layout.Alignment.ALIGN_CENTER, 1.0f, 0.3f, true);
+        StaticLayout mTextLayout = new StaticLayout(text, mTextPaint, canvas.getWidth() - ScreenShotSetUtil.dpToPx(87), Layout.Alignment.ALIGN_CENTER, 1.0f, 0.3f, true);
 
         // 코어 아이콘 박기
         Resources r = context.getResources();
@@ -78,13 +77,13 @@ public class AssUtil {
         Paint paint = new Paint(); //페인트 객체 선언
         paint.setAlpha(700);
         canvas.drawBitmap(resizeIcon, (canvas.getWidth() / 2) - (resizeIcon.getWidth() / 2),
-                result.getHeight() - AssUtil.dpToPx(85) - resizeIcon.getHeight(), paint);
+                result.getHeight() - ScreenShotSetUtil.dpToPx(85) - resizeIcon.getHeight(), paint);
 
         canvas.save();
 
         // "본인 의지와 무관한 아웃팅은~" 부분 위치 조정
         float textX = (canvas.getWidth() / 2) - (mTextLayout.getWidth() / 2); //센터
-        float textY = result.getHeight() - AssUtil.dpToPx(78); //높이
+        float textY = result.getHeight() - ScreenShotSetUtil.dpToPx(78); //높이
 
         canvas.translate(textX, textY);
         mTextLayout.draw(canvas);
