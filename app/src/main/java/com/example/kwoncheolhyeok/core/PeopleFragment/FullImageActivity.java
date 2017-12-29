@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -277,7 +276,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
                         UiUtil.getInstance().startProgressDialog(FullImageActivity.this);
 
                         // 내 following 추가, 유저 follower c추가
-                        Task<Void> task = FireBaseUtil.getInstance().follow(item.getUser(), item.getUuid(), isFollow, myUuid);
+                        Task<Void> task = FireBaseUtil.getInstance().follow(item.getUser(), item.getUuid(), isFollow);
                         if(task == null) {
                             Toast.makeText(getBaseContext(),"오류 발생", Toast.LENGTH_SHORT).show();
                             UiUtil.getInstance().stopProgressDialog();
@@ -322,12 +321,9 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
                     public void onClick(DialogInterface dialog, int whichButton) {
                         UiUtil.getInstance().startProgressDialog(FullImageActivity.this);
                         // blockUsers 추가
-                        final User mUser = DataContainer.getInstance().getUser();
-                        mUser.getBlockUsers().put(item.getUuid(), System.currentTimeMillis());
-                        DataContainer.getInstance().getUsersRef().child(DataContainer.getInstance().getUid()).setValue(mUser).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        FireBaseUtil.getInstance().block(item.getUuid()).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
-                                DataContainer.getInstance().setUser(mUser);
                                 BusProvider.getInstance().post(new RefreshLocationEvent());
                                 finish();
                             }
