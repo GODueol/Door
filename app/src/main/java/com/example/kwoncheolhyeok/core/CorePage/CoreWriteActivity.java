@@ -14,10 +14,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.kwoncheolhyeok.core.Util.Camera.LoadPicture;
 import com.example.kwoncheolhyeok.core.Entity.CorePost;
 import com.example.kwoncheolhyeok.core.R;
+import com.example.kwoncheolhyeok.core.Util.Camera.LoadPicture;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
+import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
 import com.example.kwoncheolhyeok.core.Util.UiUtil;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -116,13 +117,23 @@ public class CoreWriteActivity  extends AppCompatActivity {
                 DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
                 String key = mDatabase.child("posts").push().getKey();
 
-                CorePost corePost = new CorePost(mUuid);
+                final CorePost corePost = new CorePost(mUuid);
 
                 corePost.setText(textContents.getText().toString());
 
                 final DatabaseReference postRef = mDatabase.child("posts").child(mUuid).child(key);
                 Task<Void> postUploadTask = postRef.setValue(corePost);
                 tasks.add(postUploadTask);
+
+                postUploadTask.addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        String uuid = mUuid;
+                        DatabaseReference corePostCountRef = DataContainer.getInstance().getUserRef(uuid).child("corePostCount");
+                        // addCorePostCount
+                        FireBaseUtil.getInstance().addCorePostCount(corePostCountRef);
+                    }
+                });
 
                 // Picture Upload
                 if(editImageUri != null) {

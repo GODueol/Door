@@ -4,7 +4,11 @@ import android.support.annotation.NonNull;
 
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,16 +35,16 @@ public class FireBaseUtil {
     }
 
 
-    public Task<Void> follow(final User oUser, String oUuid , boolean isFollowed) {
+    public Task<Void> follow(final User oUser, String oUuid, boolean isFollowed) {
         String myUuid = DataContainer.getInstance().getUid();
         final User mUser = DataContainer.getInstance().getUser();
         //final User oUser = item.getUser();
         DatabaseReference mDatabase = DataContainer.getInstance().getUsersRef();
         Map<String, Object> childUpdates = new HashMap<>();
 
-        if(isFollowed){
+        if (isFollowed) {
             // 친구 삭제
-            if(!mUser.getFollowingUsers().containsKey(oUuid)) return null;
+            if (!mUser.getFollowingUsers().containsKey(oUuid)) return null;
 
             mUser.getFollowingUsers().remove(oUuid);
             childUpdates.put("/" + myUuid + "/followingUsers/" + oUuid, null);
@@ -49,7 +53,7 @@ public class FireBaseUtil {
             childUpdates.put("/" + oUuid + "/followerUsers/" + myUuid, null);
 
             // 상대방이 팔로우 되어있으면 친구 삭제
-            if(mUser.getFriendUsers().containsKey(oUuid)) {
+            if (mUser.getFriendUsers().containsKey(oUuid)) {
                 mUser.getFriendUsers().remove(oUuid);
                 childUpdates.put("/" + myUuid + "/friendUsers/" + oUuid, null);
 
@@ -59,7 +63,7 @@ public class FireBaseUtil {
 
         } else {
             // 친구 추가
-            if(mUser.getFollowingUsers().containsKey(oUuid)) return null;
+            if (mUser.getFollowingUsers().containsKey(oUuid)) return null;
             long now = System.currentTimeMillis();
 
             mUser.getFollowingUsers().put(oUuid, now);
@@ -69,7 +73,7 @@ public class FireBaseUtil {
             childUpdates.put("/" + oUuid + "/followerUsers/" + myUuid, now);
 
             // 상대방이 팔로우 되어있으면 친구에 추가
-            if(oUser.getFollowingUsers().containsKey(myUuid)){
+            if (oUser.getFollowingUsers().containsKey(myUuid)) {
                 mUser.getFriendUsers().put(oUuid, now);
                 childUpdates.put("/" + myUuid + "/friendUsers/" + oUuid, now);
 
@@ -82,7 +86,7 @@ public class FireBaseUtil {
         return mDatabase.updateChildren(childUpdates);
     }
 
-    public Task<Void> block(String oUuid){
+    public Task<Void> block(String oUuid) {
 
         String mUuid = DataContainer.getInstance().getUid();
         User mUser = DataContainer.getInstance().getUser();
@@ -115,6 +119,25 @@ public class FireBaseUtil {
         childUpdate.put("/" + oUuid + "/viewedMeUsers/" + mUuid, null);
 
         return mDatabase.updateChildren(childUpdate);
+
+    }
+
+    public void addCorePostCount(DatabaseReference corePostCountRef) {
+        corePostCountRef.runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                int count = 0;
+                if (mutableData.getValue() != null) {
+                    count = mutableData.getValue(Integer.class);
+                }
+                mutableData.setValue(count + 1);
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+            }
+        });
 
     }
 }

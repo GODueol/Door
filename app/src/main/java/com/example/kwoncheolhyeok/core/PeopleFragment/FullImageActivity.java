@@ -92,6 +92,9 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
     @Bind(R.id.message_white)
     ImageView message;
 
+    @Bind(R.id.btn_core2)
+    TextView corePostCount;
+
     @SuppressLint("DefaultLocale")
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -218,6 +221,8 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
 
         // viewedMeUser
         setViewedMeUsers(item);
+
+        corePostCount.setText(Integer.toString(oUser.getCorePostCount()));
     }
 
     public void setViewedMeUsers(ImageAdapter.Item item) {

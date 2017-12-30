@@ -41,6 +41,16 @@ public class User implements Serializable{
 
     private Map<String, Long> viewedMeUsers = new HashMap<>();    // uuid, 추가 시간
 
+    private int corePostCount;
+
+    public int getCorePostCount() {
+        return corePostCount;
+    }
+
+    public void setCorePostCount(int corePostCount) {
+        this.corePostCount = corePostCount;
+    }
+
     public Map<String, Long> getViewedMeUsers() {
         return viewedMeUsers;
     }
