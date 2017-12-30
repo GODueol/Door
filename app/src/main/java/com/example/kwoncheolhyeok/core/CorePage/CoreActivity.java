@@ -58,11 +58,9 @@ public class CoreActivity extends AppCompatActivity {
 
                 // 자신, 타인 액티비티 구별
                 Intent i;
-                if(uuid.equals(DataContainer.getInstance().getUid())){
-                    i = new Intent(CoreActivity.this, CoreWriteActivity.class);
-                } else {
-                    i = new Intent(CoreActivity.this, otherUser_write_core.class);
-                }
+                i = new Intent(CoreActivity.this, CoreWriteActivity.class);
+                i.putExtra("cUuid",uuid);
+//                i = new Intent(CoreActivity.this, otherUser_write_core.class);
 
                 startActivity(i);
             }

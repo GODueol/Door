@@ -15,7 +15,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.kwoncheolhyeok.core.Entity.CorePost;
+import com.example.kwoncheolhyeok.core.Event.RefreshLocationEvent;
 import com.example.kwoncheolhyeok.core.R;
+import com.example.kwoncheolhyeok.core.Util.BusProvider;
 import com.example.kwoncheolhyeok.core.Util.Camera.LoadPicture;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
@@ -52,6 +54,8 @@ public class CoreWriteActivity  extends AppCompatActivity {
 
     Uri editImageUri;
     TextView textContents;
+    private String cUuid;
+    private TextView editAudio;
 
 
     @Override
@@ -59,6 +63,8 @@ public class CoreWriteActivity  extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         // Get the view from new_activity.xml
         setContentView(R.layout.core_write_activity);
+        
+        cUuid = getIntent().getStringExtra("cUuid");
 
         mUuid = DataContainer.getInstance().getUid();
 
@@ -79,6 +85,15 @@ public class CoreWriteActivity  extends AppCompatActivity {
         editImage = findViewById(R.id.edit_img);
         saveBtn = findViewById(R.id.save);
         textContents = findViewById(R.id.edit_txt);
+        editAudio = findViewById(R.id.edit_audio);
+
+        // 본인, 타인 구분
+        if(!cUuid.equals(mUuid)){    // 타인
+            fabBGLayout.setVisibility(View.GONE);
+            editImage.setVisibility(View.GONE);
+            editAudio.setVisibility(View.GONE);
+            textContents.setHint("질문해주세요 익명입니다");
+        }
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,15 +136,14 @@ public class CoreWriteActivity  extends AppCompatActivity {
 
                 corePost.setText(textContents.getText().toString());
 
-                final DatabaseReference postRef = mDatabase.child("posts").child(mUuid).child(key);
+                final DatabaseReference postRef = mDatabase.child("posts").child(cUuid).child(key);
                 Task<Void> postUploadTask = postRef.setValue(corePost);
                 tasks.add(postUploadTask);
 
                 postUploadTask.addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        String uuid = mUuid;
-                        DatabaseReference corePostCountRef = DataContainer.getInstance().getUserRef(uuid).child("corePostCount");
+                        DatabaseReference corePostCountRef = DataContainer.getInstance().getUserRef(cUuid).child("corePostCount");
                         // addCorePostCount
                         FireBaseUtil.getInstance().addCorePostCount(corePostCountRef);
                     }
@@ -138,7 +152,7 @@ public class CoreWriteActivity  extends AppCompatActivity {
                 // Picture Upload
                 if(editImageUri != null) {
                     StorageReference storageRef = FirebaseStorage.getInstance().getReference();
-                    final StorageReference spaceRef = storageRef.child("posts").child(mUuid).child(key);
+                    final StorageReference spaceRef = storageRef.child("posts").child(cUuid).child(key);
                     UploadTask uploadTask = spaceRef.putFile(editImageUri);
                     tasks.add(uploadTask);
                     uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -158,6 +172,7 @@ public class CoreWriteActivity  extends AppCompatActivity {
                                 if(!task.isComplete()) return;
                             UiUtil.getInstance().stopProgressDialog();  // 프로그레스바 중단
                             finish();
+                            BusProvider.getInstance().post(new RefreshLocationEvent());
                         }
                     });
                 }
