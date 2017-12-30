@@ -4,7 +4,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.example.kwoncheolhyeok.core.PeopleFragment.TabFragment1;
+import com.example.kwoncheolhyeok.core.PeopleFragment.PeopleFragment;
 
 public class TabPagerAdapter extends FragmentPagerAdapter {
 
@@ -29,10 +29,10 @@ public class TabPagerAdapter extends FragmentPagerAdapter {
         this.position = position;
         switch (position) {
             case 0:
-                TabFragment1 tab1 = TabFragment1.getInstance();
+                PeopleFragment tab1 = PeopleFragment.getInstance();
                 return tab1;
 //            case 1:
-//                TabFragment1 tab1 = TabFragment1.getInstance();
+//                PeopleFragment tab1 = PeopleFragment.getInstance();
 //                return tab1;
 //            case 2:
 //                TabFragment3 tab3 = TabFragment3.getInstance();

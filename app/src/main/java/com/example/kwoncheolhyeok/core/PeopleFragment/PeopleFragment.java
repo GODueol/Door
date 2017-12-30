@@ -36,18 +36,18 @@ import com.squareup.otto.Subscribe;
 
 import java.util.Arrays;
 
-public class TabFragment1 extends android.support.v4.app.Fragment {
+public class PeopleFragment extends android.support.v4.app.Fragment {
 
     // 싱글톤 패턴
     @SuppressLint("StaticFieldLeak")
-    private static TabFragment1 mInstance;
+    private static PeopleFragment mInstance;
 
-    public static TabFragment1 getInstance() {
-        if (mInstance == null) mInstance = new TabFragment1();
+    public static PeopleFragment getInstance() {
+        if (mInstance == null) mInstance = new PeopleFragment();
         return mInstance;
     }
     @SuppressLint("ValidFragment")
-    private TabFragment1(){}
+    private PeopleFragment(){}
 
     GridView gridView = null;
     ImageAdapter imageAdapter;
@@ -205,7 +205,6 @@ public class TabFragment1 extends android.support.v4.app.Fragment {
 
     private boolean isInFilter(User oUser) {
         if(!mUser.isUseFilter()) return true;   // 필터 적용여부
-
         if(!(mUser.getAgeBoundary().getMin() <= oUser.getAge() && oUser.getAge() <= mUser.getAgeBoundary().getMax())) return false;
         if(!(mUser.getHeightBoundary().getMin() <= oUser.getHeight() && oUser.getHeight() <= mUser.getHeightBoundary().getMax())) return false;
         if(!(mUser.getWeightBoundary().getMin() <= oUser.getWeight() && oUser.getWeight() <= mUser.getWeightBoundary().getMax())) return false;
