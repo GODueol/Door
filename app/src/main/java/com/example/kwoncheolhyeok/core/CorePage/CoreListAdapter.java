@@ -66,16 +66,16 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 
         User user = coreListItem.getUser();
         if(user != null) {  // 주인글
+            holder.replyBtnLayout.setVisibility(View.GONE);
+            holder.core_img.setVisibility(View.VISIBLE);
+            holder.core_media.setVisibility(View.VISIBLE);
+
             Glide.with(context /* context */)
                     .load(user.getPicUrls().getPicUrl1())
                     .into(holder.core_pic);
-
             holder.core_id.setText(user.getId());
             holder.core_subprofile.setText(TextUtils.join("/", new String[]{Integer.toString(user.getAge()), Integer.toString(user.getHeight()),
                     Integer.toString(user.getWeight()), user.getBodyType()}));
-
-            holder.replyBtnLayout.setVisibility(View.GONE);
-
             Glide.with(context /* context */)
                     .load(corePost.getPictureUrl())
                     .into(holder.core_img);
@@ -83,6 +83,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
             // 미디어 셋
 
         } else {    // 타인글
+            holder.replyBtnLayout.setVisibility(View.VISIBLE);
             holder.core_img.setVisibility(View.GONE);
             holder.core_media.setVisibility(View.GONE);
             if(cUuid.equals(mUuid)) {   // 주인이 봤을때
@@ -122,6 +123,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
         }
 
         if(corePost.getUuid().equals(mUuid)){   // 본인 게시물
+            holder.core_setting.setVisibility(View.VISIBLE);
             // 수정 삭제 가능
             holder.core_setting.setOnClickListener(new View.OnClickListener() {
                 @Override

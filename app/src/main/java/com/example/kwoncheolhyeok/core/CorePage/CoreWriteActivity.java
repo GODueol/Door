@@ -135,7 +135,7 @@ public class CoreWriteActivity  extends AppCompatActivity {
                 DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
 
                 String key;
-                if(postKey == null) key = mDatabase.child("posts").push().getKey();
+                if(!isEdit()) key = mDatabase.child("posts").push().getKey();
                 else key = postKey;
 
                 final CorePost corePost = new CorePost(mUuid);
@@ -151,7 +151,7 @@ public class CoreWriteActivity  extends AppCompatActivity {
                     public void onSuccess(Void aVoid) {
                         DatabaseReference corePostCountRef = DataContainer.getInstance().getUserRef(cUuid).child("corePostCount");
                         // addCorePostCount
-                        FireBaseUtil.getInstance().addCorePostCount(corePostCountRef);
+                        if(isEdit()) FireBaseUtil.getInstance().addCorePostCount(corePostCountRef);
                     }
                 });
 
@@ -211,7 +211,7 @@ public class CoreWriteActivity  extends AppCompatActivity {
 
         // edit
         postKey = getIntent().getStringExtra("postKey");    // edit 일 경우 값이 있음
-        if(postKey != null){
+        if(isEdit()){
             FirebaseDatabase.getInstance().getReference().child("posts")
                     .child(cUuid).child(postKey).addValueEventListener(new ValueEventListener() {
                 @Override
@@ -228,6 +228,10 @@ public class CoreWriteActivity  extends AppCompatActivity {
             });
         }
 
+    }
+
+    private boolean isEdit() {
+        return postKey != null;
     }
 
     private void showFABMenu(){
