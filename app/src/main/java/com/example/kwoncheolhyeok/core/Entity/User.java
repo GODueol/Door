@@ -239,4 +239,8 @@ public class User implements Serializable{
     public void setWeight(int weight) {
         this.weight = weight;
     }
+
+    public  String getTotalProfile(){
+        return getAge()+" / "+getHeight()+" / "+getWeight()+" / "+getBodyType();
+    }
 }

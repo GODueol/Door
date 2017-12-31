@@ -15,25 +15,37 @@
         android:src="@drawable/a"/>
 
     <TextView
-        android:id="@+id/name"
+        android:id="@+id/chat_content"
         android:layout_toRightOf="@+id/profile_image"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="nickname"
+        android:text="chat_content"
         android:textSize="15dp"
         android:textStyle="bold"
         android:textColor="#000000"
         android:layout_marginLeft="10dp" />
 
     <TextView
-        android:id="@+id/message_content"
-        android:layout_below="@+id/name"
+        android:id="@+id/userNick"
+        android:layout_below="@+id/chat_content"
         android:layout_toRightOf="@+id/profile_image"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="message_content"
+        android:text="userNick"
         android:textSize="14dp"
         android:layout_marginTop="0dp"
+        android:textColor="#000000"
+        android:layout_marginLeft="10dp" />
+
+    <TextView
+        android:id="@+id/userProfile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/sub_profile"
+        android:layout_marginTop="35dp"
+        android:layout_toRightOf="@+id/profile_image"
+        android:text="userProfile"
+        android:textSize="10dp"
         android:textColor="#000000"
         android:layout_marginLeft="10dp" />
 
@@ -41,10 +53,9 @@
         android:id="@+id/date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/sub_profile"
-        android:layout_marginTop="35dp"
+        android:layout_below="@id/userProfile"
         android:layout_toRightOf="@+id/profile_image"
-        android:text="2016_12_02_18:56"
+        android:text="date"
         android:textSize="10dp"
         android:textColor="#000000"
         android:layout_marginLeft="10dp" />
@@ -55,6 +66,7 @@
         android:layout_height="wrap_content"
         android:layout_marginRight="20dp"
         android:layout_alignParentRight="true"
+        android:src="@drawable/ic_dehaze_black_24dp"
         android:layout_centerVertical="true"
         android:clickable="true"
         />

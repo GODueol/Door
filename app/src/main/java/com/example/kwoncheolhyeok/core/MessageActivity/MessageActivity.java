@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.MessageActivity.chat_message_view.util.RoomVO;
@@ -23,6 +24,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class MessageActivity extends AppCompatActivity {
@@ -32,11 +34,13 @@ public class MessageActivity extends AppCompatActivity {
     messageRecyclerAdapter messageRecyclerAdapter;
     RecyclerView messageList;
     List<RoomVO> listrowItem;
+    int i;
+    HashMap<String,Integer> listItemNum;
 
     private DatabaseReference chatRoomListRef;
     private FirebaseAuth mAuth;
     private String userId;
-
+    private RoomVO roomList;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,7 +58,8 @@ public class MessageActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         userId = mAuth.getUid();
         listrowItem = new ArrayList<RoomVO>();
-
+        listItemNum = new HashMap<String,Integer>();
+        i=0;
         // preparing list data
         com.example.kwoncheolhyeok.core.MessageActivity.chat_message_view.util.messageRecyclerAdapter.RecyclerViewClickListener listener = new messageRecyclerAdapter.RecyclerViewClickListener() {
             @Override
@@ -93,20 +98,50 @@ public class MessageActivity extends AppCompatActivity {
 
 
     public void setMessageData(){
-
         chatRoomListRef = FirebaseDatabase.getInstance().getReference("chatRoomList");
         chatRoomListRef.child(userId).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                RoomVO roomList = dataSnapshot.getValue(RoomVO.class);
-                Log.d("123",dataSnapshot.getKey());
-                listrowItem.add(roomList);
-                messageRecyclerAdapter.notifyDataSetChanged();
+                roomList = dataSnapshot.getValue(RoomVO.class);
+                FirebaseDatabase.getInstance().getReference("users").child(roomList.getUserUuid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        User target = dataSnapshot.getValue(User.class);
+                        listItemNum.put(roomList.getUserUuid(),i);
+                        i++;
+                        roomList.setTargetNickName(target.getId());
+                        roomList.setTargetProfile(target.getTotalProfile());
+                        listrowItem.add(roomList);
+                        messageRecyclerAdapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                roomList = dataSnapshot.getValue(RoomVO.class);
+                FirebaseDatabase.getInstance().getReference("users").child(roomList.getUserUuid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        User target = dataSnapshot.getValue(User.class);
+                        int listNum = listItemNum.get(roomList.getUserUuid());
+                        listrowItem.remove(listNum);
+                        roomList.setTargetNickName(target.getId());
+                        roomList.setTargetProfile(target.getTotalProfile());
+                        listrowItem.add(listNum,roomList);
+                        messageRecyclerAdapter.notifyDataSetChanged();
+                    }
 
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
             }
 
             @Override

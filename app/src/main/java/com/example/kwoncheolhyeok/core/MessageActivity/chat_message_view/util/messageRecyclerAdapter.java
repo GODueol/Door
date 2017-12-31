@@ -41,9 +41,14 @@ public class messageRecyclerAdapter extends  RecyclerView.Adapter<messageRecycle
     @Override
     public void onBindViewHolder(messageRecyclerAdapter.ViewHolder holder, int position) {
         RoomVO room = roomList.get(position);
-        holder.nickname.setText(room.getUserUuid());
-        String dateString = new SimpleDateFormat("MM/dd/yyyy").format(new Date(room.getLastTime()));
-        holder.content.setText(dateString);
+        holder.content.setText(room.getLastChat());
+        holder.nickname.setText(room.getTargetNickName());
+        holder.profile.setText(room.getTargetProfile());
+        Date date = new Date(room.getLastViewTime());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String getTime = sdf.format(date);
+        holder.date.setText(getTime);
+
         Glide.with(holder.img.getContext()).load(room.getTargetUri()).into(holder.img);
     }
 
@@ -62,16 +67,20 @@ public class messageRecyclerAdapter extends  RecyclerView.Adapter<messageRecycle
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         public ImageView img;
-        public TextView nickname;
         public TextView content;
+        public TextView nickname;
+        public TextView profile;
+        public TextView date;
         private RecyclerViewClickListener mListener;
 
 
         public ViewHolder(View itemView, RecyclerViewClickListener listener){
             super(itemView);
 
-            content = (TextView) itemView.findViewById(R.id.message_content);
-            nickname = (TextView) itemView.findViewById(R.id.name);
+            content = (TextView) itemView.findViewById(R.id.chat_content);
+            nickname = (TextView) itemView.findViewById(R.id.userNick);
+            profile = (TextView)itemView.findViewById(R.id.userProfile);
+            date = (TextView) itemView.findViewById(R.id.date);
             img = (ImageView) itemView.findViewById(R.id.profile_image);
             mListener = listener;
             itemView.setOnClickListener(this);
