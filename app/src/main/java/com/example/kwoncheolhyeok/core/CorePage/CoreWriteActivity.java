@@ -87,7 +87,7 @@ public class CoreWriteActivity  extends AppCompatActivity {
 
         // 본인, 타인 구분
         if(!cUuid.equals(mUuid)){    // 타인
-            fabBGLayout.setVisibility(View.GONE);
+            fab.setVisibility(View.GONE);
             editImage.setVisibility(View.GONE);
             editAudio.setVisibility(View.GONE);
             textContents.setHint("질문해주세요 익명입니다");
