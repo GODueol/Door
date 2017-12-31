@@ -21,6 +21,8 @@
     <color name="gray40">#BDBDBD</color>
     <color name="gray70">#616161</color>
     <color name="skyblue">#29B6F6</color>
+    <color name="ch_orange">#F9B233</color>
+
     <color name="tr_skyblue">#A629B6F6</color>
 
     <color name="btn_basic">#BFC9CA</color>

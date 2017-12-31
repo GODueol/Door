@@ -20,6 +20,8 @@ import com.bumptech.glide.Glide;
 import com.example.kwoncheolhyeok.core.CorePage.CoreActivity;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.Event.RefreshLocationEvent;
+import com.example.kwoncheolhyeok.core.FriendsActivity.E_Header;
+import com.example.kwoncheolhyeok.core.FriendsActivity.FriendsActivity;
 import com.example.kwoncheolhyeok.core.MessageActivity.ChattingActivity;
 import com.example.kwoncheolhyeok.core.ScreenshotSetApplication;
 import com.example.kwoncheolhyeok.core.PeopleFragment.FullImageViewPager.DetailImageActivity;
@@ -95,6 +97,21 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
     @Bind(R.id.btn_core2)
     TextView corePostCount;
 
+
+
+
+
+
+    //임시 !!! 프렌즈 헤더 확인용 (프렌즈 앱 죽는 이유로 이곳에서 테스트)
+    TextView ex_header = null;
+
+
+
+
+
+
+
+
     @SuppressLint("DefaultLocale")
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -112,6 +129,23 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //액션바 아이콘을 업 네비게이션 형태로 표시합니다.
         getSupportActionBar().setDisplayShowHomeEnabled(true); //홈 아이콘을 숨김처리합니다.
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
+
+
+
+
+
+        //임시 !!! 프렌즈 헤더 확인용 (프렌즈 앱 죽는 이유로 이곳에서 테스트)
+        ex_header = findViewById(R.id.ex_header);
+        ex_header.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(FullImageActivity.this, E_Header.class);
+                startActivity(i);
+            }
+        });
+
+
+
 
 
         //Tab Fragment 1에서 받아온 썸네일 이미지를 이 액티비티로 받아옴

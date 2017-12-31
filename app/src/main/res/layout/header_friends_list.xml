@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="185dp"
+        android:background="@color/ch_orange">
+
+        <TextView
+            android:id="@+id/friends_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="친구 00"
+            android:layout_centerHorizontal="true"
+            android:textSize="16.5dp"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            />
+
+
+        <ImageView
+            android:id="@+id/friends_header_image"
+            android:layout_width="129dp"
+            android:layout_height="75dp"
+            android:background="@drawable/friends_header_image"
+            android:layout_below="@+id/friends_count"
+            android:layout_marginTop="15dp"
+            android:layout_centerHorizontal="true"
+            />
+
+        <TextView
+            android:id="@+id/friends_contents"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nickname 님은 CORE 일반 회원입니다"
+            android:layout_below="@+id/friends_header_image"
+            android:layout_marginTop="15dp"
+            android:layout_centerHorizontal="true"
+            android:textColor="@color/white"
+            />
+
+        <TextView
+            android:id="@+id/friends_contents2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="8명의 친구까지 코어를 열어볼 수 있습니다"
+            android:layout_below="@+id/friends_contents"
+            android:layout_marginTop="5dp"
+            android:textColor="@color/white"
+            android:layout_centerHorizontal="true"
+            />
+
+
+
+
+
+
+    </RelativeLayout>
+
+
+
+</RelativeLayout>
+
+
+    <!--<RelativeLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_below="@+id/no_use1"-->
+    <!--android:layout_marginTop="15dp"-->
+    <!--android:layout_marginLeft="10dp"-->
+    <!--&gt;-->
+
+
+    <!--<com.example.kwoncheolhyeok.core.PeopleFragment.SquareImageView-->
+    <!--android:id="@+id/profile_image"-->
+    <!--android:layout_width="62dp"-->
+    <!--android:layout_height="62dp"-->
+    <!--android:background="@drawable/a"-->
+
+    <!--/>-->
+
+    <!--<LinearLayout-->
+    <!--android:id="@+id/layout1"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:orientation="vertical"-->
+    <!--android:layout_toRightOf="@+id/profile_image"-->
+    <!--android:layout_centerVertical="true"-->
+    <!--android:layout_alignParentRight="true"-->
+    <!--android:layout_alignParentEnd="true"-->
+    <!--android:layout_marginLeft="15dp"-->
+    <!--android:layout_marginRight="110dp"-->
+    <!--&gt;-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/userNick"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="nickname"-->
+    <!--android:textColor="@color/white"-->
+    <!--android:textSize="15dp"-->
+    <!--/>-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/userProfile"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="26 / 174 / 65 / standard"-->
+    <!--android:layout_marginTop="8dp"-->
+    <!--android:textColor="@color/white"-->
+    <!--android:textSize="15dp"-->
+    <!--/>-->
+
+    <!--</LinearLayout>-->
+
+    <!--</RelativeLayout>-->

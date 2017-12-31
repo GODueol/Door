@@ -1,5 +1,6 @@
 package com.example.kwoncheolhyeok.core.FriendsActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -9,7 +10,11 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
+import com.example.kwoncheolhyeok.core.CorePage.AudioActivity;
+import com.example.kwoncheolhyeok.core.CorePage.CoreActivity;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
@@ -29,6 +34,7 @@ public class FriendsActivity extends AppCompatActivity {
     private ValueEventListener listener;
     private Query ref;
 
+    TextView ex_header = null;
     /*
     * Preparing the list data
     */
@@ -90,6 +96,9 @@ public class FriendsActivity extends AppCompatActivity {
         // setRecyclerView (default)
         adapter.setItemMenu(R.menu.friends_set_follow);
         navigation.setSelectedItemId(R.id.navigation_receive);
+
+
+
 
     }
 
