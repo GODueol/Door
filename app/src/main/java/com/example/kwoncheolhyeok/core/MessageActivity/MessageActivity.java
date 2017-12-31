@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.MessageActivity.chat_message_view.util.RoomVO;
@@ -36,7 +37,7 @@ public class MessageActivity extends AppCompatActivity {
     private DatabaseReference chatRoomListRef;
     private FirebaseAuth mAuth;
     private String userId;
-
+    private RoomVO roomList;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,13 +96,26 @@ public class MessageActivity extends AppCompatActivity {
     public void setMessageData(){
 
         chatRoomListRef = FirebaseDatabase.getInstance().getReference("chatRoomList");
+
         chatRoomListRef.child(userId).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                RoomVO roomList = dataSnapshot.getValue(RoomVO.class);
-                Log.d("123",dataSnapshot.getKey());
-                listrowItem.add(roomList);
-                messageRecyclerAdapter.notifyDataSetChanged();
+                roomList = dataSnapshot.getValue(RoomVO.class);
+                FirebaseDatabase.getInstance().getReference("users").child(roomList.getUserUuid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        User target = dataSnapshot.getValue(User.class);
+                        roomList.setTargetNickName(target.getId());
+                        roomList.setTargetProfile(target.getTotalProfile());
+                        listrowItem.add(roomList);
+                        messageRecyclerAdapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
             }
 
             @Override

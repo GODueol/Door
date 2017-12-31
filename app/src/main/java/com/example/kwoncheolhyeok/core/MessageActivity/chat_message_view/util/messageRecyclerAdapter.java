@@ -1,6 +1,7 @@
 package com.example.kwoncheolhyeok.core.MessageActivity.chat_message_view.util;
 
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,9 +42,12 @@ public class messageRecyclerAdapter extends  RecyclerView.Adapter<messageRecycle
     @Override
     public void onBindViewHolder(messageRecyclerAdapter.ViewHolder holder, int position) {
         RoomVO room = roomList.get(position);
-        holder.nickname.setText(room.getUserUuid());
-        String dateString = new SimpleDateFormat("MM/dd/yyyy").format(new Date(room.getLastTime()));
-        holder.content.setText(dateString);
+        holder.content.setText(room.getLastChat());
+        holder.nickname.setText(room.getTargetNickName());
+        holder.profile.setText(room.getTargetProfile());
+     //   String dateString = DateFormat.format("MM/dd/yyyy", new Date(room.getLastTime())).toString();
+     //   holder.date.setText(dateString);
+
         Glide.with(holder.img.getContext()).load(room.getTargetUri()).into(holder.img);
     }
 
@@ -62,16 +66,19 @@ public class messageRecyclerAdapter extends  RecyclerView.Adapter<messageRecycle
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         public ImageView img;
-        public TextView nickname;
         public TextView content;
+        public TextView nickname;
+        public TextView profile;
+        public TextView date;
         private RecyclerViewClickListener mListener;
 
 
         public ViewHolder(View itemView, RecyclerViewClickListener listener){
             super(itemView);
 
-            content = (TextView) itemView.findViewById(R.id.message_content);
-            nickname = (TextView) itemView.findViewById(R.id.name);
+            content = (TextView) itemView.findViewById(R.id.chat_content);
+            nickname = (TextView) itemView.findViewById(R.id.userNick);
+            profile = (TextView)itemView.findViewById(R.id.userProfile);
             img = (ImageView) itemView.findViewById(R.id.profile_image);
             mListener = listener;
             itemView.setOnClickListener(this);

@@ -10,6 +10,9 @@ public class RoomVO {
 
     private String userUuid;
     private String chatRoomid;
+    private String targetNickName;
+    private String targetProfile;
+    private String lastChat;
     private long lastTime;
     private String targetUri;
 
@@ -17,9 +20,11 @@ public class RoomVO {
     public RoomVO(){
     }
 
-    public RoomVO(String userUuid, String chatRoomid, long lastTime, String targetUri){
-        this.userUuid = userUuid;
+    public RoomVO(String chatRoomid,String lastChat, String userUuid, long lastTime, String targetUri){
+
         this.chatRoomid = chatRoomid;
+        this.lastChat = lastChat;
+        this.userUuid = userUuid;
         this.lastTime = lastTime;
         this.targetUri = targetUri;
     }
@@ -57,5 +62,29 @@ public class RoomVO {
         this.targetUri = targetUri;
     }
 
+
+    public String getLastChat() {
+        return lastChat;
+    }
+
+    public void setLastChat(String lastChat) {
+        this.lastChat = lastChat;
+    }
+
+    public String getTargetNickName() {
+        return targetNickName;
+    }
+
+    public void setTargetNickName(String targetNickName) {
+        this.targetNickName = targetNickName;
+    }
+
+    public String getTargetProfile() {
+        return targetProfile;
+    }
+
+    public void setTargetProfile(String targetProfile) {
+        this.targetProfile = targetProfile;
+    }
 
 }
