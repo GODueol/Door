@@ -5,24 +5,23 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.kwoncheolhyeok.core.Entity.CoreListItem;
 import com.example.kwoncheolhyeok.core.Entity.CorePost;
 import com.example.kwoncheolhyeok.core.Entity.User;
-import com.example.kwoncheolhyeok.core.ScreenshotSetApplication;
 import com.example.kwoncheolhyeok.core.R;
+import com.example.kwoncheolhyeok.core.ScreenshotSetApplication;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.LinkedList;
 
@@ -90,21 +89,24 @@ public class CoreActivity extends AppCompatActivity {
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
 
 
-        final ListView core_list_view = findViewById(R.id.core_listview);
+        final RecyclerView recyclerView = findViewById(R.id.core_listview);
 
         final LinkedList<CoreListItem> list = new LinkedList<>();
         coreListAdapter = new CoreListAdapter(list, this, uuid);
-        core_list_view.setAdapter(coreListAdapter);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
 
-        core_list_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
+        recyclerView.setAdapter(coreListAdapter);
 
-//                Intent myIntent = new Intent(getActivity(), ClubActivity.class);
-//                getActivity().startActivity(myIntent);
-
-            }
-        });
+//        core_list_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            public void onItemClick(AdapterView<?> parent, View view,
+//                                    int position, long id) {
+//
+////                Intent myIntent = new Intent(getActivity(), ClubActivity.class);
+////                getActivity().startActivity(myIntent);
+//
+//            }
+//        });
 
         // Post, User Get
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -119,19 +121,8 @@ public class CoreActivity extends AppCompatActivity {
                     user[0] = dc.getUser();
                     addCoreListItem(user[0], corePost, postKey);
                 }
-                else {
-                    dc.getUserRef(corePost.getUuid()).addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            user[0] = dataSnapshot.getValue(User.class);
-                            addCoreListItem(user[0], corePost, postKey);
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
-                    });
+                else {  // 익명
+                    addCoreListItem(null, corePost, postKey);
                 }
             }
 
@@ -155,11 +146,11 @@ public class CoreActivity extends AppCompatActivity {
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-                final CorePost corePost = dataSnapshot.getValue(CorePost.class);
                 final String postKey = dataSnapshot.getKey();
                 for(CoreListItem coreListItem : list){
                     if(coreListItem.getPostKey().equals(postKey)){
                         list.remove(coreListItem);
+                        coreListAdapter.notifyDataSetChanged();
                         break;
                     }
                 }

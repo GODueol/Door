@@ -1,6 +1,5 @@
 package com.example.kwoncheolhyeok.core.Entity;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,7 +15,7 @@ public class CorePost {
     String soundUrl;
     String videoUrl;
     Map<String, Long> likeUsers = new HashMap<>();
-
+    String reply;
 
     public CorePost() {
     }
@@ -34,6 +33,14 @@ public class CorePost {
         this.soundUrl = soundUrl;
         this.videoUrl = videoUrl;
         this.likeUsers = likeUsers;
+    }
+
+    public String getReply() {
+        return reply;
+    }
+
+    public void setReply(String reply) {
+        this.reply = reply;
     }
 
     public String getUuid() {

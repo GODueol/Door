@@ -24,8 +24,8 @@ import java.util.LinkedList;
 public class FriendsActivity extends AppCompatActivity {
 
     Toolbar toolbar = null;
-    private LinkedList<userListAdapter.Item> items;
-    private userListAdapter adapter;
+    private LinkedList<UserListAdapter.Item> items;
+    private UserListAdapter adapter;
     private ValueEventListener listener;
     private Query ref;
 
@@ -82,7 +82,7 @@ public class FriendsActivity extends AppCompatActivity {
         final RecyclerView recyclerView = findViewById(R.id.friendsRecyclerView);
         items = new LinkedList<>();
 
-        adapter = new userListAdapter(this, items);
+        adapter = new UserListAdapter(this, items);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
@@ -93,7 +93,7 @@ public class FriendsActivity extends AppCompatActivity {
 
     }
 
-    private void setRecyclerView(final LinkedList<userListAdapter.Item> items, final userListAdapter adapter, final String field, int item_menu) {
+    private void setRecyclerView(final LinkedList<UserListAdapter.Item> items, final UserListAdapter adapter, final String field, int item_menu) {
         adapter.setItemMenu(item_menu);
         items.clear();
         if(ref != null && listener != null) ref.removeEventListener(listener);  // 이전 리스너 해제
@@ -114,7 +114,7 @@ public class FriendsActivity extends AppCompatActivity {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             User oUser = dataSnapshot.getValue(User.class);
-                            items.offerFirst(new userListAdapter.Item(oUser, (long)snapshot.getValue(), oUuid));
+                            items.offerFirst(new UserListAdapter.Item(oUser, (long)snapshot.getValue(), oUuid));
                             adapter.notifyDataSetChanged();
                         }
 

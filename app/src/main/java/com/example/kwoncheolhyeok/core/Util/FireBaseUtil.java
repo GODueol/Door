@@ -3,6 +3,7 @@ package com.example.kwoncheolhyeok.core.Util;
 import android.support.annotation.NonNull;
 
 import com.example.kwoncheolhyeok.core.Entity.User;
+import com.example.kwoncheolhyeok.core.Event.RefreshLocationEvent;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -136,6 +137,27 @@ public class FireBaseUtil {
 
             @Override
             public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+                BusProvider.getInstance().post(new RefreshLocationEvent());
+            }
+        });
+
+    }
+
+    public void subCorePostCount(DatabaseReference corePostCountRef) {
+        corePostCountRef.runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                int count = 0;
+                if (mutableData.getValue() != null) {
+                    count = mutableData.getValue(Integer.class);
+                }
+                mutableData.setValue(count - 1);
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+                BusProvider.getInstance().post(new RefreshLocationEvent());
             }
         });
 

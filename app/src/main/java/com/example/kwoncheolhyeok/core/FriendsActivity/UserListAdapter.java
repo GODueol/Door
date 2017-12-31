@@ -19,7 +19,6 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.kwoncheolhyeok.core.Entity.User;
-import com.example.kwoncheolhyeok.core.MessageActivity.chat_message_view.util.messageRecyclerAdapter;
 import com.example.kwoncheolhyeok.core.PeopleFragment.FullImageActivity;
 import com.example.kwoncheolhyeok.core.PeopleFragment.ImageAdapter;
 import com.example.kwoncheolhyeok.core.R;
@@ -36,12 +35,12 @@ import java.util.List;
  * Created by kimbyeongin on 2017-12-16.
  */
 
-public class userListAdapter extends RecyclerView.Adapter<userListAdapter.userHolder> {
+public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHolder> {
 
     private List<Item> items;
     private int itemMenu;
     private Context context;
-    userListAdapter(Context context, List<Item> items){
+    UserListAdapter(Context context, List<Item> items){
         this.context = context;
         this.items = items;
     }
@@ -50,14 +49,14 @@ public class userListAdapter extends RecyclerView.Adapter<userListAdapter.userHo
     }
 
     @Override
-    public userHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+    public UserHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.friends_list_item,viewGroup,false);
-        return new userHolder(v);
+        return new UserHolder(v);
     }
 
     @SuppressLint("SetTextI18n")
     @Override
-    public void onBindViewHolder(final userHolder userHolder, int i) {
+    public void onBindViewHolder(final UserHolder userHolder, int i) {
         final Item item = items.get(i);
         final User user = item.getUser();
         Glide.with(userHolder.profilePicImage.getContext()).load(user.getPicUrls().getPicUrl1()).into(userHolder.profilePicImage);
@@ -175,13 +174,13 @@ public class userListAdapter extends RecyclerView.Adapter<userListAdapter.userHo
         return items.size();
     }
 
-    class userHolder extends RecyclerView.ViewHolder {
+    class UserHolder extends RecyclerView.ViewHolder {
         ImageView profilePicImage;
         TextView idText;
         TextView subProfileText;
         TextView dateText;
         ImageView itemMenuBtn;
-        userHolder(View itemView) {
+        UserHolder(View itemView) {
             super(itemView);
             profilePicImage = itemView.findViewById(R.id.profile_image);
             idText = itemView.findViewById(R.id.lblListItem);
@@ -196,7 +195,7 @@ public class userListAdapter extends RecyclerView.Adapter<userListAdapter.userHo
         long date;
         String uuid;
 
-        public Item(User user, long date, String uuid) {
+        Item(User user, long date, String uuid) {
             this.user = user;
             this.date = date;
             this.uuid = uuid;

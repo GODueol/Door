@@ -15,9 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.kwoncheolhyeok.core.Entity.CorePost;
-import com.example.kwoncheolhyeok.core.Event.RefreshLocationEvent;
 import com.example.kwoncheolhyeok.core.R;
-import com.example.kwoncheolhyeok.core.Util.BusProvider;
 import com.example.kwoncheolhyeok.core.Util.Camera.LoadPicture;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
@@ -172,7 +170,6 @@ public class CoreWriteActivity  extends AppCompatActivity {
                                 if(!task.isComplete()) return;
                             UiUtil.getInstance().stopProgressDialog();  // 프로그레스바 중단
                             finish();
-                            BusProvider.getInstance().post(new RefreshLocationEvent());
                         }
                     });
                 }

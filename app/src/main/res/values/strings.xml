@@ -41,6 +41,8 @@
     <string name="follower">Follower</string>
     <string name="following">Following</string>
     <string name="unfollow">Unfollow</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
 
 
 </resources>
