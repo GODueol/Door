@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.kwoncheolhyeok.core.Entity.CorePost;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.Camera.LoadPicture;
@@ -23,8 +24,11 @@ import com.example.kwoncheolhyeok.core.Util.UiUtil;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -54,6 +58,7 @@ public class CoreWriteActivity  extends AppCompatActivity {
     TextView textContents;
     private String cUuid;
     private TextView editAudio;
+    private String postKey;
 
 
     @Override
@@ -128,7 +133,10 @@ public class CoreWriteActivity  extends AppCompatActivity {
 
                 UiUtil.getInstance().startProgressDialog(CoreWriteActivity.this);
                 DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-                String key = mDatabase.child("posts").push().getKey();
+
+                String key;
+                if(postKey == null) key = mDatabase.child("posts").push().getKey();
+                else key = postKey;
 
                 final CorePost corePost = new CorePost(mUuid);
 
@@ -200,6 +208,25 @@ public class CoreWriteActivity  extends AppCompatActivity {
                 );
             }
         });
+
+        // edit
+        postKey = getIntent().getStringExtra("postKey");    // edit 일 경우 값이 있음
+        if(postKey != null){
+            FirebaseDatabase.getInstance().getReference().child("posts")
+                    .child(cUuid).child(postKey).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    CorePost corePost = dataSnapshot.getValue(CorePost.class);
+                    textContents.setText(corePost.getText());
+                    Glide.with(editImage.getContext()).load(corePost.getPictureUrl()).into(editImage);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
 
     }
 

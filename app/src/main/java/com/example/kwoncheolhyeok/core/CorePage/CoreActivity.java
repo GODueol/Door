@@ -22,6 +22,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.LinkedList;
 
@@ -41,7 +42,7 @@ public class CoreActivity extends AppCompatActivity {
         setContentView(R.layout.core_activity);
 
         Intent intent = getIntent();
-        final String uuid = intent.getStringExtra("uuid");
+        final String cUuid = intent.getStringExtra("uuid");
 
         //스크린샷 방지
         ScreenshotSetApplication.getInstance().allowUserSaveScreenshot(false);
@@ -58,7 +59,7 @@ public class CoreActivity extends AppCompatActivity {
                 // 자신, 타인 액티비티 구별
                 Intent i;
                 i = new Intent(CoreActivity.this, CoreWriteActivity.class);
-                i.putExtra("cUuid",uuid);
+                i.putExtra("cUuid",cUuid);
 //                i = new Intent(CoreActivity.this, otherUser_write_core.class);
 
                 startActivity(i);
@@ -92,7 +93,7 @@ public class CoreActivity extends AppCompatActivity {
         final RecyclerView recyclerView = findViewById(R.id.core_listview);
 
         final LinkedList<CoreListItem> list = new LinkedList<>();
-        coreListAdapter = new CoreListAdapter(list, this, uuid);
+        coreListAdapter = new CoreListAdapter(list, this, cUuid);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
@@ -110,16 +111,26 @@ public class CoreActivity extends AppCompatActivity {
 
         // Post, User Get
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-        mDatabase.child("posts").child(uuid).orderByChild("writeDate").addChildEventListener(new ChildEventListener() {
+        mDatabase.child("posts").child(cUuid).orderByChild("writeDate").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 DataContainer dc = DataContainer.getInstance();
                 final CorePost corePost = dataSnapshot.getValue(CorePost.class);
                 final String postKey = dataSnapshot.getKey();
                 final User[] user = new User[1];
-                if(corePost.getUuid().equals(dc.getUid())) {
-                    user[0] = dc.getUser();
-                    addCoreListItem(user[0], corePost, postKey);
+                if(cUuid.equals(dc.getUid())) { // 코어의 주인인 경우
+                    dc.getUserRef(corePost.getUuid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            user[0] = dataSnapshot.getValue(User.class);
+                            addCoreListItem(user[0], corePost, postKey);
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
                 }
                 else {  // 익명
                     addCoreListItem(null, corePost, postKey);

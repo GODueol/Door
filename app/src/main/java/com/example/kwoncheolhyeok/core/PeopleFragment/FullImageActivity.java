@@ -128,7 +128,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         final ImageAdapter.Item item = (ImageAdapter.Item) p.getSerializableExtra("item");
 
         UiUtil.getInstance().startProgressDialog(FullImageActivity.this);
-        DataContainer.getInstance().getUserRef(item.getUuid()).addListenerForSingleValueEvent(new ValueEventListener() {
+        DataContainer.getInstance().getUserRef(item.getUuid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 UiUtil.getInstance().stopProgressDialog();

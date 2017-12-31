@@ -3,6 +3,7 @@ package com.example.kwoncheolhyeok.core.CorePage;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -132,7 +133,10 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                         public boolean onMenuItemClick(MenuItem menuItem) {
                             int i = menuItem.getItemId();
                             if (i == R.id.edit) {
-
+                                Intent intent = new Intent(context, CoreWriteActivity.class);
+                                intent.putExtra("cUuid", cUuid);
+                                intent.putExtra("postKey", coreListItem.getPostKey());
+                                context.startActivity(intent);
                             } else if (i == R.id.delete) {
                                 UiUtil.getInstance().showDialog(context, "Delete", "게시물을 삭제하시겠습니까?"
                                         , new DialogInterface.OnClickListener() {
