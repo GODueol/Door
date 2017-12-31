@@ -1,7 +1,6 @@
 package com.example.kwoncheolhyeok.core.MessageActivity.chat_message_view.util;
 
 import android.support.v7.widget.RecyclerView;
-import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,8 +44,10 @@ public class messageRecyclerAdapter extends  RecyclerView.Adapter<messageRecycle
         holder.content.setText(room.getLastChat());
         holder.nickname.setText(room.getTargetNickName());
         holder.profile.setText(room.getTargetProfile());
-     //   String dateString = DateFormat.format("MM/dd/yyyy", new Date(room.getLastTime())).toString();
-     //   holder.date.setText(dateString);
+        Date date = new Date(room.getLastViewTime());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String getTime = sdf.format(date);
+        holder.date.setText(getTime);
 
         Glide.with(holder.img.getContext()).load(room.getTargetUri()).into(holder.img);
     }
@@ -79,6 +80,7 @@ public class messageRecyclerAdapter extends  RecyclerView.Adapter<messageRecycle
             content = (TextView) itemView.findViewById(R.id.chat_content);
             nickname = (TextView) itemView.findViewById(R.id.userNick);
             profile = (TextView)itemView.findViewById(R.id.userProfile);
+            date = (TextView) itemView.findViewById(R.id.date);
             img = (ImageView) itemView.findViewById(R.id.profile_image);
             mListener = listener;
             itemView.setOnClickListener(this);

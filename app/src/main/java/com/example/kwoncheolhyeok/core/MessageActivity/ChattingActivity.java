@@ -2,6 +2,7 @@ package com.example.kwoncheolhyeok.core.MessageActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -86,7 +87,7 @@ public class ChattingActivity extends AppCompatActivity {
                 if (TextUtils.isEmpty(message)) {
                     return;
                 }
-                writeMessage(roomName, 0, userUuid, "kaikai", message, 0);
+                writeMessage(roomName, 0, userUuid, user.getId(), message, 0);
                 mEditTextMessage.setText("");
             }
         });
@@ -102,6 +103,8 @@ public class ChattingActivity extends AppCompatActivity {
     private void writeMessage(String room, int img, String userId, String nickname, String content, int editimg) {
         MessageVO message = new MessageVO(img, userId, nickname, content);
         mDatabase.child("chat").child(room).push().setValue(message);
+        chatRoomRef.child(userUuid).child(targetUuid).child("lastChat").setValue(content);
+        chatRoomRef2.child(targetUuid).child(userUuid).child("lastChat").setValue(content);
     }
 
     private void mimicOtherMessage(String message) {
@@ -148,7 +151,7 @@ public class ChattingActivity extends AppCompatActivity {
                 RoomVO checkRoomVO = dataSnapshot.getValue(RoomVO.class);
                 try {
                     roomName = checkRoomVO.getChatRoomid();
-                    long currentTime = System.currentTimeMillis() / 1000;
+                    long currentTime = System.currentTimeMillis();
                     chatRoomRef2.child(targetUuid).child(userUuid).child("lastTime").setValue(currentTime);
                 } catch (Exception e) {
                     roomName = chatRef.getKey();
@@ -168,7 +171,8 @@ public class ChattingActivity extends AppCompatActivity {
     }
 
     public void setChatRoomList(DatabaseReference chatRoomRef,String roomName,  String id_1, String id_2, String targeturi) {
-        long currentTime = System.currentTimeMillis() / 1000;
+        long currentTime = System.currentTimeMillis();
+
         roomVO = new RoomVO(roomName,null, id_2,currentTime, targeturi);
         chatRoomRef.child(id_1).child(id_2).setValue(roomVO);
     }
@@ -186,7 +190,7 @@ public class ChattingActivity extends AppCompatActivity {
                 chatMessage = new ChatMessage(message, true, false);
             }
             else{
-                chatMessage = new ChatMessage(message, false, false);
+                chatMessage = new ChatMessage(message, false, false, targetPicuri);
             }
             mAdapter.add(chatMessage);
             // ...
@@ -222,60 +226,6 @@ public class ChattingActivity extends AppCompatActivity {
             // A comment has changed position, use the key to determine if we are
             // displaying this comment and if so move it.
             MessageVO user = dataSnapshot.getValue(MessageVO.class);
-            String commentKey = dataSnapshot.getKey();
-
-            // ...
-        }
-
-        @Override
-        public void onCancelled(DatabaseError databaseError) {
-            Log.w("fireabaseUpdate", "postComments:onCancelled", databaseError.toException());
-            Toast.makeText(getApplicationContext(), "Failed to load comments.",
-                    Toast.LENGTH_SHORT).show();
-        }
-    };
-
-    ChildEventListener childRoomEventListener = new ChildEventListener() {
-        @Override
-        public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
-            Log.d("fireabaseUpdate", "onChildAdded:" + dataSnapshot.getKey());
-
-
-            roomVO = dataSnapshot.getValue(RoomVO.class);
-        }
-
-        @Override
-        public void onChildChanged(DataSnapshot dataSnapshot, String previousChildName) {
-            Log.d("fireabaseUpdate", "onChildChanged:" + dataSnapshot.getKey());
-
-            // A comment has changed, use the key to determine if we are displaying this
-            // comment and if so displayed the changed comment.
-
-            roomVO = dataSnapshot.getValue(RoomVO.class);
-            String commentKey = dataSnapshot.getKey();
-
-            // ...
-        }
-
-        @Override
-        public void onChildRemoved(DataSnapshot dataSnapshot) {
-            Log.d("fireabaseUpdate", "onChildRemoved:" + dataSnapshot.getKey());
-
-            // A comment has changed, use the key to determine if we are displaying this
-            // comment and if so remove it.
-            String commentKey = dataSnapshot.getKey();
-
-            // ...
-        }
-
-        @Override
-        public void onChildMoved(DataSnapshot dataSnapshot, String previousChildName) {
-            Log.d("fireabaseUpdate", "onChildMoved:" + dataSnapshot.getKey());
-
-            // A comment has changed position, use the key to determine if we are
-            // displaying this comment and if so move it.
-
-            roomVO = dataSnapshot.getValue(RoomVO.class);
             String commentKey = dataSnapshot.getKey();
 
             // ...

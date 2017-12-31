@@ -1,12 +1,15 @@
 package com.example.kwoncheolhyeok.core.MessageActivity;
 
+import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.kwoncheolhyeok.core.R;
 
 import java.util.List;
@@ -51,10 +54,14 @@ public class ChatMessageAdapter extends ArrayAdapter<ChatMessage> {
 
             TextView textView = (TextView) convertView.findViewById(R.id.text);
             textView.setText(getItem(position).getContent());
+            ImageView imageView = (ImageView) convertView.findViewById(R.id.profile_image);
+            Glide.with(imageView.getContext()).load(getItem(position).getProfileImeage()).into(imageView);
         } else if (viewType == MY_IMAGE) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.message_item_mine_image, parent, false);
         } else {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.message_item_other_image, parent, false);
+            ImageView imageView = (ImageView) convertView.findViewById(R.id.profile_image);
+            Glide.with(imageView.getContext()).load(getItem(position).getProfileImeage()).into(imageView);
         }
 
         convertView.findViewById(R.id.chatMessageView).setOnClickListener(new View.OnClickListener() {
