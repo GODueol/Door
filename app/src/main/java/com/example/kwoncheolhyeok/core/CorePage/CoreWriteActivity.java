@@ -151,7 +151,7 @@ public class CoreWriteActivity  extends AppCompatActivity {
                     public void onSuccess(Void aVoid) {
                         DatabaseReference corePostCountRef = DataContainer.getInstance().getUserRef(cUuid).child("corePostCount");
                         // addCorePostCount
-                        if(isEdit()) FireBaseUtil.getInstance().addCorePostCount(corePostCountRef);
+                        if(isEdit()) FireBaseUtil.getInstance().syncCorePostCount(cUuid);
                     }
                 });
 

@@ -148,7 +148,8 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                                                         .removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
                                                     @Override
                                                     public void onSuccess(Void aVoid) {
-                                                        FireBaseUtil.getInstance().subCorePostCount(DataContainer.getInstance().getUserRef(cUuid).child("corePostCount"));
+
+                                                        FireBaseUtil.getInstance().syncCorePostCount(cUuid);
                                                     }
                                                 });
 
