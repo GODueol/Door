@@ -19,6 +19,7 @@ import com.example.kwoncheolhyeok.core.Util.IndexedTreeMap;
 
 import java.io.Serializable;
 import java.util.Comparator;
+import java.util.Map;
 
 public class ImageAdapter extends BaseAdapter {
 
@@ -43,7 +44,9 @@ public class ImageAdapter extends BaseAdapter {
     }
 
     public Item getItem(String uuid){
-        return mItems.getEntry(uuid).getKey();
+        Map.Entry<Item, String> entry = mItems.getEntry(uuid);
+        if(entry == null) return null;
+        return entry.getKey();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
