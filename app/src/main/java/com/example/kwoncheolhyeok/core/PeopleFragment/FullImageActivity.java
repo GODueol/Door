@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -21,11 +22,10 @@ import com.example.kwoncheolhyeok.core.CorePage.CoreActivity;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.Event.RefreshLocationEvent;
 import com.example.kwoncheolhyeok.core.FriendsActivity.E_Header;
-import com.example.kwoncheolhyeok.core.FriendsActivity.FriendsActivity;
 import com.example.kwoncheolhyeok.core.MessageActivity.ChattingActivity;
-import com.example.kwoncheolhyeok.core.ScreenshotSetApplication;
 import com.example.kwoncheolhyeok.core.PeopleFragment.FullImageViewPager.DetailImageActivity;
 import com.example.kwoncheolhyeok.core.R;
+import com.example.kwoncheolhyeok.core.ScreenshotSetApplication;
 import com.example.kwoncheolhyeok.core.Util.BusProvider;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
@@ -97,20 +97,8 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
     @Bind(R.id.btn_core2)
     TextView corePostCount;
 
-
-
-
-
-
     //임시 !!! 프렌즈 헤더 확인용 (프렌즈 앱 죽는 이유로 이곳에서 테스트)
     TextView ex_header = null;
-
-
-
-
-
-
-
 
     @SuppressLint("DefaultLocale")
     @Override
@@ -130,10 +118,6 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         getSupportActionBar().setDisplayShowHomeEnabled(true); //홈 아이콘을 숨김처리합니다.
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
 
-
-
-
-
         //임시 !!! 프렌즈 헤더 확인용 (프렌즈 앱 죽는 이유로 이곳에서 테스트)
         ex_header = findViewById(R.id.ex_header);
         ex_header.setOnClickListener(new View.OnClickListener(){
@@ -143,10 +127,6 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
                 startActivity(i);
             }
         });
-
-
-
-
 
         //Tab Fragment 1에서 받아온 썸네일 이미지를 이 액티비티로 받아옴
         page1 = findViewById(R.id.image1);
@@ -161,8 +141,12 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         Intent p = getIntent();
         final ImageAdapter.Item item = (ImageAdapter.Item) p.getSerializableExtra("item");
 
+        // viewedMeUser
+        setViewedMeUsers(item);
+
+        // 리스너를 달아서 실시간 정보 변경
         UiUtil.getInstance().startProgressDialog(FullImageActivity.this);
-        DataContainer.getInstance().getUserRef(item.getUuid()).addListenerForSingleValueEvent(new ValueEventListener() {
+        DataContainer.getInstance().getUserRef(item.getUuid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 UiUtil.getInstance().stopProgressDialog();
@@ -177,6 +161,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         });
     }
 
+    @SuppressLint("SetTextI18n")
     private void setView(final ImageAdapter.Item item) {
         message.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -253,8 +238,6 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         // 팔로우
         setFollowing(item);
 
-        // viewedMeUser
-        setViewedMeUsers(item);
 
         corePostCount.setText(Integer.toString(oUser.getCorePostCount()));
     }
