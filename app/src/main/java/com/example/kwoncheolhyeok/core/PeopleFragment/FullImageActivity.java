@@ -9,7 +9,6 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -163,16 +162,20 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
 
     @SuppressLint("SetTextI18n")
     private void setView(final ImageAdapter.Item item) {
-        message.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(),ChattingActivity.class);
-                intent.putExtra("user", item.getUser());
-                intent.putExtra("userUuid", item.getUuid());
-                intent.putExtra("userPicuri", item.getPicUrl());
-                startActivity(intent);
-            }
-        });
+        if (item.getUuid().equals(DataContainer.getInstance().getUid())) {  // 본인
+            message.setVisibility(View.INVISIBLE);  // 가림
+        } else {
+            message.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getApplicationContext(), ChattingActivity.class);
+                    intent.putExtra("user", item.getUser());
+                    intent.putExtra("userUuid", item.getUuid());
+                    intent.putExtra("userPicuri", item.getPicUrl());
+                    startActivity(intent);
+                }
+            });
+        }
         //개인 화면에서 코어 액티비티로 넘어감
         core_enter = findViewById(R.id.core_enter_layout);
         core_enter.setOnClickListener(new View.OnClickListener() {

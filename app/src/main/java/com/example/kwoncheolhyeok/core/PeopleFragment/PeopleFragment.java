@@ -181,6 +181,7 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
                 targetLocation.setLatitude(geoLocation.latitude);//your coords of course
                 targetLocation.setLongitude(geoLocation.longitude);
                 ImageAdapter.Item item = imageAdapter.getItem(key);
+                if(item == null) return;
                 imageAdapter.removeItem(key);
                 item.setDistance(location.distanceTo(targetLocation));
                 imageAdapter.addItem(item);

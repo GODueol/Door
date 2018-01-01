@@ -217,6 +217,7 @@ public class CoreWriteActivity  extends AppCompatActivity {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     CorePost corePost = dataSnapshot.getValue(CorePost.class);
+                    if(corePost == null) return;
                     textContents.setText(corePost.getText());
                     Glide.with(editImage.getContext()).load(corePost.getPictureUrl()).into(editImage);
                 }
