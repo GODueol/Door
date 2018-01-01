@@ -4,11 +4,9 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -26,11 +24,6 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
-import com.example.kwoncheolhyeok.core.Util.Camera.LoadPicture;
 import com.example.kwoncheolhyeok.core.Entity.IntBoundary;
 import com.example.kwoncheolhyeok.core.Entity.StringBoundary;
 import com.example.kwoncheolhyeok.core.Entity.User;
@@ -38,11 +31,11 @@ import com.example.kwoncheolhyeok.core.Event.RefreshLocationEvent;
 import com.example.kwoncheolhyeok.core.Event.SetProfilePicEvent;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.BusProvider;
+import com.example.kwoncheolhyeok.core.Util.Camera.LoadPicture;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
 import com.example.kwoncheolhyeok.core.Util.UiUtil;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -53,6 +46,8 @@ import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -145,6 +140,9 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
     private static final int REQUEST_GALLERY = 2;
     private LoadPicture loadPicture;
     private ImageView modifyingPic;
+
+    @SuppressLint("UseSparseArrays")
+    Map<Integer, Uri> uriMap = new HashMap<>();
 
     // User Info
     User user;
@@ -354,34 +352,9 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
                 UiUtil.getInstance().showDialog(ProfileModifyActivity.this, "Delete Picture", " Do you want delete Picture?"
                     , new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        // 사진 삭제
-                        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
-                        String picPath = getPicPath(targetPic);
-                        StorageReference desertRef = storageRef.child(picPath);
 
-                        // Delete the file
-                        getInstance().startProgressDialog(ProfileModifyActivity.this);
-                        desertRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                // File deleted successfully
-                                Log.d(getClass().getName(), "Delete Pic Success");
-                                targetPic.setImageResource(R.drawable.a);
-                                removeUserPicUrl(targetPic);    // Url 지울때는 순서를 지켜줘야함
-                                BusProvider.getInstance().post(new RefreshLocationEvent());
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception exception) {
-                                // Uh-oh, an error occurred!
-                                Log.d(getClass().getName(), "Delete Pic Fail");
-                            }
-                        }).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                getInstance().stopProgressDialog();
-                            }
-                        });
+                        targetPic.setImageResource(R.drawable.a);
+                        uriMap.put(targetPic.getId(),null);
                     }
                 }, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
@@ -403,7 +376,6 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         } else if (targetPic == profilePic4) {
             user.getPicUrls().setPicUrl4(null);
         }
-        DataContainer.getInstance().setUser(user);
         DataContainer.getInstance().getUsersRef().child(DataContainer.getInstance().getUid()).setValue(user);
     }
 
@@ -677,60 +649,15 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
             if (requestCode == REQUEST_GALLERY) {
                 Uri outputFileUri = data.getData();
 
-                // 서버에 Upload
-                uploadPic(outputFileUri);
+                uriMap.put(modifyingPic.getId(), outputFileUri);
+                modifyingPic.setImageURI(outputFileUri);
+
             }
         }
     }
 
-    private void uploadPic(final Uri outputFileUri) {
 
-        getInstance().startProgressDialog(this);
-
-        // Create a storage reference from our app
-        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
-
-        final String profilePicPath = getPicPath(modifyingPic);
-
-        final StorageReference spaceRef = storageRef.child(profilePicPath);
-
-        UploadTask uploadTask = spaceRef.putFile(outputFileUri);
-        uploadTask.addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                // Handle unsuccessful uploads
-                Toast.makeText(getBaseContext(), exception.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                final Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                saveUserPicUrl(downloadUrl);
-                Glide.with(ProfileModifyActivity.this).load(downloadUrl).listener(new RequestListener<Drawable>() {
-                    @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        getInstance().stopProgressDialog();
-                        return false;
-                    }
-                }).into(modifyingPic);
-
-                // 첫번째 사진일 경우는 프로필 사진 변경 이벤트 발생
-                if (modifyingPic == profilePic1) {
-                    BusProvider.getInstance().post(new SetProfilePicEvent());
-                }
-                Toast.makeText(getBaseContext(), "Upload Complete", Toast.LENGTH_SHORT).show();
-
-            }
-        });
-
-    }
-
-    private void saveUserPicUrl(Uri downloadUrl) {
+    private void saveUserPicUrl(Uri downloadUrl, ImageView modifyingPic) {
         if (modifyingPic == profilePic1) {
             user.getPicUrls().setPicUrl1(downloadUrl.toString());
         } else if (modifyingPic == profilePic2) {
@@ -742,7 +669,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         }
         DataContainer.getInstance().setUser(user);
         DataContainer.getInstance().getUsersRef().child(DataContainer.getInstance().getUid()).setValue(user);
-        BusProvider.getInstance().post(new RefreshLocationEvent());
+//        BusProvider.getInstance().post(new RefreshLocationEvent());
     }
 
     @NonNull
@@ -819,34 +746,73 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
             // User is signed in
             Log.d(this.getClass().getName(), "onAuthStateChanged:signed_in:" + firebaseUser.getUid());
 
+            final ArrayList<Task> tasks = new ArrayList<>();
             // 파이어베이스 저장
-            DataContainer.getInstance().getUsersRef().child(firebaseUser.getUid()).setValue(user)
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            DataContainer.getInstance().setUser(user);  // 로컬 저장
-                            Toast.makeText(getApplicationContext(), "Save Success", Toast.LENGTH_SHORT).show();
+            Task userTask = DataContainer.getInstance().getUsersRef().child(firebaseUser.getUid()).setValue(user);
+            tasks.add(userTask);
 
-                            // 성공시 백버튼
-                            onBackPressed();
+            // 사진
+            for(int id : uriMap.keySet()){
+                final ImageView targetImageView = findViewById(id);
+                final Uri uri = uriMap.get(id);
 
-                            // grid refresh
-                            BusProvider.getInstance().post(new RefreshLocationEvent());
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
+
+                StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+                final StorageReference spaceRef = storageRef.child(getPicPath(targetImageView));
+
+                if(uri == null){
+                    // 삭제
+                    Task task = spaceRef.delete();
+
+                    tasks.add(task);
+                    task.addOnSuccessListener(new OnSuccessListener() {
                         @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(getApplicationContext(), "Save Fail", Toast.LENGTH_SHORT).show();
-                            Log.d(getApplication().getClass().getName(), e.getMessage());
-                        }
-                    })
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            getInstance().stopProgressDialog();
+                        public void onSuccess(Object o) {
+                            removeUserPicUrl(targetImageView);
+                            if (targetImageView == profilePic1) {
+                                BusProvider.getInstance().post(new SetProfilePicEvent());
+                            }
                         }
                     });
+                } else {
+                    // 저장
+                    UploadTask task = spaceRef.putFile(uri);
+                    tasks.add(task);
+                    task.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            saveUserPicUrl(taskSnapshot.getDownloadUrl(), targetImageView);
+                            if (targetImageView == profilePic1) {
+                                BusProvider.getInstance().post(new SetProfilePicEvent());
+                            }
+                        }
+                    });
+                }
+
+
+            }
+
+            for(Task task : tasks){
+                task.addOnCompleteListener(new OnCompleteListener() {
+                    @Override
+                    public void onComplete(@NonNull Task compTask) {
+                        for(Task task : tasks) {
+                            if (!task.isComplete()) return;
+                        }
+
+                        getInstance().stopProgressDialog();
+
+                        // 성공시 백버튼
+                        onBackPressed();
+
+                        // grid refresh
+                        BusProvider.getInstance().post(new RefreshLocationEvent());
+
+                        Log.d("kbj", "task complete");
+                    }
+                });
+            }
+
         } else {
             // User is signed out
             Log.d(this.getClass().getName(), "onAuthStateChanged:signed_out");

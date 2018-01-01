@@ -109,6 +109,7 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
     public void refreshGrid(RefreshLocationEvent pushEvent) {
         // 데이터 비움
         imageAdapter.clear();
+        imageAdapter.notifyDataSetChanged();
 
         // 현재 자신의 위치를 가져옴
         saveMyGPS();
