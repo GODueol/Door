@@ -44,7 +44,7 @@ public class messageRecyclerAdapter extends  RecyclerView.Adapter<messageRecycle
         holder.content.setText(room.getLastChat());
         holder.nickname.setText(room.getTargetNickName());
         holder.profile.setText(room.getTargetProfile());
-        Date date = new Date(room.getLastViewTime());
+        Date date = new Date(room.getLastChatTime());
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String getTime = sdf.format(date);
         holder.date.setText(getTime);

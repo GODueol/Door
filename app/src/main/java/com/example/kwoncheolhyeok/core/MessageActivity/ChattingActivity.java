@@ -103,6 +103,9 @@ public class ChattingActivity extends AppCompatActivity {
     private void writeMessage(String room, int img, String userId, String nickname, String content, int editimg) {
         MessageVO message = new MessageVO(img, userId, nickname, content);
         mDatabase.child("chat").child(room).push().setValue(message);
+        long currentTime = System.currentTimeMillis();
+        chatRoomRef.child(userUuid).child(targetUuid).child("lastChatTime").setValue(currentTime);
+        chatRoomRef2.child(targetUuid).child(userUuid).child("lastChatTime").setValue(currentTime);
         chatRoomRef.child(userUuid).child(targetUuid).child("lastChat").setValue(content);
         chatRoomRef2.child(targetUuid).child(userUuid).child("lastChat").setValue(content);
     }
@@ -149,15 +152,15 @@ public class ChattingActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 RoomVO checkRoomVO = dataSnapshot.getValue(RoomVO.class);
+                long currentTime = System.currentTimeMillis();
                 try {
                     roomName = checkRoomVO.getChatRoomid();
-                    long currentTime = System.currentTimeMillis();
-                    chatRoomRef2.child(targetUuid).child(userUuid).child("lastTime").setValue(currentTime);
+                    chatRoomRef.child(userUuid).child(targetUuid).child("lastViewTime").setValue(currentTime);
                 } catch (Exception e) {
                     roomName = chatRef.getKey();
-
                     setChatRoomList(chatRoomRef2,roomName, userUuid, targetUuid ,targetPicuri);
                     setChatRoomList(chatRoomRef,roomName, targetUuid, userUuid, userPickuri);
+                    chatRoomRef.child(userUuid).child(targetUuid).child("lastViewTime").setValue(currentTime);
                 }
                 FirebaseDatabase.getInstance().getReference().child("chat").child(roomName)
                         .addChildEventListener(childEventListener);

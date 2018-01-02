@@ -7,9 +7,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.MessageActivity.chat_message_view.util.RoomVO;
@@ -35,12 +33,13 @@ public class MessageActivity extends AppCompatActivity {
     RecyclerView messageList;
     List<RoomVO> listrowItem;
     int i;
-    HashMap<String,Integer> listItemNum;
+    HashMap<String, Integer> listItemNum;
 
     private DatabaseReference chatRoomListRef;
     private FirebaseAuth mAuth;
     private String userId;
     private RoomVO roomList;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,8 +57,8 @@ public class MessageActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         userId = mAuth.getUid();
         listrowItem = new ArrayList<RoomVO>();
-        listItemNum = new HashMap<String,Integer>();
-        i=0;
+        listItemNum = new HashMap<String, Integer>();
+        i = 0;
         // preparing list data
         com.example.kwoncheolhyeok.core.MessageActivity.chat_message_view.util.messageRecyclerAdapter.RecyclerViewClickListener listener = new messageRecyclerAdapter.RecyclerViewClickListener() {
             @Override
@@ -69,7 +68,7 @@ public class MessageActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         User user = dataSnapshot.getValue(User.class);
-                        Intent intent = new Intent(getApplicationContext(),ChattingActivity.class);
+                        Intent intent = new Intent(getApplicationContext(), ChattingActivity.class);
                         intent.putExtra("user", user);
                         intent.putExtra("userUuid", item.getUserUuid());
                         intent.putExtra("userPicuri", item.getTargetUri());
@@ -85,7 +84,7 @@ public class MessageActivity extends AppCompatActivity {
             }
         };
 
-        messageRecyclerAdapter = new messageRecyclerAdapter(listrowItem,R.layout.messagelist_row,listener);
+        messageRecyclerAdapter = new messageRecyclerAdapter(listrowItem, R.layout.messagelist_row, listener);
         messageList = (RecyclerView) findViewById(R.id.messagelist);
         messageList.setAdapter(messageRecyclerAdapter);
         messageList.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
@@ -97,29 +96,32 @@ public class MessageActivity extends AppCompatActivity {
     }
 
 
-    public void setMessageData(){
+    public void setMessageData() {
         chatRoomListRef = FirebaseDatabase.getInstance().getReference("chatRoomList");
         chatRoomListRef.child(userId).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 roomList = dataSnapshot.getValue(RoomVO.class);
-                FirebaseDatabase.getInstance().getReference("users").child(roomList.getUserUuid()).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        User target = dataSnapshot.getValue(User.class);
-                        listItemNum.put(roomList.getUserUuid(),i);
-                        i++;
-                        roomList.setTargetNickName(target.getId());
-                        roomList.setTargetProfile(target.getTotalProfile());
-                        listrowItem.add(roomList);
-                        messageRecyclerAdapter.notifyDataSetChanged();
-                    }
+                if (roomList.getLastChat() != null) {
+                    FirebaseDatabase.getInstance().getReference("users").child(roomList.getUserUuid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            User target = dataSnapshot.getValue(User.class);
+                            listItemNum.put(roomList.getUserUuid(), i);
+                            i++;
+                            roomList.setTargetNickName(target.getId());
+                            roomList.setTargetProfile(target.getTotalProfile());
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
+                            listrowItem.add(roomList);
+                            messageRecyclerAdapter.notifyDataSetChanged();
+                        }
 
-                    }
-                });
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                }
             }
 
             @Override
@@ -133,7 +135,7 @@ public class MessageActivity extends AppCompatActivity {
                         listrowItem.remove(listNum);
                         roomList.setTargetNickName(target.getId());
                         roomList.setTargetProfile(target.getTotalProfile());
-                        listrowItem.add(listNum,roomList);
+                        listrowItem.add(listNum, roomList);
                         messageRecyclerAdapter.notifyDataSetChanged();
                     }
 
@@ -170,7 +172,9 @@ public class MessageActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
-    };
+    }
+
+    ;
 
 
 }

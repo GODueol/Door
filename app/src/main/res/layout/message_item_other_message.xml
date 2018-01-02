@@ -28,9 +28,9 @@
         android:layout_marginRight="20dp"
         app:cmv_backgroundColor="#FFE0BE"
         app:cmv_backgroundColorPressed="#FFFFFF"
-        app:cmv_cornerRadius="9dp"
         app:cmv_arrowGravity="start"
         app:cmv_arrowPosition="left"
+        app:cmv_cornerRadius="9dp"
         app:cmv_showArrow="false"
         >
 
