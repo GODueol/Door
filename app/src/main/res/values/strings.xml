@@ -45,6 +45,17 @@
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
 
+    <string name="core_plus">core +</string>
+    <string name="notice">공지 사항</string>
+    <string name="account_setting">계정 설정</string>
+    <string name="alarm_setting">알림 설정</string>
+    <string name="block_list">블럭 목록</string>
+    <string name="app_info">앱 정보</string>
+    <string name="log_out">로그 아웃</string>
+
+
+
+
 
 
 </resources>
