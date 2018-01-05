@@ -116,17 +116,50 @@
             android:windowSoftInputMode="stateAlwaysHidden"
             tools:ignore="InnerclassSeparator"></activity>
         <activity
-            android:name=".CorePage.AudioActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden"
-            tools:ignore="InnerclassSeparator"></activity>
-        <activity
             android:name=".CorePage.CoreWriteActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden"
             tools:ignore="InnerclassSeparator"></activity>
         <activity
             android:name=".SettingActivity.SettingActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            tools:ignore="InnerclassSeparator"></activity>
+        <activity
+            android:name=".SettingActivity.AccountActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            tools:ignore="InnerclassSeparator"></activity>
+        <activity
+            android:name=".SettingActivity.AlarmActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            tools:ignore="InnerclassSeparator"></activity>
+        <activity
+            android:name=".SettingActivity.AppInfoActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            tools:ignore="InnerclassSeparator"></activity>
+        <activity
+            android:name=".SettingActivity.BlockActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            tools:ignore="InnerclassSeparator"></activity>
+        <activity
+            android:name=".SettingActivity.CorePlusActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            tools:ignore="InnerclassSeparator"></activity>
+        <activity
+            android:name=".SettingActivity.NoticeActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            tools:ignore="InnerclassSeparator"></activity>
+
+
+<!--임시-->
+        <activity
+            android:name=".CorePage.AudioActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden"
             tools:ignore="InnerclassSeparator"></activity>
@@ -140,6 +173,8 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden"
             tools:ignore="InnerclassSeparator"></activity>
+<!--임시-->
+
 
         <meta-data
             android:name="com.google.android.gms.version"

@@ -2,12 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://E:\CORE\CORE FILE\core file\CoreTest\Core.iml" filepath="E:\CORE\CORE FILE\core file\CoreTest\Core.iml" />
       <module fileurl="file://$PROJECT_DIR$/CoreTest.iml" filepath="$PROJECT_DIR$/CoreTest.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://E:\CORE\CORE FILE\core file\CoreTest\app\app.iml" filepath="E:\CORE\CORE FILE\core file\CoreTest\app\app.iml" />
       <module fileurl="file://$PROJECT_DIR$/heartbutton_library/heartbutton_library.iml" filepath="$PROJECT_DIR$/heartbutton_library/heartbutton_library.iml" />
-      <module fileurl="file://E:\CORE\CORE FILE\core file\CoreTest\heartbutton_library\heartbutton_library.iml" filepath="E:\CORE\CORE FILE\core file\CoreTest\heartbutton_library\heartbutton_library.iml" />
     </modules>
   </component>
 </project>
