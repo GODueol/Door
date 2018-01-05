@@ -32,7 +32,7 @@ public class SettingActivity extends AppCompatActivity {
     private ArrayAdapter<String> listAdapter;
 
     TextView t = null;
-    TextView d = null;
+    TextView dasdf = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
