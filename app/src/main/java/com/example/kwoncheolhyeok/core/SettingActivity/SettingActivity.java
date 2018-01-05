@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 
 import com.example.kwoncheolhyeok.core.R;
@@ -29,7 +30,7 @@ public class SettingActivity extends AppCompatActivity {
     ListView setting_list = null;
     private ArrayAdapter<String> listAdapter ;
 
-
+TextView t = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
