@@ -1,6 +1,7 @@
 package com.example.kwoncheolhyeok.core.SettingActivity;
 
 import android.app.LauncherActivity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -48,7 +49,7 @@ public class SettingActivity extends AppCompatActivity {
 
         setting_list = (ListView) findViewById(R.id.setting_list);
 
-        String[] setting_contents = new String[]{"CORE +", "공지 사항", "계정 설정", "알림 설정", "블럭 목록", "앱 정보", "로그아웃"};
+        String[] setting_contents = new String[]{"CORE +", "공지사항", "계정", "알림", "블럭", "앱 정보", "로그아웃"};
 
         ArrayList<String> setting = new ArrayList<String>();
         setting.addAll(Arrays.asList(setting_contents));
@@ -58,9 +59,43 @@ public class SettingActivity extends AppCompatActivity {
 
         setting_list.setAdapter(listAdapter);
 
-
+        setting_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                Toast.makeText(SettingActivity.this, setting_contents[position], Toast.LENGTH_SHORT).show();
+                switch (position) {
+                    case 0:
+//                        Toast.makeText(SettingActivity.this, setting_contents[position], Toast.LENGTH_SHORT).show();
+                        Intent i = new Intent (SettingActivity.this, CorePlusActivity.class);
+                        startActivity(i);
+                        break;
+                    case 1:
+                        Intent i2 = new Intent (SettingActivity.this, NoticeActivity.class);
+                        startActivity(i2);
+                        break;
+                    case 2:
+                        Intent i3 = new Intent (SettingActivity.this, AccountActivity.class);
+                        startActivity(i3);
+                        break;
+                    case 3:
+                        Intent i4 = new Intent (SettingActivity.this, AlarmActivity.class);
+                        startActivity(i4);
+                        break;
+                    case 4:
+                        Intent i5 = new Intent (SettingActivity.this, BlockActivity.class);
+                        startActivity(i5);
+                        break;
+                    case 5:
+                        Intent i6 = new Intent (SettingActivity.this, AppInfoActivity.class);
+                        startActivity(i6);
+                        break;
+                    case 6:
+//                        logout();
+                        break;
+                }
+            }
+        });
     }
-
 
     // 뒤로가기 버튼 기능
     public boolean onOptionsItemSelected(android.view.MenuItem item) {
