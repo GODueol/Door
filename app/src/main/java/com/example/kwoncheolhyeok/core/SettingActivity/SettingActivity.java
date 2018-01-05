@@ -28,9 +28,10 @@ public class SettingActivity extends AppCompatActivity {
     Toolbar toolbar = null;
 
     ListView setting_list = null;
-    private ArrayAdapter<String> listAdapter ;
+    private ArrayAdapter<String> listAdapter;
 
-TextView t = null;
+    TextView t = null;
+    TextView d = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,25 +48,18 @@ TextView t = null;
 
         setting_list = (ListView) findViewById(R.id.setting_list);
 
-        String[] setting_contents = new String[] { "CORE +", "공지 사항", "계정 설정", "알림 설정", "블럭 목록", "앱 정보", "로그아웃"};
+        String[] setting_contents = new String[]{"CORE +", "공지 사항", "계정 설정", "알림 설정", "블럭 목록", "앱 정보", "로그아웃"};
 
         ArrayList<String> setting = new ArrayList<String>();
-        setting.addAll( Arrays.asList(setting_contents) );
+        setting.addAll(Arrays.asList(setting_contents));
 
-        listAdapter = new ArrayAdapter<String>(this, R.layout.setting_activity_list_item,setting);
+        listAdapter = new ArrayAdapter<String>(this, R.layout.setting_activity_list_item, setting);
 
 
-        setting_list.setAdapter( listAdapter );
-
+        setting_list.setAdapter(listAdapter);
 
 
     }
-
-
-
-
-
-
 
 
     // 뒤로가기 버튼 기능
