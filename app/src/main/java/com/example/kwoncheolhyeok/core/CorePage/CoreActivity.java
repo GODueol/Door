@@ -24,7 +24,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 
 
 public class CoreActivity extends AppCompatActivity {
@@ -92,7 +92,7 @@ public class CoreActivity extends AppCompatActivity {
 
         final RecyclerView recyclerView = findViewById(R.id.core_listview);
 
-        final LinkedList<CoreListItem> list = new LinkedList<>();
+        final ArrayList<CoreListItem> list = new ArrayList<>();
         coreListAdapter = new CoreListAdapter(list, this, cUuid);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
@@ -138,7 +138,7 @@ public class CoreActivity extends AppCompatActivity {
             }
 
             private void addCoreListItem(User user, CorePost corePost, String postKey) {
-                list.offerFirst(new CoreListItem(user, corePost, postKey));
+                list.add(0,new CoreListItem(user, corePost, postKey));
                 coreListAdapter.notifyDataSetChanged();
             }
 

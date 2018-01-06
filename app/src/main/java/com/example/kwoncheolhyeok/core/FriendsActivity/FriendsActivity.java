@@ -13,10 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import com.example.kwoncheolhyeok.core.CorePage.AudioActivity;
-import com.example.kwoncheolhyeok.core.CorePage.CoreActivity;
 import com.example.kwoncheolhyeok.core.Entity.User;
-import com.example.kwoncheolhyeok.core.PeopleFragment.FullImageActivity;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.google.firebase.database.DataSnapshot;
@@ -25,12 +22,12 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 
 public class FriendsActivity extends AppCompatActivity {
 
     Toolbar toolbar = null;
-    private LinkedList<UserListAdapter.Item> items;
+    private ArrayList<UserListAdapter.Item> items;
     private UserListAdapter adapter;
     private ValueEventListener listener;
     private Query ref;
@@ -53,7 +50,8 @@ public class FriendsActivity extends AppCompatActivity {
         navigation.enableItemShiftingMode(false);
         navigation.setIconVisibility(false);
         navigation.setTextSize(15);
-        navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+
+        BottomNavigationView.OnNavigationItemSelectedListener selectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
@@ -75,7 +73,8 @@ public class FriendsActivity extends AppCompatActivity {
                 }
                 return false;
             }
-        });
+        };
+        navigation.setOnNavigationItemSelectedListener(selectedListener);
 
 
         toolbar = findViewById(R.id.toolbar);
@@ -87,7 +86,8 @@ public class FriendsActivity extends AppCompatActivity {
 
         // 리사이클뷰
         final RecyclerView recyclerView = findViewById(R.id.friendsRecyclerView);
-        items = new LinkedList<>();
+        items = new ArrayList<>();
+        items.add(new UserListAdapter.Item(true));
 
         adapter = new UserListAdapter(this, items);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -95,8 +95,8 @@ public class FriendsActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
         // setRecyclerView (default)
-        adapter.setItemMenu(R.menu.friends_set_follow);
-        navigation.setSelectedItemId(R.id.navigation_receive);
+        adapter.setItemMenu(R.menu.friends_set_follow, "friendUsers");
+        navigation.setSelectedItemId(R.id.navigation_friends);
 
         //임시 !!! 프렌즈 헤더 확인용
         ex_header = findViewById(R.id.ex_header);
@@ -107,14 +107,12 @@ public class FriendsActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
-
-
-
     }
 
-    private void setRecyclerView(final LinkedList<UserListAdapter.Item> items, final UserListAdapter adapter, final String field, int item_menu) {
-        adapter.setItemMenu(item_menu);
+    private void setRecyclerView(final ArrayList<UserListAdapter.Item> items, final UserListAdapter adapter, final String field, int item_menu) {
+        adapter.setItemMenu(item_menu, field);
         items.clear();
+        items.add(new UserListAdapter.Item(true));
         if(ref != null && listener != null) ref.removeEventListener(listener);  // 이전 리스너 해제
         ref = DataContainer.getInstance().getMyUserRef().child(field).orderByValue();
         listener = ref.addValueEventListener(new ValueEventListener() {
@@ -123,6 +121,7 @@ public class FriendsActivity extends AppCompatActivity {
 
                 Log.d(field, "DataChange : " + dataSnapshot.getKey() + ',' + dataSnapshot.getValue());
                 items.clear();
+                items.add(new UserListAdapter.Item(true));
                 if(dataSnapshot.getValue() == null) adapter.notifyDataSetChanged();
 
                 for(final DataSnapshot snapshot : dataSnapshot.getChildren()){
@@ -133,7 +132,8 @@ public class FriendsActivity extends AppCompatActivity {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             User oUser = dataSnapshot.getValue(User.class);
-                            items.offerFirst(new UserListAdapter.Item(oUser, (long)snapshot.getValue(), oUuid));
+                            items.add(1, new UserListAdapter.Item(oUser, (long)snapshot.getValue(), oUuid));
+//                            items.offerFirst(new UserListAdapter.Item(oUser, (long)snapshot.getValue(), oUuid));
                             adapter.notifyDataSetChanged();
                         }
 

@@ -40,18 +40,63 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
     private List<Item> items;
     private int itemMenu;
     private Context context;
+    private String field;
+
+    private class VIEW_TYPES {
+        public static final int Header = 1;
+        public static final int Normal = 2;
+        public static final int Footer = 3;
+    }
+
     UserListAdapter(Context context, List<Item> items){
         this.context = context;
         this.items = items;
     }
-    void setItemMenu(int itemMenu){
+    void setItemMenu(int itemMenu, String tabName){
         this.itemMenu = itemMenu;
+        this.field = tabName;
     }
+//
+//    @Override
+//    public int getItemViewType(int position) {
+//        return super.getItemViewType(position);
+//
+//        if (isPositionHeader(position)) {
+//            return TYPE_HEADER;
+//
+//        } else if (isPositionFooter(position)) {
+//            return TYPE_FOOTER;
+//
+//        } else {
+//            int type = items.get(position - 1).getItemType();
+//            return type;
+//        }
+//    }
 
     @Override
     public UserHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.friends_list_item,viewGroup,false);
-        return new UserHolder(v);
+//
+//        View v;
+//        if(isPositionHeader(i)) v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.header_friends_list,viewGroup,false);
+//        else v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.friends_list_item,viewGroup,false);
+//        return new UserHolder(v);
+
+
+        View rowView;
+
+        switch (i)
+        {
+            case VIEW_TYPES.Normal:
+                rowView=LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.friends_list_item, viewGroup, false);
+                break;
+            case VIEW_TYPES.Header:
+                rowView=LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.header_friends_list, viewGroup, false);
+                break;
+            default:
+                rowView=LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.friends_list_item, viewGroup, false);
+                break;
+        }
+        return new UserHolder (rowView);
     }
 
     @SuppressLint("SetTextI18n")
@@ -59,6 +104,20 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
     public void onBindViewHolder(final UserHolder userHolder, int i) {
         final Item item = items.get(i);
         final User user = item.getUser();
+
+        if(user == null) {
+            ViewGroup.LayoutParams params = userHolder.itemView.getLayoutParams();
+            if(field.equals("viewedMeUsers")) {
+                userHolder.itemView.setVisibility(View.INVISIBLE);
+                params.height = 0;
+            }
+            else {
+                userHolder.itemView.setVisibility(View.VISIBLE);
+                params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+            }
+            userHolder.itemView.setLayoutParams(params);
+            return;
+        }
         Glide.with(userHolder.profilePicImage.getContext()).load(user.getPicUrls().getPicUrl1()).into(userHolder.profilePicImage);
         userHolder.idText.setText(user.getId());
         userHolder.subProfileText.setText(TextUtils.join("/", new String[]{Integer.toString(user.getAge()), Integer.toString(user.getHeight()),
@@ -170,6 +229,18 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
     }
 
     @Override
+    public int getItemViewType(int position) {
+
+        if(items.get(position).isHeader)
+            return VIEW_TYPES.Header;
+        else if(items.get(position).isFooter)
+            return VIEW_TYPES.Footer;
+        else
+            return VIEW_TYPES.Normal;
+
+    }
+
+    @Override
     public int getItemCount() {
         return items.size();
     }
@@ -194,6 +265,12 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
         User user;
         long date;
         String uuid;
+
+        boolean isHeader = false, isFooter = false;
+
+        Item(boolean isHeader){
+            this.isHeader = isHeader;
+        }
 
         Item(User user, long date, String uuid) {
             this.user = user;
