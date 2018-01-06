@@ -93,11 +93,10 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
     @Bind(R.id.message_white)
     ImageView message;
 
-    @Bind(R.id.btn_core2)
+    @Bind(R.id.core_counts)
     TextView corePostCount;
 
-    //임시 !!! 프렌즈 헤더 확인용 (프렌즈 앱 죽는 이유로 이곳에서 테스트)
-    TextView ex_header = null;
+
 
     @SuppressLint("DefaultLocale")
     @Override
@@ -117,15 +116,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         getSupportActionBar().setDisplayShowHomeEnabled(true); //홈 아이콘을 숨김처리합니다.
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
 
-        //임시 !!! 프렌즈 헤더 확인용 (프렌즈 앱 죽는 이유로 이곳에서 테스트)
-        ex_header = findViewById(R.id.ex_header);
-        ex_header.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(FullImageActivity.this, E_Header.class);
-                startActivity(i);
-            }
-        });
+
 
         //Tab Fragment 1에서 받아온 썸네일 이미지를 이 액티비티로 받아옴
         page1 = findViewById(R.id.image1);
@@ -194,6 +185,9 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
                 Integer.toString(oUser.getWeight()), oUser.getBodyType()}));
         textIntroduce.setText(oUser.getIntro());
 
+        // 코어 카운트
+        corePostCount.setText(Integer.toString(oUser.getCorePostCount()));
+
         // 거리 Set
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(FireBaseUtil.currentLocationPath);
         GeoFire geoFire = new GeoFire(ref);
@@ -242,7 +236,6 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         setFollowing(item);
 
 
-        corePostCount.setText(Integer.toString(oUser.getCorePostCount()));
     }
 
     public void setViewedMeUsers(ImageAdapter.Item item) {

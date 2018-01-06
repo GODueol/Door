@@ -30,23 +30,49 @@
         </android.support.v7.widget.Toolbar>
 
         <ImageView
+            android:id="@+id/no_use_image"
             android:layout_width="80dp"
             android:layout_height="23dp"
             android:layout_centerInParent="true"
-            android:src="@drawable/title"/>
+            />
 
-        <TextView
-            android:id="@+id/ex_header"
+        <RelativeLayout
+            android:id="@+id/core_enter_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="20dp"
-            android:gravity="right"
-            android:text="헤더 확인"
-            android:textColor="@color/skyblue"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:layout_toRightOf="@+id/no_use_image"
+            android:layout_marginLeft="15dp"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp"
+            >
+
+            <TextView
+                android:id="@+id/core_counts"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="6dp"
+                android:layout_toLeftOf="@+id/ex_header"
+                android:gravity="right"
+                android:text="00"
+                android:textColor="@color/skyblue"
+                android:textSize="18dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/ex_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="17dp"
+                android:text="CORE"
+                android:textColor="@color/skyblue"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+        </RelativeLayout>
 
 
     </RelativeLayout>
@@ -70,100 +96,50 @@
 
     <RelativeLayout
         android:id="@+id/layout"
-        android:layout_width="match_parent"
+        android:layout_width="180dp"
         android:layout_height="25dp"
+        android:layout_alignParentRight="true"
         android:layout_below="@+id/toolbar_layout"
-        android:layout_alignParentLeft="true"
         android:layout_marginTop="8dp"
-        android:background="@drawable/shape"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
+        android:background="#55000000"
         >
 
-        <RelativeLayout
-            android:id="@+id/core_enter_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="250dp"
-            >
-
-            <TextView
-                android:id="@+id/btn_core2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="24"
-                android:textSize="15.5dp"
-                android:textColor="@android:color/white"
-                android:gravity="right"
-                android:layout_toLeftOf="@+id/btn_core"
-                android:layout_marginRight="5dp"
-                android:layout_centerVertical="true"
-                />
-
-            <TextView
-                android:id="@+id/btn_core"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="CORE"
-                android:textSize="15.5dp"
-                android:layout_toLeftOf="@+id/core_enter"
-                android:layout_marginRight="7dp"
-                android:layout_centerVertical="true"
-
-                android:textColor="@android:color/white"
-
-                />
-
-            <ImageView
-                android:id="@+id/core_enter"
-                android:layout_width="10dp"
-                android:layout_height="10dp"
-                android:icon="@android:drawable/ic_media_play"
-                android:src="@drawable/core_enter"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="8dp"
-                />
-
-        </RelativeLayout>
 
         <TextView
             android:id="@+id/distance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0.0"
-            android:textSize="15.5dp"
-            android:textColor="@android:color/white"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
+            android:layout_marginRight="5dp"
+            android:layout_toLeftOf="@+id/km"
             android:gravity="right"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
+            android:text="0.0"
+            android:textColor="@android:color/white"
+            android:textSize="15.5dp"
 
             />
 
         <TextView
+            android:id="@+id/km"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="15dp"
+            android:layout_toLeftOf="@+id/login_time"
             android:text="km"
-            android:textSize="15.5dp"
             android:textColor="@android:color/white"
-            android:layout_alignBaseline="@+id/distance"
-            android:layout_alignBottom="@+id/distance"
-            android:layout_toRightOf="@+id/distance"
-            android:layout_toEndOf="@+id/distance" />
+            android:textSize="15.5dp" />
 
         <TextView
             android:id="@+id/login_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="16.08.25 16:34"
-            android:textSize="15.5dp"
-            android:textColor="@android:color/white"
+            android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="90dp"
-            />
+            android:layout_marginRight="15dp"
+            android:text="3일 전"
+            android:textColor="@android:color/white"
+            android:textSize="15.5dp" />
 
     </RelativeLayout>
 

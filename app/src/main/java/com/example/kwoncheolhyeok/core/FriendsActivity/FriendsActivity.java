@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.example.kwoncheolhyeok.core.CorePage.AudioActivity;
 import com.example.kwoncheolhyeok.core.CorePage.CoreActivity;
 import com.example.kwoncheolhyeok.core.Entity.User;
+import com.example.kwoncheolhyeok.core.PeopleFragment.FullImageActivity;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.google.firebase.database.DataSnapshot;
@@ -97,6 +98,15 @@ public class FriendsActivity extends AppCompatActivity {
         adapter.setItemMenu(R.menu.friends_set_follow);
         navigation.setSelectedItemId(R.id.navigation_receive);
 
+        //임시 !!! 프렌즈 헤더 확인용
+        ex_header = findViewById(R.id.ex_header);
+        ex_header.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(FriendsActivity.this, E_Header.class);
+                startActivity(i);
+            }
+        });
 
 
 
