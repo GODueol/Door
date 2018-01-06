@@ -1,6 +1,5 @@
 package com.example.kwoncheolhyeok.core.CorePage;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.media.MediaRecorder;
 import android.os.Bundle;
@@ -8,8 +7,6 @@ import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.CompoundButton;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -23,7 +20,7 @@ import java.io.IOException;
  * Created by kimbyeongin on 2018-01-06.
  */
 
-public class RecordDialog extends Dialog {
+public class RecordDialog extends CustomDialog {
 
     private MediaRecorder recorder;
 
@@ -52,21 +49,9 @@ public class RecordDialog extends Dialog {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // 다이얼로그 외부 화면 흐리게 표현
-        WindowManager.LayoutParams lpWindow = new WindowManager.LayoutParams();
-        lpWindow.flags = WindowManager.LayoutParams.FLAG_DIM_BEHIND;
-        lpWindow.dimAmount = 0.8f;
-        getWindow().setAttributes(lpWindow);
-
         setContentView(R.layout.dialog_record);
 
-        // Dialog 사이즈 조절 하기
-        ViewGroup.LayoutParams params = this.getWindow().getAttributes();
-        params.width = ViewGroup.LayoutParams.MATCH_PARENT;
-        params.height = ViewGroup.LayoutParams.MATCH_PARENT;
-        this.getWindow().setAttributes((android.view.WindowManager.LayoutParams) params);
-
-
+        // Set Btn
         recorder = new MediaRecorder();
         ToggleButton recordBtn = findViewById(R.id.recordButton);
         recordBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

@@ -1,23 +1,17 @@
 package com.example.kwoncheolhyeok.core.CorePage;
 
-import android.Manifest;
 import android.animation.Animator;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.kwoncheolhyeok.core.Entity.CorePost;
@@ -46,7 +40,6 @@ import java.util.ArrayList;
 
 public class CoreWriteActivity  extends AppCompatActivity {
 
-    private static final int CORE_PERMISSIONS_REQUEST_RECORD_AUDIO = 1;
     Toolbar toolbar = null;
 
     FloatingActionButton fab, picture_fab, audio_fab;
@@ -141,70 +134,10 @@ public class CoreWriteActivity  extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // 다이얼로그 녹음, 파일
-                UiUtil.getInstance().showDialog(CoreWriteActivity.this,
-                        "Audio", "선택하세요", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                // TODO : 녹음
+                RecordSelectDialog recordSelectDialog = new RecordSelectDialog(CoreWriteActivity.this);
+                recordSelectDialog.show();
 
-                                int permissionCheck = ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.RECORD_AUDIO);
-                                if(permissionCheck == PackageManager.PERMISSION_DENIED){
-
-                                    // Activity에서 실행하는경우
-                                    if (ContextCompat.checkSelfPermission(CoreWriteActivity.this,Manifest.permission.RECORD_AUDIO)!= PackageManager.PERMISSION_GRANTED) {
-
-                                        // 이 권한을 필요한 이유를 설명해야하는가?
-                                        if (ActivityCompat.shouldShowRequestPermissionRationale(CoreWriteActivity.this,Manifest.permission.RECORD_AUDIO)) {
-
-                                            // 다이어로그같은것을 띄워서 사용자에게 해당 권한이 필요한 이유에 대해 설명합니다
-                                            UiUtil.getInstance().showDialog(CoreWriteActivity.this, "권한 요청", "녹음을 위해선 권한이 필요합니다. 권한 승인하시겠습니까?",
-                                                    new DialogInterface.OnClickListener() {
-                                                        @Override
-                                                        public void onClick(DialogInterface dialogInterface, int i) {
-                                                            ActivityCompat.requestPermissions(CoreWriteActivity.this,
-                                                                    new String[]{Manifest.permission.RECORD_AUDIO},
-                                                                    CORE_PERMISSIONS_REQUEST_RECORD_AUDIO);
-                                                        }
-                                                    },
-                                                    new DialogInterface.OnClickListener() {
-                                                        @Override
-                                                        public void onClick(DialogInterface dialogInterface, int i) {
-
-                                                        }
-                                                    }
-                                            );
-
-                                            // 해당 설명이 끝난뒤 requestPermissions()함수를 호출하여 권한허가를 요청해야 합니다
-
-                                        } else {
-
-                                            ActivityCompat.requestPermissions(CoreWriteActivity.this,
-                                                    new String[]{Manifest.permission.RECORD_AUDIO},
-                                                    CORE_PERMISSIONS_REQUEST_RECORD_AUDIO);
-
-                                            // 필요한 권한과 요청 코드를 넣어서 권한허가요청에 대한 결과를 받아야 합니다
-
-                                        }
-                                    }
-
-//                                    Toast.makeText(getBaseContext(),"녹음 권한이 없습니다",Toast.LENGTH_SHORT).show();
-                                } else {
-                                    RecordDialog recordDialog = new RecordDialog(CoreWriteActivity.this);
-                                    recordDialog.show();
-                                }
-
-                                closeFABMenu();
-                            }
-                        }, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                // TODO : 음성파일 가져오기
-
-
-                                closeFABMenu();
-                            }
-                        }, "녹음", "음성파일가져오기"
-                );
+                closeFABMenu();
             }
         });
 
@@ -363,25 +296,6 @@ public class CoreWriteActivity  extends AppCompatActivity {
                 editImageUri = outputFileUri;
                 closeFABMenu();
             }
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String permissions[], @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case CORE_PERMISSIONS_REQUEST_RECORD_AUDIO:
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // 권한 허가
-                    // 해당 권한을 사용해서 작업을 진행할 수 있습니다
-                    RecordDialog recordDialog = new RecordDialog(CoreWriteActivity.this);
-                    recordDialog.show();
-                } else {
-                    // 권한 거부
-                    // 사용자가 해당권한을 거부했을때 해주어야 할 동작을 수행합니다
-                    Toast.makeText(getBaseContext(),"권한이 없으므로 녹음 불가",Toast.LENGTH_SHORT).show();
-                }
         }
     }
 }
