@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/followCancel"
+        android:title="@string/unfollow" />
+    <item
+        android:id="@+id/block"
+        android:title="@string/block" />
+    <item
+        android:id="@+id/core"
+        android:title="@string/core" />
+
+</menu>

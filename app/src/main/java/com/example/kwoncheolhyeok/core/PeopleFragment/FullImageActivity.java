@@ -17,10 +17,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.kwoncheolhyeok.core.CorePage.CoreActivity;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.Event.RefreshLocationEvent;
-import com.example.kwoncheolhyeok.core.FriendsActivity.E_Header;
 import com.example.kwoncheolhyeok.core.MessageActivity.ChattingActivity;
 import com.example.kwoncheolhyeok.core.PeopleFragment.FullImageViewPager.DetailImageActivity;
 import com.example.kwoncheolhyeok.core.R;
@@ -172,9 +170,8 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         core_enter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(FullImageActivity.this, CoreActivity.class);
-                intent.putExtra("uuid", item.getUuid());
-                startActivity(intent);
+                UiUtil.getInstance().goToCoreActivity(FullImageActivity.this,item.getUuid());
+                // TODO : 확인, 다른 부부노 수정
             }
         });
 

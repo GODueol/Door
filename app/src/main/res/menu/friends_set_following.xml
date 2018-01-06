@@ -6,4 +6,8 @@
     <item
         android:id="@+id/block"
         android:title="@string/block" />
+    <item
+        android:id="@+id/core"
+        android:title="@string/core" />
+
 </menu>

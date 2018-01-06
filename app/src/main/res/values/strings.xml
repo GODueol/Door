@@ -52,12 +52,8 @@
     <string name="block_list">블럭</string>
     <string name="app_info">앱 정보</string>
     <string name="log_out">로그 아웃</string>
-
-
-
-
-
-
+    <string name="core">Core</string>
+    <string name="follow">Follow</string>
 
 
 </resources>

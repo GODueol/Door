@@ -5,9 +5,11 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 
+import com.example.kwoncheolhyeok.core.CorePage.CoreActivity;
 import com.example.kwoncheolhyeok.core.R;
 
 /**
@@ -55,6 +57,12 @@ public class UiUtil {
         builder.setNegativeButton(cancelStr, cancelListener);
         AlertDialog dialog = builder.create();    // 알림창 객체 생성
         dialog.show();    // 알림창 띄우기
+    }
+
+    public void goToCoreActivity(Context context, String uuid){
+        Intent intent = new Intent(context, CoreActivity.class);
+        intent.putExtra("uuid", uuid);
+        context.startActivity(intent);
     }
 
 }

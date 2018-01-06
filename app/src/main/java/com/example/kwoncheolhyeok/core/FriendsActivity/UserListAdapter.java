@@ -56,31 +56,9 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
         this.itemMenu = itemMenu;
         this.field = tabName;
     }
-//
-//    @Override
-//    public int getItemViewType(int position) {
-//        return super.getItemViewType(position);
-//
-//        if (isPositionHeader(position)) {
-//            return TYPE_HEADER;
-//
-//        } else if (isPositionFooter(position)) {
-//            return TYPE_FOOTER;
-//
-//        } else {
-//            int type = items.get(position - 1).getItemType();
-//            return type;
-//        }
-//    }
 
     @Override
     public UserHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-//
-//        View v;
-//        if(isPositionHeader(i)) v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.header_friends_list,viewGroup,false);
-//        else v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.friends_list_item,viewGroup,false);
-//        return new UserHolder(v);
-
 
         View rowView;
 
@@ -217,6 +195,11 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
                             });
                             return true;
                         }
+                        else if(i == R.id.core){
+                            // Go to Core
+                            UiUtil.getInstance().goToCoreActivity(context, item.getUuid());
+                            return true;
+                        }
                         else {
                             return onMenuItemClick(menuItem);
                         }
@@ -298,9 +281,6 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
             return date;
         }
 
-        public void setDate(long date) {
-            this.date = date;
-        }
     }
 
 }

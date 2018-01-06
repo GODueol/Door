@@ -26,16 +26,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.kwoncheolhyeok.core.CorePage.CoreActivity;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.Event.RefreshLocationEvent;
 import com.example.kwoncheolhyeok.core.Event.SetProfilePicEvent;
 import com.example.kwoncheolhyeok.core.FriendsActivity.FriendsActivity;
 import com.example.kwoncheolhyeok.core.LoginActivity.LoginActivity;
 import com.example.kwoncheolhyeok.core.MessageActivity.MessageActivity;
-import com.example.kwoncheolhyeok.core.ScreenshotSetApplication;
 import com.example.kwoncheolhyeok.core.ProfileModifyActivity.ProfileModifyActivity;
 import com.example.kwoncheolhyeok.core.R;
+import com.example.kwoncheolhyeok.core.ScreenshotSetApplication;
 import com.example.kwoncheolhyeok.core.SettingActivity.SettingActivity;
 import com.example.kwoncheolhyeok.core.Util.BusProvider;
 import com.example.kwoncheolhyeok.core.Util.CloseActivityHandler;
@@ -322,10 +321,7 @@ public class MainActivity extends AppCompatActivity
 
             viewPager.setCurrentItem(0);
         } else if (id == R.id.nav_mycore) {
-
-            Intent i = new Intent(MainActivity.this, CoreActivity.class);
-            i.putExtra("uuid", DataContainer.getInstance().getUid());
-            startActivity(i);
+            UiUtil.getInstance().goToCoreActivity(MainActivity.this,DataContainer.getInstance().getUid());
         } else if (id == R.id.nav_message) {
 
             Intent i = new Intent(MainActivity.this, MessageActivity.class);

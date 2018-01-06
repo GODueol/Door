@@ -56,19 +56,19 @@ public class FriendsActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.navigation_friends:
-                        setRecyclerView(items, adapter, "friendUsers", R.menu.friends_set_unfollow);
+                        setRecyclerView(items, adapter, "friendUsers", R.menu.friends_set_friend);
                         return true;
                     case R.id.navigation_receive:
-                        setRecyclerView(items, adapter, "followerUsers", R.menu.friends_set_follow);
+                        setRecyclerView(items, adapter, "followerUsers", R.menu.friends_set_follower);
                         return true;
                     case R.id.navigation_send:
-                        setRecyclerView(items, adapter, "followingUsers", R.menu.friends_set_unfollow);
+                        setRecyclerView(items, adapter, "followingUsers", R.menu.friends_set_following);
                         return true;
                     case R.id.navigation_recent:
-                        setRecyclerView(items, adapter, "viewedMeUsers", R.menu.friends_set_follow);
+                        setRecyclerView(items, adapter, "viewedMeUsers", R.menu.friends_set_follower);
                         return true;
                     /*case R.id.navigation_block:
-                        setRecyclerView(items, adapter, "blockUsers", R.menu.friends_set_follow);
+                        setRecyclerView(items, adapter, "blockUsers", R.menu.friends_set_follower);
                         return true;*/
                 }
                 return false;
@@ -95,7 +95,7 @@ public class FriendsActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
         // setRecyclerView (default)
-        adapter.setItemMenu(R.menu.friends_set_follow, "friendUsers");
+        adapter.setItemMenu(R.menu.friends_set_follower, "friendUsers");
         navigation.setSelectedItemId(R.id.navigation_friends);
 
         //임시 !!! 프렌즈 헤더 확인용
