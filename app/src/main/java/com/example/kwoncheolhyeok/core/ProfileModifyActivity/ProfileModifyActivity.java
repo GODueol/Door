@@ -27,7 +27,6 @@ import com.bumptech.glide.Glide;
 import com.example.kwoncheolhyeok.core.Entity.IntBoundary;
 import com.example.kwoncheolhyeok.core.Entity.StringBoundary;
 import com.example.kwoncheolhyeok.core.Entity.User;
-import com.example.kwoncheolhyeok.core.Event.RefreshLocationEvent;
 import com.example.kwoncheolhyeok.core.Event.SetProfilePicEvent;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.BusProvider;
@@ -667,9 +666,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         } else if (modifyingPic == profilePic4) {
             user.getPicUrls().setPicUrl4(downloadUrl.toString());
         }
-        DataContainer.getInstance().setUser(user);
         DataContainer.getInstance().getUsersRef().child(DataContainer.getInstance().getUid()).setValue(user);
-//        BusProvider.getInstance().post(new RefreshLocationEvent());
     }
 
     @NonNull
@@ -804,9 +801,6 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 
                         // 성공시 백버튼
                         onBackPressed();
-
-                        // grid refresh
-                        BusProvider.getInstance().post(new RefreshLocationEvent());
                     }
                 });
             }

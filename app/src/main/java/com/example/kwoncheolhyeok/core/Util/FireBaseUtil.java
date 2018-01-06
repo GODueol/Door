@@ -1,6 +1,7 @@
 package com.example.kwoncheolhyeok.core.Util;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.google.android.gms.tasks.Task;
@@ -135,6 +136,8 @@ public class FireBaseUtil {
                 if(mutableData.getValue() != null){
                     count = ((Map)mutableData.getValue()).size();
                 }
+
+                Log.d("kbj", "count : " + count);
                 corePostCountRef.setValue(count);
                 return Transaction.success(mutableData);
             }

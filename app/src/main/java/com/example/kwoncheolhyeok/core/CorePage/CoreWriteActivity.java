@@ -63,7 +63,6 @@ public class CoreWriteActivity  extends AppCompatActivity {
     Uri editImageUri;
     TextView textContents;
     private String cUuid;
-    private TextView editAudio;
     private String postKey;
 
 
@@ -94,7 +93,7 @@ public class CoreWriteActivity  extends AppCompatActivity {
         editImage = findViewById(R.id.edit_img);
         saveBtn = findViewById(R.id.save);
         textContents = findViewById(R.id.edit_txt);
-        editAudio = findViewById(R.id.edit_audio);
+        TextView editAudio = findViewById(R.id.edit_audio);
 
         // 본인, 타인 구분
         if(!cUuid.equals(mUuid)){    // 타인
@@ -134,60 +133,7 @@ public class CoreWriteActivity  extends AppCompatActivity {
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                final ArrayList<Task> tasks = new ArrayList<>();
-
-                UiUtil.getInstance().startProgressDialog(CoreWriteActivity.this);
-                DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-
-                String key;
-                if(!isEdit()) key = mDatabase.child("posts").push().getKey();
-                else key = postKey;
-
-                final CorePost corePost = new CorePost(mUuid);
-
-                corePost.setText(textContents.getText().toString());
-
-                final DatabaseReference postRef = mDatabase.child("posts").child(cUuid).child(key);
-                Task<Void> postUploadTask = postRef.setValue(corePost);
-                tasks.add(postUploadTask);
-
-                postUploadTask.addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        DatabaseReference corePostCountRef = DataContainer.getInstance().getUserRef(cUuid).child("corePostCount");
-                        // addCorePostCount
-                        if(isEdit()) FireBaseUtil.getInstance().syncCorePostCount(cUuid);
-                    }
-                });
-
-                // Picture Upload
-                if(editImageUri != null) {
-                    StorageReference storageRef = FirebaseStorage.getInstance().getReference();
-                    final StorageReference spaceRef = storageRef.child("posts").child(cUuid).child(key);
-                    UploadTask uploadTask = spaceRef.putFile(editImageUri);
-                    tasks.add(uploadTask);
-                    uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            postRef.child("pictureUrl").setValue(taskSnapshot.getDownloadUrl().toString());
-                        }
-                    });
-                }
-
-                // 모든 비동기 호출이 다 끝낫을 때
-                for(Task task : tasks){
-                    task.addOnCompleteListener(new OnCompleteListener() {
-                        @Override
-                        public void onComplete(@NonNull Task taskRtn) {
-                            for(Task task : tasks )
-                                if(!task.isComplete()) return;
-                            UiUtil.getInstance().stopProgressDialog();  // 프로그레스바 중단
-                            finish();
-                        }
-                    });
-                }
-
+                saveCore();
             }
         });
 
@@ -285,6 +231,60 @@ public class CoreWriteActivity  extends AppCompatActivity {
 
     }
 
+    private void saveCore() {
+        final ArrayList<Task> tasks = new ArrayList<>();
+
+        UiUtil.getInstance().startProgressDialog(CoreWriteActivity.this);
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+
+        String key;
+        if(!isEdit()) key = mDatabase.child("posts").push().getKey();
+        else key = postKey;
+
+        final CorePost corePost = new CorePost(mUuid);
+
+        corePost.setText(textContents.getText().toString());
+
+        final DatabaseReference postRef = mDatabase.child("posts").child(cUuid).child(key);
+        Task<Void> postUploadTask = postRef.setValue(corePost);
+        tasks.add(postUploadTask);
+
+        postUploadTask.addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                // addCorePostCount
+                if(!isEdit()) FireBaseUtil.getInstance().syncCorePostCount(cUuid);
+            }
+        });
+
+        // Picture Upload
+        if(editImageUri != null) {
+            StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+            final StorageReference spaceRef = storageRef.child("posts").child(cUuid).child(key);
+            UploadTask uploadTask = spaceRef.putFile(editImageUri);
+            tasks.add(uploadTask);
+            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    postRef.child("pictureUrl").setValue(taskSnapshot.getDownloadUrl().toString());
+                }
+            });
+        }
+
+        // 모든 비동기 호출이 다 끝낫을 때
+        for(Task task : tasks){
+            task.addOnCompleteListener(new OnCompleteListener() {
+                @Override
+                public void onComplete(@NonNull Task taskRtn) {
+                    for(Task task : tasks )
+                        if(!task.isComplete()) return;
+                    UiUtil.getInstance().stopProgressDialog();  // 프로그레스바 중단
+                    finish();
+                }
+            });
+        }
+    }
+
     private boolean isEdit() {
         return postKey != null;
     }
@@ -368,7 +368,7 @@ public class CoreWriteActivity  extends AppCompatActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
+                                           @NonNull String permissions[], @NonNull int[] grantResults) {
         switch (requestCode) {
             case CORE_PERMISSIONS_REQUEST_RECORD_AUDIO:
                 if (grantResults.length > 0
@@ -382,7 +382,6 @@ public class CoreWriteActivity  extends AppCompatActivity {
                     // 사용자가 해당권한을 거부했을때 해주어야 할 동작을 수행합니다
                     Toast.makeText(getBaseContext(),"권한이 없으므로 녹음 불가",Toast.LENGTH_SHORT).show();
                 }
-                return;
         }
     }
 }

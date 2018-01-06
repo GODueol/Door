@@ -18,12 +18,10 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.kwoncheolhyeok.core.Entity.User;
-import com.example.kwoncheolhyeok.core.Event.RefreshLocationEvent;
 import com.example.kwoncheolhyeok.core.MessageActivity.ChattingActivity;
 import com.example.kwoncheolhyeok.core.PeopleFragment.FullImageViewPager.DetailImageActivity;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.ScreenshotSetApplication;
-import com.example.kwoncheolhyeok.core.Util.BusProvider;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
 import com.example.kwoncheolhyeok.core.Util.GPSInfo;
@@ -341,7 +339,6 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
                         FireBaseUtil.getInstance().block(item.getUuid()).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
-                                BusProvider.getInstance().post(new RefreshLocationEvent());
                                 finish();
                             }
                         }).addOnCompleteListener(new OnCompleteListener<Void>() {

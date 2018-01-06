@@ -8,7 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -97,18 +96,8 @@ public class CoreActivity extends AppCompatActivity {
         coreListAdapter = new CoreListAdapter(list, this, cUuid);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-
         recyclerView.setAdapter(coreListAdapter);
 
-//        core_list_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            public void onItemClick(AdapterView<?> parent, View view,
-//                                    int position, long id) {
-//
-////                Intent myIntent = new Intent(getActivity(), ClubActivity.class);
-////                getActivity().startActivity(myIntent);
-//
-//            }
-//        });
 
         // Post, User Get
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -119,9 +108,8 @@ public class CoreActivity extends AppCompatActivity {
                 DataContainer dc = DataContainer.getInstance();
                 final CorePost corePost = dataSnapshot.getValue(CorePost.class);
                 final String postKey = dataSnapshot.getKey();
-                Log.d("kbj", corePost.getUuid() + "," + dc.getUid());
                 final User[] user = new User[1];
-                if(corePost.getUuid().equals(dc.getUid())) { // 코어의 주인인 경우
+                if(corePost.getUuid().equals(cUuid)) { // 작성자가 코어의 주인인 경우
                     dc.getUserRef(corePost.getUuid()).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {

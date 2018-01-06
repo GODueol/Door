@@ -74,8 +74,6 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
             }
         });
 
-        refreshGrid(null);
-
         // 스와이프로 위치 새로고침
         final SwipeRefreshLayout mSwipeRefreshLayout = view.findViewById(R.id.swipe_layout);
         SwipeRefreshLayout.OnRefreshListener onRefreshListener = new SwipeRefreshLayout.OnRefreshListener() {
@@ -236,6 +234,12 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
         });
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        refreshGrid(null);
+    }
 }
 
 
