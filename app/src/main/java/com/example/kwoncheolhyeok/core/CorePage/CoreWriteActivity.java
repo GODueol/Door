@@ -37,7 +37,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.kwoncheolhyeok.core.RecordActivity;
 
 import java.util.ArrayList;
 
@@ -244,8 +243,8 @@ public class CoreWriteActivity  extends AppCompatActivity {
 
 //                                    Toast.makeText(getBaseContext(),"녹음 권한이 없습니다",Toast.LENGTH_SHORT).show();
                                 } else {
-                                    Intent intent = new Intent(getApplicationContext(), RecordActivity.class);
-                                    startActivity(intent);
+                                    RecordDialog recordDialog = new RecordDialog(CoreWriteActivity.this);
+                                    recordDialog.show();
                                 }
 
                                 closeFABMenu();
@@ -254,6 +253,7 @@ public class CoreWriteActivity  extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 // TODO : 음성파일 가져오기
+
 
                                 closeFABMenu();
                             }
@@ -375,8 +375,8 @@ public class CoreWriteActivity  extends AppCompatActivity {
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // 권한 허가
                     // 해당 권한을 사용해서 작업을 진행할 수 있습니다
-                    Intent intent = new Intent(getApplicationContext(), RecordActivity.class);
-                    startActivity(intent);
+                    RecordDialog recordDialog = new RecordDialog(CoreWriteActivity.this);
+                    recordDialog.show();
                 } else {
                     // 권한 거부
                     // 사용자가 해당권한을 거부했을때 해주어야 할 동작을 수행합니다
