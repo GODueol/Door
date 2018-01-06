@@ -32,11 +32,6 @@ public class FriendsActivity extends AppCompatActivity {
     private ValueEventListener listener;
     private Query ref;
 
-    TextView ex_header = null;
-    /*
-    * Preparing the list data
-    */
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,15 +93,7 @@ public class FriendsActivity extends AppCompatActivity {
         adapter.setItemMenu(R.menu.friends_set_follower, "friendUsers");
         navigation.setSelectedItemId(R.id.navigation_friends);
 
-        //임시 !!! 프렌즈 헤더 확인용
-        ex_header = findViewById(R.id.ex_header);
-        ex_header.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(FriendsActivity.this, E_Header.class);
-                startActivity(i);
-            }
-        });
+
     }
 
     private void setRecyclerView(final ArrayList<UserListAdapter.Item> items, final UserListAdapter adapter, final String field, int item_menu) {
