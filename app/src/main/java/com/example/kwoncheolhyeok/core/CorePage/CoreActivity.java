@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -114,11 +115,13 @@ public class CoreActivity extends AppCompatActivity {
         mDatabase.child("posts").child(cUuid).orderByChild("writeDate").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+
                 DataContainer dc = DataContainer.getInstance();
                 final CorePost corePost = dataSnapshot.getValue(CorePost.class);
                 final String postKey = dataSnapshot.getKey();
+                Log.d("kbj", corePost.getUuid() + "," + dc.getUid());
                 final User[] user = new User[1];
-                if(cUuid.equals(dc.getUid())) { // 코어의 주인인 경우
+                if(corePost.getUuid().equals(dc.getUid())) { // 코어의 주인인 경우
                     dc.getUserRef(corePost.getUuid()).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {

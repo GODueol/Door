@@ -807,8 +807,6 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 
                         // grid refresh
                         BusProvider.getInstance().post(new RefreshLocationEvent());
-
-                        Log.d("kbj", "task complete");
                     }
                 });
             }
