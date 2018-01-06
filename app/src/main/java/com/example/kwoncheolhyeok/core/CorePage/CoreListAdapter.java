@@ -174,7 +174,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
             holder.core_setting.setVisibility(View.INVISIBLE);
         }
 
-        holder.core_date.setText(DataContainer.getInstance().convertBeforeHour(corePost.getWriteDate()) + "시간 전");
+        holder.core_date.setText(DataContainer.getInstance().convertBeforeFormat(corePost.getWriteDate()));
         holder.core_contents.setText(corePost.getText());
 
         holder.core_heart_count.setText(Integer.toString(corePost.getLikeUsers().size()));

@@ -41,9 +41,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -205,8 +203,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
 
         // 로그인 시간
         if (oUser.getLoginDate() != 0) {
-            SimpleDateFormat dateFormat = DataContainer.commonDateFormat;
-            loginTime.setText(dateFormat.format(new Date(oUser.getLoginDate())));
+            DataContainer.getInstance().convertBeforeFormat(oUser.getLoginDate());
         }
 
         // 사진 출력

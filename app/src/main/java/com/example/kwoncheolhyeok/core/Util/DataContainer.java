@@ -1,6 +1,5 @@
 package com.example.kwoncheolhyeok.core.Util;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -12,7 +11,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,8 +19,16 @@ import java.util.List;
  */
 
 public class DataContainer {
+    private static class TIME_MAXIMUM
+    {
+        public static final int SEC = 60;
+        public static final int MIN = 60;
+        public static final int HOUR = 24;
+        public static final int DAY = 30;
+        public static final int MONTH = 12;
+    }
+
     public static final String[] bodyTypes =  {"Underweight", "Skinny", "Standard", "Muscular", "Overweight"};
-    @SuppressLint("SimpleDateFormat") public static final SimpleDateFormat commonDateFormat = new SimpleDateFormat("yy.MM.dd HH:mm");
 
     private static final DataContainer ourInstance = new DataContainer();
 
@@ -59,10 +65,45 @@ public class DataContainer {
         return FirebaseDatabase.getInstance().getReference("users");
     }
 
-    public int convertBeforeHour(long longDate){
-        long diff = System.currentTimeMillis() - longDate;
+    public String convertBeforeFormat(long longDate){
+        long curTime = System.currentTimeMillis();
+        long diffTime = (curTime - longDate) / 1000;
 
-        return (int) ( diff / (24 * 60 * 1000) );
+        String msg;
+
+        if (diffTime < TIME_MAXIMUM.SEC)
+        {
+            // sec
+            msg = diffTime + "초전";
+        }
+        else if ((diffTime /= TIME_MAXIMUM.SEC) < TIME_MAXIMUM.MIN)
+        {
+            // min
+            System.out.println(diffTime);
+
+            msg = diffTime + "분전";
+        }
+        else if ((diffTime /= TIME_MAXIMUM.MIN) < TIME_MAXIMUM.HOUR)
+        {
+            // hour
+            msg = (diffTime ) + "시간전";
+        }
+        else if ((diffTime /= TIME_MAXIMUM.HOUR) < TIME_MAXIMUM.DAY)
+        {
+            // day
+            msg = (diffTime ) + "일전";
+        }
+        else if ((diffTime /= TIME_MAXIMUM.DAY) < TIME_MAXIMUM.MONTH)
+        {
+            // day
+            msg = (diffTime ) + "달전";
+        }
+        else
+        {
+            msg = (diffTime) + "년전";
+        }
+
+        return msg;
     }
 
     private List<String> scanDeviceForMp3Files(Context context){

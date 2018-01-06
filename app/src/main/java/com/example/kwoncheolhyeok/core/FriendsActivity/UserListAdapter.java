@@ -28,7 +28,6 @@ import com.example.kwoncheolhyeok.core.Util.UiUtil;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -100,7 +99,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
         userHolder.idText.setText(user.getId());
         userHolder.subProfileText.setText(TextUtils.join("/", new String[]{Integer.toString(user.getAge()), Integer.toString(user.getHeight()),
                 Integer.toString(user.getWeight()), user.getBodyType()}));
-        userHolder.dateText.setText( DataContainer.commonDateFormat.format(new Date(item.getDate())));
+        userHolder.dateText.setText( DataContainer.getInstance().convertBeforeFormat(item.getDate()));
 
         userHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
