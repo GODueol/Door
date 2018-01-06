@@ -3,9 +3,11 @@ package com.example.kwoncheolhyeok.core.LoginActivity;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -21,8 +23,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.ProviderQueryResult;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.gun0912.tedpermission.PermissionListener;
 
@@ -37,21 +37,51 @@ import java.util.List;
 public class IntroActivity extends Activity {
     /** Called when the activity is first created. */
 
-    FirebaseDatabase database = FirebaseDatabase.getInstance();
-    private FirebaseUser currentUser;
-
+    private String[] permissions = new String[] {
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.RECORD_AUDIO
+    };
     @Override
     protected void onStart() {
         super.onStart();
-        new setPermission(getApplicationContext(), GPSPermission, Manifest.permission.ACCESS_FINE_LOCATION); // 권한요청 및 권한에따른 구글맵 셋팅});
+        setPermission();
+    }
 
+    boolean isHaveAllPermission(){
+        for (String permission : permissions){
+            if(ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_DENIED){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void setPermission() {
+        PermissionListener permissionListener = new PermissionListener() {
+            @Override
+            public void onPermissionGranted() {
+                Toast.makeText(getApplication(), "권한가져옴",Toast.LENGTH_SHORT).show();
+                if(isHaveAllPermission()){
+                    getUserInfo(FirebaseAuth.getInstance().getCurrentUser());
+                }
+            }
+
+            @Override
+            public void onPermissionDenied(ArrayList<String> arrayList) {
+                //new setPermission(getApplicationContext(), this, permissions); // 권한요청 및 권한에따른 구글맵 셋팅});
+                Toast.makeText(getApplication(), "권한이 없으면 앱을 실행할 수 없습니다.",Toast.LENGTH_SHORT).show();
+                finish();   // 권한 거부시 앱 종료
+            }
+        };
+
+        new setPermission(this, permissionListener , permissions);
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.intro_activity);
-
     }
 
     private void getUserInfo(final FirebaseUser user) {
@@ -98,9 +128,7 @@ public class IntroActivity extends Activity {
         } else {
             // User is signed out
             Log.d(getApplication().getClass().getName(), "onAuthStateChanged:signed_out");
-
             goToLoginActivity();
-
         }
     }
 
@@ -125,26 +153,10 @@ public class IntroActivity extends Activity {
         startActivityForResult(i, 0);
     }
 
-    /******************구글맵 메소드(+권한)**********************/
-    PermissionListener GPSPermission = new PermissionListener() {
-        @Override
-        public void onPermissionGranted() {
-            currentUser = FirebaseAuth.getInstance().getCurrentUser();
-            getUserInfo(currentUser);
-            Toast.makeText(getApplication(), "위치 권한가져옴",Toast.LENGTH_SHORT).show();
-        }
-
-        @Override
-        public void onPermissionDenied(ArrayList<String> deniedPermissions) {
-            new setPermission(getApplicationContext(), GPSPermission, Manifest.permission.ACCESS_FINE_LOCATION); // 권한요청 및 권한에따른 구글맵 셋팅});
-            Toast.makeText(getApplication(), "권한이 없으면 앱을 실행할 수 없습니다.",Toast.LENGTH_SHORT).show();
-        }
-    };
-
     @Override
     public void onBackPressed() {
         // 계정있으면 로그아웃
-        if(currentUser != null){
+        if(FirebaseAuth.getInstance().getCurrentUser() != null){
             logout();
         }
     }
