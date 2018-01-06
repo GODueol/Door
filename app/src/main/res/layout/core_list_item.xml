@@ -84,8 +84,6 @@
         android:layout_alignLeft="@+id/section_line2"
         android:layout_alignStart="@+id/section_line2"
         android:layout_below="@+id/profile_layout"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
         android:layout_marginTop="8dp"
         android:textSize="15.5dp"
         android:textColor="@color/black"/>

@@ -168,12 +168,7 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden"
             tools:ignore="InnerclassSeparator"></activity>
-        <activity
-            android:name=".FriendsActivity.E_Header"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden"
-            tools:ignore="InnerclassSeparator"></activity>
-<!--임시-->
+        <!--임시-->
 
 
         <meta-data
