@@ -36,7 +36,7 @@ public class MessageActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private String userId;
     private HashMap<String,Integer> hashMap;
-
+    private int key;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,7 +94,7 @@ public class MessageActivity extends AppCompatActivity {
     public void setMessageData() {
         chatRoomListRef = FirebaseDatabase.getInstance().getReference("chatRoomList");
         hashMap = new HashMap<String,Integer>();
-        final int key=0;
+        key=0;
         chatRoomListRef.child(userId).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -108,6 +108,7 @@ public class MessageActivity extends AppCompatActivity {
                             roomList.setTargetProfile(target.getTotalProfile());
                             listrowItem.add(roomList);
                             hashMap.put(roomList.getUserUuid(),key);
+                            key++;
                             messageRecyclerAdapter.notifyDataSetChanged();
                         }
 

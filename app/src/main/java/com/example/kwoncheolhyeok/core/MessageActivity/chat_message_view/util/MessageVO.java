@@ -1,10 +1,5 @@
 package com.example.kwoncheolhyeok.core.MessageActivity.chat_message_view.util;
 
-import com.google.firebase.database.Exclude;
-
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Created by Administrator on 2017-12-04.
  */
@@ -12,7 +7,7 @@ import java.util.Map;
 public class MessageVO {
 
     private String content;
-    private int img;
+    private String image;
     private String nickname;
     private String writer;
     private int check;
@@ -22,8 +17,8 @@ public class MessageVO {
     }
 
 
-    public MessageVO(int img,String writer,  String nickname, String content, Long time, int check){
-        this.img = img;
+    public MessageVO(String image, String writer, String nickname, String content, Long time, int check){
+        this.image = image;
         this.writer = writer;
         this.nickname = nickname;
         this.content = content;
@@ -37,13 +32,6 @@ public class MessageVO {
 
     private String date;
 
-    public int getImg() {
-        return img;
-    }
-
-    public void setImg(int img) {
-        this.img = img;
-    }
 
     public String getNickname() {
         return nickname;
@@ -52,6 +40,16 @@ public class MessageVO {
     public void setNickname(String nickname) {
         this.nickname = nickname;
     }
+
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
 
     public String getContent() {
         return content;

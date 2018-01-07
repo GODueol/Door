@@ -1,7 +1,7 @@
 package com.example.kwoncheolhyeok.core.MessageActivity;
 
-import android.media.Image;
-import android.support.annotation.Nullable;
+import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,10 +12,13 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.kwoncheolhyeok.core.MessageActivity.chat_message_view.util.DateUtil;
+import com.example.kwoncheolhyeok.core.PeopleFragment.FullImageActivity;
 import com.example.kwoncheolhyeok.core.R;
+import com.example.kwoncheolhyeok.core.Util.GlideApp;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -37,7 +40,6 @@ public class ChatMessageAdapter extends ArrayAdapter<ChatMessage> {
     @Override
     public int getItemViewType(int position) {
         ChatMessage item = getItem(position);
-
         if (item.isMine() && !item.isImage()) return MY_MESSAGE;
         else if (!item.isMine() && !item.isImage()) return OTHER_MESSAGE;
         else if (item.isMine() && item.isImage()) return MY_IMAGE;
@@ -45,8 +47,9 @@ public class ChatMessageAdapter extends ArrayAdapter<ChatMessage> {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         int viewType = getItemViewType(position);
+
         if (viewType == MY_MESSAGE) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.message_item_mine_message, parent, false);
 
@@ -69,7 +72,14 @@ public class ChatMessageAdapter extends ArrayAdapter<ChatMessage> {
             TextView textView = (TextView) convertView.findViewById(R.id.text);
             textView.setText(getItem(position).getContent());
             ImageView imageView = (ImageView) convertView.findViewById(R.id.profile_image);
-
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent p = new Intent(getContext(), FullImageActivity.class);
+                    p.putExtra("item", getItem(position).getItem());
+                    getContext().startActivity(p);
+                }
+            });
 
             DateUtil dateUtil = new DateUtil(getItem(position).getTime());
             String time = dateUtil.getTime();
@@ -80,17 +90,20 @@ public class ChatMessageAdapter extends ArrayAdapter<ChatMessage> {
                 textView = (TextView) convertView.findViewById(R.id.check);
                 textView.setText(Integer.toString(getItem(position).getCheck()));
             }
-
-            Glide.with(imageView.getContext()).load(getItem(position).getProfileImeage()).into(imageView);
+            Glide.with(imageView.getContext()).load(getItem(position).getProfileImage()).into(imageView);
 
         } else if (viewType == MY_IMAGE) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.message_item_mine_image, parent, false);
-
+            ImageView messageimage = (ImageView) convertView.findViewById(R.id.imeageMessage);
+            Glide.with(messageimage.getContext()).load(getItem(position).getImage()).into(messageimage);
         } else {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.message_item_other_image, parent, false);
 
             ImageView imageView = (ImageView) convertView.findViewById(R.id.profile_image);
-            Glide.with(imageView.getContext()).load(getItem(position).getProfileImeage()).into(imageView);
+            Glide.with(imageView.getContext()).load(getItem(position).getProfileImage()).into(imageView);
+
+            ImageView messageimage = (ImageView) convertView.findViewById(R.id.imeageMessage);
+            Glide.with(messageimage.getContext()).load(getItem(position).getImage()).into(messageimage);
         }
 
         convertView.findViewById(R.id.chatMessageView).setOnClickListener(new View.OnClickListener() {
