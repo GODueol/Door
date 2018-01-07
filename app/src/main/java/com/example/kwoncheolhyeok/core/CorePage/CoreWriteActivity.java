@@ -4,10 +4,12 @@ import android.animation.Animator;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -34,20 +36,26 @@ import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 
+import cafe.adriel.androidaudiorecorder.AndroidAudioRecorder;
+import cafe.adriel.androidaudiorecorder.model.AudioChannel;
+import cafe.adriel.androidaudiorecorder.model.AudioSampleRate;
+import cafe.adriel.androidaudiorecorder.model.AudioSource;
+
 /**
  * Created by Kwon on 2017-12-14.
  */
 
-public class CoreWriteActivity  extends AppCompatActivity {
+public class CoreWriteActivity extends AppCompatActivity {
 
     Toolbar toolbar = null;
 
     FloatingActionButton fab, picture_fab, audio_fab;
     LinearLayout pictureFab_layout, audioFab_layout;
     View fabBGLayout;
-    boolean isFABOpen=false;
+    boolean isFABOpen = false;
     private LoadPicture loadPicture;
     private static final int REQUEST_GALLERY = 2;
+    private static final int REQUEST_RECORD = 0;
 
     ImageView editImage;
     TextView saveBtn;
@@ -57,6 +65,8 @@ public class CoreWriteActivity  extends AppCompatActivity {
     TextView textContents;
     private String cUuid;
     private String postKey;
+    private String recordFilePath;
+    private RecordSelectDialog recordSelectDialog;
 
 
     @Override
@@ -64,7 +74,7 @@ public class CoreWriteActivity  extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         // Get the view from new_activity.xml
         setContentView(R.layout.core_write_activity);
-        
+
         cUuid = getIntent().getStringExtra("cUuid");
 
         mUuid = DataContainer.getInstance().getUid();
@@ -77,19 +87,19 @@ public class CoreWriteActivity  extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true); //홈 아이콘을 숨김처리합니다.
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
 
-        pictureFab_layout= findViewById(R.id.fabLayout2);
-        audioFab_layout= findViewById(R.id.fabLayout3);
+        pictureFab_layout = findViewById(R.id.fabLayout2);
+        audioFab_layout = findViewById(R.id.fabLayout3);
         fab = findViewById(R.id.fab);
-        picture_fab= findViewById(R.id.fab2);
+        picture_fab = findViewById(R.id.fab2);
         audio_fab = findViewById(R.id.fab3);
-        fabBGLayout=findViewById(R.id.fabBGLayout);
+        fabBGLayout = findViewById(R.id.fabBGLayout);
         editImage = findViewById(R.id.edit_img);
         saveBtn = findViewById(R.id.save);
         textContents = findViewById(R.id.edit_txt);
         TextView editAudio = findViewById(R.id.edit_audio);
 
         // 본인, 타인 구분
-        if(!cUuid.equals(mUuid)){    // 타인
+        if (!cUuid.equals(mUuid)) {    // 타인
             fab.setVisibility(View.GONE);
             editImage.setVisibility(View.GONE);
             editAudio.setVisibility(View.GONE);
@@ -99,9 +109,9 @@ public class CoreWriteActivity  extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!isFABOpen){
+                if (!isFABOpen) {
                     showFABMenu();
-                }else{
+                } else {
                     closeFABMenu();
                 }
             }
@@ -130,11 +140,48 @@ public class CoreWriteActivity  extends AppCompatActivity {
             }
         });
 
+        
         audioFab_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // 다이얼로그 녹음, 파일
-                RecordSelectDialog recordSelectDialog = new RecordSelectDialog(CoreWriteActivity.this);
+
+                recordSelectDialog = new RecordSelectDialog(CoreWriteActivity.this
+                        , new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        // 직접 녹음
+                        recordFilePath = Environment.getExternalStorageDirectory() + "/recorded_audio.wav";
+                        int color = getResources().getColor(R.color.colorPrimaryDark);
+                        int requestCode = 0;
+                        AndroidAudioRecorder.with(CoreWriteActivity.this)
+                                // Required
+                                .setFilePath(recordFilePath)
+                                .setColor(color)
+                                .setRequestCode(requestCode)
+
+                                // Optional
+                                .setSource(AudioSource.MIC)
+                                .setChannel(AudioChannel.STEREO)
+                                .setSampleRate(AudioSampleRate.HZ_48000)
+                                .setAutoStart(true)
+                                .setKeepDisplayOn(true)
+
+                                // Start recording
+                                .record();
+
+//                RecordDialog recordDialog = new RecordDialog(getContext());
+//                recordDialog.show();
+                        recordSelectDialog.dismiss();
+                    }
+                }, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        // TODO : 음성 파일 가져오기
+                        recordSelectDialog.dismiss();
+                    }
+                }
+                );
                 recordSelectDialog.show();
 
                 closeFABMenu();
@@ -143,15 +190,15 @@ public class CoreWriteActivity  extends AppCompatActivity {
 
         // edit
         postKey = getIntent().getStringExtra("postKey");    // edit 일 경우 값이 있음
-        if(isEdit()){
+        if (isEdit()) {
             FirebaseDatabase.getInstance().getReference().child("posts")
                     .child(cUuid).child(postKey).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     CorePost corePost = dataSnapshot.getValue(CorePost.class);
-                    if(corePost == null) return;
+                    if (corePost == null) return;
                     textContents.setText(corePost.getText());
-                    if(editImage.getContext() == null) return;
+                    if (editImage.getContext() == null) return;
                     Glide.with(editImage.getContext()).load(corePost.getPictureUrl()).into(editImage);
                 }
 
@@ -171,7 +218,7 @@ public class CoreWriteActivity  extends AppCompatActivity {
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
 
         String key;
-        if(!isEdit()) key = mDatabase.child("posts").push().getKey();
+        if (!isEdit()) key = mDatabase.child("posts").push().getKey();
         else key = postKey;
 
         final CorePost corePost = new CorePost(mUuid);
@@ -186,12 +233,12 @@ public class CoreWriteActivity  extends AppCompatActivity {
             @Override
             public void onSuccess(Void aVoid) {
                 // addCorePostCount
-                if(!isEdit()) FireBaseUtil.getInstance().syncCorePostCount(cUuid);
+                if (!isEdit()) FireBaseUtil.getInstance().syncCorePostCount(cUuid);
             }
         });
 
         // Picture Upload
-        if(editImageUri != null) {
+        if (editImageUri != null) {
             StorageReference storageRef = FirebaseStorage.getInstance().getReference();
             final StorageReference spaceRef = storageRef.child("posts").child(cUuid).child(key);
             UploadTask uploadTask = spaceRef.putFile(editImageUri);
@@ -205,12 +252,12 @@ public class CoreWriteActivity  extends AppCompatActivity {
         }
 
         // 모든 비동기 호출이 다 끝낫을 때
-        for(Task task : tasks){
+        for (Task task : tasks) {
             task.addOnCompleteListener(new OnCompleteListener() {
                 @Override
                 public void onComplete(@NonNull Task taskRtn) {
-                    for(Task task : tasks )
-                        if(!task.isComplete()) return;
+                    for (Task task : tasks)
+                        if (!task.isComplete()) return;
                     UiUtil.getInstance().stopProgressDialog();  // 프로그레스바 중단
                     finish();
                 }
@@ -222,8 +269,8 @@ public class CoreWriteActivity  extends AppCompatActivity {
         return postKey != null;
     }
 
-    private void showFABMenu(){
-        isFABOpen=true;
+    private void showFABMenu() {
+        isFABOpen = true;
         pictureFab_layout.setVisibility(View.VISIBLE);
         audioFab_layout.setVisibility(View.VISIBLE);
         fabBGLayout.setVisibility(View.VISIBLE);
@@ -233,8 +280,8 @@ public class CoreWriteActivity  extends AppCompatActivity {
         audioFab_layout.animate().translationY(-getResources().getDimension(R.dimen.standard_150));
     }
 
-    private void closeFABMenu(){
-        isFABOpen=false;
+    private void closeFABMenu() {
+        isFABOpen = false;
         fabBGLayout.setVisibility(View.GONE);
         fab.animate().rotationBy(-135);
         pictureFab_layout.animate().translationY(0);
@@ -246,7 +293,7 @@ public class CoreWriteActivity  extends AppCompatActivity {
 
             @Override
             public void onAnimationEnd(Animator animator) {
-                if(!isFABOpen){
+                if (!isFABOpen) {
                     pictureFab_layout.setVisibility(View.GONE);
                     audioFab_layout.setVisibility(View.GONE);
                 }
@@ -278,9 +325,9 @@ public class CoreWriteActivity  extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if(isFABOpen){
+        if (isFABOpen) {
             closeFABMenu();
-        }else{
+        } else {
             super.onBackPressed();
         }
     }
@@ -295,6 +342,10 @@ public class CoreWriteActivity  extends AppCompatActivity {
                 editImage.setImageURI(outputFileUri);   // Local Set
                 editImageUri = outputFileUri;
                 closeFABMenu();
+            }
+            if(requestCode == REQUEST_RECORD){
+                // Great! User has recorded and saved the audio file
+                Log.d("kbj", "Great! User has recorded and saved the audio file");
             }
         }
     }

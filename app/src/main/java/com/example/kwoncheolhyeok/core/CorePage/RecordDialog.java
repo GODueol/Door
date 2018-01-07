@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
@@ -20,6 +21,9 @@ import com.example.kwoncheolhyeok.core.R;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -52,7 +56,7 @@ public class RecordDialog extends CustomDialog {
 
         setContentView(R.layout.dialog_record);
 
-        sizeSet();
+//        sizeSet();
 
         textCurrentPosition = findViewById(R.id.textView_currentPosion);
         textMaxTime= findViewById(R.id.textView_maxTime);
@@ -95,10 +99,10 @@ public class RecordDialog extends CustomDialog {
 
 
         // ID of 'mysong' in 'raw' folder.
-//        int songId = this.getRawResIdByName("sample");
+//        int songId = getRawResIdByName("sample");
 
         // Create MediaPlayer.
-        this.mediaPlayer= new MediaPlayer();//  MediaPlayer.create(getContext(), songId);
+        mediaPlayer= new MediaPlayer();//  MediaPlayer.create(getContext(), songId);
 
         // 녹음 파일 경로
         File storageDir = Environment.getExternalStorageDirectory();
@@ -145,6 +149,7 @@ public class RecordDialog extends CustomDialog {
         Toast.makeText(getContext(), "stop Record", Toast.LENGTH_LONG).show();
         relativeLayout.setVisibility(View.VISIBLE);
         setDataSource();
+//        mediaPlayer.reset();
     }
 
     // Find ID of resource in 'raw' folder.
@@ -165,29 +170,32 @@ public class RecordDialog extends CustomDialog {
 
     public void doStart(View view)  {
         // The duration in milliseconds
-        int duration = this.mediaPlayer.getDuration();
+        int duration = mediaPlayer.getDuration();
 
-        int currentPosition = this.mediaPlayer.getCurrentPosition();
+        int currentPosition = mediaPlayer.getCurrentPosition();
         if(currentPosition== 0)  {
-            this.seekBar.setMax(duration);
-            String maxTimeString = this.millisecondsToString(duration);
-            this.textMaxTime.setText(maxTimeString);
+            seekBar.setMax(duration);
+            String maxTimeString = millisecondsToString(duration);
+            textMaxTime.setText(maxTimeString);
         } else if(currentPosition== duration)  {
             // Resets the MediaPlayer to its uninitialized state.
-            this.mediaPlayer.reset();
+            mediaPlayer.reset();
             try {
-                this.mediaPlayer.prepare();
+                mediaPlayer.prepare();
             } catch (IOException e) {
                 e.printStackTrace();
+                return;
             }
         }
-        this.mediaPlayer.start();
+
+        mediaPlayer.start();
+
         // Create a thread to update position of SeekBar.
         UpdateSeekBarThread updateSeekBarThread= new UpdateSeekBarThread();
         threadHandler.postDelayed(updateSeekBarThread,50);
 
-        this.buttonPause.setEnabled(true);
-        this.buttonStart.setEnabled(false);
+        buttonPause.setEnabled(true);
+        buttonStart.setEnabled(false);
     }
 
     private void setDataSource() {
@@ -217,39 +225,55 @@ public class RecordDialog extends CustomDialog {
             textCurrentPosition.setText(currentPositionStr);
 
             seekBar.setProgress(currentPosition);
+
+
+            Log.d("kbj", "currentPosition : " + currentPosition + ", mediaPlayer.getDuration() : " + mediaPlayer.getDuration());
+
+            Log.d("kbj", "mediaPlayer.isPlaying() : " + mediaPlayer.isPlaying() + ", mediaPlayer.isLooping() : " + mediaPlayer.isLooping());
+
+            if(!mediaPlayer.isPlaying()){
+                // reset
+                Log.d("kbj!!!!", "currentPosition : " + currentPosition);
+//                mediaPlayer.reset();
+
+                setDataSource();
+                return;
+            }
+
             // Delay thread 50 milisecond.
             threadHandler.postDelayed(this, 50);
         }
+
     }
 
     // When user click to "Pause".
     public void doPause(View view)  {
-        this.mediaPlayer.pause();
-        this.buttonPause.setEnabled(false);
-        this.buttonStart.setEnabled(true);
+        mediaPlayer.pause();
+        buttonPause.setEnabled(false);
+        buttonStart.setEnabled(true);
     }
 
     // When user click to "Rewind".
     public void doRewind(View view)  {
-        int currentPosition = this.mediaPlayer.getCurrentPosition();
-        int duration = this.mediaPlayer.getDuration();
+        int currentPosition = mediaPlayer.getCurrentPosition();
+        int duration = mediaPlayer.getDuration();
         // 5 seconds.
         int SUBTRACT_TIME = 5000;
 
         if(currentPosition - SUBTRACT_TIME > 0 )  {
-            this.mediaPlayer.seekTo(currentPosition - SUBTRACT_TIME);
+            mediaPlayer.seekTo(currentPosition - SUBTRACT_TIME);
         }
     }
 
     // When user click to "Fast-Forward".
     public void doFastForward(View view)  {
-        int currentPosition = this.mediaPlayer.getCurrentPosition();
-        int duration = this.mediaPlayer.getDuration();
+        int currentPosition = mediaPlayer.getCurrentPosition();
+        int duration = mediaPlayer.getDuration();
         // 5 seconds.
         int ADD_TIME = 5000;
 
         if(currentPosition + ADD_TIME < duration)  {
-            this.mediaPlayer.seekTo(currentPosition + ADD_TIME);
+            mediaPlayer.seekTo(currentPosition + ADD_TIME);
         }
     }
 }

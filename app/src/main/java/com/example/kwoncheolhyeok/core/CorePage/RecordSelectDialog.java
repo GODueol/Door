@@ -1,12 +1,20 @@
 package com.example.kwoncheolhyeok.core.CorePage;
 
+import android.app.Activity;
 import android.content.Context;
+import android.media.MediaRecorder;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.TextView;
 
 import com.example.kwoncheolhyeok.core.R;
+
+import cafe.adriel.androidaudiorecorder.AndroidAudioRecorder;
+import cafe.adriel.androidaudiorecorder.model.AudioChannel;
+import cafe.adriel.androidaudiorecorder.model.AudioSampleRate;
+import cafe.adriel.androidaudiorecorder.model.AudioSource;
 
 /**
  * Created by kimbyeongin on 2018-01-06.
@@ -14,8 +22,18 @@ import com.example.kwoncheolhyeok.core.R;
 
 public class RecordSelectDialog extends CustomDialog {
 
+    private View.OnClickListener onRecordBtnClickListener;
+    private View.OnClickListener onFileBtnClickListener;
+
     public RecordSelectDialog(@NonNull Context context) {
         super(context);
+    }
+
+    public RecordSelectDialog(@NonNull Context context, View.OnClickListener onRecordBtnClickListener, View.OnClickListener onFileBtnClickListener) {
+        super(context);
+        this.onRecordBtnClickListener = onRecordBtnClickListener;
+        this.onFileBtnClickListener = onFileBtnClickListener;
+
     }
 
     @Override
@@ -24,27 +42,14 @@ public class RecordSelectDialog extends CustomDialog {
 
         setContentView(R.layout.dialog_select_record);
 
-        sizeSet();
+//        sizeSet();
 
         TextView recordBtn = findViewById(R.id.record);
         TextView fileBtn = findViewById(R.id.getByFile);
 
-        recordBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                RecordDialog recordDialog = new RecordDialog(getContext());
-                recordDialog.show();
-                cancel();
-            }
-        });
+        recordBtn.setOnClickListener(onRecordBtnClickListener);
 
-        fileBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // TODO : 음성 파일 가져오기
-                cancel();
-            }
-        });
+        fileBtn.setOnClickListener(onFileBtnClickListener);
 
     }
 }
