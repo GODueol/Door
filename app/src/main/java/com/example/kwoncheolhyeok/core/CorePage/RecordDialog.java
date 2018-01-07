@@ -1,13 +1,18 @@
 package com.example.kwoncheolhyeok.core.CorePage;
 
 import android.content.Context;
+import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
+import android.widget.RelativeLayout;
+import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -15,6 +20,7 @@ import com.example.kwoncheolhyeok.core.R;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by kimbyeongin on 2018-01-06.
@@ -23,33 +29,81 @@ import java.io.IOException;
 public class RecordDialog extends CustomDialog {
 
     private MediaRecorder recorder;
+    private String recordFilePath;
+    private TextView textMaxTime;
+    private TextView textCurrentPosition;
+    private ImageButton buttonPause;
+    private ImageButton buttonStart;
+    private SeekBar seekBar;
+    private Handler threadHandler = new Handler();
+
+    private MediaPlayer mediaPlayer;
+    private RelativeLayout relativeLayout;
+
 
     public RecordDialog(@NonNull Context context) {
         super(context);
     }
 
-    public RecordDialog(@NonNull Context context, int themeResId) {
-        super(context, themeResId);
-    }
-
-    protected RecordDialog(@NonNull Context context, boolean cancelable, @Nullable OnCancelListener cancelListener) {
-        super(context, cancelable, cancelListener);
-    }
-
-    public RecordDialog(Context context, String title,
-                        View.OnClickListener singleListener) {
-        super(context, android.R.style.Theme_Translucent_NoTitleBar);
-        /*
-        this.mTitle = title;
-        this.mLeftClickListener = singleListener;
-        */
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.dialog_record);
+
+        sizeSet();
+
+        textCurrentPosition = findViewById(R.id.textView_currentPosion);
+        textMaxTime= findViewById(R.id.textView_maxTime);
+        buttonStart= findViewById(R.id.button_start);
+        buttonPause= findViewById(R.id.button_pause);
+        buttonPause.setEnabled(false);
+        seekBar= findViewById(R.id.seekBar);
+        seekBar.setClickable(false);
+
+        relativeLayout = findViewById(R.id.relativeLayout);
+        relativeLayout.setVisibility(View.GONE);
+
+        buttonStart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                doStart(view);
+            }
+        });
+
+        findViewById(R.id.button_rewind).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                doRewind(view);
+            }
+        });
+
+        findViewById(R.id.button_pause).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                doPause(view);
+            }
+        });
+
+        findViewById(R.id.button_fastForward).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                doFastForward(view);
+            }
+        });
+
+
+        // ID of 'mysong' in 'raw' folder.
+//        int songId = this.getRawResIdByName("sample");
+
+        // Create MediaPlayer.
+        this.mediaPlayer= new MediaPlayer();//  MediaPlayer.create(getContext(), songId);
+
+        // 녹음 파일 경로
+        File storageDir = Environment.getExternalStorageDirectory();
+        recordFilePath = storageDir.getAbsolutePath() + "/" + "recoder.mp3";
+        setDataSource();
 
         // Set Btn
         recorder = new MediaRecorder();
@@ -64,50 +118,18 @@ public class RecordDialog extends CustomDialog {
                 }
             }
         });
-/*
-
-        mTitleView = (TextView) findViewById(R.id.txt_title);
-        mContentView = (TextView) findViewById(R.id.txt_content);
-        mLeftButton = (Button) findViewById(R.id.btn_left);
-        mRightButton = (Button) findViewById(R.id.btn_right);
-
-        // 제목과 내용을 생성자에서 셋팅한다.
-        mTitleView.setText(mTitle);
-        mContentView.setText(mContent);
-
-        // 클릭 이벤트 셋팅
-        if (mLeftClickListener != null && mRightClickListener != null) {
-            mLeftButton.setOnClickListener(mLeftClickListener);
-            mRightButton.setOnClickListener(mRightClickListener);
-        } else if (mLeftClickListener != null
-                && mRightClickListener == null) {
-            mLeftButton.setOnClickListener(mLeftClickListener);
-        } else {
-
-        }
-*/
-
     }
-
 
     public void startRec() {
 
         try {
-            File file = Environment.getExternalStorageDirectory();
-            //갤럭시 S4기준으로 /storage/emulated/0/의 경로를 갖고 시작한다.
-            String path = file.getAbsolutePath() + "/" + "recoder.mp3";
-
-            recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-            //첫번째로 어떤 것으로 녹음할것인가를 설정한다. 마이크로 녹음을 할것이기에 MIC로 설정한다.
-            recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-            //이것은 파일타입을 설정한다. 녹음파일의경우 3gp로해야 용량도 작고 효율적인 녹음기를 개발할 수있다.
-            recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-            //이것은 코덱을 설정하는 것이라고 생각하면된다.
-            recorder.setOutputFile(path);
-            //저장될 파일을 저장한뒤
+            relativeLayout.setVisibility(View.GONE);
+            recorder.setAudioSource(MediaRecorder.AudioSource.MIC); //마이크 녹음
+            recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP); //파일타입 설정 (녹음파일의경우 3gp가 용량 작고 효율적)
+            recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);    // 코덱 설정
+            recorder.setOutputFile(recordFilePath);   //저장될 파일 설정
             recorder.prepare();
-            recorder.start();
-            //시작하면된다.
+            recorder.start();   // 녹음 시작
             Toast.makeText(getContext(), "start Record", Toast.LENGTH_LONG).show();
         } catch (IllegalStateException e) {
             e.printStackTrace();
@@ -116,11 +138,118 @@ public class RecordDialog extends CustomDialog {
         }
     }
 
-
     public void stopRec() {
+        if(recorder == null) return;
         recorder.stop();
-        //멈추는 것이다.
         recorder.release();
         Toast.makeText(getContext(), "stop Record", Toast.LENGTH_LONG).show();
+        relativeLayout.setVisibility(View.VISIBLE);
+        setDataSource();
+    }
+
+    // Find ID of resource in 'raw' folder.
+    public int getRawResIdByName(String resName)  {
+        String pkgName = getContext().getPackageName();
+        // Return 0 if not found.
+        int resID = getContext().getResources().getIdentifier(resName, "raw", pkgName);
+        return resID;
+    }
+
+    // Convert millisecond to string.
+    private String millisecondsToString(int milliseconds)  {
+        long minutes = TimeUnit.MILLISECONDS.toMinutes((long) milliseconds);
+        long seconds =  TimeUnit.MILLISECONDS.toSeconds((long) milliseconds) ;
+        return minutes+":"+ seconds;
+    }
+
+
+    public void doStart(View view)  {
+        // The duration in milliseconds
+        int duration = this.mediaPlayer.getDuration();
+
+        int currentPosition = this.mediaPlayer.getCurrentPosition();
+        if(currentPosition== 0)  {
+            this.seekBar.setMax(duration);
+            String maxTimeString = this.millisecondsToString(duration);
+            this.textMaxTime.setText(maxTimeString);
+        } else if(currentPosition== duration)  {
+            // Resets the MediaPlayer to its uninitialized state.
+            this.mediaPlayer.reset();
+            try {
+                this.mediaPlayer.prepare();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        this.mediaPlayer.start();
+        // Create a thread to update position of SeekBar.
+        UpdateSeekBarThread updateSeekBarThread= new UpdateSeekBarThread();
+        threadHandler.postDelayed(updateSeekBarThread,50);
+
+        this.buttonPause.setEnabled(true);
+        this.buttonStart.setEnabled(false);
+    }
+
+    private void setDataSource() {
+        try {
+
+            if(recordFilePath.equals("")){
+                Toast.makeText(getContext(), "File not exist", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            mediaPlayer.reset(); // mp객체를 초기화합니다.
+            mediaPlayer.setDataSource(recordFilePath);
+            mediaPlayer.prepare();
+//            mediaPlayer.start();
+            Toast.makeText(getContext(), "재생할 파일 " + recordFilePath, Toast.LENGTH_SHORT).show();
+
+        } catch (IOException e) {
+            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    // Thread to Update position for SeekBar.
+    class UpdateSeekBarThread implements Runnable {
+
+        public void run()  {
+            int currentPosition = mediaPlayer.getCurrentPosition();
+            String currentPositionStr = millisecondsToString(currentPosition);
+            textCurrentPosition.setText(currentPositionStr);
+
+            seekBar.setProgress(currentPosition);
+            // Delay thread 50 milisecond.
+            threadHandler.postDelayed(this, 50);
+        }
+    }
+
+    // When user click to "Pause".
+    public void doPause(View view)  {
+        this.mediaPlayer.pause();
+        this.buttonPause.setEnabled(false);
+        this.buttonStart.setEnabled(true);
+    }
+
+    // When user click to "Rewind".
+    public void doRewind(View view)  {
+        int currentPosition = this.mediaPlayer.getCurrentPosition();
+        int duration = this.mediaPlayer.getDuration();
+        // 5 seconds.
+        int SUBTRACT_TIME = 5000;
+
+        if(currentPosition - SUBTRACT_TIME > 0 )  {
+            this.mediaPlayer.seekTo(currentPosition - SUBTRACT_TIME);
+        }
+    }
+
+    // When user click to "Fast-Forward".
+    public void doFastForward(View view)  {
+        int currentPosition = this.mediaPlayer.getCurrentPosition();
+        int duration = this.mediaPlayer.getDuration();
+        // 5 seconds.
+        int ADD_TIME = 5000;
+
+        if(currentPosition + ADD_TIME < duration)  {
+            this.mediaPlayer.seekTo(currentPosition + ADD_TIME);
+        }
     }
 }

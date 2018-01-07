@@ -113,6 +113,7 @@ public class ScreenshotSetApplication extends Application {
 
     public void allowUserSaveScreenshot(boolean enable){
         try {
+            if(mServiceBinder == null) return;
             mServiceBinder.setScreenShotEnable(enable);
         } catch (RemoteException e) {
             e.printStackTrace();

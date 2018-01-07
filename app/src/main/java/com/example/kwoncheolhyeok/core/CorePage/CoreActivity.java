@@ -60,7 +60,6 @@ public class CoreActivity extends AppCompatActivity {
                 Intent i;
                 i = new Intent(CoreActivity.this, CoreWriteActivity.class);
                 i.putExtra("cUuid",cUuid);
-//                i = new Intent(CoreActivity.this, otherUser_write_core.class);
 
                 startActivity(i);
             }

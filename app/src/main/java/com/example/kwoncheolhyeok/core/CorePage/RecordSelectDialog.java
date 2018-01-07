@@ -1,7 +1,6 @@
 package com.example.kwoncheolhyeok.core.CorePage;
 
 import android.content.Context;
-import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.View;
@@ -15,8 +14,6 @@ import com.example.kwoncheolhyeok.core.R;
 
 public class RecordSelectDialog extends CustomDialog {
 
-    private MediaRecorder recorder;
-
     public RecordSelectDialog(@NonNull Context context) {
         super(context);
     }
@@ -26,6 +23,8 @@ public class RecordSelectDialog extends CustomDialog {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.dialog_select_record);
+
+        sizeSet();
 
         TextView recordBtn = findViewById(R.id.record);
         TextView fileBtn = findViewById(R.id.getByFile);
