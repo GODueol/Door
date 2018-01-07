@@ -32,13 +32,10 @@ public class MessageActivity extends AppCompatActivity {
     messageRecyclerAdapter messageRecyclerAdapter;
     RecyclerView messageList;
     List<RoomVO> listrowItem;
-    int i;
-    HashMap<String, Integer> listItemNum;
-
     private DatabaseReference chatRoomListRef;
     private FirebaseAuth mAuth;
     private String userId;
-    private RoomVO roomList;
+    private HashMap<String,Integer> hashMap;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -57,8 +54,6 @@ public class MessageActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         userId = mAuth.getUid();
         listrowItem = new ArrayList<RoomVO>();
-        listItemNum = new HashMap<String, Integer>();
-        i = 0;
         // preparing list data
         com.example.kwoncheolhyeok.core.MessageActivity.chat_message_view.util.messageRecyclerAdapter.RecyclerViewClickListener listener = new messageRecyclerAdapter.RecyclerViewClickListener() {
             @Override
@@ -98,21 +93,21 @@ public class MessageActivity extends AppCompatActivity {
 
     public void setMessageData() {
         chatRoomListRef = FirebaseDatabase.getInstance().getReference("chatRoomList");
+        hashMap = new HashMap<String,Integer>();
+        final int key=0;
         chatRoomListRef.child(userId).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                roomList = dataSnapshot.getValue(RoomVO.class);
+                final RoomVO roomList = dataSnapshot.getValue(RoomVO.class);
                 if (roomList.getLastChat() != null) {
                     FirebaseDatabase.getInstance().getReference("users").child(roomList.getUserUuid()).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             User target = dataSnapshot.getValue(User.class);
-                            listItemNum.put(roomList.getUserUuid(), i);
-                            i++;
                             roomList.setTargetNickName(target.getId());
                             roomList.setTargetProfile(target.getTotalProfile());
-
                             listrowItem.add(roomList);
+                            hashMap.put(roomList.getUserUuid(),key);
                             messageRecyclerAdapter.notifyDataSetChanged();
                         }
 
@@ -126,17 +121,21 @@ public class MessageActivity extends AppCompatActivity {
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                roomList = dataSnapshot.getValue(RoomVO.class);
+                final RoomVO roomList = dataSnapshot.getValue(RoomVO.class);
                 FirebaseDatabase.getInstance().getReference("users").child(roomList.getUserUuid()).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        User target = dataSnapshot.getValue(User.class);
-                        int listNum = listItemNum.get(roomList.getUserUuid());
-                        listrowItem.remove(listNum);
-                        roomList.setTargetNickName(target.getId());
-                        roomList.setTargetProfile(target.getTotalProfile());
-                        listrowItem.add(listNum, roomList);
-                        messageRecyclerAdapter.notifyDataSetChanged();
+                        try {
+                            User target = dataSnapshot.getValue(User.class);
+                            int key = hashMap.get(roomList.getUserUuid());
+                            listrowItem.remove(key);
+                            roomList.setTargetNickName(target.getId());
+                            roomList.setTargetProfile(target.getTotalProfile());
+                            listrowItem.add(key, roomList);
+                            messageRecyclerAdapter.notifyDataSetChanged();
+                        }catch (Exception e){
+                            messageRecyclerAdapter.notifyDataSetChanged();
+                        }
                     }
 
                     @Override
