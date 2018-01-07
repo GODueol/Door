@@ -1,16 +1,18 @@
 package com.example.kwoncheolhyeok.core.MessageActivity.chat_message_view.util;
 
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.kwoncheolhyeok.core.R;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -44,11 +46,17 @@ public class messageRecyclerAdapter extends  RecyclerView.Adapter<messageRecycle
         holder.content.setText(room.getLastChat());
         holder.nickname.setText(room.getTargetNickName());
         holder.profile.setText(room.getTargetProfile());
-        Date date = new Date(room.getLastChatTime());
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        String getTime = sdf.format(date);
-        holder.date.setText(getTime);
 
+        Long lastChatTime = room.getLastChatTime();
+        Long lastViewTime = room.getLastViewTime();
+        if(lastViewTime >= lastChatTime){
+            holder.layout.setBackgroundColor(Color.WHITE);
+        }else{
+            holder.layout.setBackgroundColor(Color.GRAY);
+        }
+        DateUtil dateUtil = new DateUtil(lastChatTime);
+        String preTime = dateUtil.getPreTime();
+        holder.date.setText(preTime);
         Glide.with(holder.img.getContext()).load(room.getTargetUri()).into(holder.img);
     }
 
@@ -66,6 +74,7 @@ public class messageRecyclerAdapter extends  RecyclerView.Adapter<messageRecycle
      */
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
+        public RelativeLayout layout;
         public ImageView img;
         public TextView content;
         public TextView nickname;
@@ -82,6 +91,8 @@ public class messageRecyclerAdapter extends  RecyclerView.Adapter<messageRecycle
             profile = (TextView)itemView.findViewById(R.id.userProfile);
             date = (TextView) itemView.findViewById(R.id.date);
             img = (ImageView) itemView.findViewById(R.id.profile_image);
+            layout = (RelativeLayout) itemView.findViewById(R.id.layout);
+
             mListener = listener;
             itemView.setOnClickListener(this);
         }

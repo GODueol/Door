@@ -2,7 +2,6 @@ package com.example.kwoncheolhyeok.core.MessageActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -28,6 +27,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ChattingActivity extends AppCompatActivity {
 
@@ -40,7 +41,7 @@ public class ChattingActivity extends AppCompatActivity {
 
     private ChatMessageAdapter mAdapter;
 
-    private DatabaseReference mDatabase, chatRoomRef, chatRoomRef2, chatRef;
+    private DatabaseReference mDatabase, chatRoomRef, chatRef;
     private FirebaseAuth mAuth;
 
     private String roomName;
@@ -51,7 +52,7 @@ public class ChattingActivity extends AppCompatActivity {
     private String targetNickName, targetUuid, targetPicuri;
 
     RoomVO roomVO;
-
+    private int check;     // 채팅방 접속자 수
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,7 +88,8 @@ public class ChattingActivity extends AppCompatActivity {
                 if (TextUtils.isEmpty(message)) {
                     return;
                 }
-                writeMessage(roomName, 0, userUuid, user.getId(), message, 0);
+                long currentTime = System.currentTimeMillis();
+                writeMessage(roomName, 0, userUuid, user.getId(), message, 0, currentTime, 1);
                 mEditTextMessage.setText("");
             }
         });
@@ -100,17 +102,25 @@ public class ChattingActivity extends AppCompatActivity {
         });
     }
 
-    private void writeMessage(String room, int img, String userId, String nickname, String content, int editimg) {
-        MessageVO message = new MessageVO(img, userId, nickname, content);
-        mDatabase.child("chat").child(room).push().setValue(message);
-        long currentTime = System.currentTimeMillis();
-        chatRoomRef.child(userUuid).child(targetUuid).child("lastChatTime").setValue(currentTime);
-        chatRoomRef2.child(targetUuid).child(userUuid).child("lastChatTime").setValue(currentTime);
-        chatRoomRef.child(userUuid).child(targetUuid).child("lastChat").setValue(content);
-        chatRoomRef2.child(targetUuid).child(userUuid).child("lastChat").setValue(content);
+    private void writeMessage(String room, int img, String userId, String nickname, String content, int editimg,long currentTime,int check) {
+        MessageVO message = new MessageVO(img, userId, nickname, content,currentTime, check);
+
+        String key = mDatabase.child("chat").child(room).push().getKey();
+
+        Map<String, Object> childUpdates = new HashMap<>();
+
+        childUpdates.put("/chat/" + room + "/" + key , message);
+
+        childUpdates.put("/chatRoomList/" + targetUuid + "/" + userUuid + "/" + "lastChatTime", currentTime);
+        childUpdates.put("/chatRoomList/" + targetUuid + "/" + userUuid + "/" + "lastChat", content);
+
+        childUpdates.put("/chatRoomList/" + userUuid + "/" + targetUuid + "/" + "lastViewTime", currentTime);
+        childUpdates.put("/chatRoomList/" + userUuid + "/" + targetUuid + "/" + "lastChat", content);
+
+        mDatabase.updateChildren(childUpdates);
     }
 
-    private void mimicOtherMessage(String message) {
+    private void mimicOtherMessage(MessageVO message) {
         ChatMessage chatMessage = new ChatMessage(message, false, false);
         mAdapter.add(chatMessage);
     }
@@ -142,11 +152,6 @@ public class ChattingActivity extends AppCompatActivity {
         //userNickName = user.getId();
 
         chatRoomRef = FirebaseDatabase.getInstance().getReference("chatRoomList");
-        chatRoomRef.child(userUuid).child(targetUuid);
-        chatRoomRef2 = FirebaseDatabase.getInstance().getReference("chatRoomList");
-        chatRoomRef2.child(targetUuid).child(userUuid);
-        // 채팅방 이름 설정
-        chatRef = FirebaseDatabase.getInstance().getReference("chat").push();
 
         chatRoomRef.child(userUuid).child(targetUuid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -157,9 +162,15 @@ public class ChattingActivity extends AppCompatActivity {
                     roomName = checkRoomVO.getChatRoomid();
                     chatRoomRef.child(userUuid).child(targetUuid).child("lastViewTime").setValue(currentTime);
                 } catch (Exception e) {
-                    roomName = chatRef.getKey();
-                    setChatRoomList(chatRoomRef2,roomName, userUuid, targetUuid ,targetPicuri);
-                    setChatRoomList(chatRoomRef,roomName, targetUuid, userUuid, userPickuri);
+                    // 채팅방 이름 설정
+                    roomName  = FirebaseDatabase.getInstance().getReference("chat").push().getKey();
+
+                    Map<String, Object> childUpdates = new HashMap<>();
+                    roomVO = new RoomVO(roomName,null, userUuid,currentTime, userPickuri);
+                    childUpdates.put("/chatRoomList/" + targetUuid + "/" + userUuid  , roomVO);
+                    roomVO = new RoomVO(roomName,null, targetUuid,currentTime, targetPicuri);
+                    childUpdates.put("/chatRoomList/" + userUuid + "/" + targetUuid , roomVO);
+                    mDatabase.updateChildren(childUpdates);
                     chatRoomRef.child(userUuid).child(targetUuid).child("lastViewTime").setValue(currentTime);
                 }
                 FirebaseDatabase.getInstance().getReference().child("chat").child(roomName)
@@ -173,23 +184,22 @@ public class ChattingActivity extends AppCompatActivity {
         });
     }
 
-    public void setChatRoomList(DatabaseReference chatRoomRef,String roomName,  String id_1, String id_2, String targeturi) {
-        long currentTime = System.currentTimeMillis();
-
-        roomVO = new RoomVO(roomName,null, id_2,currentTime, targeturi);
-        chatRoomRef.child(id_1).child(id_2).setValue(roomVO);
-    }
-
     ChildEventListener childEventListener = new ChildEventListener() {
         @Override
         public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
             Log.d("fireabaseUpdate", "onChildAdded:" + dataSnapshot.getKey());
 
             // A new comment has been added, add it to the displayed list
-            MessageVO user = dataSnapshot.getValue(MessageVO.class);
-            String message = user.getContent();
+            MessageVO message = dataSnapshot.getValue(MessageVO.class);
             ChatMessage chatMessage;
-            if(user.getWriter().equals(userUuid)) {
+            int check = message.getCheck();
+
+            if(check!=0 && !message.getWriter().equals(userUuid)){
+                message.setCheck(0);
+                mDatabase.child("chat").child(roomName).child(dataSnapshot.getKey()).child("check").setValue(check-1);
+            }
+
+            if(message.getWriter().equals(userUuid)) {
                 chatMessage = new ChatMessage(message, true, false);
             }
             else{
@@ -207,7 +217,7 @@ public class ChattingActivity extends AppCompatActivity {
             // comment and if so displayed the changed comment.
             MessageVO user = dataSnapshot.getValue(MessageVO.class);
             String commentKey = dataSnapshot.getKey();
-
+            mAdapter.notifyDataSetChanged();
             // ...
         }
 

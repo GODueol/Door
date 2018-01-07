@@ -99,4 +99,5 @@ public class RoomVO {
     public void setLastViewTime(long lastViewTime) {
         this.lastViewTime = lastViewTime;
     }
+
 }
