@@ -47,7 +47,6 @@ public class UserListBaseActivity extends AppCompatActivity {
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             User oUser = dataSnapshot.getValue(User.class);
                             items.add(1, new UserListAdapter.Item(oUser, (long)snapshot.getValue(), oUuid));
-//                            items.offerFirst(new UserListAdapter.Item(oUser, (long)snapshot.getValue(), oUuid));
                             adapter.notifyDataSetChanged();
                         }
 

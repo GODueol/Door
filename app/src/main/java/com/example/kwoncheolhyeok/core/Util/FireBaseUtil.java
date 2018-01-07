@@ -137,7 +137,6 @@ public class FireBaseUtil {
                     count = ((Map)mutableData.getValue()).size();
                 }
 
-                Log.d("kbj", "count : " + count);
                 corePostCountRef.setValue(count);
                 return Transaction.success(mutableData);
             }
