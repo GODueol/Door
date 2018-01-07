@@ -32,7 +32,6 @@ public class CoreActivity extends AppCompatActivity {
     Toolbar toolbar = null;
 
     TextView media_player = null;
-    TextView other_user = null;
     private CoreListAdapter coreListAdapter;
 
     @Override
@@ -74,14 +73,7 @@ public class CoreActivity extends AppCompatActivity {
             }
         });
 
-        other_user = findViewById(R.id.other_user);
-        other_user.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(CoreActivity.this, otherUser_write_core.class);
-                startActivity(i);
-            }
-        });
+
 
         // 툴바 뒤로가기 버튼
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //액션바 아이콘을 업 네비게이션 형태로 표시합니다.
