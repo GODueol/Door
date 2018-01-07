@@ -47,11 +47,11 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
         public static final int Footer = 3;
     }
 
-    UserListAdapter(Context context, List<Item> items){
+    public UserListAdapter(Context context, List<Item> items){
         this.context = context;
         this.items = items;
     }
-    void setItemMenu(int itemMenu, String tabName){
+    public void setItemMenu(int itemMenu, String tabName){
         this.itemMenu = itemMenu;
         this.field = tabName;
     }
@@ -126,8 +126,12 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
                             UiUtil.getInstance().goToCoreActivity(context, item.getUuid());
                             return true;
                         }
+                        else if (i == R.id.unblock) {
+                            unblock();
+                            return true;
+                        }
                         else {
-                            return onMenuItemClick(menuItem);
+                            return true;
                         }
                     }
 
@@ -137,6 +141,26 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 UiUtil.getInstance().startProgressDialog((Activity) context);
                                 FireBaseUtil.getInstance().block(item.getUuid()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        UiUtil.getInstance().stopProgressDialog();
+                                    }
+                                });
+                            }
+                        }, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                            }
+                        });
+                    }
+
+                    private void unblock() {
+                        UiUtil.getInstance().showDialog(context, "유저 차단해제", "해당 유저를 차단해제하시겠습니까?", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                UiUtil.getInstance().startProgressDialog((Activity) context);
+                                FireBaseUtil.getInstance().unblock(item.getUuid()).addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         UiUtil.getInstance().stopProgressDialog();
@@ -212,13 +236,13 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
     private boolean setHeader(UserHolder userHolder, User user) {
         if(user == null) {
             ViewGroup.LayoutParams params = userHolder.itemView.getLayoutParams();
-            if(field.equals("viewedMeUsers")) { // 제외할 메뉴
-                userHolder.itemView.setVisibility(View.INVISIBLE);
-                params.height = 0;
-            }
-            else {  // 헤더 추가할 메뉴
+            if(field.equals("followingUsers") || field.equals("followerUsers") || field.equals("friendUsers") ) {  // 헤더 추가할 메뉴
                 userHolder.itemView.setVisibility(View.VISIBLE);
                 params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+            }
+            else { // 제외할 메뉴
+                userHolder.itemView.setVisibility(View.INVISIBLE);
+                params.height = 0;
             }
             userHolder.itemView.setLayoutParams(params);
             return true;
@@ -266,11 +290,11 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
 
         boolean isHeader = false, isFooter = false;
 
-        Item(boolean isHeader){
+        public Item(boolean isHeader){
             this.isHeader = isHeader;
         }
 
-        Item(User user, long date, String uuid) {
+        public Item(User user, long date, String uuid) {
             this.user = user;
             this.date = date;
             this.uuid = uuid;

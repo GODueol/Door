@@ -54,6 +54,7 @@
     <string name="log_out">로그 아웃</string>
     <string name="core">Core</string>
     <string name="follow">Follow</string>
+    <string name="unblock">Unblock</string>
 
 
 </resources>

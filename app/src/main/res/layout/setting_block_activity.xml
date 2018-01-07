@@ -29,8 +29,12 @@
             android:layout_centerInParent="true"
             android:text="@string/block_list"
             />
-
     </RelativeLayout>
 
-
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/friendsRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/toolbar_layout"
+        />
 </RelativeLayout>

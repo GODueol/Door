@@ -148,4 +148,9 @@ public class FireBaseUtil {
             }
         });
     }
+
+    public Task<Void> unblock(String uuid) {
+        DataContainer.getInstance().getUser().getBlockUsers().remove(uuid);
+        return DataContainer.getInstance().getMyUserRef().child("blockUsers").child(uuid).setValue(null);
+    }
 }

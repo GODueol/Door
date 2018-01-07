@@ -122,54 +122,15 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 
         }
 
+
         if(corePost.getUuid().equals(mUuid)){   // 본인 게시물
-            holder.core_setting.setVisibility(View.VISIBLE);
             // 수정 삭제 가능
-            holder.core_setting.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    final PopupMenu popup = new PopupMenu(view.getContext(), view);
-                    popup.getMenuInflater().inflate(R.menu.core_post_menu, popup.getMenu());
-                    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                        @Override
-                        public boolean onMenuItemClick(MenuItem menuItem) {
-                            int i = menuItem.getItemId();
-                            if (i == R.id.edit) {
-                                Intent intent = new Intent(context, CoreWriteActivity.class);
-                                intent.putExtra("cUuid", cUuid);
-                                intent.putExtra("postKey", coreListItem.getPostKey());
-                                context.startActivity(intent);
-                            } else if (i == R.id.delete) {
-                                UiUtil.getInstance().showDialog(context, "Delete", "게시물을 삭제하시겠습니까?"
-                                        , new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialogInterface, int i) {
-                                                FirebaseDatabase.getInstance().getReference().child("posts").child(cUuid).child(coreListItem.getPostKey())
-                                                        .removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                    @Override
-                                                    public void onSuccess(Void aVoid) {
+            setPostMenu(holder, coreListItem, R.menu.core_post_normal_menu);
 
-                                                        FireBaseUtil.getInstance().syncCorePostCount(cUuid);
-                                                    }
-                                                });
+        } else if(cUuid.equals(mUuid)){ // Core 주인이 뷰어일 경우
+            // 삭제 가능, Edit은 불가능
+            setPostMenu(holder, coreListItem, R.menu.core_post_master_menu);
 
-                                            }
-                                        }, new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialogInterface, int i) {
-
-                                            }
-                                        }
-                                );
-
-                            }
-                            return false;
-                        }
-                    });
-                    popup.show();
-
-                }
-            });
         } else {
             holder.core_setting.setVisibility(View.INVISIBLE);
         }
@@ -197,8 +158,59 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                         .child("likeUsers").child(mUuid).setValue(null);
             }
         });
+    }
 
+    private void setPostMenu(CorePostHolder holder, final CoreListItem coreListItem, final int menuId) {
+        holder.core_setting.setVisibility(View.VISIBLE);
+        holder.core_setting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final PopupMenu popupMenu = new PopupMenu(view.getContext(), view);
+                popupMenu.getMenuInflater().inflate(menuId, popupMenu.getMenu());
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+                        int i = menuItem.getItemId();
 
+                        if (i == R.id.edit) {   // 수정
+                            Intent intent = new Intent(context, CoreWriteActivity.class);
+                            intent.putExtra("cUuid", cUuid);
+                            intent.putExtra("postKey", coreListItem.getPostKey());
+                            context.startActivity(intent);
+
+                        } else if (i == R.id.delete) {  // 삭제
+                            deletePost(coreListItem);
+                        }
+                        return false;
+                    }
+                });
+                popupMenu.show();
+            }
+        });
+    }
+
+    private void deletePost(final CoreListItem coreListItem) {
+        UiUtil.getInstance().showDialog(context, "Delete", "게시물을 삭제하시겠습니까?"
+                , new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        FirebaseDatabase.getInstance().getReference().child("posts").child(cUuid).child(coreListItem.getPostKey())
+                                .removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+
+                                FireBaseUtil.getInstance().syncCorePostCount(cUuid);
+                            }
+                        });
+
+                    }
+                }, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                }
+        );
     }
 
     @NonNull

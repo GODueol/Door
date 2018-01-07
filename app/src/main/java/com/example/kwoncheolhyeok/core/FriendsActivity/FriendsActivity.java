@@ -1,36 +1,24 @@
 package com.example.kwoncheolhyeok.core.FriendsActivity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.TextView;
 
-import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.R;
-import com.example.kwoncheolhyeok.core.Util.DataContainer;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
+import com.example.kwoncheolhyeok.core.Util.BaseActivity.UserListBaseActivity;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
 import java.util.ArrayList;
 
-public class FriendsActivity extends AppCompatActivity {
+public class FriendsActivity extends UserListBaseActivity {
 
     Toolbar toolbar = null;
     private ArrayList<UserListAdapter.Item> items;
     private UserListAdapter adapter;
-    private ValueEventListener listener;
-    private Query ref;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -51,19 +39,19 @@ public class FriendsActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.navigation_friends:
-                        setRecyclerView(items, adapter, "friendUsers", R.menu.friends_set_friend);
+                        setRecyclerView(items, adapter, "friendUsers", R.menu.friend_menu);
                         return true;
                     case R.id.navigation_receive:
-                        setRecyclerView(items, adapter, "followerUsers", R.menu.friends_set_follower);
+                        setRecyclerView(items, adapter, "followerUsers", R.menu.follower_menu);
                         return true;
                     case R.id.navigation_send:
-                        setRecyclerView(items, adapter, "followingUsers", R.menu.friends_set_following);
+                        setRecyclerView(items, adapter, "followingUsers", R.menu.following_menu);
                         return true;
                     case R.id.navigation_recent:
-                        setRecyclerView(items, adapter, "viewedMeUsers", R.menu.friends_set_follower);
+                        setRecyclerView(items, adapter, "viewedMeUsers", R.menu.follower_menu);
                         return true;
                     /*case R.id.navigation_block:
-                        setRecyclerView(items, adapter, "blockUsers", R.menu.friends_set_follower);
+                        setRecyclerView(items, adapter, "blockUsers", R.menu.follower_menu);
                         return true;*/
                 }
                 return false;
@@ -82,58 +70,15 @@ public class FriendsActivity extends AppCompatActivity {
         // 리사이클뷰
         final RecyclerView recyclerView = findViewById(R.id.friendsRecyclerView);
         items = new ArrayList<>();
-        items.add(new UserListAdapter.Item(true));
-
         adapter = new UserListAdapter(this, items);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
 
         // setRecyclerView (default)
-        adapter.setItemMenu(R.menu.friends_set_follower, "friendUsers");
         navigation.setSelectedItemId(R.id.navigation_friends);
 
 
-    }
-
-    private void setRecyclerView(final ArrayList<UserListAdapter.Item> items, final UserListAdapter adapter, final String field, int item_menu) {
-        adapter.setItemMenu(item_menu, field);
-        items.clear();
-        items.add(new UserListAdapter.Item(true));
-        if(ref != null && listener != null) ref.removeEventListener(listener);  // 이전 리스너 해제
-        ref = DataContainer.getInstance().getMyUserRef().child(field).orderByValue();
-        listener = ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                Log.d(field, "DataChange : " + dataSnapshot.getKey() + ',' + dataSnapshot.getValue());
-                items.clear();
-                items.add(new UserListAdapter.Item(true));
-                if(dataSnapshot.getValue() == null) adapter.notifyDataSetChanged();
-
-                for(final DataSnapshot snapshot : dataSnapshot.getChildren()){
-                    Log.d("snapshot", snapshot.getValue().toString());
-                    final String oUuid = snapshot.getKey();
-                    DataContainer.getInstance().getUsersRef().child(oUuid).addListenerForSingleValueEvent(new ValueEventListener() {
-
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            User oUser = dataSnapshot.getValue(User.class);
-                            items.add(1, new UserListAdapter.Item(oUser, (long)snapshot.getValue(), oUuid));
-//                            items.offerFirst(new UserListAdapter.Item(oUser, (long)snapshot.getValue(), oUuid));
-                            adapter.notifyDataSetChanged();
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                        }
-                    });
-                }
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
     }
 
     // 뒤로가기 버튼 기능
