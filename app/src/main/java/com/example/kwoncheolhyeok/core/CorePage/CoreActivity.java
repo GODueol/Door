@@ -89,30 +89,31 @@ public class CoreActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(coreListAdapter);
 
+        // 코어 주인의 User Get
+        DataContainer dc = DataContainer.getInstance();
+        dc.getUserRef(cUuid).addListenerForSingleValueEvent(new ValueEventListener() {
+             @Override
+             public void onDataChange(DataSnapshot dataSnapshot) {
+                 User cUser = dataSnapshot.getValue(User.class);
+                 addPostToList(cUuid, list, cUser);
+             }
 
-        // Post, User Get
+             @Override
+             public void onCancelled(DatabaseError databaseError) {
+             }
+        });
+    }
+
+    private void addPostToList(final String cUuid, final ArrayList<CoreListItem> list, final User cUser) {
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
         mDatabase.child("posts").child(cUuid).orderByChild("writeDate").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
 
-                DataContainer dc = DataContainer.getInstance();
                 final CorePost corePost = dataSnapshot.getValue(CorePost.class);
                 final String postKey = dataSnapshot.getKey();
-                final User[] user = new User[1];
                 if(corePost.getUuid().equals(cUuid)) { // 작성자가 코어의 주인인 경우
-                    dc.getUserRef(corePost.getUuid()).addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            user[0] = dataSnapshot.getValue(User.class);
-                            addCoreListItem(user[0], corePost, postKey);
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
-                    });
+                    addCoreListItem(cUser, corePost, postKey);
                 }
                 else {  // 익명
                     addCoreListItem(null, corePost, postKey);
@@ -159,8 +160,6 @@ public class CoreActivity extends AppCompatActivity {
 
             }
         });
-
-
     }
 
     // 뒤로가기 버튼 기능

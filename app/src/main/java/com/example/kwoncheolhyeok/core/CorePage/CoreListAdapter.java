@@ -108,6 +108,11 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
             holder.replyBtnLayout.setVisibility(View.VISIBLE);
             holder.core_img.setVisibility(View.GONE);
             holder.core_media.setVisibility(View.GONE);
+
+            holder.core_pic.setImageResource(R.drawable.a);
+            holder.core_id.setText("Unknown");
+            holder.core_subprofile.setText("Unknown");
+
             if(cUuid.equals(mUuid)) {   // 주인이 봤을때
                 holder.btn_yes.setOnCheckedChangeListener(null);
                 holder.btn_pass.setOnCheckedChangeListener(null);
