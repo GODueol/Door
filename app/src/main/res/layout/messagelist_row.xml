@@ -20,6 +20,9 @@
         android:layout_toRightOf="@+id/profile_image"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:layout_marginRight="60dp"
         android:text="chat_content"
         android:textSize="15dp"
         android:textStyle="bold"
@@ -28,6 +31,7 @@
 
     <TextView
         android:id="@+id/userNick"
+        android:layout_marginRight="60dp"
         android:layout_below="@+id/chat_content"
         android:layout_toRightOf="@+id/profile_image"
         android:layout_width="match_parent"
