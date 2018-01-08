@@ -1,1 +1,1 @@
-include ':app', 'heartbutton_library'
+include ':app', 'heartbutton_library', ':AndroidAudioRecord'

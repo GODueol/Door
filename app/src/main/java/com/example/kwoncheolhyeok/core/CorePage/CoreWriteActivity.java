@@ -41,6 +41,7 @@ import cafe.adriel.androidaudiorecorder.model.AudioChannel;
 import cafe.adriel.androidaudiorecorder.model.AudioSampleRate;
 import cafe.adriel.androidaudiorecorder.model.AudioSource;
 
+
 /**
  * Created by Kwon on 2017-12-14.
  */
@@ -152,7 +153,7 @@ public class CoreWriteActivity extends AppCompatActivity {
                     public void onClick(View view) {
                         // 직접 녹음
                         recordFilePath = Environment.getExternalStorageDirectory() + "/recorded_audio.wav";
-                        int color = getResources().getColor(R.color.colorPrimaryDark);
+                        int color = getResources().getColor(R.color.white);
                         int requestCode = 0;
                         AndroidAudioRecorder.with(CoreWriteActivity.this)
                                 // Required
