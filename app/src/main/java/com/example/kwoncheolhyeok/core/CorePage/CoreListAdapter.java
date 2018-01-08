@@ -4,6 +4,9 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -16,6 +19,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -32,7 +37,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.like.LikeButton;
 import com.like.OnLikeListener;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by KwonCheolHyeok on 2017-01-17.
@@ -43,11 +50,22 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
     private List<CoreListItem> posts;
     private Context context;
     private String cUuid;
+    private Handler threadHandler = new Handler();
+
+    private MediaPlayer mediaPlayer;
+
+    private CorePostHolder currentHolder;
+
+    private UpdateSeekBarThread updateSeekBarThread;
+    private String currentPlayUrl = "";
+
 
     CoreListAdapter(List<CoreListItem> posts, Context context, String cUuid) {
         this.posts = posts;
         this.context = context;
         this.cUuid = cUuid;
+        this.mediaPlayer=  new MediaPlayer();
+        currentHolder = new CorePostHolder(new View(context));
     }
 
     @Override
@@ -58,17 +76,21 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 
     @SuppressLint("SetTextI18n")
     @Override
-    public void onBindViewHolder(CorePostHolder holder, int i) {
+    public void onBindViewHolder(final CorePostHolder holder, int i) {
 
         final CoreListItem coreListItem = posts.get(i);
-        CorePost corePost = coreListItem.getCorePost();
+        final CorePost corePost = coreListItem.getCorePost();
         final String mUuid = DataContainer.getInstance().getUid();
 
         User user = coreListItem.getUser();
         if(user != null) {  // 주인글
             holder.replyBtnLayout.setVisibility(View.GONE);
             holder.core_img.setVisibility(View.VISIBLE);
-            holder.core_media.setVisibility(View.VISIBLE);
+
+            if(corePost.getSoundUrl() != null)
+                holder.core_media.setVisibility(View.VISIBLE);
+            else
+                holder.core_media.setVisibility(View.INVISIBLE);
 
             Glide.with(context /* context */)
                     .load(user.getPicUrls().getPicUrl1())
@@ -158,6 +180,32 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                         .child("likeUsers").child(mUuid).setValue(null);
             }
         });
+
+        holder.start.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                doStart(holder, corePost.getSoundUrl());
+            }
+        });
+        holder.pause.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                doPause(holder);
+            }
+        });
+        holder.rewind.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                doRewind(holder);
+            }
+        });
+        holder.fastForward.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                doFastForward(holder);
+            }
+        });
+
     }
 
     private void setPostMenu(CorePostHolder holder, final CoreListItem coreListItem, final int menuId) {
@@ -238,10 +286,16 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
     class CorePostHolder extends RecyclerView.ViewHolder {
         ImageView core_pic, core_img ;
         ImageButton core_setting, core_heart;
-        TextView core_id, core_subprofile, core_date, core_contents, core_media, core_heart_count;
+        TextView core_id, core_subprofile, core_date, core_contents, core_heart_count;
         LikeButton core_heart_btn;
         LinearLayout replyBtnLayout;
         ToggleButton btn_yes, btn_pass, btn_no;
+
+        RelativeLayout core_media;
+        ImageButton start, pause, rewind, fastForward;
+        SeekBar seekBar;
+        TextView textView_maxTime, textView_currentPosion;
+
         CorePostHolder(View itemView) {
             super(itemView);
 
@@ -253,7 +307,6 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
             core_date = itemView.findViewById(R.id.core_date);
             core_contents = itemView.findViewById(R.id.core_contents);
 
-            core_media= itemView.findViewById(R.id.media_player_txt);
             core_setting= itemView.findViewById(R.id.setting);
 
             core_heart_count = itemView.findViewById(R.id.heart_count_txt);
@@ -264,7 +317,118 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
             btn_yes = itemView.findViewById(R.id.btn_yes);
             btn_pass = itemView.findViewById(R.id.btn_pass);
             btn_no = itemView.findViewById(R.id.btn_no);
+            core_media = itemView.findViewById(R.id.media_player_layout);
+            start = itemView.findViewById(R.id.button_start);
+            pause = itemView.findViewById(R.id.button_pause);
+            rewind = itemView.findViewById(R.id.button_rewind);
+            fastForward = itemView.findViewById(R.id.button_fastForward);
+            seekBar = itemView.findViewById(R.id.seekBar);
+            textView_maxTime = itemView.findViewById(R.id.textView_maxTime);
+            textView_currentPosion = itemView.findViewById(R.id.textView_currentPosion);
         }
     }
+
+
+    // Convert millisecond to string.
+    private String millisecondsToString(int milliseconds)  {
+        long minutes = TimeUnit.MILLISECONDS.toMinutes((long) milliseconds);
+        long seconds =  TimeUnit.MILLISECONDS.toSeconds((long) milliseconds) ;
+        return minutes+":"+ seconds;
+    }
+
+
+    private void doStart(CorePostHolder holder, String url)  {
+        currentHolder.textView_currentPosion = holder.textView_currentPosion;
+        currentHolder.seekBar = holder.seekBar;
+        currentHolder.textView_maxTime = holder.textView_maxTime;
+        currentHolder.start = holder.start;
+        currentHolder.pause = holder.pause;
+
+        if(!currentPlayUrl.equals(url) || currentPlayUrl.equals("") ||
+                holder.textView_currentPosion.getText().equals(holder.textView_maxTime.getText())){
+            try {
+                this.mediaPlayer.reset();
+                this.mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                this.mediaPlayer.setDataSource(url);
+                currentPlayUrl = url;
+                this.mediaPlayer.prepare();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        // The duration in milliseconds
+        int duration = this.mediaPlayer.getDuration();
+
+        int currentPosition = this.mediaPlayer.getCurrentPosition();
+
+        if(currentPosition== 0)  {
+
+            holder.seekBar.setMax(duration);
+            String maxTimeString = this.millisecondsToString(duration);
+            holder.textView_maxTime.setText(maxTimeString);
+        }
+
+        this.mediaPlayer.start();
+        // Create a thread to update position of SeekBar.
+        updateSeekBarThread = new UpdateSeekBarThread();
+        threadHandler.postDelayed(updateSeekBarThread,50);
+
+        holder.pause.setEnabled(true);
+        holder.start.setEnabled(false);
+    }
+
+    // Thread to Update position for SeekBar.
+    class UpdateSeekBarThread implements Runnable {
+
+        public void run()  {
+//            if(!mediaPlayer.isPlaying()) return;    // 중단되면 쓰레드 종료
+
+            int currentPosition = mediaPlayer.getCurrentPosition();
+            String currentPositionStr = millisecondsToString(currentPosition);
+            currentHolder.textView_currentPosion.setText(currentPositionStr);
+
+            if(currentHolder.textView_currentPosion.getText().equals(currentHolder.textView_maxTime.getText())){
+                // 끝
+                doPause(currentHolder);
+                return;
+            }
+            currentHolder.seekBar.setProgress(currentPosition);
+            // Delay thread 50 milisecond.
+            threadHandler.postDelayed(this, 50);
+        }
+    }
+
+    // When user click to "Pause".
+    private void doPause(CorePostHolder holder)  {
+        this.mediaPlayer.pause();
+        holder.pause.setEnabled(false);
+        holder.start.setEnabled(true);
+    }
+
+    // When user click to "Rewind".
+    private void doRewind(CorePostHolder holder)  {
+        int currentPosition = this.mediaPlayer.getCurrentPosition();
+        int duration = this.mediaPlayer.getDuration();
+        // 5 seconds.
+        int SUBTRACT_TIME = 5000;
+
+        if(currentPosition - SUBTRACT_TIME > 0 )  {
+            this.mediaPlayer.seekTo(currentPosition - SUBTRACT_TIME);
+        }
+    }
+
+    // When user click to "Fast-Forward".
+    private void doFastForward(CorePostHolder holder)  {
+        int currentPosition = this.mediaPlayer.getCurrentPosition();
+        int duration = this.mediaPlayer.getDuration();
+        // 5 seconds.
+        int ADD_TIME = 5000;
+
+        if(currentPosition + ADD_TIME < duration)  {
+            this.mediaPlayer.seekTo(currentPosition + ADD_TIME);
+        }
+    }
+
 
 }

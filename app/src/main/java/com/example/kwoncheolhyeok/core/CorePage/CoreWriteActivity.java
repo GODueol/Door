@@ -34,6 +34,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import cafe.adriel.androidaudiorecorder.AndroidAudioRecorder;
@@ -62,19 +63,27 @@ public class CoreWriteActivity extends AppCompatActivity {
     TextView saveBtn;
     private String mUuid;
 
-    Uri editImageUri;
     TextView textContents;
     private String cUuid;
     private String postKey;
     private String recordFilePath;
     private RecordSelectDialog recordSelectDialog;
-
+    private ArrayList<Task> tasks;
+    private boolean isEdit = true;
+    private DatabaseReference postRef;
+    private Uri editImageUri;
+    private Uri soundUri;
+    private StorageReference storageRef;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Get the view from new_activity.xml
         setContentView(R.layout.core_write_activity);
+        storageRef = FirebaseStorage.getInstance().getReference();
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+
+        tasks = new ArrayList<>();
 
         cUuid = getIntent().getStringExtra("cUuid");
 
@@ -189,10 +198,17 @@ public class CoreWriteActivity extends AppCompatActivity {
             }
         });
 
-        // edit
+        // edit 판별
         postKey = getIntent().getStringExtra("postKey");    // edit 일 경우 값이 있음
-        if (isEdit()) {
-            FirebaseDatabase.getInstance().getReference().child("posts")
+        if(postKey == null) {
+            isEdit = false;
+            postKey = mDatabase.child("posts").push().getKey();
+        }
+        postRef = mDatabase.child("posts").child(cUuid).child(postKey);
+
+        // Edit인 경우 데이터 받아서 Set
+        if (isEdit) {
+            mDatabase.child("posts")
                     .child(cUuid).child(postKey).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -213,20 +229,9 @@ public class CoreWriteActivity extends AppCompatActivity {
     }
 
     private void saveCore() {
-        final ArrayList<Task> tasks = new ArrayList<>();
-
         UiUtil.getInstance().startProgressDialog(CoreWriteActivity.this);
-        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-
-        String key;
-        if (!isEdit()) key = mDatabase.child("posts").push().getKey();
-        else key = postKey;
-
         final CorePost corePost = new CorePost(mUuid);
-
         corePost.setText(textContents.getText().toString());
-
-        final DatabaseReference postRef = mDatabase.child("posts").child(cUuid).child(key);
         Task<Void> postUploadTask = postRef.setValue(corePost);
         tasks.add(postUploadTask);
 
@@ -234,22 +239,15 @@ public class CoreWriteActivity extends AppCompatActivity {
             @Override
             public void onSuccess(Void aVoid) {
                 // addCorePostCount
-                if (!isEdit()) FireBaseUtil.getInstance().syncCorePostCount(cUuid);
+                if (!isEdit) FireBaseUtil.getInstance().syncCorePostCount(cUuid);
             }
         });
 
-        // Picture Upload
-        if (editImageUri != null) {
-            StorageReference storageRef = FirebaseStorage.getInstance().getReference();
-            final StorageReference spaceRef = storageRef.child("posts").child(cUuid).child(key);
-            UploadTask uploadTask = spaceRef.putFile(editImageUri);
-            tasks.add(uploadTask);
-            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    postRef.child("pictureUrl").setValue(taskSnapshot.getDownloadUrl().toString());
-                }
-            });
+        if(editImageUri != null){
+            uploadPicture();
+        }
+        if(soundUri != null){
+            uploadSound();
         }
 
         // 모든 비동기 호출이 다 끝낫을 때
@@ -264,10 +262,6 @@ public class CoreWriteActivity extends AppCompatActivity {
                 }
             });
         }
-    }
-
-    private boolean isEdit() {
-        return postKey != null;
     }
 
     private void showFABMenu() {
@@ -339,15 +333,42 @@ public class CoreWriteActivity extends AppCompatActivity {
 
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_GALLERY) {
-                Uri outputFileUri = data.getData();
-                editImage.setImageURI(outputFileUri);   // Local Set
-                editImageUri = outputFileUri;
+                editImageUri = data.getData();
+                editImage.setImageURI(editImageUri);   // Local Set
                 closeFABMenu();
             }
             if(requestCode == REQUEST_RECORD){
                 // Great! User has recorded and saved the audio file
                 Log.d("kbj", "Great! User has recorded and saved the audio file");
+                // 파일 저장
+                soundUri = Uri.fromFile(new File(recordFilePath));
+                closeFABMenu();
             }
         }
+    }
+
+    private void uploadPicture() {
+        final StorageReference spaceRef = storageRef.child("posts").child(cUuid).child(postKey).child("picture");
+        UploadTask uploadTask = spaceRef.putFile(editImageUri);
+        tasks.add(uploadTask);
+        uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                postRef.child("pictureUrl").setValue(taskSnapshot.getDownloadUrl().toString());
+            }
+        });
+    }
+
+    private void uploadSound() {
+        final StorageReference spaceRef = storageRef.child("posts").child(cUuid).child(postKey).child("sound");
+        UploadTask uploadTask = spaceRef.putFile(soundUri);
+        tasks.add(uploadTask);
+        uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                postRef.child("soundUrl").setValue(taskSnapshot.getDownloadUrl().toString());
+            }
+        });
     }
 }
