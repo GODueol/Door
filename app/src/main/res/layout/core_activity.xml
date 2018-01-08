@@ -44,18 +44,7 @@
             android:textSize="18sp"
             android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/other_user"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="80dp"
-            android:gravity="right"
-            android:text="다회글"
-            android:textColor="@color/skyblue"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+        
     </RelativeLayout>
 
 
