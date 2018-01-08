@@ -90,7 +90,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
             if(corePost.getSoundUrl() != null)
                 holder.core_media.setVisibility(View.VISIBLE);
             else
-                holder.core_media.setVisibility(View.INVISIBLE);
+                holder.core_media.setVisibility(View.GONE);
 
             Glide.with(context /* context */)
                     .load(user.getPicUrls().getPicUrl1())
