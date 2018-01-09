@@ -49,7 +49,7 @@ public class DateUtil {
             msg = (diffTime) + "hour ago";
         } else if ((diffTime /= HOUR) < DAY) {
             // day
-            msg = (diffTime) + "day age";
+            msg = (diffTime) + "day ago";
         } else if ((diffTime /= DAY) < MONTH) {
             // day
             msg = (diffTime) + "month ago";
