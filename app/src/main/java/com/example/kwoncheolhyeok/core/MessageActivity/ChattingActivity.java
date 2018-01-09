@@ -16,13 +16,10 @@ import android.widget.Toast;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.MessageActivity.chat_message_view.util.ChatFirebaseUtil;
 import com.example.kwoncheolhyeok.core.MessageActivity.chat_message_view.util.MessageVO;
-import com.example.kwoncheolhyeok.core.PeopleFragment.ImageAdapter;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.Camera.LoadPicture;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
@@ -30,7 +27,6 @@ public class ChattingActivity extends AppCompatActivity {
 
     Toolbar toolbar = null;
     private static final int REQUEST_GALLERY = 2;
-
     private ListView mListView;
     private ImageButton mButtonSend;
     private EditText mEditTextMessage;
@@ -38,17 +34,15 @@ public class ChattingActivity extends AppCompatActivity {
 
     private ChatMessageAdapter mAdapter;
 
-    private DatabaseReference mDatabase, chatRoomRef;
     private FirebaseAuth mAuth;
 
-    private String roomName;
     ChatFirebaseUtil chatFirebaseUtil;
 
     private User user;
-    private String  userUuid, userPickuri;
+    private String userUuid;
     private User targetUser;
-    private String targetUuid, targetPicuri;
-    private  ImageAdapter.Item item;
+    private String targetUuid;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,29 +56,24 @@ public class ChattingActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true); //홈 아이콘을 숨김처리합니다.
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
 
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-
         mAuth = FirebaseAuth.getInstance();
 
         mListView = (ListView) findViewById(R.id.listView);
         mButtonSend = (ImageButton) findViewById(R.id.btn_send);
         mEditTextMessage = (EditText) findViewById(R.id.et_message);
         mImageView = (ImageButton) findViewById(R.id.iv_image);
-
-        mAdapter = new ChatMessageAdapter(this, new ArrayList<ChatMessage>());
+        mAdapter = new ChatMessageAdapter(this, new ArrayList<ChatMessage>(), litener);
         mListView.setAdapter(mAdapter);
 
         // 상대방 데이터 셋
         targetUser = (User) p.getSerializableExtra("user");
         targetUuid = (String) p.getSerializableExtra("userUuid");
-        targetPicuri = (String) p.getSerializableExtra("userPicuri");
         // 내정보 데이터 셋
         user = DataContainer.getInstance().getUser();
         userUuid = mAuth.getUid();
-        userPickuri = user.getPicUrls().getPicUrl1();
 
-        chatFirebaseUtil = new ChatFirebaseUtil(this,user,targetUser,userUuid,targetUuid);
-        chatFirebaseUtil.checkchatRoom(mAdapter);
+        chatFirebaseUtil = new ChatFirebaseUtil(this, user, targetUser, userUuid, targetUuid);
+        chatFirebaseUtil.checkchatRoom(mAdapter, mListView);
 
         // 메세지 보내기
         mButtonSend.setOnClickListener(new View.OnClickListener() {
@@ -95,7 +84,7 @@ public class ChattingActivity extends AppCompatActivity {
                     return;
                 }
                 long currentTime = System.currentTimeMillis();
-                writeMessage(roomName, null, userUuid, user.getId(), message,  currentTime, 1);
+                writeMessage(null, userUuid, user.getId(), message, currentTime, 1);
                 mEditTextMessage.setText("");
             }
         });
@@ -123,8 +112,8 @@ public class ChattingActivity extends AppCompatActivity {
         }
     }
 
-    private void writeMessage(String room, String image, String userId, String nickname, String content, long currentTime,int check) {
-        MessageVO message = new MessageVO(image, userId, nickname, content,currentTime, check);
+    private void writeMessage(String image, String userId, String nickname, String content, long currentTime, int check) {
+        MessageVO message = new MessageVO(image, userId, nickname, content, currentTime, check);
         chatFirebaseUtil.sendMessage(message);
     }
 
@@ -159,6 +148,13 @@ public class ChattingActivity extends AppCompatActivity {
 
         return super.onPrepareOptionsMenu(menu);
     }
+
+    ChatMessageAdapter.OnCallbackList litener = new ChatMessageAdapter.OnCallbackList() {
+        @Override
+        public void onEvent() {
+            mListView.smoothScrollToPosition(mListView.getAdapter().getCount()-1);
+        }
+    };
 
 }
 

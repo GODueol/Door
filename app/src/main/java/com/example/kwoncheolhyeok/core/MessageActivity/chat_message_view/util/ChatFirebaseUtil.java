@@ -6,6 +6,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.widget.ListView;
 
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.MessageActivity.ChatMessage;
@@ -37,10 +38,10 @@ import java.util.Map;
 
 public class ChatFirebaseUtil {
 
+
     final static String chatRoomList = "chatRoomList";
     final static String chat = "chat";
     final static String image = "image";
-    final static  String buckit = "gs://core-865fc.appspot.com";
 
     Context context;
     String userUuid, targetUuid;
@@ -50,9 +51,10 @@ public class ChatFirebaseUtil {
     DatabaseReference databaseRef;
     FirebaseStorage storage;
 
+
     public ChatFirebaseUtil(Context context,User currentUser,User targetUser, String userUuid, String targetUuid) {
         databaseRef = FirebaseDatabase.getInstance().getReference();
-        storage = FirebaseStorage.getInstance(buckit);
+        storage = FirebaseStorage.getInstance();
         this.context = context;
         this.currentUser = currentUser;
         this.targetUser = targetUser;
@@ -125,13 +127,13 @@ public class ChatFirebaseUtil {
         });
     }
 
-    public void checkchatRoom(final ChatMessageAdapter mAdapter) {
+    public void checkchatRoom(final ChatMessageAdapter mAdapter, final ListView listView) {
         final  DatabaseReference chatRoomRef = FirebaseDatabase.getInstance().getReference(chatRoomList);
 
         chatRoomRef.child(userUuid).child(targetUuid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                RoomVO checkRoomVO = dataSnapshot.getValue(RoomVO.class);
+                final RoomVO checkRoomVO = dataSnapshot.getValue(RoomVO.class);
                 long currentTime = System.currentTimeMillis();
                 try {
                     roomName = checkRoomVO.getChatRoomid();
@@ -168,7 +170,6 @@ public class ChatFirebaseUtil {
                     public void onCancelled(DatabaseError databaseError) {
                     }
                 });
-
                 FirebaseDatabase.getInstance().getReference().child(chat).child(roomName)
                         .addChildEventListener(new ChildEventListener() {
                             public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
@@ -178,11 +179,6 @@ public class ChatFirebaseUtil {
                                 MessageVO message = dataSnapshot.getValue(MessageVO.class);
                                 ChatMessage chatMessage;
                                 int check = message.getCheck();
-
-                                if(check!=0 && !message.getWriter().equals(userUuid)){
-                                    message.setCheck(0);
-                                    databaseRef.child(chat).child(roomName).child(dataSnapshot.getKey()).child("check").setValue(check-1);
-                                }
 
                                 if(message.getWriter().equals(userUuid) && message.getImage() == null) {
                                     chatMessage = new ChatMessage(message, true, false);
@@ -196,8 +192,8 @@ public class ChatFirebaseUtil {
                                 else{
                                     chatMessage = new ChatMessage(message, false, true,item);
                                 }
+
                                 mAdapter.add(chatMessage);
-                                mAdapter.notifyDataSetChanged();
                             }
 
                             @Override

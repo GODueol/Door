@@ -6,7 +6,7 @@
       <module fileurl="file://$PROJECT_DIR$/Core.iml" filepath="$PROJECT_DIR$/Core.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/heartbutton_library/heartbutton_library.iml" filepath="$PROJECT_DIR$/heartbutton_library/heartbutton_library.iml" />
-      <module fileurl="file://$PROJECT_DIR$/AndroidAudioRecord/lib.iml" filepath="$PROJECT_DIR$/AndroidAudioRecord/lib.iml" />
+      <module fileurl="file://D:\dev\android\Core\AndroidAudioRecord\lib.iml" filepath="D:\dev\android\Core\AndroidAudioRecord\lib.iml" />
     </modules>
   </component>
 </project>

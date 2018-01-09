@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.kwoncheolhyeok.core.R;
+import com.example.kwoncheolhyeok.core.Util.GlideApp;
 
 import java.util.Date;
 import java.util.List;
@@ -25,8 +26,6 @@ public class messageRecyclerAdapter extends  RecyclerView.Adapter<messageRecycle
     private RecyclerViewClickListener mListener;
     private List<RoomVO> roomList;
     private int itemLayout;
-
-
 
     public messageRecyclerAdapter(List<RoomVO> items, int itemLayout, RecyclerViewClickListener listener){
         this.roomList = items;
@@ -57,7 +56,15 @@ public class messageRecyclerAdapter extends  RecyclerView.Adapter<messageRecycle
         DateUtil dateUtil = new DateUtil(lastChatTime);
         String preTime = dateUtil.getPreTime();
         holder.date.setText(preTime);
-        Glide.with(holder.img.getContext()).load(room.getTargetUri()).into(holder.img);
+
+        int width = holder.img.getWidth();
+        int height = holder.img.getHeight();
+
+        GlideApp.with(holder.img.getContext())
+                .load(room.getTargetUri())
+                .override(width,height)
+                .centerCrop()
+                .into(holder.img);
     }
 
     @Override

@@ -1,7 +1,8 @@
 package com.example.kwoncheolhyeok.core.MessageActivity;
 
 import android.content.Intent;
-import android.util.Log;
+import android.graphics.drawable.Drawable;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,14 +11,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
+import com.example.kwoncheolhyeok.core.MessageActivity.chat_message_view.util.ChatFirebaseUtil;
 import com.example.kwoncheolhyeok.core.MessageActivity.chat_message_view.util.DateUtil;
 import com.example.kwoncheolhyeok.core.PeopleFragment.FullImageActivity;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.GlideApp;
-import com.firebase.ui.storage.images.FirebaseImageLoader;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import java.util.List;
 
@@ -26,9 +28,17 @@ import java.util.List;
  */
 public class ChatMessageAdapter extends ArrayAdapter<ChatMessage> {
     private static final int MY_MESSAGE = 0, OTHER_MESSAGE = 1, MY_IMAGE = 2, OTHER_IMAGE = 3;
+    private Long startTime, endTime;
+    private OnCallbackList onCallbackList;
 
-    public ChatMessageAdapter(ChattingActivity context, List<ChatMessage> data) {
+    public interface OnCallbackList {
+        public void onEvent();
+    }
+
+    public ChatMessageAdapter(ChattingActivity context, List<ChatMessage> data, OnCallbackList listener) {
         super(context, R.layout.message_item_mine_message, data);
+        onCallbackList = listener;
+        startTime = System.currentTimeMillis();
     }
 
     @Override
@@ -54,24 +64,33 @@ public class ChatMessageAdapter extends ArrayAdapter<ChatMessage> {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.message_item_mine_message, parent, false);
 
             TextView textView = (TextView) convertView.findViewById(R.id.text);
-            textView.setText(getItem(position).getContent());
+            TextView dTextView = (TextView) convertView.findViewById(R.id.time);
+            TextView cTextView = (TextView) convertView.findViewById(R.id.check);
 
-            DateUtil dateUtil = new DateUtil(getItem(position).getTime());
-            String time = dateUtil.getTime();
-            textView = (TextView) convertView.findViewById(R.id.time);
-            textView.setText(time);
+            String content = getItem(position).getContent();
+            Long date = getItem(position).getTime();
+            int check = getItem(position).getCheck();
 
-            if(getItem(position).getCheck()!=0){
-                textView = (TextView) convertView.findViewById(R.id.check);
-                textView.setText(Integer.toString(getItem(position).getCheck()));
-            }
+            textView.setText(content);
+            setDateUtil(dTextView, cTextView, date, check);
 
         } else if (viewType == OTHER_MESSAGE) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.message_item_other_message, parent, false);
 
             TextView textView = (TextView) convertView.findViewById(R.id.text);
-            textView.setText(getItem(position).getContent());
             ImageView imageView = (ImageView) convertView.findViewById(R.id.profile_image);
+            TextView dTextView = (TextView) convertView.findViewById(R.id.time);
+            TextView cTextView = (TextView) convertView.findViewById(R.id.check);
+
+            String profile = getItem(position).getProfileImage();
+            String content = getItem(position).getContent();
+            Long date = getItem(position).getTime();
+            int check = getItem(position).getCheck();
+
+            textView.setText(content);
+            setDateUtil(dTextView, cTextView, date, check);
+            setProfileImage(imageView, profile);
+
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -81,29 +100,36 @@ public class ChatMessageAdapter extends ArrayAdapter<ChatMessage> {
                 }
             });
 
-            DateUtil dateUtil = new DateUtil(getItem(position).getTime());
-            String time = dateUtil.getTime();
-            textView = (TextView) convertView.findViewById(R.id.time);
-            textView.setText(time);
-
-            if(getItem(position).getCheck()!=0){
-                textView = (TextView) convertView.findViewById(R.id.check);
-                textView.setText(Integer.toString(getItem(position).getCheck()));
-            }
-            Glide.with(imageView.getContext()).load(getItem(position).getProfileImage()).into(imageView);
-
         } else if (viewType == MY_IMAGE) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.message_item_mine_image, parent, false);
-            ImageView messageimage = (ImageView) convertView.findViewById(R.id.imeageMessage);
-            Glide.with(messageimage.getContext()).load(getItem(position).getImage()).into(messageimage);
-        } else {
+
+            ImageView messageimage = (ImageView) convertView.findViewById(R.id.chatMessageView);
+            TextView dTextView = (TextView) convertView.findViewById(R.id.time);
+            TextView cTextView = (TextView) convertView.findViewById(R.id.check);
+
+            String image = getItem(position).getImage();
+            Long date = getItem(position).getTime();
+            int check = getItem(position).getCheck();
+
+            setImageMessage(messageimage, image);
+            setDateUtil(dTextView, cTextView, date, check);
+
+        } else if (viewType == OTHER_IMAGE) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.message_item_other_image, parent, false);
 
             ImageView imageView = (ImageView) convertView.findViewById(R.id.profile_image);
-            Glide.with(imageView.getContext()).load(getItem(position).getProfileImage()).into(imageView);
+            ImageView messageimage = (ImageView) convertView.findViewById(R.id.chatMessageView);
+            TextView cTextView = (TextView) convertView.findViewById(R.id.check);
+            TextView dTextView = (TextView) convertView.findViewById(R.id.time);
 
-            ImageView messageimage = (ImageView) convertView.findViewById(R.id.imeageMessage);
-            Glide.with(messageimage.getContext()).load(getItem(position).getImage()).into(messageimage);
+            String profile = getItem(position).getProfileImage();
+            String image = getItem(position).getImage();
+            Long date = getItem(position).getTime();
+            int check = getItem(position).getCheck();
+
+            setProfileImage(imageView, profile);
+            setImageMessage(messageimage, image);
+            setDateUtil(dTextView, cTextView, date, check);
         }
 
         convertView.findViewById(R.id.chatMessageView).setOnClickListener(new View.OnClickListener() {
@@ -115,4 +141,56 @@ public class ChatMessageAdapter extends ArrayAdapter<ChatMessage> {
 
         return convertView;
     }
+
+    public void setDateUtil(TextView dTextView, TextView cTextView, Long date, int check) {
+        DateUtil dateUtil = new DateUtil(date);
+        String time = dateUtil.getTime();
+        dTextView.setText(time);
+
+        if (check != 0) {
+            cTextView.setText(Integer.toString(check));
+        }
+    }
+
+    public void setProfileImage(ImageView imageView, String uri) {
+        int width = imageView.getWidth();
+        int height = imageView.getHeight();
+
+        GlideApp.with(imageView.getContext())
+                .load(uri)
+                .override(width, height)
+                .centerCrop()
+                .placeholder(R.drawable.a)
+                .into(imageView);
+    }
+
+    public void setImageMessage(ImageView imageView, String uri) {
+        endTime = System.currentTimeMillis();
+        RequestListener listener;
+        if (endTime - startTime < 1000) {
+            listener = this.requestListener;
+        } else {
+            listener = null;
+        }
+        GlideApp.with(imageView.getContext())
+                .load(uri)
+                .override(600, 600)
+                .fitCenter()
+                .listener(listener)
+                .into(imageView);
+    }
+
+    public RequestListener requestListener = new RequestListener() {
+        @Override
+        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target target, boolean isFirstResource) {
+            return false;
+        }
+
+        @Override
+        public boolean onResourceReady(Object resource, Object model, Target target, DataSource dataSource, boolean isFirstResource) {
+            onCallbackList.onEvent();
+            return false;
+        }
+    };
+
 }

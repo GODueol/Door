@@ -1,34 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="right"
     android:padding="3dp">
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_gravity="bottom"
+        android:orientation="vertical">
 
-        <com.example.kwoncheolhyeok.core.MessageActivity.chat_message_view.ChatMessageView
-            android:id="@+id/chatMessageView"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/check"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:cmv_arrowGravity="start"
-            app:cmv_arrowPosition="right"
-            app:cmv_backgroundColor="@color/message_color"
-            app:cmv_backgroundColorPressed="#FFFFFF"
-            app:cmv_contentPadding="3dp"
-            app:cmv_cornerRadius="3dp"
-            app:cmv_showArrow="true">
+            android:layout_gravity="bottom|right"
+            android:text="" />
 
-            <ImageView
-                android:id="@+id/imeageMessage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="#aaffffff"
-                android:src="@drawable/a" />
-        </com.example.kwoncheolhyeok.core.MessageActivity.chat_message_view.ChatMessageView>
+        <TextView
+            android:id="@+id/time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/check"
+            android:layout_gravity="bottom"
+            android:minEms="2"
+            android:text="13:00" />
     </LinearLayout>
+
+    <ImageView
+        android:id="@+id/chatMessageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#aaffffff"
+        android:padding="5dp"
+        android:src="@drawable/a" />
 </LinearLayout>
