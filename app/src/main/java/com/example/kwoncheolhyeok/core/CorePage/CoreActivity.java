@@ -31,7 +31,6 @@ public class CoreActivity extends AppCompatActivity {
 
     Toolbar toolbar = null;
 
-    TextView media_player = null;
     private CoreListAdapter coreListAdapter;
 
     @Override
@@ -64,14 +63,6 @@ public class CoreActivity extends AppCompatActivity {
             }
         });
 
-        media_player = findViewById(R.id.media_player);
-        media_player.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(CoreActivity.this, AudioActivity.class);
-                startActivity(i);
-            }
-        });
 
 
 

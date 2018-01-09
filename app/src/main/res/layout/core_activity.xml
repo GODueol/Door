@@ -31,18 +31,18 @@
             android:scaleType="centerCrop" />
 
 
-        <TextView
-            android:id="@+id/media_player"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="20dp"
-            android:gravity="right"
-            android:text="미플고"
-            android:textColor="@color/skyblue"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+        <!--<TextView-->
+            <!--android:id="@+id/media_player"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_alignParentRight="true"-->
+            <!--android:layout_centerVertical="true"-->
+            <!--android:layout_marginRight="20dp"-->
+            <!--android:gravity="right"-->
+            <!--android:text="미플고"-->
+            <!--android:textColor="@color/skyblue"-->
+            <!--android:textSize="18sp"-->
+            <!--android:textStyle="bold" />-->
 
         
     </RelativeLayout>
