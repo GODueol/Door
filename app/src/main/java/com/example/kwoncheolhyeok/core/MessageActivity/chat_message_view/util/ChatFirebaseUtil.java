@@ -45,14 +45,18 @@ public class ChatFirebaseUtil {
 
     private Context context;
     private String userUuid, targetUuid;
-    private User currentUser,targetUser;
+    private User currentUser, targetUser;
     private String userPickuri, targetPicuri;
     private String roomName;
-    private DatabaseReference databaseRef;
+    private DatabaseReference databaseRef, chatDatabaseRef;
     private FirebaseStorage storage;
 
+    ///////////////////////
+    private ImageAdapter.Item item;
+    private ChatMessageAdapter chatMessageAdapter;
+    private HashMap<String,Integer> hashMap;
 
-    public ChatFirebaseUtil(Context context,User currentUser,User targetUser, String userUuid, String targetUuid) {
+    public ChatFirebaseUtil(Context context, User currentUser, User targetUser, String userUuid, String targetUuid) {
         databaseRef = FirebaseDatabase.getInstance().getReference();
         storage = FirebaseStorage.getInstance();
         this.context = context;
@@ -65,7 +69,7 @@ public class ChatFirebaseUtil {
 
     }
 
-    public void setLastChatView(){
+    public void setLastChatView() {
         Long currentTime = getTime();
         databaseRef.child(chatRoomList).child(userUuid).child(targetUuid).child("lastViewTime").setValue(currentTime);
     }
@@ -79,36 +83,36 @@ public class ChatFirebaseUtil {
         Map<String, Object> childUpdates = new HashMap<>();
 
         if (message.getImage() == null) {
-            childUpdates.put("/"+chat+"/"+ room + "/" + key, message);
+            childUpdates.put("/" + chat + "/" + room + "/" + key, message);
 
-            childUpdates.put("/"+chatRoomList+"/"+ targetUuid + "/" + userUuid + "/" + "lastChatTime", currentTime);
-            childUpdates.put("/"+chatRoomList+"/"+ targetUuid + "/" + userUuid + "/" + "lastChat", message.getContent());
+            childUpdates.put("/" + chatRoomList + "/" + targetUuid + "/" + userUuid + "/" + "lastChatTime", currentTime);
+            childUpdates.put("/" + chatRoomList + "/" + targetUuid + "/" + userUuid + "/" + "lastChat", message.getContent());
 
-            childUpdates.put("/"+chatRoomList+"/"+ userUuid + "/" + targetUuid + "/" + "lastViewTime", currentTime);
-            childUpdates.put("/"+chatRoomList+"/"+ userUuid + "/" + targetUuid + "/" + "lastChat", message.getContent());
+            childUpdates.put("/" + chatRoomList + "/" + userUuid + "/" + targetUuid + "/" + "lastViewTime", currentTime);
+            childUpdates.put("/" + chatRoomList + "/" + userUuid + "/" + targetUuid + "/" + "lastChat", message.getContent());
         } else if (message.getContent() == null) {
-            childUpdates.put("/"+chat+"/" + room + "/" + key, message);
+            childUpdates.put("/" + chat + "/" + room + "/" + key, message);
 
-            childUpdates.put("/"+chatRoomList+"/"+ targetUuid + "/" + userUuid + "/" + "lastChatTime", currentTime);
-            childUpdates.put("/"+chatRoomList+"/" + targetUuid + "/" + userUuid + "/" + "lastChat", "사진");
-            childUpdates.put("/"+chatRoomList+"/" + userUuid + "/" + targetUuid + "/" + "lastViewTime", currentTime);
-            childUpdates.put("/"+chatRoomList+"/" + userUuid + "/" + targetUuid + "/" + "lastChat", "사진");
+            childUpdates.put("/" + chatRoomList + "/" + targetUuid + "/" + userUuid + "/" + "lastChatTime", currentTime);
+            childUpdates.put("/" + chatRoomList + "/" + targetUuid + "/" + userUuid + "/" + "lastChat", "사진");
+            childUpdates.put("/" + chatRoomList + "/" + userUuid + "/" + targetUuid + "/" + "lastViewTime", currentTime);
+            childUpdates.put("/" + chatRoomList + "/" + userUuid + "/" + targetUuid + "/" + "lastChat", "사진");
         }
         databaseRef.updateChildren(childUpdates);
     }
 
-    public void sendImageMessage(Uri outputFileUri){
+    public void sendImageMessage(Uri outputFileUri) {
 
         StorageReference imagesRef = storage.getReference().child(chat);
         long currentTime = System.currentTimeMillis();
         final String imageName = CryptoImeageName.md5(Long.toString(currentTime));
-        final StorageReference imageMessageRef = imagesRef.child(image+"/"+roomName+"/"+userUuid+"/"+imageName);
+        final StorageReference imageMessageRef = imagesRef.child(image + "/" + roomName + "/" + userUuid + "/" + imageName);
         UploadTask uploadTask = imageMessageRef.putFile(outputFileUri);
 
         uploadTask.addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.d("chatError",e.getMessage());
+                Log.d("chatError", e.getMessage());
             }
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
@@ -118,7 +122,7 @@ public class ChatFirebaseUtil {
                     @Override
                     public void onSuccess(Uri uri) {
                         long currentTime = getTime();
-                        MessageVO message = new MessageVO(uri.toString(), userUuid, currentUser.getId(), null,currentTime, 1);
+                        MessageVO message = new MessageVO(uri.toString(), userUuid, currentUser.getId(), null, currentTime, 1);
                         sendMessage(message);
                     }
                 }).addOnFailureListener(new OnFailureListener() {
@@ -132,8 +136,10 @@ public class ChatFirebaseUtil {
         });
     }
 
-    public void setchatRoom(final ChatMessageAdapter mAdapter, final ListView listView) {
-        final  DatabaseReference chatRoomRef = FirebaseDatabase.getInstance().getReference(chatRoomList);
+    public void setchatRoom(ChatMessageAdapter mAdapter, ListView listView) {
+        final DatabaseReference chatRoomRef = FirebaseDatabase.getInstance().getReference(chatRoomList);
+        hashMap = new HashMap<String,Integer>();
+        chatMessageAdapter = mAdapter;
 
         chatRoomRef.child(userUuid).child(targetUuid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -145,17 +151,17 @@ public class ChatFirebaseUtil {
                     chatRoomRef.child(userUuid).child(targetUuid).child("lastViewTime").setValue(currentTime);
                 } catch (Exception e) {
                     // 채팅방 이름 설정
-                    roomName  = FirebaseDatabase.getInstance().getReference(chat).push().getKey();
+                    roomName = FirebaseDatabase.getInstance().getReference(chat).push().getKey();
 
                     Map<String, Object> childUpdates = new HashMap<>();
-                    RoomVO roomVO = new RoomVO(roomName,null, userUuid,currentTime, userPickuri);
-                    childUpdates.put("/"+chatRoomList+"/" + targetUuid + "/" + userUuid  , roomVO);
-                    roomVO = new RoomVO(roomName,null, targetUuid,currentTime, targetPicuri);
-                    childUpdates.put("/"+chatRoomList+"/" + userUuid + "/" + targetUuid , roomVO);
+                    RoomVO roomVO = new RoomVO(roomName, null, userUuid, currentTime, userPickuri);
+                    childUpdates.put("/" + chatRoomList + "/" + targetUuid + "/" + userUuid, roomVO);
+                    roomVO = new RoomVO(roomName, null, targetUuid, currentTime, targetPicuri);
+                    childUpdates.put("/" + chatRoomList + "/" + userUuid + "/" + targetUuid, roomVO);
                     databaseRef.updateChildren(childUpdates);
                     chatRoomRef.child(userUuid).child(targetUuid).child("lastViewTime").setValue(currentTime);
                 }
-                final ImageAdapter.Item item = new ImageAdapter.Item(0,targetUuid,targetUser,targetPicuri);
+                item = new ImageAdapter.Item(0, targetUuid, targetUser, targetPicuri);
                 // 상대방과의 거리 셋팅
                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference(FireBaseUtil.currentLocationPath);
                 GeoFire geoFire = new GeoFire(ref);
@@ -175,62 +181,9 @@ public class ChatFirebaseUtil {
                     public void onCancelled(DatabaseError databaseError) {
                     }
                 });
-                FirebaseDatabase.getInstance().getReference().child(chat).child(roomName)
-                        .addChildEventListener(new ChildEventListener() {
-                            public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
-                                Log.d("fireabaseUpdate", "onChildAdded:" + dataSnapshot.getKey());
 
-                                // A new comment has been added, add it to the displayed list
-                                MessageVO message = dataSnapshot.getValue(MessageVO.class);
-                                ChatMessage chatMessage;
-                                int check = message.getCheck();
-                                /*
-                                if(check!=0 && !message.getWriter().equals(userUuid)){
-                                    message.setCheck(0);
-                                    databaseRef.child(chat).child(roomName).child(dataSnapshot.getKey()).child("check").setValue(check-1);
-                                }
-                                */
-                                if(message.getWriter().equals(userUuid) && message.getImage() == null) {
-                                    chatMessage = new ChatMessage(message, true, false);
-                                }
-                                else if(!message.getWriter().equals(userUuid) && message.getImage() == null){
-                                    chatMessage = new ChatMessage(message, false, false, item);
-                                }
-                                else if(message.getWriter().equals(userUuid) && message.getContent() == null){
-                                    chatMessage = new ChatMessage(message, true, true);
-                                }
-                                else{
-                                    chatMessage = new ChatMessage(message, false, true,item);
-                                }
-
-                                mAdapter.add(chatMessage);
-                            }
-
-                            @Override
-                            public void onChildChanged(DataSnapshot dataSnapshot, String previousChildName) {
-                                Log.d("fireabaseUpdate", "onChildChanged:" + dataSnapshot.getKey());
-
-                                // A comment has changed, use the key to determine if we are displaying this
-                                // comment and if so displayed the changed comment.
-                                MessageVO user = dataSnapshot.getValue(MessageVO.class);
-                                String commentKey = dataSnapshot.getKey();
-                                mAdapter.notifyDataSetChanged();
-                            }
-                            @Override
-                            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-                            }
-
-                            @Override
-                            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-
-                            }
-                        });
+                chatDatabaseRef = FirebaseDatabase.getInstance().getReference().child(chat).child(roomName);
+                chatDatabaseRef.addChildEventListener(childEventListener);
             }
 
             @Override
@@ -240,8 +193,72 @@ public class ChatFirebaseUtil {
         });
     }
 
+    ChildEventListener childEventListener = new ChildEventListener() {
+
+        public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
+            String commentKey = dataSnapshot.getKey();
+
+            // A new comment has been added, add it to the displayed list
+            MessageVO message = dataSnapshot.getValue(MessageVO.class);
+            ChatMessage chatMessage;
+            int check = message.getCheck();
+
+
+            if (check != 0 && !message.getWriter().equals(userUuid)) {
+                message.setCheck(0);
+                databaseRef.child(chat).child(roomName).child(dataSnapshot.getKey()).child("check").setValue(check - 1);
+            }
+
+            if (message.getWriter().equals(userUuid) && message.getImage() == null) {
+                chatMessage = new ChatMessage(message, true, false);
+            } else if (!message.getWriter().equals(userUuid) && message.getImage() == null) {
+                chatMessage = new ChatMessage(message, false, false, item);
+            } else if (message.getWriter().equals(userUuid) && message.getContent() == null) {
+                chatMessage = new ChatMessage(message, true, true);
+            } else {
+                chatMessage = new ChatMessage(message, false, true, item);
+            }
+
+            hashMap.put(commentKey,chatMessageAdapter.getCount());
+            chatMessageAdapter.add(chatMessage);
+        }
+
+        @Override
+        public void onChildChanged(DataSnapshot dataSnapshot, String previousChildName) {
+            Log.d("fireabaseUpdate", "onChildChanged:" + dataSnapshot.getKey());
+
+            // A comment has changed, use the key to determine if we are displaying this
+            // comment and if so displayed the changed comment.
+            MessageVO messageVO = dataSnapshot.getValue(MessageVO.class);
+            String commentKey = dataSnapshot.getKey();
+            int key = hashMap.get(commentKey);
+            int check  = messageVO.getCheck();
+            chatMessageAdapter.getItem(key).setCheck(check);
+            chatMessageAdapter.notifyDataSetChanged();
+        }
+
+        @Override
+        public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+        }
+
+        @Override
+        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+
+        }
+    };
+
     public Long getTime() {
         return System.currentTimeMillis();
+    }
+
+    public void deleteFirebaseRef() {
+        chatDatabaseRef.removeEventListener(childEventListener);
     }
 }
 

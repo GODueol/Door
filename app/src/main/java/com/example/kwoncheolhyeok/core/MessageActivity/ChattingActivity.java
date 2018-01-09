@@ -116,6 +116,7 @@ public class ChattingActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         chatFirebaseUtil.setLastChatView();
+        chatFirebaseUtil.deleteFirebaseRef();
     }
 
     private void writeMessage(String image, String userId, String nickname, String content, long currentTime, int check) {

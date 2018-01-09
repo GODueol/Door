@@ -37,7 +37,7 @@ public class MessageActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private String userId;
     private HashMap<String,Integer> hashMap;
-    private int key=0;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,9 +108,8 @@ public class MessageActivity extends AppCompatActivity {
                             User target = dataSnapshot.getValue(User.class);
                             roomList.setTargetNickName(target.getId());
                             roomList.setTargetProfile(target.getTotalProfile());
+                            hashMap.put(roomList.getUserUuid(),messageRecyclerAdapter.getItemCount());
                             listrowItem.add(roomList);
-                            hashMap.put(roomList.getUserUuid(),key);
-                            key++;
                             messageRecyclerAdapter.notifyDataSetChanged();
                         }
 
