@@ -1,6 +1,7 @@
 package com.example.kwoncheolhyeok.core.CorePage;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,6 +11,7 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,14 +34,19 @@ import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
 import com.example.kwoncheolhyeok.core.Util.UiUtil;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.like.LikeButton;
 import com.like.OnLikeListener;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -248,17 +255,38 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                 , new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+
                         FirebaseDatabase.getInstance().getReference().child("posts").child(cUuid).child(coreListItem.getPostKey())
                                 .removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
-                                // 음성, 그림 파일 삭제
-                                FirebaseStorage.getInstance().getReference().child("posts").child(cUuid).child(coreListItem.getPostKey()).delete();
-
+                                final ArrayList<Task> deleteTasks = new ArrayList<>();
                                 // 갯수 갱신
                                 FireBaseUtil.getInstance().syncCorePostCount(cUuid);
+
+                                // Storage Delete
+                                StorageReference postStorageRef = FirebaseStorage.getInstance().getReference().child("posts").child(cUuid).child(coreListItem.getPostKey());
+                                if(coreListItem.getCorePost().getSoundUrl() != null)
+                                    deleteTasks.add(postStorageRef.child("sound").delete());
+                                if(coreListItem.getCorePost().getPictureUrl() != null)
+                                    deleteTasks.add(postStorageRef.child("picture").delete());
+                                UiUtil.getInstance().startProgressDialog((Activity) context);
+                                for(Task task : deleteTasks){
+                                    task.addOnCompleteListener(new OnCompleteListener() {
+                                        @Override
+                                        public void onComplete(@NonNull Task mTask) {
+                                            for(Task t : deleteTasks){
+                                                if(!t.isComplete()) return;
+                                                UiUtil.getInstance().stopProgressDialog();
+                                            }
+                                        }
+                                    });
+                                }
+
                             }
                         });
+
+
 
                     }
                 }, new DialogInterface.OnClickListener() {
