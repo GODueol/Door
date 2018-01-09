@@ -174,8 +174,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         // 개인정보 Set
         User oUser = item.getUser();
         textId.setText(oUser.getId());
-        textPhysical.setText(TextUtils.join("/", new String[]{Integer.toString(oUser.getAge()), Integer.toString(oUser.getHeight()),
-                Integer.toString(oUser.getWeight()), oUser.getBodyType()}));
+        textPhysical.setText(UiUtil.getInstance().setSubProfile(oUser));
         textIntroduce.setText(oUser.getIntro());
 
         // 코어 카운트

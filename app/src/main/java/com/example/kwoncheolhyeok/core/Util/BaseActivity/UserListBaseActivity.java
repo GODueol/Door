@@ -46,7 +46,9 @@ public class UserListBaseActivity extends AppCompatActivity {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             User oUser = dataSnapshot.getValue(User.class);
-                            items.add(1, new UserListAdapter.Item(oUser, (long)snapshot.getValue(), oUuid));
+
+                            if(adapter.isReverse) items.add(new UserListAdapter.Item(oUser, (long)snapshot.getValue(), oUuid));
+                            else items.add(1, new UserListAdapter.Item(oUser, (long)snapshot.getValue(), oUuid));
                             adapter.notifyDataSetChanged();
                         }
 

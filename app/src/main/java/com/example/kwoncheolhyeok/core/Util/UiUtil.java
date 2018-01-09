@@ -8,8 +8,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.text.TextUtils;
 
 import com.example.kwoncheolhyeok.core.CorePage.CoreActivity;
+import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.R;
 
 /**
@@ -26,6 +28,11 @@ public class UiUtil {
     private ProgressDialog progressDialog;
 
     private UiUtil() {
+    }
+
+    public String setSubProfile(User user){
+        return TextUtils.join("/", new String[]{Integer.toString(user.getAge()), Integer.toString(user.getHeight()),
+                Integer.toString(user.getWeight()), user.getBodyType()});
     }
 
     public void startProgressDialog(Activity activity) {

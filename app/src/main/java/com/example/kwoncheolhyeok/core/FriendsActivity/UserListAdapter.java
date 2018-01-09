@@ -7,11 +7,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
@@ -24,10 +24,12 @@ import com.example.kwoncheolhyeok.core.PeopleFragment.ImageAdapter;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
+import com.example.kwoncheolhyeok.core.Util.GlideApp;
 import com.example.kwoncheolhyeok.core.Util.UiUtil;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -40,11 +42,12 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
     private int itemMenu;
     private Context context;
     private String field;
+    public boolean isReverse = false;
 
     private class VIEW_TYPES {
-        public static final int Header = 1;
-        public static final int Normal = 2;
-        public static final int Footer = 3;
+        static final int Header = 1;
+        static final int Normal = 2;
+        static final int Footer = 3;
     }
 
     public UserListAdapter(Context context, List<Item> items){
@@ -87,8 +90,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
 
         Glide.with(userHolder.profilePicImage.getContext()).load(user.getPicUrls().getPicUrl1()).into(userHolder.profilePicImage);
         userHolder.idText.setText(user.getId());
-        userHolder.subProfileText.setText(TextUtils.join("/", new String[]{Integer.toString(user.getAge()), Integer.toString(user.getHeight()),
-                Integer.toString(user.getWeight()), user.getBodyType()}));
+        userHolder.subProfileText.setText(UiUtil.getInstance().setSubProfile(user));
         userHolder.dateText.setText( DataContainer.getInstance().convertBeforeFormat(item.getDate()));
 
         userHolder.profilePicImage.setOnClickListener(new View.OnClickListener() {
@@ -239,6 +241,68 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
             if(field.equals("followingUsers") || field.equals("followerUsers") || field.equals("friendUsers") ) {  // 헤더 추가할 메뉴
                 userHolder.itemView.setVisibility(View.VISIBLE);
                 params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+
+                TextView header_title = userHolder.itemView.findViewById(R.id.header_title);
+                TextView friends_contents = userHolder.itemView.findViewById(R.id.friends_contents);
+                TextView friends_contents2 = userHolder.itemView.findViewById(R.id.friends_contents2);
+                TextView header_count = userHolder.itemView.findViewById(R.id.header_count);
+                ImageView profile_image = userHolder.itemView.findViewById(R.id.profile_image);
+                TextView userNick = userHolder.itemView.findViewById(R.id.userNick);
+                TextView userProfile = userHolder.itemView.findViewById(R.id.userProfile);
+                ImageButton setting = userHolder.itemView.findViewById(R.id.setting);
+                final TextView list_sequence = userHolder.itemView.findViewById(R.id.list_sequence);
+
+                User mUser = DataContainer.getInstance().getUser();
+
+                if(mUser.getPicUrls().getPicUrl1() != null) GlideApp.with(context).load(mUser.getPicUrls().getPicUrl1()).centerCrop()
+                        .into(profile_image);
+                userNick.setText(mUser.getId());
+                userProfile.setText(UiUtil.getInstance().setSubProfile(mUser));
+
+                setting.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        String oldOrderStr = "오래된순";
+                        String newOrderStr = "최신순";
+                        if(isReverse) {
+                            list_sequence.setText(newOrderStr);
+                            isReverse = false;
+                        } else {
+                            list_sequence.setText(oldOrderStr);
+                            isReverse = true;
+                        }
+
+                        // 첫번째만 남기고 모두 Reverse
+                        Item header = items.get(0);
+                        items.remove(0);
+                        Collections.reverse(items);
+                        items.add(0, header);
+                        notifyDataSetChanged();
+
+                    }
+                });
+
+                switch (field) {
+                    case "followingUsers":
+                        header_title.setText("팔로잉목록");
+                        friends_contents.setText(mUser.getId() + "님의 팔로잉 목록입니다");
+                        friends_contents2.setText("상대방이 팔로워하면 친구목록에 추가됩니다");
+                        header_count.setText((items.size() - 1) + " 팔로잉");
+                        break;
+                    case "followerUsers":
+                        header_title.setText("팔로워목록");
+                        friends_contents.setText(mUser.getId() + "님의 팔로워 목록입니다");
+                        friends_contents2.setText("팔로잉하시면 친구 목록에 추가됩니다");
+                        header_count.setText((items.size() - 1) + " 팔로워");
+                        break;
+                    case "friendUsers":
+                        header_title.setText("친구목록");
+                        friends_contents.setText(mUser.getId() + "님은 CORE일반회원입니다");
+                        friends_contents2.setText("친구까지 코어를 열어볼 수 있습니다");
+                        header_count.setText((items.size() - 1) + " 친구");
+                        break;
+                }
+
             }
             else { // 제외할 메뉴
                 userHolder.itemView.setVisibility(View.INVISIBLE);
