@@ -73,7 +73,7 @@ public class ChattingActivity extends AppCompatActivity {
         userUuid = mAuth.getUid();
 
         chatFirebaseUtil = new ChatFirebaseUtil(this, user, targetUser, userUuid, targetUuid);
-        chatFirebaseUtil.checkchatRoom(mAdapter, mListView);
+        chatFirebaseUtil.setchatRoom(mAdapter, mListView);
 
         // 메세지 보내기
         mButtonSend.setOnClickListener(new View.OnClickListener() {
@@ -110,6 +110,12 @@ public class ChattingActivity extends AppCompatActivity {
 
             }
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        chatFirebaseUtil.setLastChatView();
     }
 
     private void writeMessage(String image, String userId, String nickname, String content, long currentTime, int check) {

@@ -43,13 +43,13 @@ public class ChatFirebaseUtil {
     final static String chat = "chat";
     final static String image = "image";
 
-    Context context;
-    String userUuid, targetUuid;
-    User currentUser,targetUser;
-    String userPickuri, targetPicuri;
-    String roomName;
-    DatabaseReference databaseRef;
-    FirebaseStorage storage;
+    private Context context;
+    private String userUuid, targetUuid;
+    private User currentUser,targetUser;
+    private String userPickuri, targetPicuri;
+    private String roomName;
+    private DatabaseReference databaseRef;
+    private FirebaseStorage storage;
 
 
     public ChatFirebaseUtil(Context context,User currentUser,User targetUser, String userUuid, String targetUuid) {
@@ -63,6 +63,11 @@ public class ChatFirebaseUtil {
         userPickuri = currentUser.getPicUrls().getPicUrl1();
         targetPicuri = targetUser.getPicUrls().getPicUrl1();
 
+    }
+
+    public void setLastChatView(){
+        Long currentTime = getTime();
+        databaseRef.child(chatRoomList).child(userUuid).child(targetUuid).child("lastViewTime").setValue(currentTime);
     }
 
     public void sendMessage(MessageVO message) {
@@ -127,7 +132,7 @@ public class ChatFirebaseUtil {
         });
     }
 
-    public void checkchatRoom(final ChatMessageAdapter mAdapter, final ListView listView) {
+    public void setchatRoom(final ChatMessageAdapter mAdapter, final ListView listView) {
         final  DatabaseReference chatRoomRef = FirebaseDatabase.getInstance().getReference(chatRoomList);
 
         chatRoomRef.child(userUuid).child(targetUuid).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -179,7 +184,12 @@ public class ChatFirebaseUtil {
                                 MessageVO message = dataSnapshot.getValue(MessageVO.class);
                                 ChatMessage chatMessage;
                                 int check = message.getCheck();
-
+                                /*
+                                if(check!=0 && !message.getWriter().equals(userUuid)){
+                                    message.setCheck(0);
+                                    databaseRef.child(chat).child(roomName).child(dataSnapshot.getKey()).child("check").setValue(check-1);
+                                }
+                                */
                                 if(message.getWriter().equals(userUuid) && message.getImage() == null) {
                                     chatMessage = new ChatMessage(message, true, false);
                                 }
@@ -232,10 +242,6 @@ public class ChatFirebaseUtil {
 
     public Long getTime() {
         return System.currentTimeMillis();
-    }
-
-    public String getRoomName(){
-        return roomName;
     }
 }
 

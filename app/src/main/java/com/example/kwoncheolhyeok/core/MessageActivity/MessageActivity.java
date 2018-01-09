@@ -30,13 +30,14 @@ public class MessageActivity extends AppCompatActivity {
     Toolbar toolbar = null;
 
     messageRecyclerAdapter messageRecyclerAdapter;
+    LinearLayoutManager linearLayoutManager;
     RecyclerView messageList;
     List<RoomVO> listrowItem;
     private DatabaseReference chatRoomListRef;
     private FirebaseAuth mAuth;
     private String userId;
     private HashMap<String,Integer> hashMap;
-    private int key;
+    private int key=0;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,11 +79,13 @@ public class MessageActivity extends AppCompatActivity {
 
             }
         };
-
+        linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setReverseLayout(true);
+        linearLayoutManager.setStackFromEnd(true);
         messageRecyclerAdapter = new messageRecyclerAdapter(listrowItem, R.layout.messagelist_row, listener);
         messageList = (RecyclerView) findViewById(R.id.messagelist);
         messageList.setAdapter(messageRecyclerAdapter);
-        messageList.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        messageList.setLayoutManager(linearLayoutManager);
         messageList.setItemAnimator(new DefaultItemAnimator());
         setMessageData();
 
@@ -94,8 +97,7 @@ public class MessageActivity extends AppCompatActivity {
     public void setMessageData() {
         chatRoomListRef = FirebaseDatabase.getInstance().getReference("chatRoomList");
         hashMap = new HashMap<String,Integer>();
-        key=0;
-        chatRoomListRef.child(userId).addChildEventListener(new ChildEventListener() {
+        chatRoomListRef.child(userId).orderByChild("lastChatTime").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 final RoomVO roomList = dataSnapshot.getValue(RoomVO.class);
