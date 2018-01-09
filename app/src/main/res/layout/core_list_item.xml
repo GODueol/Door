@@ -241,14 +241,14 @@
             app:icon_size="15dp"
             app:icon_type="heart" />
 
-        <ImageButton
-            android:id="@+id/heart_count"
-            android:layout_width="15dp"
-            android:layout_height="15dp"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="8dp"
-            android:layout_toLeftOf="@+id/heart_count_txt"
-            android:background="@drawable/heart_on" />
+        <!--<ImageButton-->
+            <!--android:id="@+id/heart_count"-->
+            <!--android:layout_width="15dp"-->
+            <!--android:layout_height="15dp"-->
+            <!--android:layout_centerVertical="true"-->
+            <!--android:layout_marginRight="8dp"-->
+            <!--android:layout_toLeftOf="@+id/heart_count_txt"-->
+            <!--android:background="@drawable/heart_on" />-->
 
         <TextView
             android:id="@+id/heart_count_txt"
@@ -256,7 +256,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="5dp"
+            android:layout_marginRight="12dp"
             android:gravity="right"
             android:text="30"
             android:textColor="@color/black"/>

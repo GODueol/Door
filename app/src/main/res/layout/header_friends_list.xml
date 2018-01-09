@@ -40,48 +40,49 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/header_title"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="15dp">
-
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            >
 
             <com.example.kwoncheolhyeok.core.PeopleFragment.SquareImageView
                 android:id="@+id/profile_image"
                 android:layout_width="62dp"
                 android:layout_height="62dp"
                 android:background="@drawable/a"
-
+                android:scaleType="centerCrop"
                 />
 
-            <LinearLayout
+            <RelativeLayout
                 android:id="@+id/layout1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="110dp"
                 android:layout_toRightOf="@+id/profile_image"
-                android:orientation="vertical">
+                android:layout_marginLeft="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
 
                 <TextView
                     android:id="@+id/userNick"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="nickname"
+                    android:text="Nickname"
                     android:textColor="@color/white"
-                    android:textSize="15dp" />
+                    android:textSize="15dp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/userProfile"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_below="@+id/userNick"
                     android:layout_marginTop="8dp"
-                    android:text="26 / 174 / 65 / standard"
+                    android:text="SubProfile"
                     android:textColor="@color/white"
-                    android:textSize="15dp" />
+                    android:textSize="13.5dp" />
 
-            </LinearLayout>
+            </RelativeLayout>
+
+
 
         </RelativeLayout>
 

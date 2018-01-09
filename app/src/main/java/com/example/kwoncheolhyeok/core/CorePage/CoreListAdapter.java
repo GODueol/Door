@@ -111,7 +111,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 
             holder.core_pic.setImageResource(R.drawable.a);
             holder.core_id.setText("Unknown");
-            holder.core_subprofile.setText("Unknown");
+            holder.core_subprofile.setText("");
 
             if(cUuid.equals(mUuid)) {   // 주인이 봤을때
                 holder.btn_yes.setOnCheckedChangeListener(null);
@@ -290,7 +290,8 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 
     class CorePostHolder extends RecyclerView.ViewHolder {
         ImageView core_pic, core_img ;
-        ImageButton core_setting, core_heart;
+//        ImageButton Core_heart;
+        ImageButton core_setting;
         TextView core_id, core_subprofile, core_date, core_contents, core_heart_count;
         LikeButton core_heart_btn;
         LinearLayout replyBtnLayout;
@@ -315,7 +316,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
             core_setting= itemView.findViewById(R.id.setting);
 
             core_heart_count = itemView.findViewById(R.id.heart_count_txt);
-            core_heart= itemView.findViewById(R.id.heart_count);
+//            core_heart= itemView.findViewById(R.id.heart_count);
             core_heart_btn = itemView.findViewById(R.id.core_heart_btn);
             replyBtnLayout = itemView.findViewById(R.id.reply_btn_layout);
 

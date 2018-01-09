@@ -18,7 +18,6 @@
             android:layout_marginLeft="5dp"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
-            android:background="@mipmap/ic_launcher"
             android:scaleType="centerCrop" />
 
         <RelativeLayout
@@ -42,7 +41,7 @@
                 android:id="@+id/sub_profile"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Unknown"
+                android:text=""
                 android:textSize="13.5dp"
                 android:layout_below="@+id/core_id"
                 android:layout_marginTop="3dp"
