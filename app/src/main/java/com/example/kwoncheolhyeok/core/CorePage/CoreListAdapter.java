@@ -34,6 +34,7 @@ import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
 import com.example.kwoncheolhyeok.core.Util.UiUtil;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
 import com.like.LikeButton;
 import com.like.OnLikeListener;
 
@@ -251,7 +252,10 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                                 .removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
+                                // 음성, 그림 파일 삭제
+                                FirebaseStorage.getInstance().getReference().child("posts").child(cUuid).child(coreListItem.getPostKey()).delete();
 
+                                // 갯수 갱신
                                 FireBaseUtil.getInstance().syncCorePostCount(cUuid);
                             }
                         });
