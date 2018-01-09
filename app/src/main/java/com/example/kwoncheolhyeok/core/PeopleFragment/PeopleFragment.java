@@ -120,10 +120,16 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
 
         // 쿼리받은 값을 처리
         geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
             @SuppressLint("DefaultLocale")
             @Override
             public void onKeyEntered(final String oUuid, final GeoLocation geoLocation) {
+                ImageAdapter.Item item = imageAdapter.getItem(oUuid);
+                if(item != null) onKeyMoved(oUuid, geoLocation);
+
                 DataContainer.getInstance().getUserRef(oUuid).addListenerForSingleValueEvent(new ValueEventListener() {
+
+                    @RequiresApi(api = Build.VERSION_CODES.N)
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         User oUser = dataSnapshot.getValue(User.class);
@@ -141,12 +147,14 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
             }
 
             private void addItemToGrid(final String key, GeoLocation geoLocation, final User oUser) {
+
                 // key로 프사url, 거리 가져옴
                 Location targetLocation = new Location("");//provider name is unnecessary
                 targetLocation.setLatitude(geoLocation.latitude);//your coords of course
                 targetLocation.setLongitude(geoLocation.longitude);
 
                 final float distance = location.distanceTo(targetLocation);
+
 
                 // grid에 사진, distance추가
 

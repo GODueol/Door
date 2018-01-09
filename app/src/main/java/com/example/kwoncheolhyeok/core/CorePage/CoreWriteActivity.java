@@ -216,7 +216,7 @@ public class CoreWriteActivity extends AppCompatActivity {
                     if (corePost == null) return;
                     textContents.setText(corePost.getText());
                     if (editImage.getContext() == null) return;
-                    Glide.with(editImage.getContext()).load(corePost.getPictureUrl()).into(editImage);
+                    if(corePost.getPictureUrl() != null) Glide.with(editImage.getContext()).load(corePost.getPictureUrl()).into(editImage);
                 }
 
                 @Override
