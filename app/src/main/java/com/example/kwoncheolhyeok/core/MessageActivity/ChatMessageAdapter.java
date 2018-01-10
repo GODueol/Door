@@ -2,8 +2,10 @@ package com.example.kwoncheolhyeok.core.MessageActivity;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -28,8 +30,8 @@ import java.util.List;
  */
 public class ChatMessageAdapter extends ArrayAdapter<ChatMessage> {
     private static final int MY_MESSAGE = 0, OTHER_MESSAGE = 1, MY_IMAGE = 2, OTHER_IMAGE = 3;
-    private Long startTime, endTime;
     private OnCallbackList onCallbackList;
+    RequestListener requestListener;
 
     public interface OnCallbackList {
         public void onEvent();
@@ -38,7 +40,7 @@ public class ChatMessageAdapter extends ArrayAdapter<ChatMessage> {
     public ChatMessageAdapter(ChattingActivity context, List<ChatMessage> data, OnCallbackList listener) {
         super(context, R.layout.message_item_mine_message, data);
         onCallbackList = listener;
-        startTime = System.currentTimeMillis();
+        setRequestListener();
     }
 
     @Override
@@ -131,14 +133,6 @@ public class ChatMessageAdapter extends ArrayAdapter<ChatMessage> {
             setImageMessage(messageimage, image);
             setDateUtil(dTextView, cTextView, date, check);
         }
-
-        convertView.findViewById(R.id.chatMessageView).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getContext(), "onClick", Toast.LENGTH_SHORT).show();
-            }
-        });
-
         return convertView;
     }
 
@@ -165,32 +159,33 @@ public class ChatMessageAdapter extends ArrayAdapter<ChatMessage> {
     }
 
     public void setImageMessage(ImageView imageView, String uri) {
-        endTime = System.currentTimeMillis();
-        RequestListener listener;
-        if (endTime - startTime < 1000) {
-            listener = this.requestListener;
-        } else {
-            listener = null;
-        }
         GlideApp.with(imageView.getContext())
                 .load(uri)
                 .override(600, 600)
                 .fitCenter()
-                .listener(listener)
+                .listener(requestListener)
                 .into(imageView);
     }
 
-    public RequestListener requestListener = new RequestListener() {
-        @Override
-        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target target, boolean isFirstResource) {
-            return false;
-        }
+    public void setRequestListener(){
+        requestListener = new RequestListener() {
+            @Override
+            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target target, boolean isFirstResource) {
+                return false;
+            }
 
-        @Override
-        public boolean onResourceReady(Object resource, Object model, Target target, DataSource dataSource, boolean isFirstResource) {
-            onCallbackList.onEvent();
-            return false;
-        }
-    };
+            @Override
+            public boolean onResourceReady(Object resource, Object model, Target target, DataSource dataSource, boolean isFirstResource) {
+                onCallbackList.onEvent();
+                return false;
+            }
+        };
+    }
+
+    public void deletRequestListener(){
+        requestListener = null;
+    }
+
+
 
 }

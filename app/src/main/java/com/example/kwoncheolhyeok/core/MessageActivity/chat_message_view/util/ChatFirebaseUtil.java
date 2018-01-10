@@ -214,8 +214,10 @@ public class ChatFirebaseUtil {
             } else if (!message.getWriter().equals(userUuid) && message.getImage() == null) {
                 chatMessage = new ChatMessage(message, false, false, item);
             } else if (message.getWriter().equals(userUuid) && message.getContent() == null) {
+                chatMessageAdapter.setRequestListener();
                 chatMessage = new ChatMessage(message, true, true);
             } else {
+                chatMessageAdapter.setRequestListener();
                 chatMessage = new ChatMessage(message, false, true, item);
             }
 
@@ -255,6 +257,10 @@ public class ChatFirebaseUtil {
 
     public Long getTime() {
         return System.currentTimeMillis();
+    }
+
+    public void setFirebaseRef() {
+        chatDatabaseRef.addChildEventListener(childEventListener);
     }
 
     public void deleteFirebaseRef() {

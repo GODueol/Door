@@ -7,6 +7,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 
 import com.example.kwoncheolhyeok.core.Entity.User;
@@ -105,12 +106,7 @@ public class MessageActivity extends AppCompatActivity {
                     FirebaseDatabase.getInstance().getReference("users").child(roomList.getUserUuid()).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            User target = dataSnapshot.getValue(User.class);
-                            roomList.setTargetNickName(target.getId());
-                            roomList.setTargetProfile(target.getTotalProfile());
-                            hashMap.put(roomList.getUserUuid(),messageRecyclerAdapter.getItemCount());
-                            listrowItem.add(roomList);
-                            messageRecyclerAdapter.notifyDataSetChanged();
+                            refreshChatRoomList(dataSnapshot.getValue(User.class), roomList);
                         }
 
                         @Override
@@ -127,16 +123,10 @@ public class MessageActivity extends AppCompatActivity {
                 FirebaseDatabase.getInstance().getReference("users").child(roomList.getUserUuid()).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        try {
-                            User target = dataSnapshot.getValue(User.class);
-                            int key = hashMap.get(roomList.getUserUuid());
-                            listrowItem.remove(key);
-                            roomList.setTargetNickName(target.getId());
-                            roomList.setTargetProfile(target.getTotalProfile());
-                            listrowItem.add(key, roomList);
-                            messageRecyclerAdapter.notifyDataSetChanged();
+                        try{
+                            refreshChatRoomList(dataSnapshot.getValue(User.class), roomList,true);
                         }catch (Exception e){
-                            messageRecyclerAdapter.notifyDataSetChanged();
+                            refreshChatRoomList(dataSnapshot.getValue(User.class), roomList);
                         }
                     }
 
@@ -175,7 +165,23 @@ public class MessageActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    ;
+    public void refreshChatRoomList(User target, RoomVO roomList){
+        Log.d("test",target.getId());
+        roomList.setTargetNickName(target.getId());
+        roomList.setTargetProfile(target.getTotalProfile());
+        hashMap.put(roomList.getUserUuid(),messageRecyclerAdapter.getItemCount());
+        listrowItem.add(roomList);
+        messageRecyclerAdapter.notifyDataSetChanged();
+    }
 
-
+    public void refreshChatRoomList(User target, RoomVO roomList, boolean changeFlag){
+        int key = hashMap.get(roomList.getUserUuid());
+        listrowItem.remove(key);
+        hashMap.remove(key);
+        hashMap.put(roomList.getUserUuid(),messageRecyclerAdapter.getItemCount());
+        roomList.setTargetNickName(target.getId());
+        roomList.setTargetProfile(target.getTotalProfile());
+        listrowItem.add(roomList);
+        messageRecyclerAdapter.notifyDataSetChanged();
+    }
 }

@@ -1,5 +1,6 @@
 package com.example.kwoncheolhyeok.core.MessageActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -43,6 +45,7 @@ public class ChattingActivity extends AppCompatActivity {
     private User targetUser;
     private String targetUuid;
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +67,13 @@ public class ChattingActivity extends AppCompatActivity {
         mImageView = (ImageButton) findViewById(R.id.iv_image);
         mAdapter = new ChatMessageAdapter(this, new ArrayList<ChatMessage>(), litener);
         mListView.setAdapter(mAdapter);
+        mListView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                mAdapter.deletRequestListener();
+                return false;
+            }
+        });
 
         // 상대방 데이터 셋
         targetUser = (User) p.getSerializableExtra("user");
@@ -113,6 +123,16 @@ public class ChattingActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        try {
+            chatFirebaseUtil.setFirebaseRef();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
         chatFirebaseUtil.setLastChatView();
@@ -128,7 +148,6 @@ public class ChattingActivity extends AppCompatActivity {
         LoadPicture loadPicture = new LoadPicture(this, this);
         loadPicture.onGallery();
     }
-
     // 뒤로가기 버튼 기능
     public boolean onOptionsItemSelected(android.view.MenuItem item) {
 
@@ -159,7 +178,7 @@ public class ChattingActivity extends AppCompatActivity {
     ChatMessageAdapter.OnCallbackList litener = new ChatMessageAdapter.OnCallbackList() {
         @Override
         public void onEvent() {
-            mListView.smoothScrollToPosition(mListView.getAdapter().getCount()-1);
+            mListView.setSelection(mListView.getAdapter().getCount());
         }
     };
 

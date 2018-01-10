@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.example.kwoncheolhyeok.core.Entity.User;
+import com.example.kwoncheolhyeok.core.MessageActivity.chat_message_view.util.RoomVO;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -11,6 +12,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -88,14 +90,13 @@ public class FireBaseUtil {
         return mDatabase.updateChildren(childUpdates);
     }
 
-    public Task<Void> block(String oUuid) {
+    public Task<Void> block(final String oUuid) {
 
-        String mUuid = DataContainer.getInstance().getUid();
-        User mUser = DataContainer.getInstance().getUser();
+        final String mUuid = DataContainer.getInstance().getUid();
+        final User mUser = DataContainer.getInstance().getUser();
         long now = System.currentTimeMillis();
-
         DatabaseReference mDatabase = DataContainer.getInstance().getUsersRef();
-        Map<String, Object> childUpdate = new HashMap<>();
+        final Map<String, Object> childUpdate = new HashMap<>();
 
         // block 리스트 삭제
         // 로컬 상에서 Block 리스트 추가
@@ -119,6 +120,21 @@ public class FireBaseUtil {
         childUpdate.put("/" + oUuid + "/followerUsers/" + mUuid, null);
         childUpdate.put("/" + oUuid + "/friendUsers/" + mUuid, null);
         childUpdate.put("/" + oUuid + "/viewedMeUsers/" + mUuid, null);
+
+        // 채팅 관계 모두 삭제(DB)
+        //TODO:미완성
+        FirebaseDatabase.getInstance().getReference("chatRoomList").child(mUuid).child(oUuid).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String roomId = dataSnapshot.getValue(RoomVO.class).getChatRoomid();
+                FirebaseDatabase.getInstance().getReference("chat").child(roomId).removeValue();
+                FirebaseDatabase.getInstance().getReference("chatRoomList").child(mUuid).child(oUuid).removeValue();
+                FirebaseDatabase.getInstance().getReference("chatRoomList").child(oUuid).child(mUuid).removeValue();
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
 
         return mDatabase.updateChildren(childUpdate);
 
