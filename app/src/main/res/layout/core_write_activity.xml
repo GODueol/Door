@@ -50,8 +50,6 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="60dp"
-        android:padding="10dp"
         android:layout_marginTop="48.5dp"
         android:background="@color/white"
         >
@@ -66,7 +64,6 @@
             android:id="@+id/edit_img"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:src="@drawable/background_imsi"
             />
 
         <EditText
@@ -98,7 +95,7 @@
 
 </ScrollView>
 
-
+    <!--FAB Layout-->
     <View
         android:id="@+id/fabBGLayout"
         android:layout_width="match_parent"

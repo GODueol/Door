@@ -262,8 +262,8 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
                 setting.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        String oldOrderStr = "오래된순";
-                        String newOrderStr = "최신순";
+                        String oldOrderStr = "오래된 순";
+                        String newOrderStr = "최신 순";
                         if(isReverse) {
                             list_sequence.setText(newOrderStr);
                             isReverse = false;
@@ -284,22 +284,22 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
 
                 switch (field) {
                     case "followingUsers":
-                        header_title.setText("팔로잉목록");
-                        friends_contents.setText(mUser.getId() + "님의 팔로잉 목록입니다");
-                        friends_contents2.setText("상대방이 팔로워하면 친구목록에 추가됩니다");
-                        header_count.setText((items.size() - 1) + " 팔로잉");
+                        header_title.setText("팔로잉 목록");
+                        friends_contents.setText(mUser.getId() + " 님의 팔로잉 목록입니다");
+                        friends_contents2.setText("상대방이 팔로워하면 친구 목록에 추가됩니다");
+                        header_count.setText((items.size() - 1) + "");
                         break;
                     case "followerUsers":
-                        header_title.setText("팔로워목록");
-                        friends_contents.setText(mUser.getId() + "님의 팔로워 목록입니다");
+                        header_title.setText("팔로워 목록");
+                        friends_contents.setText(mUser.getId() + " 님의 팔로워 목록입니다");
                         friends_contents2.setText("팔로잉하시면 친구 목록에 추가됩니다");
-                        header_count.setText((items.size() - 1) + " 팔로워");
+                        header_count.setText((items.size() - 1) + "");
                         break;
                     case "friendUsers":
-                        header_title.setText("친구목록");
-                        friends_contents.setText(mUser.getId() + "님은 CORE일반회원입니다");
-                        friends_contents2.setText("친구까지 코어를 열어볼 수 있습니다");
-                        header_count.setText((items.size() - 1) + " 친구");
+                        header_title.setText("친구 목록");
+                        friends_contents.setText(mUser.getId() + " 님은 CORE 일반 회원입니다");
+                        friends_contents2.setText("3명의 친구까지 코어를 열어볼 수 있습니다");
+                        header_count.setText((items.size() - 1) + "");
                         break;
                 }
 
