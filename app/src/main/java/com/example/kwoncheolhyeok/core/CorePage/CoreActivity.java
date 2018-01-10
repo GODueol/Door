@@ -3,13 +3,13 @@ package com.example.kwoncheolhyeok.core.CorePage;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.TextView;
 
 import com.example.kwoncheolhyeok.core.Entity.CoreListItem;
 import com.example.kwoncheolhyeok.core.Entity.CorePost;
@@ -32,6 +32,8 @@ public class CoreActivity extends AppCompatActivity {
     Toolbar toolbar = null;
 
     private CoreListAdapter coreListAdapter;
+    private RecyclerView recyclerView;
+    private Parcelable recyclerViewState;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -63,16 +65,13 @@ public class CoreActivity extends AppCompatActivity {
             }
         });
 
-
-
-
         // 툴바 뒤로가기 버튼
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //액션바 아이콘을 업 네비게이션 형태로 표시합니다.
         getSupportActionBar().setDisplayShowHomeEnabled(true); //홈 아이콘을 숨김처리합니다.
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
 
 
-        final RecyclerView recyclerView = findViewById(R.id.core_listview);
+        recyclerView = findViewById(R.id.core_listview);
 
         final ArrayList<CoreListItem> list = new ArrayList<>();
         coreListAdapter = new CoreListAdapter(list, this, cUuid);
@@ -120,12 +119,15 @@ public class CoreActivity extends AppCompatActivity {
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 final CorePost corePost = dataSnapshot.getValue(CorePost.class);
                 final String postKey = dataSnapshot.getKey();
+
+                int i = 0;
                 for(CoreListItem coreListItem : list){
                     if(coreListItem.getPostKey().equals(postKey)){
                         coreListItem.setCorePost(corePost);
-                        coreListAdapter.notifyDataSetChanged();
+                        coreListAdapter.notifyItemChanged(i);
                         break;
                     }
+                    i++;
                 }
             }
 
@@ -176,5 +178,12 @@ public class CoreActivity extends AppCompatActivity {
         ScreenshotSetApplication.getInstance().unregisterScreenshotObserver();
     }
 
+    public void saveState(){
+        if(recyclerView != null) recyclerViewState = recyclerView.getLayoutManager().onSaveInstanceState();
+
+    }
+    public void restoreState(){
+        if(recyclerView != null) recyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
+    }
 
 }
