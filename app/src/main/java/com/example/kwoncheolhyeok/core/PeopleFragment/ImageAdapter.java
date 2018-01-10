@@ -11,10 +11,10 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
+import com.example.kwoncheolhyeok.core.Util.GlideApp;
 import com.example.kwoncheolhyeok.core.Util.IndexedTreeMap;
 
 import java.io.Serializable;
@@ -43,14 +43,14 @@ public class ImageAdapter extends BaseAdapter {
         mItems.put(item,item.getUuid());
     }
 
-    public Item getItem(String uuid){
+    Item getItem(String uuid){
         Map.Entry<Item, String> entry = mItems.getEntry(uuid);
         if(entry == null) return null;
         return entry.getKey();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public void removeItem(String uuid){
+    void removeItem(String uuid){
         mItems.removeItem(uuid);
     }
 
@@ -99,8 +99,9 @@ public class ImageAdapter extends BaseAdapter {
 
         // 프사 출력
 
-        Glide.with(mInflater.getContext() /* context */)
+        GlideApp.with(mInflater.getContext() /* context */)
                 .load(item.getPicUrl())
+                .placeholder(R.drawable.a)
                 .into(holder.imageView);
 
         // 거리 출력

@@ -8,10 +8,8 @@ import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Handler;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -47,7 +45,6 @@ import com.like.OnLikeListener;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
