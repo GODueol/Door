@@ -74,6 +74,7 @@ public class CoreWriteActivity extends AppCompatActivity {
     private Uri editImageUri;
     private Uri soundUri;
     private StorageReference storageRef;
+    private CorePost corePost;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -209,10 +210,10 @@ public class CoreWriteActivity extends AppCompatActivity {
         // Edit인 경우 데이터 받아서 Set
         if (isEdit) {
             mDatabase.child("posts")
-                    .child(cUuid).child(postKey).addValueEventListener(new ValueEventListener() {
+                    .child(cUuid).child(postKey).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    CorePost corePost = dataSnapshot.getValue(CorePost.class);
+                    corePost = dataSnapshot.getValue(CorePost.class);
                     if (corePost == null) return;
                     textContents.setText(corePost.getText());
                     if (editImage.getContext() == null) return;
@@ -230,7 +231,9 @@ public class CoreWriteActivity extends AppCompatActivity {
 
     private void saveCore() {
         UiUtil.getInstance().startProgressDialog(CoreWriteActivity.this);
-        final CorePost corePost = new CorePost(mUuid);
+
+        if(corePost == null) corePost = new CorePost(mUuid);
+
         corePost.setText(textContents.getText().toString());
         Task<Void> postUploadTask = postRef.setValue(corePost);
         tasks.add(postUploadTask);
