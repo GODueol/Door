@@ -123,18 +123,9 @@ public class ChattingActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        try {
-            chatFirebaseUtil.setFirebaseRef();
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
+    protected void onDestroy() {
+        super.onDestroy();
+        Toast.makeText(this,"끄",-1).show();
         chatFirebaseUtil.setLastChatView();
         chatFirebaseUtil.deleteFirebaseRef();
     }
