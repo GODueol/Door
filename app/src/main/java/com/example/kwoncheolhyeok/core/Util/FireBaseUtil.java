@@ -126,10 +126,14 @@ public class FireBaseUtil {
         FirebaseDatabase.getInstance().getReference("chatRoomList").child(mUuid).child(oUuid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                String roomId = dataSnapshot.getValue(RoomVO.class).getChatRoomid();
-                FirebaseDatabase.getInstance().getReference("chat").child(roomId).removeValue();
-                FirebaseDatabase.getInstance().getReference("chatRoomList").child(mUuid).child(oUuid).removeValue();
-                FirebaseDatabase.getInstance().getReference("chatRoomList").child(oUuid).child(mUuid).removeValue();
+                try {
+                    String roomId = dataSnapshot.getValue(RoomVO.class).getChatRoomid();
+                    FirebaseDatabase.getInstance().getReference("chat").child(roomId).removeValue();
+                    FirebaseDatabase.getInstance().getReference("chatRoomList").child(mUuid).child(oUuid).removeValue();
+                    FirebaseDatabase.getInstance().getReference("chatRoomList").child(oUuid).child(mUuid).removeValue();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
