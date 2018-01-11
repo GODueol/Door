@@ -177,13 +177,4 @@ public class CoreActivity extends AppCompatActivity {
         super.onPause();
         ScreenshotSetApplication.getInstance().unregisterScreenshotObserver();
     }
-
-    public void saveState(){
-        if(recyclerView != null) recyclerViewState = recyclerView.getLayoutManager().onSaveInstanceState();
-
-    }
-    public void restoreState(){
-        if(recyclerView != null) recyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
-    }
-
 }
