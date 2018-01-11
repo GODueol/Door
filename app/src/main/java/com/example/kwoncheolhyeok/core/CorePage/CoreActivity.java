@@ -78,6 +78,7 @@ public class CoreActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(coreListAdapter);
+        recyclerView.getItemAnimator().setChangeDuration(0);
 
         // 코어 주인의 User Get
         DataContainer dc = DataContainer.getInstance();
@@ -112,7 +113,7 @@ public class CoreActivity extends AppCompatActivity {
 
             private void addCoreListItem(User user, CorePost corePost, String postKey) {
                 list.add(0,new CoreListItem(user, corePost, postKey));
-                coreListAdapter.notifyDataSetChanged();
+                coreListAdapter.notifyItemInserted(0);
             }
 
             @Override
@@ -124,6 +125,7 @@ public class CoreActivity extends AppCompatActivity {
                 for(CoreListItem coreListItem : list){
                     if(coreListItem.getPostKey().equals(postKey)){
                         coreListItem.setCorePost(corePost);
+//                        coreListAdapter.notifyDataSetChanged();
                         coreListAdapter.notifyItemChanged(i);
                         break;
                     }
@@ -134,12 +136,15 @@ public class CoreActivity extends AppCompatActivity {
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 final String postKey = dataSnapshot.getKey();
+                int i = 0;
                 for(CoreListItem coreListItem : list){
                     if(coreListItem.getPostKey().equals(postKey)){
                         list.remove(coreListItem);
-                        coreListAdapter.notifyDataSetChanged();
+                        coreListAdapter.notifyItemRemoved(i);
+//                        coreListAdapter.notifyDataSetChanged();
                         break;
                     }
+                    i++;
                 }
             }
 
