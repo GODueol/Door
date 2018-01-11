@@ -798,9 +798,11 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
                         }
 
                         getInstance().stopProgressDialog();
-
+                        
                         // 성공시 백버튼
                         onBackPressed();
+
+
                     }
                 });
             }

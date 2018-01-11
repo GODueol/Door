@@ -10,7 +10,6 @@ import android.media.MediaPlayer;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -46,7 +45,6 @@ import com.like.OnLikeListener;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -63,6 +61,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
     private MediaPlayer mediaPlayer;
 
     private CorePostHolder currentHolder;
+    private int currentSeekBarPosition;
 
     private UpdateSeekBarThread updateSeekBarThread;
     private String currentPlayUrl = "";
@@ -84,7 +83,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 
     @SuppressLint("SetTextI18n")
     @Override
-    public void onBindViewHolder(final CorePostHolder holder, int i) {
+    public void onBindViewHolder(final CorePostHolder holder, final int i) {
 
         final CoreListItem coreListItem = posts.get(i);
         final CorePost corePost = coreListItem.getCorePost();
@@ -193,10 +192,16 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
             }
         });
 
+        // seekBar Sync
+        if(currentSeekBarPosition == i) {
+            currentHolder = holder;
+            currentHolder.seekBar.setMax(this.mediaPlayer.getDuration());
+        }
+
         holder.start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                doStart(holder, corePost.getSoundUrl());
+                doStart(holder, corePost.getSoundUrl(), i);
             }
         });
         holder.pause.setOnClickListener(new View.OnClickListener() {
@@ -374,9 +379,10 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
     }
 
 
-    private void doStart(CorePostHolder holder, String url)  {
+    private void doStart(CorePostHolder holder, String url, int position)  {
+        // syncHolder
         currentHolder.textView_currentPosion = holder.textView_currentPosion;
-        currentHolder.seekBar = holder.seekBar;
+        currentHolder.seekBar = holder.seekBar; currentSeekBarPosition = position;
         currentHolder.textView_maxTime = holder.textView_maxTime;
         currentHolder.start = holder.start;
         currentHolder.pause = holder.pause;
@@ -422,6 +428,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 //            if(!mediaPlayer.isPlaying()) return;    // 중단되면 쓰레드 종료
 
             int currentPosition = mediaPlayer.getCurrentPosition();
+            Log.d("kbj", "currentPosition : " + currentPosition);
             String currentPositionStr = millisecondsToString(currentPosition);
             currentHolder.textView_currentPosion.setText(currentPositionStr);
 
