@@ -32,6 +32,7 @@ import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
+import com.example.kwoncheolhyeok.core.Util.GlideApp;
 import com.example.kwoncheolhyeok.core.Util.UiUtil;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -83,7 +84,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 
     @SuppressLint("SetTextI18n")
     @Override
-    public void onBindViewHolder(final CorePostHolder holder, final int i) {
+    public void onBindViewHolder(final CorePostHolder holder, @SuppressLint("RecyclerView") final int i) {
 
         final CoreListItem coreListItem = posts.get(i);
         final CorePost corePost = coreListItem.getCorePost();
@@ -99,12 +100,14 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
             else
                 holder.core_media.setVisibility(View.GONE);
 
-            Glide.with(context /* context */)
+            GlideApp.with(context /* context */)
                     .load(user.getPicUrls().getPicUrl1())
+                    .placeholder(R.drawable.a)
                     .into(holder.core_pic);
             holder.core_id.setText(user.getId());
             holder.core_subprofile.setText(UiUtil.getInstance().setSubProfile(user));
-            Glide.with(context /* context */)
+
+            if(holder.core_img != null) Glide.with(context /* context */)
                     .load(corePost.getPictureUrl())
                     .into(holder.core_img);
 
