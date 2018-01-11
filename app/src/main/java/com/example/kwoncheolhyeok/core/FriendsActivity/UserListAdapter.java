@@ -243,7 +243,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
                 params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
 
                 TextView header_title = userHolder.itemView.findViewById(R.id.header_title);
-                TextView friends_contents = userHolder.itemView.findViewById(R.id.friends_contents);
+                final TextView friends_contents = userHolder.itemView.findViewById(R.id.friends_contents);
                 TextView friends_contents2 = userHolder.itemView.findViewById(R.id.friends_contents2);
                 TextView header_count = userHolder.itemView.findViewById(R.id.header_count);
                 ImageView profile_image = userHolder.itemView.findViewById(R.id.profile_image);
@@ -262,22 +262,34 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
                 setting.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        String oldOrderStr = "오래된 순";
-                        String newOrderStr = "최신 순";
-                        if(isReverse) {
-                            list_sequence.setText(newOrderStr);
-                            isReverse = false;
-                        } else {
-                            list_sequence.setText(oldOrderStr);
-                            isReverse = true;
-                        }
+                        final PopupMenu popup = new PopupMenu(view.getContext(), view);
+                        popup.getMenuInflater().inflate(R.menu.sort_menu, popup.getMenu());
+                        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                            @Override
+                            public boolean onMenuItemClick(MenuItem menuItem) {
 
-                        // 첫번째만 남기고 모두 Reverse
-                        Item header = items.get(0);
-                        items.remove(0);
-                        Collections.reverse(items);
-                        items.add(0, header);
-                        notifyDataSetChanged();
+                                if(menuItem.getItemId() == R.id.old_order){
+                                    if(isReverse) return false;
+                                    list_sequence.setText(R.string.oldOrder);
+                                    isReverse = true;
+
+                                } else if (menuItem.getItemId() == R.id.new_order){
+                                    if(!isReverse) return false;
+                                    list_sequence.setText(R.string.newOrder);
+                                    isReverse = false;
+                                }
+
+                                // 첫번째만 남기고 모두 Reverse
+                                Item header = items.get(0);
+                                items.remove(0);
+                                Collections.reverse(items);
+                                items.add(0, header);
+                                notifyDataSetChanged();
+
+                                return false;
+                            }
+                        });
+                        popup.show();
 
                     }
                 });

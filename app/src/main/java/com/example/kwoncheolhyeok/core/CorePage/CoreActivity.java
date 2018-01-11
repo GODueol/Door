@@ -3,7 +3,6 @@ package com.example.kwoncheolhyeok.core.CorePage;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -33,7 +32,6 @@ public class CoreActivity extends AppCompatActivity {
 
     private CoreListAdapter coreListAdapter;
     private RecyclerView recyclerView;
-    private Parcelable recyclerViewState;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
