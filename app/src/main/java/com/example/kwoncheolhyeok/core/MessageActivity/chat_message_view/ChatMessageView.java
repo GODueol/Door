@@ -17,6 +17,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.example.kwoncheolhyeok.core.MessageActivity.chat_message_view.util.ViewUtil;
 import com.example.kwoncheolhyeok.core.R;
@@ -209,9 +210,12 @@ public class ChatMessageView extends RelativeLayout {
             arrowImage.setImageTintList(ColorStateList.valueOf(backgroundColor));
         }
 
+
+/*
         Drawable stateDrawable = new ChatMessageStateDrawable(Color.TRANSPARENT) {
             @Override
             protected void onIsPressed(boolean isPressed) {
+                Toast.makeText(getContext(),"dsad",Toast.LENGTH_LONG).show();
                 ChatMessageDrawable conRlBackground = (ChatMessageDrawable) containerLayout.getBackground();
                 if (isPressed) {
                     conRlBackground.setColor(backgroundColorPressed);
@@ -229,7 +233,7 @@ public class ChatMessageView extends RelativeLayout {
             setBackground(stateDrawable);
         } else {
             setBackgroundDrawable(stateDrawable);
-        }
+        }*/
 
     }
 

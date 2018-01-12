@@ -38,7 +38,6 @@
                 android:id="@+id/text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="hello_world"
                 android:maxEms="20"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 android:textSize="15.5dp" />
@@ -62,7 +61,9 @@
                 android:id="@+id/time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/check"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
                 android:layout_gravity="bottom"
                 android:minEms="2"
                 android:text="13:00" />

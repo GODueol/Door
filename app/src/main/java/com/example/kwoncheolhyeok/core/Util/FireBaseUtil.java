@@ -132,16 +132,13 @@ public class FireBaseUtil {
                     FirebaseDatabase.getInstance().getReference("chatRoomList").child(mUuid).child(oUuid).removeValue();
                     FirebaseDatabase.getInstance().getReference("chatRoomList").child(oUuid).child(mUuid).removeValue();
                 }catch (Exception e){
-                    e.printStackTrace();
                 }
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }
         });
-
         return mDatabase.updateChildren(childUpdate);
-
     }
 
     public void syncCorePostCount(String cUuid){

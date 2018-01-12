@@ -297,7 +297,7 @@ public class MainActivity extends AppCompatActivity
         menu.clear();
         switch (viewPager.getCurrentItem()) {
 //            case 0:
-//                getMenuInflater().inflate(R.menu.find_text_menu, menu);
+//                getMenuInflater().inflate(R.menu.chat_menu, menu);
 //                break;
             case 0:
                 getMenuInflater().inflate(R.menu.main_acitivity_menu, menu);

@@ -67,7 +67,6 @@ public class MessageActivity extends AppCompatActivity {
                         Intent intent = new Intent(getApplicationContext(), ChattingActivity.class);
                         intent.putExtra("user", user);
                         intent.putExtra("userUuid", item.getUserUuid());
-                        intent.putExtra("userPicuri", item.getTargetUri());
                         startActivity(intent);
                     }
 
@@ -145,7 +144,6 @@ public class MessageActivity extends AppCompatActivity {
                     listrowItem.remove(key);
                     uuidList.remove(key);
                 } catch (Exception e) {
-                    e.printStackTrace();
                 }
                 messageRecyclerAdapter.notifyDataSetChanged();
             }
