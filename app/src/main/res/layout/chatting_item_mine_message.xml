@@ -3,6 +3,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/chatting_mine_message_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="right"
@@ -51,7 +52,7 @@
         app:cmv_showArrow="false">
 
         <TextView
-            android:id="@+id/text"
+            android:id="@+id/chatText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:maxEms="20"

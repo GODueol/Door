@@ -8,6 +8,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -19,7 +21,6 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.kwoncheolhyeok.core.Entity.User;
@@ -43,12 +44,13 @@ public class ChattingActivity extends AppCompatActivity {
 
     Toolbar toolbar = null;
     private static final int REQUEST_GALLERY = 2;
-    private ListView mListView;
+    private RecyclerView chattingRecyclerview;
     private ImageButton mButtonSend;
     private EditText mEditTextMessage;
     private ImageButton mImageView;
 
-    private ChatMessageAdapter mAdapter;
+    private ChattingMessageAdapter chattingMessageAdapter;
+    private LinearLayoutManager linearLayoutManager;
     private List<ChatMessage> chatListItem;
     private FirebaseAuth mAuth;
 
@@ -63,7 +65,7 @@ public class ChattingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.message_chatting_activity);
+        setContentView(R.layout.chatting_activity);
         Intent p = getIntent();
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -75,18 +77,21 @@ public class ChattingActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-        mListView = (ListView) findViewById(R.id.listView);
+        chattingRecyclerview = (RecyclerView) findViewById(R.id.listView);
         mButtonSend = (ImageButton) findViewById(R.id.btn_send);
         mEditTextMessage = (EditText) findViewById(R.id.et_message);
         mImageView = (ImageButton) findViewById(R.id.iv_image);
         chatListItem = new ArrayList<ChatMessage>();
-        mAdapter = new ChatMessageAdapter(this,chatListItem, litener);
-        mListView.setAdapter(mAdapter);
-        mListView.setOnScrollListener(detectTopPosition);
-        mListView.setOnTouchListener(new View.OnTouchListener() {
+
+        linearLayoutManager = new LinearLayoutManager(this);
+        chattingMessageAdapter = new ChattingMessageAdapter(chatListItem,litener);
+        chattingRecyclerview.setAdapter(chattingMessageAdapter);
+        chattingRecyclerview.setLayoutManager(linearLayoutManager);
+        chattingRecyclerview.addOnScrollListener(detectTopPosition);
+        chattingRecyclerview.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                mAdapter.deletRequestListener();
+                chattingMessageAdapter.deletRequestListener();
                 return false;
             }
         });
@@ -99,7 +104,7 @@ public class ChattingActivity extends AppCompatActivity {
         userUuid = mAuth.getUid();
 
         chatFirebaseUtil = new ChatFirebaseUtil(this, user, targetUser, userUuid, targetUuid);
-        chatFirebaseUtil.setchatRoom(mAdapter);
+        chatFirebaseUtil.setchatRoom(chattingMessageAdapter,chatListItem);
 
         // 메세지 보내기
         mButtonSend.setOnClickListener(new View.OnClickListener() {
@@ -220,24 +225,28 @@ public class ChattingActivity extends AppCompatActivity {
         return super.onPrepareOptionsMenu(menu);
     }
 
-    ChatMessageAdapter.OnCallbackList litener = new ChatMessageAdapter.OnCallbackList() {
+    ChattingMessageAdapter.OnCallbackList litener = new ChattingMessageAdapter.OnCallbackList() {
         @Override
         public void onEvent() {
-            mListView.setSelection(mListView.getAdapter().getCount());
+            // 처음으로 가려는 리스너
+            chattingRecyclerview.getLayoutManager().scrollToPosition(chattingRecyclerview.getAdapter().getItemCount());
         }
     };
 
-    AbsListView.OnScrollListener  detectTopPosition= new AbsListView.OnScrollListener() {
+
+    RecyclerView.OnScrollListener  detectTopPosition= new RecyclerView.OnScrollListener() {
         @Override
-        public void onScrollStateChanged(AbsListView absListView, int i) {
+        public void onScrollStateChanged(RecyclerView absListView, int i) {
 
         }
 
         @Override
-        public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-            if(firstVisibleItem == 0 && view.getChildAt(0) != null && view.getChildAt(0).getTop() == 0){
-                chatFirebaseUtil.addChatLog();
-
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+            if (recyclerView.computeVerticalScrollOffset() == 0) {
+                //chatFirebaseUtil.addChatLog();
+            } else {
+                // isn't top of scroll.
             }
         }
     };

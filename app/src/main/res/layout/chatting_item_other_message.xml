@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/chatting_other_message_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="3dp">
-
+    android:layout_height="wrap_content">
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="5dp">
@@ -23,15 +21,28 @@
                 android:layout_height="40dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/a" />
-        </LinearLayout>
+        </RelativeLayout>
 
-
-        <ImageView
+        <com.example.kwoncheolhyeok.core.MessageActivity.chat_message_view.ChatMessageView
             android:id="@+id/chatMessageView"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:src="@drawable/a" />
+            android:layout_marginTop="5dp"
+            app:cmv_arrowGravity="start"
+            app:cmv_arrowPosition="left"
+            app:cmv_backgroundColor="#FFE0BE"
+            app:cmv_backgroundColorPressed="#FFFFFF"
+            app:cmv_cornerRadius="9dp"
+            app:cmv_showArrow="false">
+
+            <TextView
+                android:id="@+id/chatText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxEms="20"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                android:textSize="15.5dp" />
+        </com.example.kwoncheolhyeok.core.MessageActivity.chat_message_view.ChatMessageView>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -51,11 +62,13 @@
                 android:id="@+id/time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/check"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
                 android:layout_gravity="bottom"
                 android:minEms="2"
                 android:text="13:00" />
         </LinearLayout>
-
     </LinearLayout>
+
 </LinearLayout>

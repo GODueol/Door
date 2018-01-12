@@ -24,8 +24,8 @@
     </android.support.v7.widget.Toolbar>
 
     <android.support.v7.widget.RecyclerView
-        android:layout_below="@id/toolbar"
         android:id="@+id/messagelist"
+        android:layout_below="@id/toolbar"
         android:layout_weight="1"
         android:layout_width="match_parent"
         android:layout_height="match_parent">

@@ -46,7 +46,6 @@
         android:id="@+id/userProfile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/sub_profile"
         android:layout_marginTop="35dp"
         android:layout_toRightOf="@+id/profile_image"
         android:text="userProfile"
