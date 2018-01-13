@@ -42,7 +42,7 @@ public class MessageActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Get the view from new_activity.xml
-        setContentView(R.layout.message_activity);
+        setContentView(R.layout.chatting_list_activity);
 
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -81,7 +81,7 @@ public class MessageActivity extends AppCompatActivity {
         linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setReverseLayout(true);
         linearLayoutManager.setStackFromEnd(true);
-        messageRecyclerAdapter = new messageRecyclerAdapter(listrowItem, R.layout.messagelist_row, listener);
+        messageRecyclerAdapter = new messageRecyclerAdapter(listrowItem, R.layout.chatting_list_row, listener);
         messageList = (RecyclerView) findViewById(R.id.messagelist);
         messageList.setAdapter(messageRecyclerAdapter);
         messageList.setLayoutManager(linearLayoutManager);

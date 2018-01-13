@@ -24,16 +24,12 @@
             android:src="@drawable/nav_message"/>
     </android.support.v7.widget.Toolbar>
 
-    <ListView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/listView"
         android:layout_below="@id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/send_message_layout"
-        android:transcriptMode="alwaysScroll"
-        android:windowSoftInputMode="stateVisible|adjustNothing"
-        android:stackFromBottom="true"
-        android:divider="@null" />
+        android:layout_above="@+id/send_message_layout" />
 
     <LinearLayout
         android:id="@+id/send_message_layout"
