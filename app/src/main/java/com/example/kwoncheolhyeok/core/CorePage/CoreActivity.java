@@ -1,6 +1,7 @@
 package com.example.kwoncheolhyeok.core.CorePage;
 
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -29,6 +30,7 @@ import java.util.ArrayList;
 
 public class CoreActivity extends AppCompatActivity {
 
+    private static final int WRITE_SUCC = 1;
     Toolbar toolbar = null;
 
     private CoreListAdapter coreListAdapter;
@@ -60,7 +62,8 @@ public class CoreActivity extends AppCompatActivity {
                 i = new Intent(CoreActivity.this, CoreWriteActivity.class);
                 i.putExtra("cUuid",cUuid);
 
-                startActivity(i);
+                startActivityForResult(i, WRITE_SUCC);
+//                startActivity(i);
             }
         });
 
@@ -188,5 +191,13 @@ public class CoreActivity extends AppCompatActivity {
     public RecyclerView.ViewHolder getHolder(int position){
         if(recyclerView == null) return null;
         return recyclerView.findViewHolderForAdapterPosition(position);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == WRITE_SUCC){
+            if(resultCode == Activity.RESULT_OK) recyclerView.scrollToPosition(0);
+        }
     }
 }

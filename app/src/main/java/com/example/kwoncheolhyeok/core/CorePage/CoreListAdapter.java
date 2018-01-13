@@ -467,6 +467,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
     void clickPause(){
         CoreActivity coreActivity = (CoreActivity) context;
         CorePostHolder corePostHolder = (CorePostHolder) coreActivity.getHolder(currentSeekBarPosition);
+        if(corePostHolder == null) return;
         corePostHolder.startAndPause.setChecked(false);
     }
 

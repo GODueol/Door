@@ -1,6 +1,7 @@
 package com.example.kwoncheolhyeok.core.CorePage;
 
 import android.animation.Animator;
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -258,6 +259,8 @@ public class CoreWriteActivity extends AppCompatActivity {
                     for (Task task : tasks)
                         if (!task.isComplete()) return;
                     UiUtil.getInstance().stopProgressDialog();  // 프로그레스바 중단
+
+                    setResult(Activity.RESULT_OK);
                     finish();
                 }
             });
