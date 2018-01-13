@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/modify_toolbar"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+    android:layout_height="match_parent">
 
 
     <!-- The toolbar -->
@@ -13,8 +11,7 @@
         android:id="@+id/toolbar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fitsSystemWindows="true"
-        >
+        android:fitsSystemWindows="true">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
@@ -35,19 +32,15 @@
             android:layout_centerInParent="true"
             android:background="@drawable/title" />
 
-        <TextView
+        <ImageButton
             android:id="@+id/saveButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="25dp"
+            android:layout_height="19dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="20dp"
+            android:background="@drawable/save_check"
             android:onClick="save"
-            android:text="저장"
-            android:textColor="@color/skyblue"
-            android:textSize="18dp"
-            android:textStyle="bold"
-
             />
 
 
@@ -61,8 +54,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/toolbar_layout"
-        android:background="@drawable/profile_modify_background"
-        >
+        android:background="@drawable/profile_modify_background">
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -87,8 +79,7 @@
                 android:text="Picture"
                 android:textColor="#FFFFFF"
                 android:textSize="17dp"
-                android:textStyle="bold"
-                />
+                android:textStyle="bold" />
 
             <LinearLayout
                 android:id="@+id/unlock_lock_four"
@@ -239,8 +230,7 @@
                     android:layout_height="26dp"
                     android:layout_weight="1"
                     android:src="@drawable/delete_button"
-                    android:visibility="invisible"
-                    />
+                    android:visibility="invisible" />
 
                 <ImageView
                     android:id="@+id/delete2"
@@ -296,10 +286,10 @@
                 android:bufferType="editable"
                 android:focusableInTouchMode="true"
                 android:gravity="center"
+                android:hint="닉네임을 입력하세요"
                 android:maxLength="10"
                 android:maxLines="1"
                 android:text="NickName"
-                android:hint="닉네임을 입력하세요"
                 android:textColor="#FFFFFF"
                 android:textSize="18dp"
                 android:theme="@style/Theme.App.Base" />
@@ -342,10 +332,10 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
-                    android:text="Age"
-                    android:textSize="19dp"
-                    android:textColor="@color/white"
                     android:layout_marginRight="15dp"
+                    android:text="Age"
+                    android:textColor="@color/white"
+                    android:textSize="19dp"
                     android:theme="@style/AppTheme.Picker" />
 
                 <TextView
@@ -354,10 +344,10 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
-                    android:text="Height"
-                    android:textSize="19dp"
-                    android:textColor="@color/white"
                     android:layout_marginRight="15dp"
+                    android:text="Height"
+                    android:textColor="@color/white"
+                    android:textSize="19dp"
                     android:theme="@style/AppTheme.Picker"
 
                     />
@@ -368,10 +358,10 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
+                    android:layout_marginRight="15dp"
+                    android:text="Weight"
                     android:textColor="@color/white"
                     android:textSize="19dp"
-                    android:text="Weight"
-                    android:layout_marginRight="15dp"
                     android:theme="@style/AppTheme.Picker"
 
                     />
@@ -380,11 +370,11 @@
                     android:id="@+id/numberPicker4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
                     android:text="Bodytype"
                     android:textColor="@color/white"
                     android:textSize="19dp"
-                    android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true"
                     android:theme="@style/AppTheme.Picker"
                     android:weightSum="1" />
 
@@ -422,14 +412,13 @@
                 android:layout_marginTop="10dp"
                 android:focusableInTouchMode="true"
                 android:gravity="left"
+                android:hint="자신을 소개해주세요"
+                android:lineSpacingExtra="5dip"
                 android:maxLength="130"
                 android:maxLines="7"
-                android:lineSpacingExtra="5dip"
                 android:textColor="#FFFFFF"
                 android:textSize="16dp"
-                android:hint="자신을 소개해주세요"
-                android:theme="@style/Theme.App.Base"
-                />
+                android:theme="@style/Theme.App.Base" />
 
             <View
                 android:id="@+id/section_line5"
@@ -460,16 +449,14 @@
                 android:layout_below="@+id/filter_nouse"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="10dp"
-                android:theme="@style/ColorSwitchStyle"
-                />
+                android:theme="@style/ColorSwitchStyle" />
 
             <RelativeLayout
                 android:id="@+id/AGE_FILTER"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/filter_switch"
-                android:layout_marginTop="20dp"
-                >
+                android:layout_marginTop="20dp">
 
                 <TextView
                     android:id="@+id/AGE_NOUSE"
@@ -477,8 +464,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dip"
                     android:text="AGE"
-                    android:textSize="16dp"
                     android:textColor="#FFFFFF"
+                    android:textSize="16dp"
                     android:textStyle="bold" />
 
 
@@ -486,11 +473,11 @@
 
             <RelativeLayout
                 android:id="@+id/AGE_FILTER1"
-                android:layout_below="@+id/filter_switch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_below="@+id/filter_switch"
                 android:layout_marginLeft="30dp"
+                android:layout_marginTop="20dp"
                 android:layout_toEndOf="@+id/filter_nouse"
                 android:layout_toRightOf="@+id/filter_nouse">
 
@@ -500,9 +487,9 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="80dp"
-                    android:textSize="16dp"
                     android:text="min"
-                    android:textColor="@color/text_white" />
+                    android:textColor="@color/text_white"
+                    android:textSize="16dp" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -510,8 +497,8 @@
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="59dp"
                     android:text="~"
-                    android:textSize="15dp"
-                    android:textColor="@color/text_white" />
+                    android:textColor="@color/text_white"
+                    android:textSize="15dp" />
 
                 <TextView
                     android:id="@+id/max_age_filter"
@@ -519,9 +506,9 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="20dp"
-                    android:textSize="16dp"
                     android:text="max"
-                    android:textColor="@color/text_white" />
+                    android:textColor="@color/text_white"
+                    android:textSize="16dp" />
 
             </RelativeLayout>
 
@@ -537,22 +524,21 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dip"
-                    android:textSize="16dp"
                     android:text="HEIGHT"
                     android:textColor="#FFFFFF"
+                    android:textSize="16dp"
                     android:textStyle="bold" />
-
 
 
             </RelativeLayout>
 
             <RelativeLayout
                 android:id="@+id/HEIGHT_FILTER1"
-                android:layout_below="@+id/AGE_FILTER"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_below="@+id/AGE_FILTER"
                 android:layout_marginLeft="30dp"
+                android:layout_marginTop="20dp"
                 android:layout_toEndOf="@+id/filter_nouse"
                 android:layout_toRightOf="@+id/filter_nouse">
 
@@ -563,9 +549,9 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="80dp"
-                    android:textSize="16dp"
                     android:text="min"
-                    android:textColor="@color/text_white" />
+                    android:textColor="@color/text_white"
+                    android:textSize="16dp" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -573,8 +559,8 @@
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="59dp"
                     android:text="~"
-                    android:textSize="15dp"
-                    android:textColor="@color/text_white" />
+                    android:textColor="@color/text_white"
+                    android:textSize="15dp" />
 
                 <TextView
                     android:id="@+id/max_height_filter"
@@ -582,9 +568,9 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="20dp"
-                    android:textSize="16dp"
                     android:text="max"
-                    android:textColor="@color/text_white" />
+                    android:textColor="@color/text_white"
+                    android:textSize="16dp" />
             </RelativeLayout>
 
             <RelativeLayout
@@ -600,52 +586,52 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dip"
                     android:text="WEIGHT"
-                    android:textSize="16dp"
                     android:textColor="#FFFFFF"
+                    android:textSize="16dp"
                     android:textStyle="bold" />
 
             </RelativeLayout>
 
-        <RelativeLayout
-            android:id="@+id/WEIGHT_FILTER1"
-            android:layout_below="@+id/HEIGHT_FILTER"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="30dp"
-            android:layout_toEndOf="@+id/filter_nouse"
-            android:layout_toRightOf="@+id/filter_nouse">
-
-            <TextView
-                android:id="@+id/min_weight_filter"
+            <RelativeLayout
+                android:id="@+id/WEIGHT_FILTER1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="80dp"
-                android:textSize="16dp"
-                android:text="min"
-                android:textColor="@color/text_white" />
+                android:layout_below="@+id/HEIGHT_FILTER"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="20dp"
+                android:layout_toEndOf="@+id/filter_nouse"
+                android:layout_toRightOf="@+id/filter_nouse">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="59dp"
-                android:text="~"
-                android:textSize="15dp"
-                android:textColor="@color/text_white" />
+                <TextView
+                    android:id="@+id/min_weight_filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="80dp"
+                    android:text="min"
+                    android:textColor="@color/text_white"
+                    android:textSize="16dp" />
 
-            <TextView
-                android:id="@+id/max_weight_filter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="20dp"
-                android:text="max"
-                android:textSize="16dp"
-                android:textColor="@color/text_white" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="59dp"
+                    android:text="~"
+                    android:textColor="@color/text_white"
+                    android:textSize="15dp" />
 
-        </RelativeLayout>
+                <TextView
+                    android:id="@+id/max_weight_filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="20dp"
+                    android:text="max"
+                    android:textColor="@color/text_white"
+                    android:textSize="16dp" />
+
+            </RelativeLayout>
 
             <RelativeLayout
                 android:id="@+id/BODY_TYPE_FILTER"
@@ -660,52 +646,52 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dip"
                     android:text="BODY TYPE"
-                    android:textSize="16dp"
                     android:textColor="#FFFFFF"
+                    android:textSize="16dp"
                     android:textStyle="bold" />
 
             </RelativeLayout>
 
-        <RelativeLayout
-            android:id="@+id/BODY_TYPE_FILTER1"
-            android:layout_below="@+id/WEIGHT_FILTER"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="50dp"
-            android:layout_toEndOf="@+id/filter_nouse"
-            android:layout_toRightOf="@+id/filter_nouse">
-
-            <TextView
-                android:id="@+id/min_bodytype_filter"
+            <RelativeLayout
+                android:id="@+id/BODY_TYPE_FILTER1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="130dp"
-                android:text="min"
-                android:textSize="16dp"
-                android:textColor="@color/text_white" />
+                android:layout_below="@+id/WEIGHT_FILTER"
+                android:layout_marginLeft="50dp"
+                android:layout_marginTop="20dp"
+                android:layout_toEndOf="@+id/filter_nouse"
+                android:layout_toRightOf="@+id/filter_nouse">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="114dp"
-                android:text="~"
-                android:textSize="15dp"
-                android:textColor="@color/text_white" />
+                <TextView
+                    android:id="@+id/min_bodytype_filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="130dp"
+                    android:text="min"
+                    android:textColor="@color/text_white"
+                    android:textSize="16dp" />
 
-            <TextView
-                android:id="@+id/max_bodytype_filter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="20dp"
-                android:text="max"
-                android:textSize="16dp"
-                android:textColor="@color/text_white" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="114dp"
+                    android:text="~"
+                    android:textColor="@color/text_white"
+                    android:textSize="15dp" />
 
-        </RelativeLayout>
+                <TextView
+                    android:id="@+id/max_bodytype_filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="20dp"
+                    android:text="max"
+                    android:textColor="@color/text_white"
+                    android:textSize="16dp" />
+
+            </RelativeLayout>
 
             <View
                 android:id="@+id/section_line6"
