@@ -49,9 +49,8 @@ public class ImageAdapter extends BaseAdapter {
         return entry.getKey();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     void removeItem(String uuid){
-        mItems.removeItem(uuid);
+        mItems.remove(new Item(0,uuid,null,null));
     }
 
     @Override
@@ -61,7 +60,7 @@ public class ImageAdapter extends BaseAdapter {
 
     @Override
     public Item getItem(int i) {
-        return mItems.getEntry(i).getKey();
+        return (Item) mItems.keySet().toArray()[i];
     }
 
     @Override
@@ -123,6 +122,19 @@ public class ImageAdapter extends BaseAdapter {
         String uuid;
         User user;
         String picUrl;
+
+        @Override
+        public int hashCode() {
+            return getUuid().hashCode();
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if(!(obj instanceof Item)) return false;
+            Item item = (Item) obj;
+            if(uuid == item.uuid) return true;
+            else return false;
+        }
 
         public Item(float distance, String uuid, User user, String picUrl) {
             this.distance = distance;

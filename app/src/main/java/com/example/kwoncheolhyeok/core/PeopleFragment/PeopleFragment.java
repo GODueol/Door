@@ -120,16 +120,12 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
 
         // 쿼리받은 값을 처리
         geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
-            @RequiresApi(api = Build.VERSION_CODES.N)
             @SuppressLint("DefaultLocale")
             @Override
             public void onKeyEntered(final String oUuid, final GeoLocation geoLocation) {
-                ImageAdapter.Item item = imageAdapter.getItem(oUuid);
-                if(item != null) onKeyMoved(oUuid, geoLocation);
 
                 DataContainer.getInstance().getUserRef(oUuid).addListenerForSingleValueEvent(new ValueEventListener() {
 
-                    @RequiresApi(api = Build.VERSION_CODES.N)
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         User oUser = dataSnapshot.getValue(User.class);
@@ -168,7 +164,6 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
                 }
             }
 
-            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onKeyExited(String key) {
                 System.out.println(String.format("Key %s is no longer in the search area", key));
@@ -177,7 +172,6 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
                 imageAdapter.notifyDataSetChanged();
             }
 
-            @RequiresApi(api = Build.VERSION_CODES.N)
             @SuppressLint("DefaultLocale")
             @Override
             public void onKeyMoved(String key, GeoLocation geoLocation) {
