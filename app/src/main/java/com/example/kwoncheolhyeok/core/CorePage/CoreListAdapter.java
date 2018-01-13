@@ -146,7 +146,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                 if(b){
                     doStart((CorePostHolder) coreActivity.getHolder(holder.getAdapterPosition()), corePost.getSoundUrl());
                 } else {
-                    doPause(coreListItem);
+                    doPause();
                 }
             }
         });
@@ -411,7 +411,8 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                 currentPlayUrl = url;
                 this.mediaPlayer.prepare();
 
-                mediaPlayer.seekTo(coreListItems.get(holder.getAdapterPosition()).getCurrentPlayPosition());
+
+                mediaPlayer.seekTo(holder.seekBar.getProgress());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -445,10 +446,10 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
             String currentPositionStr = millisecondsToString(currentPosition);
             currentHolder.textView_currentPosion.setText(currentPositionStr);
 
-            if(currentHolder.textView_currentPosion.getText().equals(currentHolder.textView_maxTime.getText())){
+            if(context == null || currentHolder.textView_currentPosion.getText().equals(currentHolder.textView_maxTime.getText())){
                 // 사운드 재생 끝
                 currentHolder.startAndPause.setChecked(false);  // 버튼 Stop
-                coreListItems.get(currentSeekBarPosition).setCurrentPlayPosition(0);    // CurrentPlayPosition 초기화
+//                coreListItems.get(currentSeekBarPosition).setCurrentPlayPosition(0);    // CurrentPlayPosition 초기화
                 currentHolder.seekBar.setProgress(0);   // SeekBar Init
                 return;
             }
@@ -459,9 +460,14 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
     }
 
     // When user click to "Pause".
-    private void doPause(CoreListItem coreListItem)  {
-        coreListItem.setCurrentPlayPosition(mediaPlayer.getCurrentPosition());
+    private void doPause()  {
         this.mediaPlayer.pause();
+    }
+
+    void clickPause(){
+        CoreActivity coreActivity = (CoreActivity) context;
+        CorePostHolder corePostHolder = (CorePostHolder) coreActivity.getHolder(currentSeekBarPosition);
+        corePostHolder.startAndPause.setChecked(false);
     }
 
     // When user click to "Rewind".
@@ -486,6 +492,5 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
             this.mediaPlayer.seekTo(currentPosition + ADD_TIME);
         }
     }
-
 
 }

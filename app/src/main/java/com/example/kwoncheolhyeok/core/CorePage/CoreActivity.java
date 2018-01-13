@@ -182,6 +182,7 @@ public class CoreActivity extends AppCompatActivity {
     public void onPause() {
         super.onPause();
         ScreenshotSetApplication.getInstance().unregisterScreenshotObserver();
+        coreListAdapter.clickPause();
     }
 
     public RecyclerView.ViewHolder getHolder(int position){

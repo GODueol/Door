@@ -8,16 +8,6 @@ public class CoreListItem {
     private CorePost corePost;
     private String postKey;
 
-    private int currentPlayPosition;
-
-    public int getCurrentPlayPosition() {
-        return currentPlayPosition;
-    }
-
-    public void setCurrentPlayPosition(int currentPlayPosition) {
-        this.currentPlayPosition = currentPlayPosition;
-    }
-
     public String getPostKey() {
         return postKey;
     }
