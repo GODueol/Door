@@ -111,7 +111,6 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                     .load(corePost.getPictureUrl())
                     .into(holder.core_img);
 
-            // 미디어 셋
 
         } else {    // 타인글
             holder.replyBtnLayout.setVisibility(View.VISIBLE);

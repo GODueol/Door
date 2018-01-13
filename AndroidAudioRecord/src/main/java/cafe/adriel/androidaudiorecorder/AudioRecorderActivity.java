@@ -2,15 +2,12 @@ package cafe.adriel.androidaudiorecorder;
 
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -66,8 +63,11 @@ public class AudioRecorderActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
+
         setContentView(R.layout.aar_activity_audio_recorder);
+
+        getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, 500);    // 전체 레이아웃 가로세로는 여기서 수정
+
         this.setFinishOnTouchOutside(false);
 
         if(savedInstanceState != null) {
