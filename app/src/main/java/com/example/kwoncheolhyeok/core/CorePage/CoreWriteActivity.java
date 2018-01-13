@@ -193,7 +193,6 @@ public class CoreWriteActivity extends AppCompatActivity {
                 );
                 recordSelectDialog.show();
 
-                closeFABMenu();
             }
         });
 
