@@ -342,7 +342,6 @@ public class CoreWriteActivity extends AppCompatActivity {
             }
             if(requestCode == REQUEST_RECORD){
                 // Great! User has recorded and saved the audio file
-                Log.d("kbj", "Great! User has recorded and saved the audio file");
                 // 파일 저장
                 soundUri = Uri.fromFile(new File(recordFilePath));
                 closeFABMenu();

@@ -2,8 +2,7 @@ package com.example.kwoncheolhyeok.core.PeopleFragment;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.os.Build;
-import android.support.annotation.RequiresApi;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,17 +14,17 @@ import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.GlideApp;
-import com.example.kwoncheolhyeok.core.Util.IndexedTreeMap;
+import com.example.kwoncheolhyeok.core.Util.IndexedTreeSet;
 
 import java.io.Serializable;
 import java.util.Comparator;
-import java.util.Map;
 
 public class ImageAdapter extends BaseAdapter {
 
-    private IndexedTreeMap<Item, String> mItems = new IndexedTreeMap<>(new Comparator<Item>() {
+    private IndexedTreeSet<Item, String> mItems = new IndexedTreeSet<>(new Comparator<Item>() {
         @Override
         public int compare(Item item1, Item item2) {
+            if(item1.getUuid().equals(item2.getUuid())) return 0;
             if(item2.getUuid().equals(DataContainer.getInstance().getUid())) return 1;   // 1. 본인계정
             if(item1.getUuid().equals(DataContainer.getInstance().getUid())) return -1;   // 1. 본인계정
             if(item1.distance != item2.distance) return (int) (item1.distance - item2.distance);    // 2. 거리
@@ -40,17 +39,17 @@ public class ImageAdapter extends BaseAdapter {
     }
 
     void addItem(Item item){
-        mItems.put(item,item.getUuid());
+        mItems.add(item);
     }
 
     Item getItem(String uuid){
-        Map.Entry<Item, String> entry = mItems.getEntry(uuid);
-        if(entry == null) return null;
-        return entry.getKey();
+        Item item = mItems.get(uuid);
+        if(item == null) return null;
+        return item;
     }
 
-    void removeItem(String uuid){
-        mItems.remove(new Item(0,uuid,null,null));
+    boolean removeItem(String uuid){
+        return mItems.remove(new Item(0,uuid,null,null));
     }
 
     @Override
@@ -60,7 +59,7 @@ public class ImageAdapter extends BaseAdapter {
 
     @Override
     public Item getItem(int i) {
-        return (Item) mItems.keySet().toArray()[i];
+        return (Item) mItems.toArray()[i];
     }
 
     @Override

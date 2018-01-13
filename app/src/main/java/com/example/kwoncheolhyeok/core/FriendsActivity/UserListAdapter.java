@@ -60,11 +60,11 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
     }
 
     @Override
-    public UserHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+    public UserHolder onCreateViewHolder(ViewGroup viewGroup, int Type) {
 
         View rowView;
 
-        switch (i)
+        switch (Type)
         {
             case VIEW_TYPES.Normal:
                 rowView=LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.friends_list_item, viewGroup, false);

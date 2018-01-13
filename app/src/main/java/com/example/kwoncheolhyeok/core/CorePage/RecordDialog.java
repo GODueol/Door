@@ -227,10 +227,6 @@ public class RecordDialog extends CustomDialog {
             seekBar.setProgress(currentPosition);
 
 
-            Log.d("kbj", "currentPosition : " + currentPosition + ", mediaPlayer.getDuration() : " + mediaPlayer.getDuration());
-
-            Log.d("kbj", "mediaPlayer.isPlaying() : " + mediaPlayer.isPlaying() + ", mediaPlayer.isLooping() : " + mediaPlayer.isLooping());
-
             if(!mediaPlayer.isPlaying()){
                 // reset
                 Log.d("kbj!!!!", "currentPosition : " + currentPosition);
