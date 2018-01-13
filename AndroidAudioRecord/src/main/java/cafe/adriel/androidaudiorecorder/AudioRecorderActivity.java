@@ -92,19 +92,6 @@ public class AudioRecorderActivity extends AppCompatActivity
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
 
-//
-//        if (getSupportActionBar() != null) {
-//            getSupportActionBar().setHomeButtonEnabled(true);
-//            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//            getSupportActionBar().setDisplayShowTitleEnabled(false);
-//            getSupportActionBar().setElevation(0);
-//            getSupportActionBar().setBackgroundDrawable(
-//                    new ColorDrawable(Util.getDarkerColor(color)));
-//            getSupportActionBar().setHomeAsUpIndicator(
-//                    ContextCompat.getDrawable(this, R.drawable.aar_ic_clear));
-//        }
-
-
         visualizerView = new GLAudioVisualizationView.Builder(this)
                 .setLayersCount(1)
                 .setWavesCount(6)
@@ -160,9 +147,11 @@ public class AudioRecorderActivity extends AppCompatActivity
     @Override
     public void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        if(autoStart && !isRecording){
-            toggleRecording(null);
-        }
+//
+//        if(autoStart && !isRecording){
+//            toggleRecording(null);
+//        }
+//
     }
 
     @Override
@@ -198,25 +187,6 @@ public class AudioRecorderActivity extends AppCompatActivity
         outState.putInt(AndroidAudioRecorder.EXTRA_COLOR, color);
         super.onSaveInstanceState(outState);
     }
-//
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.aar_audio_recorder, menu);
-////        saveMenuItem = menu.findItem(R.id.action_save);
-////        saveMenuItem.setIcon(ContextCompat.getDrawable(this, R.drawable.aar_ic_check));
-//        return super.onCreateOptionsMenu(menu);
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        int i = item.getItemId();
-//        if (i == android.R.id.home) {
-//            finish();
-//        } else if (i == R.id.action_save) {
-//            selectAudio();
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
 
     @Override
     public void onAudioChunkPulled(AudioChunk audioChunk) {
