@@ -54,7 +54,7 @@ import java.util.concurrent.TimeUnit;
 
 public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePostHolder> {
 
-    private List<CoreListItem> posts;
+    private List<CoreListItem> coreListItems;
     private Context context;
     private String cUuid;
     private Handler threadHandler = new Handler();
@@ -64,12 +64,11 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
     private CorePostHolder currentHolder;
     private int currentSeekBarPosition;
 
-    private UpdateSeekBarThread updateSeekBarThread;
     private String currentPlayUrl = "";
 
 
-    CoreListAdapter(List<CoreListItem> posts, Context context, String cUuid) {
-        this.posts = posts;
+    CoreListAdapter(List<CoreListItem> coreListItems, Context context, String cUuid) {
+        this.coreListItems = coreListItems;
         this.context = context;
         this.cUuid = cUuid;
         this.mediaPlayer=  new MediaPlayer();
@@ -86,75 +85,15 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
     @Override
     public void onBindViewHolder(final CorePostHolder holder, @SuppressLint("RecyclerView") final int i) {
 
-        final CoreListItem coreListItem = posts.get(i);
+        final CoreListItem coreListItem = coreListItems.get(i);
         final CorePost corePost = coreListItem.getCorePost();
         final String mUuid = DataContainer.getInstance().getUid();
 
         User user = coreListItem.getUser();
         if(user != null) {  // 주인글
-            holder.replyBtnLayout.setVisibility(View.GONE);
-            holder.core_img.setVisibility(View.VISIBLE);
-
-            if(corePost.getSoundUrl() != null)
-                holder.core_media.setVisibility(View.VISIBLE);
-            else
-                holder.core_media.setVisibility(View.GONE);
-
-            GlideApp.with(context /* context */)
-                    .load(user.getPicUrls().getPicUrl1())
-                    .placeholder(R.drawable.a)
-                    .into(holder.core_pic);
-            holder.core_id.setText(user.getId());
-            holder.core_subprofile.setText(UiUtil.getInstance().setSubProfile(user));
-
-            if(holder.core_img != null) Glide.with(context /* context */)
-                    .load(corePost.getPictureUrl())
-                    .into(holder.core_img);
-
-
+            setMasterPost(holder, corePost, user);
         } else {    // 타인글
-            holder.replyBtnLayout.setVisibility(View.VISIBLE);
-            holder.core_img.setVisibility(View.GONE);
-            holder.core_media.setVisibility(View.GONE);
-
-            holder.core_pic.setImageResource(R.drawable.a);
-            holder.core_id.setText("Unknown");
-            holder.core_subprofile.setText("");
-
-            if(cUuid.equals(mUuid)) {   // 주인이 봤을때
-                holder.btn_yes.setOnCheckedChangeListener(null);
-                holder.btn_pass.setOnCheckedChangeListener(null);
-                holder.btn_no.setOnCheckedChangeListener(null);
-            } else {
-                holder.btn_yes.setClickable(false);
-                holder.btn_pass.setClickable(false);
-                holder.btn_no.setClickable(false);
-            }
-
-            if(corePost.getReply() == null) {
-                holder.btn_yes.setChecked(false);
-                holder.btn_pass.setChecked(false);
-                holder.btn_no.setChecked(false);
-            } else if(corePost.getReply().equals("yes")){
-                holder.btn_yes.setChecked(true);
-                holder.btn_pass.setChecked(false);
-                holder.btn_no.setChecked(false);
-            } else if(corePost.getReply().equals("pass")){
-                holder.btn_yes.setChecked(false);
-                holder.btn_pass.setChecked(true);
-                holder.btn_no.setChecked(false);
-            } else if(corePost.getReply().equals("no")){
-                holder.btn_yes.setChecked(false);
-                holder.btn_pass.setChecked(false);
-                holder.btn_no.setChecked(true);
-            }
-
-            if(cUuid.equals(mUuid)) {   // 주인이 봤을때
-                holder.btn_yes.setOnCheckedChangeListener(getListener(coreListItem, "yes"));
-                holder.btn_pass.setOnCheckedChangeListener(getListener(coreListItem, "pass"));
-                holder.btn_no.setOnCheckedChangeListener(getListener(coreListItem, "no"));
-            }
-
+            setAnonymousPost(holder, coreListItem, corePost, mUuid);
         }
 
 
@@ -179,7 +118,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
         holder.core_heart_btn.setOnLikeListener(new OnLikeListener() {
             @Override
             public void liked(LikeButton likeButton) {
-                FirebaseDatabase.getInstance().getReference().child("posts")
+                FirebaseDatabase.getInstance().getReference().child("coreListItems")
                         .child(cUuid)
                         .child(coreListItem.getPostKey())
                         .child("likeUsers").child(mUuid).setValue(System.currentTimeMillis());
@@ -187,7 +126,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 
             @Override
             public void unLiked(LikeButton likeButton) {
-                FirebaseDatabase.getInstance().getReference().child("posts")
+                FirebaseDatabase.getInstance().getReference().child("coreListItems")
                         .child(cUuid)
                         .child(coreListItem.getPostKey())
                         .child("likeUsers").child(mUuid).setValue(null);
@@ -196,35 +135,109 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 
         // seekBar Sync
         if(currentSeekBarPosition == i) {
-            currentHolder = holder;
+            resetCurrentHolder(holder);
             currentHolder.seekBar.setMax(this.mediaPlayer.getDuration());
         }
 
-        holder.start.setOnClickListener(new View.OnClickListener() {
+        holder.startAndPause.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View view) {
-                doStart(holder, corePost.getSoundUrl(), i);
-            }
-        });
-        holder.pause.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                doPause(holder);
-            }
-        });
-        holder.rewind.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                doRewind(holder);
-            }
-        });
-        holder.fastForward.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                doFastForward(holder);
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                CoreActivity coreActivity = (CoreActivity)context;
+                if(b){
+                    doStart((CorePostHolder) coreActivity.getHolder(holder.getAdapterPosition()), corePost.getSoundUrl());
+                } else {
+                    doPause(coreListItem);
+                }
             }
         });
 
+        holder.rewind.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                doRewind();
+            }
+        });
+
+        holder.fastForward.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                doFastForward();
+            }
+        });
+
+    }
+
+    private void resetCurrentHolder(CorePostHolder holder) {
+        currentHolder.textView_currentPosion = holder.textView_currentPosion;
+        currentHolder.seekBar = holder.seekBar;
+        currentSeekBarPosition = holder.getAdapterPosition();
+        currentHolder.textView_maxTime = holder.textView_maxTime;
+        currentHolder.startAndPause = holder.startAndPause;
+    }
+
+    private void setAnonymousPost(CorePostHolder holder, CoreListItem coreListItem, CorePost corePost, String mUuid) {
+        holder.replyBtnLayout.setVisibility(View.VISIBLE);
+        holder.core_img.setVisibility(View.GONE);
+        holder.core_media.setVisibility(View.GONE);
+
+        holder.core_pic.setImageResource(R.drawable.a);
+        holder.core_id.setText(R.string.unknown);
+        holder.core_subProfile.setText("");
+
+        if(cUuid.equals(mUuid)) {   // 주인이 봤을때
+            holder.btn_yes.setOnCheckedChangeListener(null);
+            holder.btn_pass.setOnCheckedChangeListener(null);
+            holder.btn_no.setOnCheckedChangeListener(null);
+        } else {
+            holder.btn_yes.setClickable(false);
+            holder.btn_pass.setClickable(false);
+            holder.btn_no.setClickable(false);
+        }
+
+        if(corePost.getReply() == null) {
+            holder.btn_yes.setChecked(false);
+            holder.btn_pass.setChecked(false);
+            holder.btn_no.setChecked(false);
+        } else if(corePost.getReply().equals("yes")){
+            holder.btn_yes.setChecked(true);
+            holder.btn_pass.setChecked(false);
+            holder.btn_no.setChecked(false);
+        } else if(corePost.getReply().equals("pass")){
+            holder.btn_yes.setChecked(false);
+            holder.btn_pass.setChecked(true);
+            holder.btn_no.setChecked(false);
+        } else if(corePost.getReply().equals("no")){
+            holder.btn_yes.setChecked(false);
+            holder.btn_pass.setChecked(false);
+            holder.btn_no.setChecked(true);
+        }
+
+        if(cUuid.equals(mUuid)) {   // 주인이 봤을때
+            holder.btn_yes.setOnCheckedChangeListener(getListener(coreListItem, "yes"));
+            holder.btn_pass.setOnCheckedChangeListener(getListener(coreListItem, "pass"));
+            holder.btn_no.setOnCheckedChangeListener(getListener(coreListItem, "no"));
+        }
+    }
+
+    private void setMasterPost(CorePostHolder holder, CorePost corePost, User user) {
+        holder.replyBtnLayout.setVisibility(View.GONE);
+        holder.core_img.setVisibility(View.VISIBLE);
+
+        if(corePost.getSoundUrl() != null)
+            holder.core_media.setVisibility(View.VISIBLE);
+        else
+            holder.core_media.setVisibility(View.GONE);
+
+        GlideApp.with(context /* context */)
+                .load(user.getPicUrls().getPicUrl1())
+                .placeholder(R.drawable.a)
+                .into(holder.core_pic);
+        holder.core_id.setText(user.getId());
+        holder.core_subProfile.setText(UiUtil.getInstance().setSubProfile(user));
+
+        if(holder.core_img != null) Glide.with(context /* context */)
+                .load(corePost.getPictureUrl())
+                .into(holder.core_img);
     }
 
     private void setPostMenu(CorePostHolder holder, final CoreListItem coreListItem, final int menuId) {
@@ -262,7 +275,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
 
-                        FirebaseDatabase.getInstance().getReference().child("posts").child(cUuid).child(coreListItem.getPostKey())
+                        FirebaseDatabase.getInstance().getReference().child("coreListItems").child(cUuid).child(coreListItem.getPostKey())
                                 .removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
@@ -271,7 +284,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                                 FireBaseUtil.getInstance().syncCorePostCount(cUuid);
 
                                 // Storage Delete
-                                StorageReference postStorageRef = FirebaseStorage.getInstance().getReference().child("posts").child(cUuid).child(coreListItem.getPostKey());
+                                StorageReference postStorageRef = FirebaseStorage.getInstance().getReference().child("coreListItems").child(cUuid).child(coreListItem.getPostKey());
                                 if(coreListItem.getCorePost().getSoundUrl() != null)
                                     deleteTasks.add(postStorageRef.child("sound").delete());
                                 if(coreListItem.getCorePost().getPictureUrl() != null)
@@ -310,11 +323,11 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    FirebaseDatabase.getInstance().getReference().child("posts").child(cUuid).child(coreListItem.getPostKey())
+                    FirebaseDatabase.getInstance().getReference().child("coreListItems").child(cUuid).child(coreListItem.getPostKey())
                             .child("reply").setValue(value);
                 }
                 else {
-                    FirebaseDatabase.getInstance().getReference().child("posts").child(cUuid).child(coreListItem.getPostKey())
+                    FirebaseDatabase.getInstance().getReference().child("coreListItems").child(cUuid).child(coreListItem.getPostKey())
                             .child("reply").setValue(null);
                 }
             }
@@ -323,20 +336,21 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 
     @Override
     public int getItemCount() {
-        return posts.size();
+        return coreListItems.size();
     }
 
     class CorePostHolder extends RecyclerView.ViewHolder {
         ImageView core_pic, core_img ;
 //        ImageButton Core_heart;
         ImageButton core_setting;
-        TextView core_id, core_subprofile, core_date, core_contents, core_heart_count;
+        TextView core_id, core_subProfile, core_date, core_contents, core_heart_count;
         LikeButton core_heart_btn;
         LinearLayout replyBtnLayout;
         ToggleButton btn_yes, btn_pass, btn_no;
 
         RelativeLayout core_media;
-        ImageButton start, pause, rewind, fastForward;
+        ToggleButton startAndPause;
+        ImageButton rewind, fastForward;
         SeekBar seekBar;
         TextView textView_maxTime, textView_currentPosion;
 
@@ -347,7 +361,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
             core_img = itemView.findViewById(R.id.core_img);
 
             core_id = itemView.findViewById(R.id.core_id);
-            core_subprofile= itemView.findViewById(R.id.sub_profile);
+            core_subProfile = itemView.findViewById(R.id.sub_profile);
             core_date = itemView.findViewById(R.id.core_date);
             core_contents = itemView.findViewById(R.id.core_contents);
 
@@ -362,8 +376,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
             btn_pass = itemView.findViewById(R.id.btn_pass);
             btn_no = itemView.findViewById(R.id.btn_no);
             core_media = itemView.findViewById(R.id.media_player_layout);
-            start = itemView.findViewById(R.id.button_start);
-            pause = itemView.findViewById(R.id.button_pause);
+            startAndPause = itemView.findViewById(R.id.button_start_pause);
             rewind = itemView.findViewById(R.id.button_rewind);
             fastForward = itemView.findViewById(R.id.button_fastForward);
             seekBar = itemView.findViewById(R.id.seekBar);
@@ -381,13 +394,13 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
     }
 
 
-    private void doStart(CorePostHolder holder, String url, int position)  {
+    private void doStart(CorePostHolder holder, String url)  {
+
+        // 다른 아이템의 플레이어를 중단
+        if(currentSeekBarPosition != holder.getAdapterPosition() && currentHolder.startAndPause.isChecked()) currentHolder.startAndPause.performClick();
+
         // syncHolder
-        currentHolder.textView_currentPosion = holder.textView_currentPosion;
-        currentHolder.seekBar = holder.seekBar; currentSeekBarPosition = position;
-        currentHolder.textView_maxTime = holder.textView_maxTime;
-        currentHolder.start = holder.start;
-        currentHolder.pause = holder.pause;
+        resetCurrentHolder(holder);
 
         if(!currentPlayUrl.equals(url) || currentPlayUrl.equals("") ||
                 holder.textView_currentPosion.getText().equals(holder.textView_maxTime.getText())){
@@ -397,6 +410,8 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                 this.mediaPlayer.setDataSource(url);
                 currentPlayUrl = url;
                 this.mediaPlayer.prepare();
+
+                mediaPlayer.seekTo(coreListItems.get(holder.getAdapterPosition()).getCurrentPlayPosition());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -416,27 +431,25 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 
         this.mediaPlayer.start();
         // Create a thread to update position of SeekBar.
-        updateSeekBarThread = new UpdateSeekBarThread();
+        UpdateSeekBarThread updateSeekBarThread = new UpdateSeekBarThread();
         threadHandler.postDelayed(updateSeekBarThread,50);
 
-        holder.pause.setEnabled(true);
-        holder.start.setEnabled(false);
     }
 
     // Thread to Update position for SeekBar.
     class UpdateSeekBarThread implements Runnable {
 
         public void run()  {
-//            if(!mediaPlayer.isPlaying()) return;    // 중단되면 쓰레드 종료
-
             int currentPosition = mediaPlayer.getCurrentPosition();
             Log.d("kbj", "currentPosition : " + currentPosition);
             String currentPositionStr = millisecondsToString(currentPosition);
             currentHolder.textView_currentPosion.setText(currentPositionStr);
 
             if(currentHolder.textView_currentPosion.getText().equals(currentHolder.textView_maxTime.getText())){
-                // 끝
-                doPause(currentHolder);
+                // 사운드 재생 끝
+                currentHolder.startAndPause.setChecked(false);  // 버튼 Stop
+                coreListItems.get(currentSeekBarPosition).setCurrentPlayPosition(0);    // CurrentPlayPosition 초기화
+                currentHolder.seekBar.setProgress(0);   // SeekBar Init
                 return;
             }
             currentHolder.seekBar.setProgress(currentPosition);
@@ -446,16 +459,14 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
     }
 
     // When user click to "Pause".
-    private void doPause(CorePostHolder holder)  {
+    private void doPause(CoreListItem coreListItem)  {
+        coreListItem.setCurrentPlayPosition(mediaPlayer.getCurrentPosition());
         this.mediaPlayer.pause();
-        holder.pause.setEnabled(false);
-        holder.start.setEnabled(true);
     }
 
     // When user click to "Rewind".
-    private void doRewind(CorePostHolder holder)  {
+    private void doRewind()  {
         int currentPosition = this.mediaPlayer.getCurrentPosition();
-        int duration = this.mediaPlayer.getDuration();
         // 5 seconds.
         int SUBTRACT_TIME = 5000;
 
@@ -465,7 +476,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
     }
 
     // When user click to "Fast-Forward".
-    private void doFastForward(CorePostHolder holder)  {
+    private void doFastForward()  {
         int currentPosition = this.mediaPlayer.getCurrentPosition();
         int duration = this.mediaPlayer.getDuration();
         // 5 seconds.

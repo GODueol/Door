@@ -2,8 +2,11 @@ package com.example.kwoncheolhyeok.core.LoginActivity;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -85,6 +88,18 @@ public class IntroActivity extends Activity {
     }
 
     private void getUserInfo(final FirebaseUser user) {
+        ConnectivityManager manager = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo mobile = manager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+        NetworkInfo wifi = manager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+
+
+        // wifi 또는 모바일 네트워크 어느 하나라도 연결이 되어있다면,
+        if (!wifi.isConnected() && !mobile.isConnected()) {
+            Log.i("Internet Connection" , "인터넷 연결 안된 상태");
+            Toast.makeText(getApplicationContext(),"인터넷 연결이 안되어 있습니다", Toast.LENGTH_SHORT).show();
+            finish();
+        }
+
         if (user != null) {
             FirebaseAuth mAuth = FirebaseAuth.getInstance();
             if(user.getEmail() == null) {
@@ -95,6 +110,11 @@ public class IntroActivity extends Activity {
             mAuth.fetchProvidersForEmail(user.getEmail()).addOnCompleteListener(new OnCompleteListener<ProviderQueryResult>() {
                 @Override
                 public void onComplete(@NonNull Task<ProviderQueryResult> task) {
+                    if(!task.isSuccessful()){
+                        Toast.makeText(getApplicationContext(), task.getException().getMessage(),Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
+
                     List<String> provider = task.getResult().getProviders();
                     if(provider == null || provider.isEmpty()) { // 계정이 없는 경우
                         Log.d(getApplication().getClass().getName(), "계정없음:" + user.getUid());

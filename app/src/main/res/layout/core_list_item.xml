@@ -166,36 +166,26 @@
                 android:layout_marginRight="23dp"
                 android:layout_weight="1"
                 android:background="@drawable/ic_fast_rewind_black_24dp"
-                android:onClick="doRewind" />
-
-            <ImageButton
-                android:id="@+id/button_start"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="23dp"
-                android:layout_weight="1"
-                android:background="@drawable/ic_play_arrow_black_24dp"
-                android:onClick="doStart"
-
                 />
 
-            <ImageButton
-                android:id="@+id/button_pause"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <ToggleButton
+                android:id="@+id/button_start_pause"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:layout_marginRight="23dp"
                 android:layout_weight="1"
-                android:background="@drawable/ic_pause_black_24dp"
-                android:onClick="doPause" />
+                android:background="@drawable/btn_start_pause_selector"
+                android:textOff=""
+                android:textOn=""
+                />
 
             <ImageButton
                 android:id="@+id/button_fastForward"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-
                 android:layout_weight="1"
                 android:background="@drawable/ic_fast_forward_black_24dp"
-                android:onClick="doFastForward" />
+                />
 
         </LinearLayout>
 
@@ -209,7 +199,7 @@
         android:layout_below="@+id/core_date"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
-        android:background="#BDBDBD"></View>
+        android:background="#BDBDBD" />
 
     <TextView
         android:id="@+id/core_date"
@@ -220,7 +210,7 @@
         android:layout_below="@+id/media_player_layout"
         android:layout_marginBottom="5dp"
         android:layout_marginTop="8dp"
-        android:text="1시간 전"
+        android:text="0시간 전"
         android:textColor="@color/gray70"
         android:textSize="10dp"
         />

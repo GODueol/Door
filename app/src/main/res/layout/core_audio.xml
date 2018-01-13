@@ -76,7 +76,7 @@
             android:onClick="doRewind" />
 
         <ImageButton
-            android:id="@+id/button_start"
+            android:id="@+id/button_start_pause"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="23dp"

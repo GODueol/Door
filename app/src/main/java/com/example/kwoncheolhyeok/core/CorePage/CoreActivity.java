@@ -183,4 +183,9 @@ public class CoreActivity extends AppCompatActivity {
         super.onPause();
         ScreenshotSetApplication.getInstance().unregisterScreenshotObserver();
     }
+
+    public RecyclerView.ViewHolder getHolder(int position){
+        if(recyclerView == null) return null;
+        return recyclerView.findViewHolderForAdapterPosition(position);
+    }
 }

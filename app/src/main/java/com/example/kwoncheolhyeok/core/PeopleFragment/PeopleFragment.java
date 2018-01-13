@@ -3,9 +3,7 @@ package com.example.kwoncheolhyeok.core.PeopleFragment;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.location.Location;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.RequiresApi;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -151,7 +149,6 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
 
                 final float distance = location.distanceTo(targetLocation);
 
-
                 // grid에 사진, distance추가
 
                 if(imageAdapter != null){
@@ -182,7 +179,6 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
                 targetLocation.setLongitude(geoLocation.longitude);
                 ImageAdapter.Item item = imageAdapter.getItem(key);
                 if(item == null) return;
-                imageAdapter.removeItem(key);
                 item.setDistance(location.distanceTo(targetLocation));
                 imageAdapter.addItem(item);
                 imageAdapter.notifyDataSetChanged();

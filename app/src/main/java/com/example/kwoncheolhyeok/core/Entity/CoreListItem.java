@@ -4,9 +4,19 @@ package com.example.kwoncheolhyeok.core.Entity;
  * Created by gimbyeongjin on 2017. 12. 29..
  */
 public class CoreListItem {
-    User user;
-    CorePost corePost;
-    String postKey;
+    private User user;
+    private CorePost corePost;
+    private String postKey;
+
+    private int currentPlayPosition;
+
+    public int getCurrentPlayPosition() {
+        return currentPlayPosition;
+    }
+
+    public void setCurrentPlayPosition(int currentPlayPosition) {
+        this.currentPlayPosition = currentPlayPosition;
+    }
 
     public String getPostKey() {
         return postKey;

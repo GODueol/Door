@@ -2,7 +2,6 @@ package com.example.kwoncheolhyeok.core.CorePage;
 
 import android.animation.Animator;
 import android.content.Intent;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -10,7 +9,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -183,8 +181,6 @@ public class CoreWriteActivity extends AppCompatActivity {
                                 // Start recording
                                 .record();
 
-//                RecordDialog recordDialog = new RecordDialog(getContext());
-//                recordDialog.show();
                         recordSelectDialog.dismiss();
                     }
                 }, new View.OnClickListener() {
