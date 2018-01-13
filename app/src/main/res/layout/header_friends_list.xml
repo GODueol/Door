@@ -34,7 +34,6 @@
             android:textSize="16.5dp"
             android:textStyle="bold" />
 
-
         <RelativeLayout
             android:id="@+id/layout"
             android:layout_width="match_parent"
