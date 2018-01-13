@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -34,6 +35,9 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.yanzhenjie.album.Action;
+import com.yanzhenjie.album.Album;
+import com.yanzhenjie.album.AlbumFile;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -141,7 +145,40 @@ public class CoreWriteActivity extends AppCompatActivity {
         pictureFab_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                loadPicture.onGallery();
+                // 사진파일 가져오기 라이브러리 적용
+                Album.image(CoreWriteActivity.this) // Image selection.
+                        .singleChoice()
+//                        .multipleChoice()
+                        .requestCode(2)
+                        .camera(false)
+//                        .columnCount()
+//                        .selectCount()
+//                        .checkedList(mAlbumFiles)
+//                        .filterSize(30) // Filter the file size.
+//                        .filterMimeType() // Filter file format.
+//                        .afterFilterVisibility() // Show the filtered files, but they are not available.
+                        .onResult(new Action<ArrayList<AlbumFile>>() {
+                            @Override
+                            public void onAction(int requestCode, @NonNull ArrayList<AlbumFile> result) {
+                                Log.d("kbj", result.toString());
+                                AlbumFile albumFile = result.get(0);
+
+                                editImageUri = Uri.fromFile(new File(albumFile.getPath()));
+                                editImage.setImageURI(editImageUri);   // Local Set
+                                closeFABMenu();
+                            }
+                        })
+                        .onCancel(new Action<String>() {
+                            @Override
+                            public void onAction(int requestCode, @NonNull String result) {
+                                Log.d("kbj", result);
+                            }
+                        })
+                        .start();
+
+//                loadPicture.onGallery();
+
+
             }
         });
 

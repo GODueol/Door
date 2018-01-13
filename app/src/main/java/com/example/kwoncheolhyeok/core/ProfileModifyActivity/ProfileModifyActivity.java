@@ -794,9 +794,11 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
                         for(Task task : tasks) {
                             if (!task.isComplete()) return;
                         }
-                        getInstance().stopProgressDialog();
                         // 성공시 백버튼
                         onBackPressed();
+
+                        getInstance().stopProgressDialog();
+
                     }
                 });
             }
