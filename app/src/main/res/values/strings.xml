@@ -55,8 +55,8 @@
     <string name="core">Core</string>
     <string name="follow">Follow</string>
     <string name="unblock">Unblock</string>
-    <string name="oldOrder">오래된순</string>
-    <string name="newOrder">최신순</string>
+    <string name="oldOrder">오래된 순</string>
+    <string name="newOrder">최신 순</string>
     <string name="unknown">Unknown</string>
 
 

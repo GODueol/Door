@@ -13,7 +13,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -70,7 +72,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
                 rowView=LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.friends_list_item, viewGroup, false);
                 break;
             case VIEW_TYPES.Header:
-                rowView=LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.header_friends_list, viewGroup, false);
+                rowView=LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.friends_list_header, viewGroup, false);
                 break;
             default:
                 rowView=LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.friends_list_item, viewGroup, false);
@@ -249,7 +251,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
                 ImageView profile_image = userHolder.itemView.findViewById(R.id.profile_image);
                 TextView userNick = userHolder.itemView.findViewById(R.id.userNick);
                 TextView userProfile = userHolder.itemView.findViewById(R.id.userProfile);
-                ImageButton setting = userHolder.itemView.findViewById(R.id.setting);
+                LinearLayout setting = userHolder.itemView.findViewById(R.id.setting_layout);
                 final TextView list_sequence = userHolder.itemView.findViewById(R.id.list_sequence);
 
                 User mUser = DataContainer.getInstance().getUser();

@@ -14,7 +14,7 @@
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="48.5dp"
+            android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:background="@color/white"
             android:fitsSystemWindows="true"
@@ -29,20 +29,6 @@
             android:layout_centerInParent="true"
             android:background="@drawable/ic_create_black_24dp"
             android:scaleType="centerCrop" />
-
-
-        <!--<TextView-->
-            <!--android:id="@+id/save"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_alignParentRight="true"-->
-            <!--android:layout_centerVertical="true"-->
-            <!--android:layout_marginRight="20dp"-->
-            <!--android:gravity="right"-->
-            <!--android:text="올리기"-->
-            <!--android:textColor="@color/skyblue"-->
-            <!--android:textSize="18sp"-->
-            <!--android:textStyle="bold" />-->
 
         <ImageButton
             android:id="@+id/save"
@@ -60,14 +46,13 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="48.5dp"
+        android:layout_marginTop="?attr/actionBarSize"
         android:background="@color/white">
 
         <RelativeLayout
             android:id="@+id/edit_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
 
             <RelativeLayout
                 android:id="@+id/image_edit_layout"
@@ -77,72 +62,115 @@
                 android:layout_height="wrap_content">
 
                 <ImageView
-                    android:layout_centerHorizontal="true"
                     android:id="@+id/edit_img"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    />
 
                 <ImageButton
                     android:id="@+id/image_x_btn"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
+                    android:layout_width="19dp"
+                    android:layout_height="19dp"
                     android:layout_alignEnd="@+id/edit_img"
                     android:layout_alignRight="@+id/edit_img"
+                    android:layout_marginRight="7dp"
+                    android:layout_marginTop="7dp"
                     android:background="@drawable/x_btn" />
 
             </RelativeLayout>
 
 
-            <EditText
-                android:id="@+id/edit_txt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/edit_audio_layout"
-                android:layout_marginBottom="8dp"
-                android:layout_marginTop="8dp"
-                android:background="@android:color/transparent"
-                android:hint="자신을 표현해 보세요."
-                android:lineSpacingExtra="8dip"
-                android:theme="@style/EditText.Color.Black" />
 
             <RelativeLayout
                 android:id="@+id/edit_audio_layout"
-                android:layout_below="@+id/image_edit_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone">
+                android:layout_below="@+id/image_edit_layout"
+                android:layout_marginTop="7dp"
+                android:visibility="gone"
+                >
+
+                <ImageButton
+                    android:id="@+id/sound_x_btn"
+                    android:layout_width="19dp"
+                    android:layout_height="19dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="7dp"
+                    android:layout_marginTop="7dp"
+                    android:background="@drawable/x_btn"
+                    />
+
+                <SeekBar
+                    android:id="@+id/seekBar"
+                    android:layout_below="@+id/sound_x_btn"
+                    android:layout_marginTop="25dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:clickable="false"
+                    android:thumb="@drawable/thumb"
+                    />
 
                 <RelativeLayout
-                    android:id="@+id/layout1"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/seekBar"
+                    android:layout_marginTop="5dp">
 
-                    <ImageButton
-                        android:id="@+id/sound_x_btn"
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
-                        android:layout_alignParentTop="true"
-                        android:layout_alignParentRight="true"
-                        android:background="@drawable/x_btn" />
-
-
-                    <SeekBar
-                        android:layout_below="@id/sound_x_btn"
-                        android:id="@+id/seekBar"
-                        android:layout_width="match_parent"
+                    <LinearLayout
+                        android:id="@+id/play_layout"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:progressTint="@color/skyblue"
-                        android:thumbTint="@color/skyblue" />
+                        android:layout_centerHorizontal="true"
+                        android:orientation="horizontal"
+                        android:weightSum="3"
+                        android:layout_centerVertical="true"
+                        android:layout_marginTop="5dp"
+                        >
+
+
+                        <ImageButton
+                            android:id="@+id/button_rewind"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="23dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/ic_fast_rewind_black_24dp" />
+
+                        <ToggleButton
+                            android:id="@+id/button_start_pause"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_marginRight="23dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/btn_start_pause_selector"
+                            android:textOff=""
+                            android:textOn="" />
+
+                        <ImageButton
+                            android:id="@+id/button_fastForward"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@drawable/ic_fast_forward_black_24dp" />
+
+                    </LinearLayout>
 
                     <LinearLayout
                         android:id="@+id/time"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:orientation="horizontal"
                         android:layout_alignParentRight="true"
-                        android:layout_below="@+id/seekBar"
                         android:layout_marginRight="10dp"
-                        android:orientation="horizontal">
+                        >
 
                         <TextView
                             android:id="@+id/textView_currentPosion"
@@ -161,53 +189,21 @@
                             android:textAppearance="?android:attr/textAppearanceSmall" />
                     </LinearLayout>
 
-
                 </RelativeLayout>
 
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/layout1"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="10dp"
-                    android:orientation="horizontal"
-                    android:weightSum="4">
-
-
-                    <ImageButton
-                        android:id="@+id/button_rewind"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="23dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/ic_fast_rewind_black_24dp"
-                        android:onClick="doRewind" />
-
-                    <ToggleButton
-                        android:id="@+id/button_start_pause"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_marginRight="23dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/btn_start_pause_selector"
-                        android:textOff=""
-                        android:textOn=""
-
-                        />
-
-                    <ImageButton
-                        android:id="@+id/button_fastForward"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-
-                        android:layout_weight="1"
-                        android:background="@drawable/ic_fast_forward_black_24dp"
-                        android:onClick="doFastForward" />
-
-                </LinearLayout>
-
             </RelativeLayout>
+
+            <EditText
+                android:id="@+id/edit_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/edit_audio_layout"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                android:background="@android:color/transparent"
+                android:hint="자신을 표현해 보세요."
+                android:lineSpacingExtra="8dip"
+                android:theme="@style/EditText.Color.Black" />
 
         </RelativeLayout>
 

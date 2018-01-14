@@ -3,6 +3,11 @@ package com.example.kwoncheolhyeok.core.CorePage;
 import android.animation.Animator;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -15,6 +20,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -96,6 +102,7 @@ public class CoreWriteActivity extends AppCompatActivity {
     private TextView textCurrentPosition;
     private ToggleButton startAndPause;
     private SeekBar seekBar;
+    private ViewTreeObserver vto;
     private Handler threadHandler = new Handler();
 
     private MediaPlayer mediaPlayer;
@@ -140,6 +147,11 @@ public class CoreWriteActivity extends AppCompatActivity {
         textMaxTime= findViewById(R.id.textView_maxTime);
         startAndPause = findViewById(R.id.button_start_pause);
         seekBar = findViewById(R.id.seekBar);
+        Drawable myThumb = getResources().getDrawable(R.drawable.icon);
+        myThumb.setBounds(new Rect(8, 8, myThumb.getIntrinsicWidth(),myThumb.getIntrinsicHeight()));
+        seekBar.setThumb(myThumb);
+
+
         sound_x_btn = findViewById(R.id.sound_x_btn);
 
         // 본인, 타인 구분

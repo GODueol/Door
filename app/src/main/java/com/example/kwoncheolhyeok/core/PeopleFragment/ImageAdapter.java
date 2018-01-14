@@ -103,7 +103,7 @@ public class ImageAdapter extends BaseAdapter {
                 .into(holder.imageView);
 
         // 거리 출력
-        holder.textView.setText("CORE " + item.getUser().getCorePostCount());
+        holder.textView.setText(item.getUser().getCorePostCount()+ " CORE" );
 //        holder.textView.setText(String.format("%.1fkm", item.distance/1000));
         holder.textView.setTextSize((float) 15.5);
 

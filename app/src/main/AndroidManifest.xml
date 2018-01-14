@@ -118,7 +118,6 @@
         <activity
             android:name=".CorePage.CoreWriteActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden"
             tools:ignore="InnerclassSeparator"></activity>
         <activity
             android:name=".SettingActivity.SettingActivity"
