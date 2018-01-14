@@ -311,7 +311,8 @@ public class CoreWriteActivity extends AppCompatActivity {
         audioFab_layout.setVisibility(View.VISIBLE);
         fabBGLayout.setVisibility(View.VISIBLE);
 
-        fab.animate().rotationBy(135);
+        fab.animate().rotation(135);
+        fab.animate().setDuration(200);
         pictureFab_layout.animate().translationY(-getResources().getDimension(R.dimen.standard_75));
         audioFab_layout.animate().translationY(-getResources().getDimension(R.dimen.standard_150));
     }
@@ -319,7 +320,8 @@ public class CoreWriteActivity extends AppCompatActivity {
     private void closeFABMenu() {
         isFABOpen = false;
         fabBGLayout.setVisibility(View.GONE);
-        fab.animate().rotationBy(-135);
+        fab.animate().rotation(0);
+        fab.animate().setDuration(200);
         pictureFab_layout.animate().translationY(0);
         audioFab_layout.animate().translationY(0).setListener(new Animator.AnimatorListener() {
             @Override

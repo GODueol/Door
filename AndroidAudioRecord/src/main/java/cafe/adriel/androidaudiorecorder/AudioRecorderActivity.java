@@ -65,9 +65,7 @@ public class AudioRecorderActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.aar_activity_audio_recorder);
-
-        getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, 500);    // 전체 레이아웃 가로세로는 여기서 수정
-
+        getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, 1500);    // 전체 레이아웃 가로세로는 여기서 수정
         this.setFinishOnTouchOutside(false);
 
         if(savedInstanceState != null) {
@@ -83,7 +81,7 @@ public class AudioRecorderActivity extends AppCompatActivity
             source = (AudioSource) getIntent().getSerializableExtra(AndroidAudioRecorder.EXTRA_SOURCE);
             channel = (AudioChannel) getIntent().getSerializableExtra(AndroidAudioRecorder.EXTRA_CHANNEL);
             sampleRate = (AudioSampleRate) getIntent().getSerializableExtra(AndroidAudioRecorder.EXTRA_SAMPLE_RATE);
-            color = getIntent().getIntExtra(AndroidAudioRecorder.EXTRA_COLOR, Color.BLACK);
+            color = getIntent().getIntExtra(AndroidAudioRecorder.EXTRA_COLOR, Color.WHITE);
             autoStart = getIntent().getBooleanExtra(AndroidAudioRecorder.EXTRA_AUTO_START, false);
             keepDisplayOn = getIntent().getBooleanExtra(AndroidAudioRecorder.EXTRA_KEEP_DISPLAY_ON, false);
         }
@@ -94,7 +92,7 @@ public class AudioRecorderActivity extends AppCompatActivity
 
         visualizerView = new GLAudioVisualizationView.Builder(this)
                 .setLayersCount(1)
-                .setWavesCount(6)
+                .setWavesCount(2)
                 .setWavesHeight(R.dimen.aar_wave_height)
                 .setWavesFooterHeight(R.dimen.aar_footer_height)
                 .setBubblesPerLayer(20)
@@ -113,8 +111,8 @@ public class AudioRecorderActivity extends AppCompatActivity
         save = (ImageView) findViewById(R.id.save);
         clear = (ImageView) findViewById(R.id.clear);
 
-        contentLayout.setBackgroundColor(Util.getDarkerColor(color));
         contentLayout.addView(visualizerView, 0);
+        visualizerView.setBackgroundColor(Color.WHITE);
         restartView.setVisibility(View.INVISIBLE);
         playView.setVisibility(View.INVISIBLE);
         save.setVisibility(View.INVISIBLE);
@@ -132,6 +130,7 @@ public class AudioRecorderActivity extends AppCompatActivity
         });
 
         if(Util.isBrightColor(color)) {
+//            코드로 드로워블 png 색 바꿈
             ContextCompat.getDrawable(this, R.drawable.aar_ic_clear)
                     .setColorFilter(Color.BLACK, PorterDuff.Mode.SRC_ATOP);
             ContextCompat.getDrawable(this, R.drawable.aar_ic_check)
@@ -249,12 +248,11 @@ public class AudioRecorderActivity extends AppCompatActivity
 
 //        saveMenuItem.setVisible(false);
         save.setVisibility(View.INVISIBLE);
-
         statusView.setVisibility(View.INVISIBLE);
         restartView.setVisibility(View.INVISIBLE);
         playView.setVisibility(View.INVISIBLE);
         recordView.setImageResource(R.drawable.aar_ic_rec);
-        timerView.setText("00:00:00");
+        timerView.setText("00:00");
         recorderSecondsElapsed = 0;
         playerSecondsElapsed = 0;
     }
@@ -274,7 +272,7 @@ public class AudioRecorderActivity extends AppCompatActivity
         visualizerView.linkTo(visualizerHandler);
 
         if(recorder == null) {
-            timerView.setText("00:00:00");
+            timerView.setText("00:00");
 
             recorder = OmRecorder.wav(
                     new PullTransport.Default(Util.getMic(source, channel, sampleRate), AudioRecorderActivity.this),
@@ -341,7 +339,7 @@ public class AudioRecorderActivity extends AppCompatActivity
                 }
             });
 
-            timerView.setText("00:00:00");
+            timerView.setText("00:00");
             statusView.setText(R.string.aar_playing);
             statusView.setVisibility(View.VISIBLE);
             playView.setImageResource(R.drawable.aar_ic_stop);
