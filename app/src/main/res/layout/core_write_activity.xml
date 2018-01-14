@@ -70,7 +70,7 @@
 
 
             <RelativeLayout
-                android:id="@+id/edit_layout1"
+                android:id="@+id/image_edit_layout"
                 android:layout_centerHorizontal="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
@@ -83,7 +83,7 @@
 
 
                 <ImageButton
-                    android:id="@+id/x_btn"
+                    android:id="@+id/image_x_btn"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:layout_alignEnd="@+id/edit_img"
@@ -109,7 +109,7 @@
                 android:id="@+id/edit_audio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/edit_layout1"
+                android:layout_below="@+id/image_edit_layout"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="8dp"
                 android:text="미디어 플레이어가 있을 자리"

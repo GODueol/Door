@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -41,6 +42,7 @@ import com.yanzhenjie.album.AlbumFile;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import cafe.adriel.androidaudiorecorder.AndroidAudioRecorder;
 import cafe.adriel.androidaudiorecorder.model.AudioChannel;
@@ -58,14 +60,14 @@ public class CoreWriteActivity extends AppCompatActivity {
 
     FloatingActionButton fab, picture_fab, audio_fab;
     LinearLayout pictureFab_layout, audioFab_layout;
+    RelativeLayout image_edit_layout;
     View fabBGLayout;
     boolean isFABOpen = false;
-    private LoadPicture loadPicture;
     private static final int REQUEST_GALLERY = 2;
     private static final int REQUEST_RECORD = 0;
 
     ImageView editImage;
-    ImageButton saveBtn;
+    ImageButton saveBtn, image_x_btn;
     private String mUuid;
 
     TextView textContents;
@@ -73,7 +75,7 @@ public class CoreWriteActivity extends AppCompatActivity {
     private String postKey;
     private String recordFilePath;
     private RecordSelectDialog recordSelectDialog;
-    private ArrayList<Task> tasks;
+    private HashMap<Task, OnSuccessListener> tasks;
     private boolean isEdit = true;
     private DatabaseReference postRef;
     private Uri editImageUri;
@@ -89,7 +91,7 @@ public class CoreWriteActivity extends AppCompatActivity {
         storageRef = FirebaseStorage.getInstance().getReference();
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
 
-        tasks = new ArrayList<>();
+        tasks = new HashMap<>();
 
         cUuid = getIntent().getStringExtra("cUuid");
 
@@ -113,6 +115,8 @@ public class CoreWriteActivity extends AppCompatActivity {
         saveBtn = findViewById(R.id.save);
         textContents = findViewById(R.id.edit_txt);
         TextView editAudio = findViewById(R.id.edit_audio);
+        image_x_btn = findViewById(R.id.image_x_btn);
+        image_edit_layout = findViewById(R.id.image_edit_layout);
 
         // 본인, 타인 구분
         if (!cUuid.equals(mUuid)) {    // 타인
@@ -141,7 +145,7 @@ public class CoreWriteActivity extends AppCompatActivity {
         });
 
         // Get Picture Btn Set
-        loadPicture = new LoadPicture(this, this);
+        LoadPicture loadPicture = new LoadPicture(this, this);
         pictureFab_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -166,6 +170,7 @@ public class CoreWriteActivity extends AppCompatActivity {
 
                                 editImageUri = Uri.fromFile(new File(albumFile.getPath()));
                                 editImage.setImageURI(editImageUri);   // Local Set
+                                image_edit_layout.setVisibility(View.VISIBLE);
                                 closeFABMenu();
                             }
                         })
@@ -253,7 +258,12 @@ public class CoreWriteActivity extends AppCompatActivity {
                     if (corePost == null) return;
                     textContents.setText(corePost.getText());
                     if (editImage.getContext() == null) return;
-                    if(corePost.getPictureUrl() != null) Glide.with(CoreWriteActivity.this).load(corePost.getPictureUrl()).into(editImage);
+                    if(corePost.getPictureUrl() != null) {
+                        Glide.with(CoreWriteActivity.this).load(corePost.getPictureUrl()).into(editImage);
+                        image_edit_layout.setVisibility(View.VISIBLE);
+                    } else {
+                        image_edit_layout.setVisibility(View.INVISIBLE);
+                    }
                 }
 
                 @Override
@@ -262,6 +272,15 @@ public class CoreWriteActivity extends AppCompatActivity {
                 }
             });
         }
+
+        image_x_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // 사진 삭제
+                image_edit_layout.setVisibility(View.INVISIBLE);
+                editImageUri = null;
+            }
+        });
 
     }
 
@@ -272,9 +291,7 @@ public class CoreWriteActivity extends AppCompatActivity {
 
         corePost.setText(textContents.getText().toString());
         Task<Void> postUploadTask = postRef.setValue(corePost);
-        tasks.add(postUploadTask);
-
-        postUploadTask.addOnSuccessListener(new OnSuccessListener<Void>() {
+        tasks.put(postUploadTask, new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 // addCorePostCount
@@ -282,19 +299,26 @@ public class CoreWriteActivity extends AppCompatActivity {
             }
         });
 
-        if(editImageUri != null){
+        // image
+        if(corePost.getPictureUrl() != null && image_edit_layout.getVisibility() == View.INVISIBLE) {
+            // deletePicture
+            deletePicture();
+        } else if(editImageUri != null){
             uploadPicture();
         }
+
+        // sound
         if(soundUri != null){
             uploadSound();
         }
 
         // 모든 비동기 호출이 다 끝낫을 때
-        for (Task task : tasks) {
+        for (Task task : tasks.keySet()) {
+            task.addOnSuccessListener(tasks.get(task));
             task.addOnCompleteListener(new OnCompleteListener() {
                 @Override
                 public void onComplete(@NonNull Task taskRtn) {
-                    for (Task task : tasks)
+                    for (Task task : tasks.keySet())
                         if (!task.isComplete()) return;
                     UiUtil.getInstance().stopProgressDialog();  // 프로그레스바 중단
 
@@ -390,8 +414,7 @@ public class CoreWriteActivity extends AppCompatActivity {
     private void uploadPicture() {
         final StorageReference spaceRef = storageRef.child("posts").child(cUuid).child(postKey).child("picture");
         UploadTask uploadTask = spaceRef.putFile(editImageUri);
-        tasks.add(uploadTask);
-        uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+        tasks.put(uploadTask, new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 postRef.child("pictureUrl").setValue(taskSnapshot.getDownloadUrl().toString());
@@ -399,17 +422,28 @@ public class CoreWriteActivity extends AppCompatActivity {
         });
     }
 
+    private void deletePicture(){
+        final StorageReference spaceRef = storageRef.child("posts").child(cUuid).child(postKey).child("picture");
+        Task task = spaceRef.delete();
+        tasks.put(task, new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                postRef.child("pictureUrl").setValue(null);
+            }
+        });
+    }
+
     private void uploadSound() {
         final StorageReference spaceRef = storageRef.child("posts").child(cUuid).child(postKey).child("sound");
         UploadTask uploadTask = spaceRef.putFile(soundUri);
-        tasks.add(uploadTask);
-        uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+        tasks.put(uploadTask, new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
                 postRef.child("soundUrl").setValue(taskSnapshot.getDownloadUrl().toString());
             }
         });
+//        uploadTask.addOnSuccessListener();
     }
 
     @Override
