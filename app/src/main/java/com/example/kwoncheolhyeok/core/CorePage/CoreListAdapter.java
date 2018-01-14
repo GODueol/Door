@@ -409,10 +409,10 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                 this.mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
                 this.mediaPlayer.setDataSource(url);
                 currentPlayUrl = url;
-                this.mediaPlayer.prepare();
-
+                this.mediaPlayer.prepare(); // 필연적으로 지연됨 (버퍼채움)
 
                 mediaPlayer.seekTo(holder.seekBar.getProgress());
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -431,6 +431,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
         }
 
         this.mediaPlayer.start();
+
         // Create a thread to update position of SeekBar.
         UpdateSeekBarThread updateSeekBarThread = new UpdateSeekBarThread();
         threadHandler.postDelayed(updateSeekBarThread,50);
@@ -442,7 +443,6 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 
         public void run()  {
             int currentPosition = mediaPlayer.getCurrentPosition();
-            Log.d("kbj", "currentPosition : " + currentPosition);
             String currentPositionStr = millisecondsToString(currentPosition);
             currentHolder.textView_currentPosion.setText(currentPositionStr);
 
