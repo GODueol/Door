@@ -221,44 +221,26 @@ public class CoreWriteActivity extends AppCompatActivity {
         audioFab_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // 다이얼로그 녹음, 파일
 
-                recordSelectDialog = new RecordSelectDialog(CoreWriteActivity.this
-                        , new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        // 직접 녹음
-                        recordFilePath = Environment.getExternalStorageDirectory() + "/recorded_audio.wav";
-                        int color = getResources().getColor(R.color.white);
-                        int requestCode = 0;
-                        AndroidAudioRecorder.with(CoreWriteActivity.this)
-                                // Required
-                                .setFilePath(recordFilePath)
-                                .setColor(color)
-                                .setRequestCode(requestCode)
+                // 다이얼로그 녹음
+                recordFilePath = Environment.getExternalStorageDirectory() + "/recorded_audio.wav";
+                int color = getResources().getColor(R.color.white);
+                int requestCode = 0;
+                AndroidAudioRecorder.with(CoreWriteActivity.this)
+                        // Required
+                        .setFilePath(recordFilePath)
+                        .setColor(color)
+                        .setRequestCode(requestCode)
 
-                                // Optional
-                                .setSource(AudioSource.MIC)
-                                .setChannel(AudioChannel.STEREO)
-                                .setSampleRate(AudioSampleRate.HZ_48000)
-                                .setAutoStart(true)
-                                .setKeepDisplayOn(true)
+                        // Optional
+                        .setSource(AudioSource.MIC)
+                        .setChannel(AudioChannel.STEREO)
+                        .setSampleRate(AudioSampleRate.HZ_48000)
+                        .setAutoStart(true)
+                        .setKeepDisplayOn(true)
 
-                                // Start recording
-                                .record();
-
-                        recordSelectDialog.dismiss();
-                    }
-                }, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        // TODO : 음성 파일 가져오기
-                        recordSelectDialog.dismiss();
-                    }
-                }
-                );
-                recordSelectDialog.show();
-
+                        // Start recording
+                        .record();
             }
         });
 
