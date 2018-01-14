@@ -145,6 +145,7 @@ public class CoreWriteActivity extends AppCompatActivity {
         pictureFab_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 // 사진파일 가져오기 라이브러리 적용
                 Album.image(CoreWriteActivity.this) // Image selection.
                         .singleChoice()
@@ -177,7 +178,7 @@ public class CoreWriteActivity extends AppCompatActivity {
                         .start();
 
 //                loadPicture.onGallery();
-
+                pictureFab_layout.setClickable(false);
 
             }
         });
@@ -409,5 +410,11 @@ public class CoreWriteActivity extends AppCompatActivity {
                 postRef.child("soundUrl").setValue(taskSnapshot.getDownloadUrl().toString());
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        pictureFab_layout.setClickable(true);
     }
 }

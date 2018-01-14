@@ -281,6 +281,12 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
             public void onClick(View v) {
                 modifyingPic = (ImageView) v;
                 loadPicture.onGallery();
+
+                profilePic1.setClickable(false);
+                profilePic2.setClickable(false);
+                profilePic3.setClickable(false);
+                profilePic4.setClickable(false);
+
             }
         };
         profilePic1.setOnClickListener(onProfilePicClickListener);
@@ -810,4 +816,13 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        profilePic1.setClickable(true);
+        profilePic2.setClickable(true);
+        profilePic3.setClickable(true);
+        profilePic4.setClickable(true);
+
+    }
 }
