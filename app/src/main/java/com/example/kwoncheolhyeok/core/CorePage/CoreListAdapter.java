@@ -10,7 +10,6 @@ import android.media.MediaPlayer;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,7 +34,6 @@ import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
 import com.example.kwoncheolhyeok.core.Util.GlideApp;
 import com.example.kwoncheolhyeok.core.Util.UiUtil;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
@@ -123,29 +121,14 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
         holder.core_heart_btn.setOnLikeListener(new OnLikeListener() {
             @Override
             public void liked(LikeButton likeButton) {
-                postsRef
-                        .child(cUuid)
+                postsRef.child(cUuid)
                         .child(coreListItem.getPostKey())
-                        .child("likeUsers").child(mUuid).setValue(System.currentTimeMillis()).addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-
-                        Log.d("kbj", "cUuid: " + cUuid);
-                        Log.d("kbj", "coreListItem.getPostKey(): " + coreListItem.getPostKey());
-                        Log.d("kbj", "mUuid: " + mUuid);
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d("kbj", e.getMessage());
-                    }
-                });
+                        .child("likeUsers").child(mUuid).setValue(System.currentTimeMillis());
             }
 
             @Override
             public void unLiked(LikeButton likeButton) {
-                postsRef
-                        .child(cUuid)
+                postsRef.child(cUuid)
                         .child(coreListItem.getPostKey())
                         .child("likeUsers").child(mUuid).setValue(null);
             }
@@ -243,11 +226,23 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
         holder.replyBtnLayout.setVisibility(View.GONE);
         holder.core_img.setVisibility(View.VISIBLE);
 
-        if(corePost.getSoundUrl() != null)
+        // Sound
+        if(corePost.getSoundUrl() != null) {
             holder.core_media.setVisibility(View.VISIBLE);
-        else
-            holder.core_media.setVisibility(View.GONE);
 
+            // 미디어 플레이어를 수정했을 경우 초기화
+            if(mediaPlayer.getCurrentPosition() != 0) {
+                mediaPlayer.seekTo(0);
+                if (currentHolder.textView_maxTime != null) {
+                    currentHolder.textView_maxTime.setText("");
+                }
+            }
+
+        } else {
+            holder.core_media.setVisibility(View.GONE);
+        }
+
+        // Picture
         GlideApp.with(context /* context */)
                 .load(user.getPicUrls().getPicUrl1())
                 .placeholder(R.drawable.a)

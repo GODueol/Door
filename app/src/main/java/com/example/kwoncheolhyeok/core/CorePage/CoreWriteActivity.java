@@ -189,7 +189,6 @@ public class CoreWriteActivity extends AppCompatActivity {
                         .onResult(new Action<ArrayList<AlbumFile>>() {
                             @Override
                             public void onAction(int requestCode, @NonNull ArrayList<AlbumFile> result) {
-                                Log.d("kbj", result.toString());
                                 AlbumFile albumFile = result.get(0);
 
                                 editImageUri = Uri.fromFile(new File(albumFile.getPath()));
@@ -201,7 +200,6 @@ public class CoreWriteActivity extends AppCompatActivity {
                         .onCancel(new Action<String>() {
                             @Override
                             public void onAction(int requestCode, @NonNull String result) {
-                                Log.d("kbj", result);
                             }
                         })
                         .start();
