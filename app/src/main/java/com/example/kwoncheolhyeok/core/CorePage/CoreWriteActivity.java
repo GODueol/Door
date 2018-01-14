@@ -95,7 +95,7 @@ public class CoreWriteActivity extends AppCompatActivity {
     private TextView textMaxTime;
     private TextView textCurrentPosition;
     private ToggleButton startAndPause;
-    private SeekBar seekBar = (SeekBar) this.findViewById(R.id.seekBar);
+    private SeekBar seekBar;
     private Handler threadHandler = new Handler();
 
     private MediaPlayer mediaPlayer;
@@ -316,12 +316,13 @@ public class CoreWriteActivity extends AppCompatActivity {
 
 
         // set media player
-
         textCurrentPosition = findViewById(R.id.textView_currentPosion);
         textMaxTime= findViewById(R.id.textView_maxTime);
         startAndPause = findViewById(R.id.button_start_pause);
+        seekBar = findViewById(R.id.seekBar);
         seekBar.setClickable(false);
         seekBar.setEnabled(false);
+
         mediaPlayer = new MediaPlayer();
 
         startAndPause.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
