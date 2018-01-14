@@ -155,14 +155,14 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
         holder.rewind.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                doRewind();
+                doRewind(holder.getAdapterPosition());
             }
         });
 
         holder.fastForward.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                doFastForward();
+                doFastForward(holder.getAdapterPosition());
             }
         });
 
@@ -231,7 +231,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
             holder.core_media.setVisibility(View.VISIBLE);
 
             // 미디어 플레이어를 수정했을 경우 초기화
-            if(mediaPlayer.getCurrentPosition() != 0) {
+            if(!currentPlayUrl.equals(corePost.getSoundUrl())) {
                 mediaPlayer.seekTo(0);
                 if (currentHolder.textView_maxTime != null) {
                     currentHolder.textView_maxTime.setText("");
@@ -450,7 +450,6 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
         // Create a thread to update position of SeekBar.
         UpdateSeekBarThread updateSeekBarThread = new UpdateSeekBarThread();
         threadHandler.postDelayed(updateSeekBarThread,50);
-
     }
 
     // Thread to Update position for SeekBar.
@@ -487,7 +486,8 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
     }
 
     // When user click to "Rewind".
-    private void doRewind()  {
+    private void doRewind(int position)  {
+        if(position != currentSeekBarPosition) return;
         int currentPosition = this.mediaPlayer.getCurrentPosition();
         // 5 seconds.
         int SUBTRACT_TIME = 5000;
@@ -498,7 +498,8 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
     }
 
     // When user click to "Fast-Forward".
-    private void doFastForward()  {
+    private void doFastForward(int position)  {
+        if(position != currentSeekBarPosition) return;
         int currentPosition = this.mediaPlayer.getCurrentPosition();
         int duration = this.mediaPlayer.getDuration();
         // 5 seconds.
