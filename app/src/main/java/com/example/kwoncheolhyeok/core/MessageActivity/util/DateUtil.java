@@ -1,4 +1,4 @@
-package com.example.kwoncheolhyeok.core.MessageActivity.chat_message_view.util;
+package com.example.kwoncheolhyeok.core.MessageActivity.util;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

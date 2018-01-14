@@ -1,10 +1,9 @@
 package com.example.kwoncheolhyeok.core.Util;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.example.kwoncheolhyeok.core.Entity.User;
-import com.example.kwoncheolhyeok.core.MessageActivity.chat_message_view.util.RoomVO;
+import com.example.kwoncheolhyeok.core.MessageActivity.util.RoomVO;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;

@@ -1,12 +1,16 @@
 package com.example.kwoncheolhyeok.core.MessageActivity;
 
-import com.example.kwoncheolhyeok.core.MessageActivity.chat_message_view.util.MessageVO;
+import com.example.kwoncheolhyeok.core.MessageActivity.util.MessageVO;
 import com.example.kwoncheolhyeok.core.PeopleFragment.ImageAdapter;
 
 /**
  * Created by himanshusoni on 06/09/15.
  */
 public class ChatMessage {
+
+
+    private static final int MY_MESSAGE = 0, OTHER_MESSAGE = 1, MY_IMAGE = 2, OTHER_IMAGE = 3;
+
     private boolean isImage, isMine;
     private String content;
     private String profileImage;
@@ -33,6 +37,14 @@ public class ChatMessage {
         isImage = image;
         this.item = item;
         this.profileImage = item.getPicUrl();
+    }
+
+
+    public int getType() {
+        if (isMine() && !isImage()) return MY_MESSAGE;
+        else if (!isMine() && !isImage()) return OTHER_MESSAGE;
+        else if (isMine() && isImage()) return MY_IMAGE;
+        else return OTHER_IMAGE;
     }
 
     public String getContent() {

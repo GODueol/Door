@@ -1,4 +1,4 @@
-package com.example.kwoncheolhyeok.core.MessageActivity.chat_message_view.util;
+package com.example.kwoncheolhyeok.core.MessageActivity;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -9,8 +9,9 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
 import com.example.kwoncheolhyeok.core.Entity.User;
-import com.example.kwoncheolhyeok.core.MessageActivity.ChatMessage;
-import com.example.kwoncheolhyeok.core.MessageActivity.ChattingMessageAdapter;
+import com.example.kwoncheolhyeok.core.MessageActivity.util.CryptoImeageName;
+import com.example.kwoncheolhyeok.core.MessageActivity.util.MessageVO;
+import com.example.kwoncheolhyeok.core.MessageActivity.util.RoomVO;
 import com.example.kwoncheolhyeok.core.PeopleFragment.ImageAdapter;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
 import com.example.kwoncheolhyeok.core.Util.GPSInfo;
@@ -60,8 +61,10 @@ public class ChatFirebaseUtil {
     private boolean destroy = false;
     private ImageAdapter.Item item;
     private ChattingMessageAdapter chattingMessageAdapter;
+    private RecyclerView chattingRecyclerview;
     private List<String> childKeyList;
     private List<ChatMessage> chatMessageList;
+
     public ChatFirebaseUtil(Context context, User currentUser, User targetUser, String userUuid, String targetUuid) {
         databaseRef = FirebaseDatabase.getInstance().getReference();
         storage = FirebaseStorage.getInstance();
@@ -144,11 +147,11 @@ public class ChatFirebaseUtil {
         });
     }
 
-    public void setchatRoom(ChattingMessageAdapter mAdapter,List<ChatMessage> chatMessageList) {
+    public void setchatRoom(RecyclerView chattingRecyclerview, List<ChatMessage> chatMessageList) {
         final DatabaseReference chatRoomRef = FirebaseDatabase.getInstance().getReference(chatRoomList);
-        chattingMessageAdapter = mAdapter;
+        this.chattingRecyclerview = chattingRecyclerview;
+        chattingMessageAdapter = (ChattingMessageAdapter) chattingRecyclerview.getAdapter();
         this.chatMessageList = chatMessageList;
-
         // 채팅방 세팅
         chatRoomRef.child(userUuid).child(targetUuid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -206,6 +209,7 @@ public class ChatFirebaseUtil {
         });
     }
 
+    // 첫 채팅방 초기화
     ChildEventListener chatInitListener = new ChildEventListener() {
         public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
             childChatKey = dataSnapshot.getKey();
@@ -213,11 +217,11 @@ public class ChatFirebaseUtil {
 
             MessageVO message = dataSnapshot.getValue(MessageVO.class);
             // 상대방이 쓴 글은 읽음처리
-            if(!message.getWriter().equals(userUuid) && message.getCheck() == 1){
+            if (!message.getWriter().equals(userUuid) && message.getCheck() == 1) {
                 databaseRef.child(chat).child(roomName).child(childChatKey).child("check").setValue(0);
                 message.setCheck(0);
             }
-            initMessage(message, childChatKey,previousChildName);
+            initMessage(message, childChatKey, previousChildName);
         }
 
         @Override
@@ -240,14 +244,64 @@ public class ChatFirebaseUtil {
 
         }
     };
+    // 처음 메세지 읽음 처리
+    ValueEventListener checkChatListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(DataSnapshot ds) {
+            String key2 = ds.getKey();
+            MessageVO message = ds.getValue(MessageVO.class);
+            if (message != null && !message.getWriter().equals(userUuid)) {
+                databaseRef.child(chat).child(roomName).child(key2).child("check").setValue(0);
+            }
+        }
 
-    ChildEventListener chatAddListener = new ChildEventListener() {
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+        }
+    };
+    // 초기화 후에 메세지 로드
+    ChildEventListener chatAddtListener = new ChildEventListener() {
+        public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
+            childChatKey = dataSnapshot.getKey();
+            childKeyList.add(childChatKey);
+
+            MessageVO message = dataSnapshot.getValue(MessageVO.class);
+            // 상대방이 쓴 글은 읽음처리
+            if (!message.getWriter().equals(userUuid) && message.getCheck() == 1) {
+                databaseRef.child(chat).child(roomName).child(childChatKey).child("check").setValue(0);
+                message.setCheck(0);
+            }
+            addMessage(message, childChatKey, previousChildName);
+        }
+
+        @Override
+        public void onChildChanged(DataSnapshot dataSnapshot, String previousChildName) {
+            chattingMessageAdapter.clearCheck();
+        }
+
+        @Override
+        public void onChildRemoved(DataSnapshot dataSnapshot) {
+            destroy = true;
+        }
+
+        @Override
+        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+
+        }
+    };
+    // 채팅로그 로딩
+    ChildEventListener chatLoadListener = new ChildEventListener() {
 
         public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
             childChatKey = dataSnapshot.getKey();
             childKeyList.add(childChatKey);
             MessageVO message = dataSnapshot.getValue(MessageVO.class);
-            addMessage(message, childChatKey,previousChildName );
+            loadMessage(message, childChatKey, previousChildName);
         }
 
         @Override
@@ -267,30 +321,16 @@ public class ChatFirebaseUtil {
         }
     };
 
-    ValueEventListener checkChatListener = new ValueEventListener() {
-        @Override
-        public void onDataChange(DataSnapshot ds) {
-            String key2 = ds.getKey();
-            MessageVO message = ds.getValue(MessageVO.class);
-            if(message!=null && !message.getWriter().equals(userUuid)) {
-                databaseRef.child(chat).child(roomName).child(key2).child("check").setValue(0);
-            }
-        }
-        @Override
-        public void onCancelled(DatabaseError databaseError) {
-        }
-    };
-
     public Long getTime() {
         return System.currentTimeMillis();
     }
 
     public void deleteFirebaseRef() {
         chatDatabaseRef.removeEventListener(chatInitListener);
-        chatDatabaseRef.removeEventListener(chatAddListener);
+        chatDatabaseRef.removeEventListener(chatLoadListener);
     }
 
-    public void initMessage(MessageVO message, String key,String previousChildName) {
+    public void initMessage(MessageVO message, String key, String previousChildName) {
 
         ChatMessage chatMessage;
         int check = message.getCheck();
@@ -312,12 +352,42 @@ public class ChatFirebaseUtil {
             chatMessage = new ChatMessage(message, false, true, item);
         }
         chatMessageList.add(chatMessage);
-        if(previousChildName == null) {
+        if (previousChildName == null) {
             chattingMessageAdapter.notifyDataSetChanged();
+            chattingRecyclerview.smoothScrollToPosition(chattingMessageAdapter.getItemCount());
+            chatDatabaseRef.removeEventListener(chatInitListener);
+            chatDatabaseRef.addChildEventListener(chatAddtListener);
+
         }
     }
 
-    public void addMessage(MessageVO message, String key,String previousChildName) {
+    public void addMessage(MessageVO message, String key, String previousChildName) {
+
+        ChatMessage chatMessage;
+        int check = message.getCheck();
+
+        if (check != 0 && !message.getWriter().equals(userUuid)) {
+            message.setCheck(0);
+            databaseRef.child(chat).child(roomName).child(key).child("check").setValue(check - 1);
+        }
+
+        if (message.getWriter().equals(userUuid) && message.getImage() == null) {
+            chatMessage = new ChatMessage(message, true, false);
+        } else if (!message.getWriter().equals(userUuid) && message.getImage() == null) {
+            chatMessage = new ChatMessage(message, false, false, item);
+        } else if (message.getWriter().equals(userUuid) && message.getContent() == null) {
+            chattingMessageAdapter.setRequestListener();
+            chatMessage = new ChatMessage(message, true, true);
+        } else {
+            chattingMessageAdapter.setRequestListener();
+            chatMessage = new ChatMessage(message, false, true, item);
+        }
+        chatMessageList.add(chatMessage);
+        chattingMessageAdapter.notifyDataSetChanged();
+        chattingRecyclerview.smoothScrollToPosition(chattingMessageAdapter.getItemCount());
+    }
+
+    public void loadMessage(MessageVO message, String key, String previousChildName) {
 
         ChatMessage chatMessage;
         int check = message.getCheck();
@@ -337,9 +407,10 @@ public class ChatFirebaseUtil {
             chatMessage = new ChatMessage(message, false, true, item);
         }
         int size = childKeyList.size() - 1;
-        chatMessageList.add(size,chatMessage);
-        if(previousChildName == null) {
+        chatMessageList.add(size, chatMessage);
+        if (previousChildName == null) {
             chattingMessageAdapter.notifyDataSetChanged();
+            chattingRecyclerview.smoothScrollToPosition(0);
         }
         //chattingMessageAdapter.insert(chatMessage, size);
     }
@@ -355,7 +426,7 @@ public class ChatFirebaseUtil {
             chattingMessageAdapter.remove(ch);*/
             chatMessageList.remove(0);
             messageWeight *= 5;
-            chatDatabaseRef.orderByKey().endAt(lastChildChatKey).limitToLast(MessageCount * messageWeight).addChildEventListener(chatAddListener);
+            chatDatabaseRef.orderByKey().endAt(lastChildChatKey).limitToLast(MessageCount * messageWeight).addChildEventListener(chatLoadListener);
         }
     }
 

@@ -1,7 +1,6 @@
-package com.example.kwoncheolhyeok.core.MessageActivity.chat_message_view.util;
+package com.example.kwoncheolhyeok.core.MessageActivity;
 
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,11 +9,11 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
+import com.example.kwoncheolhyeok.core.MessageActivity.util.DateUtil;
+import com.example.kwoncheolhyeok.core.MessageActivity.util.RoomVO;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.GlideApp;
 
-import java.util.Date;
 import java.util.List;
 
 /**

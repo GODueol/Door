@@ -1,4 +1,4 @@
-package com.example.kwoncheolhyeok.core.MessageActivity.chat_message_view;
+package com.example.kwoncheolhyeok.core.MessageActivity.util;
 
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;

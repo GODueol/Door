@@ -39,7 +39,7 @@
     </LinearLayout>
 
 
-    <com.example.kwoncheolhyeok.core.MessageActivity.chat_message_view.ChatMessageView
+    <com.example.kwoncheolhyeok.core.MessageActivity.util.ChatMessageView
         android:id="@+id/chatMessageView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -58,7 +58,7 @@
             android:maxEms="20"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:textSize="15.5dp" />
-    </com.example.kwoncheolhyeok.core.MessageActivity.chat_message_view.ChatMessageView>
+    </com.example.kwoncheolhyeok.core.MessageActivity.util.ChatMessageView>
 
 </LinearLayout>
 </LinearLayout>

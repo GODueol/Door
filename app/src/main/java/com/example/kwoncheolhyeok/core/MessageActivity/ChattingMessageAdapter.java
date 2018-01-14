@@ -11,14 +11,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
-import com.example.kwoncheolhyeok.core.MessageActivity.chat_message_view.util.DateUtil;
+import com.example.kwoncheolhyeok.core.MessageActivity.util.DateUtil;
 import com.example.kwoncheolhyeok.core.PeopleFragment.FullImageActivity;
 import com.example.kwoncheolhyeok.core.PeopleFragment.ImageAdapter;
 import com.example.kwoncheolhyeok.core.R;
@@ -26,7 +25,6 @@ import com.example.kwoncheolhyeok.core.Util.GlideApp;
 
 import java.util.ArrayList;
 import java.util.List;
-
 
 
 /**
@@ -45,6 +43,7 @@ public class ChattingMessageAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     private Context context;
 
 
+
     public interface OnCallbackList {
         public void onEvent();
     }
@@ -58,17 +57,13 @@ public class ChattingMessageAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     @Override
     public int getItemViewType(int position) {
-        ChatMessage item = itemList.get(position);
-        if (item.isMine() && !item.isImage()) return MY_MESSAGE;
-        else if (!item.isMine() && !item.isImage()) return OTHER_MESSAGE;
-        else if (item.isMine() && item.isImage()) return MY_IMAGE;
-        else return OTHER_IMAGE;
+        ChatMessage message = itemList.get(position);
+        return message.getType();
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int position) {
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         int chatLayoutId = 0;
-        int viewType = getItemViewType(position);
         context = parent.getContext();
         View view;
         RecyclerView.ViewHolder viewHolder = null;
@@ -83,17 +78,17 @@ public class ChattingMessageAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             case OTHER_MESSAGE:
                 chatLayoutId = R.layout.chatting_item_other_message;
                 view = inflater.inflate(chatLayoutId, parent, false);
-                viewHolder = new ViewHolder_mine_message(view);
+                viewHolder = new ViewHolder_other_message(view);
                 break;
             case MY_IMAGE:
                 chatLayoutId = R.layout.chatting_item_mine_image;
                 view = inflater.inflate(chatLayoutId, parent, false);
-                viewHolder = new ViewHolder_mine_message(view);
+                viewHolder = new ViewHolder_mine_image(view);
                 break;
             case OTHER_IMAGE:
                 chatLayoutId = R.layout.chatting_item_other_image;
                 view = inflater.inflate(chatLayoutId, parent, false);
-                viewHolder = new ViewHolder_mine_message(view);
+                viewHolder = new ViewHolder_other_image(view);
                 break;
         }
         return viewHolder;
@@ -101,48 +96,51 @@ public class ChattingMessageAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
-        int viewType = getItemViewType(position);
-        ChatMessage chatMessage = itemList.get(position+1);
 
+        ChatMessage chatMessage = itemList.get(position);
+        int viewType = chatMessage.getType();
+
+        Log.d("test","viewType : " + Integer.toString(viewType)+"\ngetItemType : "+Integer.toString(viewHolder.getItemViewType()));
         String profileImage = chatMessage.getProfileImage();
         String content = chatMessage.getContent();
         String image = chatMessage.getImage();
         Long date = chatMessage.getTime();
         int check = chatMessage.getCheck();
-        ViewHolder_mine_message holder = (ViewHolder_mine_message) viewHolder;
+
         switch (viewType) {
             case MY_MESSAGE:
-
+                ViewHolder_mine_message holder0 = (ViewHolder_mine_message) viewHolder;
                 if (check != 0) {
-                    checkText.add(holder.checkTextView);
+                    checkText.add(holder0.checkTextView);
                 }
-                holder.contentTextView.setText(content);
-                holder.contentTextView.setOnLongClickListener(copyTextListener);
-                setDateUtil(holder.dateTextView, holder.checkTextView, date, check);
+                holder0.contentTextView.setText(content);
+                holder0.contentTextView.setOnLongClickListener(copyTextListener);
+                setDateUtil(holder0.dateTextView, holder0.checkTextView, date, check);
                 break;
             case OTHER_MESSAGE:
+                ViewHolder_other_message holder1 = (ViewHolder_other_message) viewHolder;
                 item = chatMessage.getItem();
-                holder.contentTextView.setText(content);
-                holder.contentTextView.setOnLongClickListener(copyTextListener);
-                setDateUtil(holder.dateTextView, holder.checkTextView, date, check);
-                setProfileImage(holder.profileImageView, profileImage);
-                holder.profileImageView.setOnClickListener(moveProfileListener);
+                holder1.contentTextView.setText(content);
+                holder1.contentTextView.setOnLongClickListener(copyTextListener);
+                setDateUtil(holder1.dateTextView, holder1.checkTextView, date, check);
+                setProfileImage(holder1.profileImageView, profileImage);
+                holder1.profileImageView.setOnClickListener(moveProfileListener);
                 break;
             case MY_IMAGE:
-
+                ViewHolder_mine_image holder2 = (ViewHolder_mine_image) viewHolder;
                 if (check != 0) {
-                    checkText.add(holder.checkTextView);
+                    checkText.add(holder2.checkTextView);
                 }
-                setImageMessage(holder.messageImageView, image);
-                setDateUtil(holder.dateTextView, holder.checkTextView, date, check);
+                setImageMessage(holder2.messageImageView, image);
+                setDateUtil(holder2.dateTextView, holder2.checkTextView, date, check);
                 break;
             case OTHER_IMAGE:
-
+                ViewHolder_other_image holder3 = (ViewHolder_other_image) viewHolder;
                 item = chatMessage.getItem();
-                setProfileImage(holder.profileImageView, profileImage);
-                setImageMessage(holder.messageImageView, image);
-                setDateUtil(holder.dateTextView, holder.checkTextView, date, check);
-                holder.profileImageView.setOnClickListener(moveProfileListener);
+                setProfileImage(holder3.profileImageView, profileImage);
+                setImageMessage(holder3.messageImageView, image);
+                setDateUtil(holder3.dateTextView, holder3.checkTextView, date, check);
+                holder3.profileImageView.setOnClickListener(moveProfileListener);
                 break;
         }
     }
@@ -189,7 +187,7 @@ public class ChattingMessageAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             messageImageView = (ImageView) itemView.findViewById(R.id.chatImage);
         }
     }
-/*
+
     public static class ViewHolder_other_message extends RecyclerView.ViewHolder {
 
         TextView contentTextView;
@@ -242,7 +240,7 @@ public class ChattingMessageAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             messageImageView = (ImageView) itemView.findViewById(R.id.chatImage);
         }
     }
-*/
+
     public void setProfileImage(ImageView imageView, String uri) {
         int width = imageView.getWidth();
         int height = imageView.getHeight();

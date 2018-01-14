@@ -1,4 +1,4 @@
-package com.example.kwoncheolhyeok.core.MessageActivity.chat_message_view.util;
+package com.example.kwoncheolhyeok.core.MessageActivity.util;
 
 /**
  * Created by godueol on 2017. 12. 23..

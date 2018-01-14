@@ -1,6 +1,7 @@
 package com.example.kwoncheolhyeok.core.MessageActivity;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -18,14 +19,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.AbsListView;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.example.kwoncheolhyeok.core.Entity.User;
-import com.example.kwoncheolhyeok.core.MessageActivity.chat_message_view.util.ChatFirebaseUtil;
-import com.example.kwoncheolhyeok.core.MessageActivity.chat_message_view.util.MessageVO;
+import com.example.kwoncheolhyeok.core.MessageActivity.util.MessageVO;
 import com.example.kwoncheolhyeok.core.PeopleFragment.FullImageActivity;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.Camera.LoadPicture;
@@ -89,6 +89,18 @@ public class ChattingActivity extends AppCompatActivity {
         chattingRecyclerview.setLayoutManager(linearLayoutManager);
         chattingRecyclerview.addOnScrollListener(detectTopPosition);
         chattingRecyclerview.setOnTouchListener(new View.OnTouchListener() {
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+
+                return false;
+            }
+        });
+
+        chattingRecyclerview.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 chattingMessageAdapter.deletRequestListener();
@@ -104,7 +116,7 @@ public class ChattingActivity extends AppCompatActivity {
         userUuid = mAuth.getUid();
 
         chatFirebaseUtil = new ChatFirebaseUtil(this, user, targetUser, userUuid, targetUuid);
-        chatFirebaseUtil.setchatRoom(chattingMessageAdapter,chatListItem);
+        chatFirebaseUtil.setchatRoom(chattingRecyclerview,chatListItem);
 
         // 메세지 보내기
         mButtonSend.setOnClickListener(new View.OnClickListener() {
@@ -244,12 +256,14 @@ public class ChattingActivity extends AppCompatActivity {
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
             super.onScrolled(recyclerView, dx, dy);
             if (recyclerView.computeVerticalScrollOffset() == 0) {
-                //chatFirebaseUtil.addChatLog();
+                Toast.makeText(getApplicationContext(),"탑이다",-1).show();
+                chatFirebaseUtil.addChatLog();
             } else {
                 // isn't top of scroll.
             }
         }
     };
+
 
 }
 

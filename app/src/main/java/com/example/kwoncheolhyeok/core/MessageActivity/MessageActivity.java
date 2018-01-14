@@ -11,8 +11,7 @@ import android.util.Log;
 import android.view.View;
 
 import com.example.kwoncheolhyeok.core.Entity.User;
-import com.example.kwoncheolhyeok.core.MessageActivity.chat_message_view.util.RoomVO;
-import com.example.kwoncheolhyeok.core.MessageActivity.chat_message_view.util.messageRecyclerAdapter;
+import com.example.kwoncheolhyeok.core.MessageActivity.util.RoomVO;
 import com.example.kwoncheolhyeok.core.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -56,7 +55,7 @@ public class MessageActivity extends AppCompatActivity {
         userId = mAuth.getUid();
         listrowItem = new ArrayList<RoomVO>();
         // preparing list data
-        com.example.kwoncheolhyeok.core.MessageActivity.chat_message_view.util.messageRecyclerAdapter.RecyclerViewClickListener listener = new messageRecyclerAdapter.RecyclerViewClickListener() {
+        com.example.kwoncheolhyeok.core.MessageActivity.messageRecyclerAdapter.RecyclerViewClickListener listener = new messageRecyclerAdapter.RecyclerViewClickListener() {
             @Override
             public void onClick(View view, int position) {
                 final RoomVO item = messageRecyclerAdapter.getItemRoomVO(position);

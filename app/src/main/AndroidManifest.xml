@@ -114,7 +114,6 @@
         <activity
             android:name=".MessageActivity.ChattingActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden"
             tools:ignore="InnerclassSeparator"></activity>
         <activity
             android:name=".CorePage.CoreWriteActivity"

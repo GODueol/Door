@@ -1,4 +1,4 @@
-package com.example.kwoncheolhyeok.core.MessageActivity.chat_message_view;
+package com.example.kwoncheolhyeok.core.MessageActivity.util;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -6,9 +6,7 @@ import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.Matrix;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.ColorInt;
 import android.support.annotation.ColorRes;
@@ -17,9 +15,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
-import com.example.kwoncheolhyeok.core.MessageActivity.chat_message_view.util.ViewUtil;
 import com.example.kwoncheolhyeok.core.R;
 
 
