@@ -75,7 +75,7 @@ public class CoreWriteActivity extends AppCompatActivity {
     private static final int REQUEST_RECORD = 0;
 
     ImageView editImage;
-    ImageButton saveBtn, image_x_btn;
+    ImageButton saveBtn, image_x_btn, sound_x_btn;
     private String mUuid;
 
     TextView textContents;
@@ -135,6 +135,12 @@ public class CoreWriteActivity extends AppCompatActivity {
         edit_audio_layout = findViewById(R.id.edit_audio_layout);
         image_x_btn = findViewById(R.id.image_x_btn);
         image_edit_layout = findViewById(R.id.image_edit_layout);
+
+        textCurrentPosition = findViewById(R.id.textView_currentPosion);
+        textMaxTime= findViewById(R.id.textView_maxTime);
+        startAndPause = findViewById(R.id.button_start_pause);
+        seekBar = findViewById(R.id.seekBar);
+        sound_x_btn = findViewById(R.id.sound_x_btn);
 
         // 본인, 타인 구분
         if (!cUuid.equals(mUuid)) {    // 타인
@@ -316,10 +322,7 @@ public class CoreWriteActivity extends AppCompatActivity {
 
 
         // set media player
-        textCurrentPosition = findViewById(R.id.textView_currentPosion);
-        textMaxTime= findViewById(R.id.textView_maxTime);
-        startAndPause = findViewById(R.id.button_start_pause);
-        seekBar = findViewById(R.id.seekBar);
+
         seekBar.setClickable(false);
         seekBar.setEnabled(false);
 
@@ -333,6 +336,15 @@ public class CoreWriteActivity extends AppCompatActivity {
                 } else {
                     doPause();
                 }
+            }
+        });
+
+        sound_x_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // 음성 삭제
+                edit_audio_layout.setVisibility(View.GONE);
+                soundUri = null;
             }
         });
 
@@ -362,7 +374,10 @@ public class CoreWriteActivity extends AppCompatActivity {
         }
 
         // sound
-        if(soundUri != null){
+        if(corePost.getSoundUrl() != null && edit_audio_layout.getVisibility() == View.GONE) {
+            // deleteSound
+            deleteSound();
+        } else if(soundUri != null){
             uploadSound();
         }
 
@@ -511,7 +526,17 @@ public class CoreWriteActivity extends AppCompatActivity {
                 postRef.child("soundUrl").setValue(taskSnapshot.getDownloadUrl().toString());
             }
         });
-//        uploadTask.addOnSuccessListener();
+    }
+
+    private void deleteSound(){
+        final StorageReference spaceRef = storageRef.child("posts").child(cUuid).child(postKey).child("sound");
+        Task task = spaceRef.delete();
+        tasks.put(task, new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                postRef.child("soundUrl").setValue(null);
+            }
+        });
     }
 
     @Override
