@@ -10,6 +10,7 @@ import android.media.MediaPlayer;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,8 +35,10 @@ import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
 import com.example.kwoncheolhyeok.core.Util.GlideApp;
 import com.example.kwoncheolhyeok.core.Util.UiUtil;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -53,6 +56,7 @@ import java.util.concurrent.TimeUnit;
 
 public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePostHolder> {
 
+    private final DatabaseReference postsRef;
     private List<CoreListItem> coreListItems;
     private Context context;
     private String cUuid;
@@ -64,6 +68,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
     private int currentSeekBarPosition;
 
     private String currentPlayUrl = "";
+    
 
 
     CoreListAdapter(List<CoreListItem> coreListItems, Context context, String cUuid) {
@@ -72,6 +77,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
         this.cUuid = cUuid;
         this.mediaPlayer=  new MediaPlayer();
         currentHolder = new CorePostHolder(new View(context));
+        postsRef = FirebaseDatabase.getInstance().getReference().child("posts");
     }
 
     @Override
@@ -117,15 +123,28 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
         holder.core_heart_btn.setOnLikeListener(new OnLikeListener() {
             @Override
             public void liked(LikeButton likeButton) {
-                FirebaseDatabase.getInstance().getReference().child("coreListItems")
+                postsRef
                         .child(cUuid)
                         .child(coreListItem.getPostKey())
-                        .child("likeUsers").child(mUuid).setValue(System.currentTimeMillis());
+                        .child("likeUsers").child(mUuid).setValue(System.currentTimeMillis()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+
+                        Log.d("kbj", "cUuid: " + cUuid);
+                        Log.d("kbj", "coreListItem.getPostKey(): " + coreListItem.getPostKey());
+                        Log.d("kbj", "mUuid: " + mUuid);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d("kbj", e.getMessage());
+                    }
+                });
             }
 
             @Override
             public void unLiked(LikeButton likeButton) {
-                FirebaseDatabase.getInstance().getReference().child("coreListItems")
+                postsRef
                         .child(cUuid)
                         .child(coreListItem.getPostKey())
                         .child("likeUsers").child(mUuid).setValue(null);
@@ -276,7 +295,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
 
-                        FirebaseDatabase.getInstance().getReference().child("coreListItems").child(cUuid).child(coreListItem.getPostKey())
+                        postsRef.child(cUuid).child(coreListItem.getPostKey())
                                 .removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
@@ -285,7 +304,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                                 FireBaseUtil.getInstance().syncCorePostCount(cUuid);
 
                                 // Storage Delete
-                                StorageReference postStorageRef = FirebaseStorage.getInstance().getReference().child("coreListItems").child(cUuid).child(coreListItem.getPostKey());
+                                StorageReference postStorageRef = FirebaseStorage.getInstance().getReference().child("posts").child(cUuid).child(coreListItem.getPostKey());
                                 if(coreListItem.getCorePost().getSoundUrl() != null)
                                     deleteTasks.add(postStorageRef.child("sound").delete());
                                 if(coreListItem.getCorePost().getPictureUrl() != null)
@@ -324,11 +343,11 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    FirebaseDatabase.getInstance().getReference().child("coreListItems").child(cUuid).child(coreListItem.getPostKey())
+                    postsRef.child(cUuid).child(coreListItem.getPostKey())
                             .child("reply").setValue(value);
                 }
                 else {
-                    FirebaseDatabase.getInstance().getReference().child("coreListItems").child(cUuid).child(coreListItem.getPostKey())
+                    postsRef.child(cUuid).child(coreListItem.getPostKey())
                             .child("reply").setValue(null);
                 }
             }

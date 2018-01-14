@@ -276,19 +276,6 @@ public class MainActivity extends AppCompatActivity
             return true;
         }
 
-//        if (id == R.id.find_text) {
-//            return true;
-//        }
-//
-//        if (id == R.id.club_create) {
-//            return true;
-//        } else if (id == R.id.club_filter) {
-////            Intent i = new Intent(MainActivity.this, Club_Filter_Activity.class);
-////            startActivityForResult(i, 0);
-//            return true;
-//        }
-
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -296,15 +283,9 @@ public class MainActivity extends AppCompatActivity
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.clear();
         switch (viewPager.getCurrentItem()) {
-//            case 0:
-//                getMenuInflater().inflate(R.menu.chat_menu, menu);
-//                break;
             case 0:
                 getMenuInflater().inflate(R.menu.main_acitivity_menu, menu);
                 break;
-//            case 2:
-//                getMenuInflater().inflate(R.menu.club_menu, menu);
-//                break;
             default:
                 break;
         }
