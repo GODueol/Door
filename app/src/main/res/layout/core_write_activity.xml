@@ -97,7 +97,7 @@
                 android:id="@+id/edit_txt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/edit_audio"
+                android:layout_below="@+id/edit_audio_layout"
                 android:layout_marginBottom="8dp"
                 android:layout_marginTop="8dp"
                 android:background="@android:color/transparent"
@@ -105,16 +105,103 @@
                 android:lineSpacingExtra="8dip"
                 android:theme="@style/EditText.Color.Black" />
 
-            <TextView
-                android:id="@+id/edit_audio"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <RelativeLayout
+                android:id="@+id/edit_audio_layout"
                 android:layout_below="@+id/image_edit_layout"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="8dp"
-                android:text="미디어 플레이어가 있을 자리"
-                android:textColor="@color/gray40" />
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone">
 
+                <RelativeLayout
+                    android:id="@+id/layout1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <SeekBar
+                        android:id="@+id/seekBar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:progressTint="@color/skyblue"
+                        android:thumbTint="@color/skyblue" />
+
+                    <LinearLayout
+                        android:id="@+id/time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_below="@+id/seekBar"
+                        android:layout_marginRight="10dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/textView_currentPosion"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="5dp"
+                            android:gravity="right"
+                            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+
+                        <TextView
+                            android:id="@+id/textView_maxTime"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="right"
+                            android:textAppearance="?android:attr/textAppearanceSmall" />
+                    </LinearLayout>
+
+
+                </RelativeLayout>
+
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/layout1"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal"
+                    android:weightSum="4">
+
+
+                    <ImageButton
+                        android:id="@+id/button_rewind"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="23dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/ic_fast_rewind_black_24dp"
+                        android:onClick="doRewind" />
+
+                    <ToggleButton
+                        android:id="@+id/button_start_pause"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginRight="23dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/btn_start_pause_selector"
+                        android:textOff=""
+                        android:textOn=""
+
+                        />
+
+                    <ImageButton
+                        android:id="@+id/button_fastForward"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:layout_weight="1"
+                        android:background="@drawable/ic_fast_forward_black_24dp"
+                        android:onClick="doFastForward" />
+
+                </LinearLayout>
+
+            </RelativeLayout>
 
         </RelativeLayout>
 

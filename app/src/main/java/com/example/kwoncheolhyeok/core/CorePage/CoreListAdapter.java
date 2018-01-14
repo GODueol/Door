@@ -10,7 +10,6 @@ import android.media.MediaPlayer;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -106,7 +105,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
             setPostMenu(holder, coreListItem, R.menu.core_post_master_menu);
 
         } else {
-            holder.core_setting.setVisibility(View.INVISIBLE);
+            holder.core_setting.setVisibility(View.GONE);
         }
 
         holder.core_date.setText(DataContainer.getInstance().convertBeforeFormat(corePost.getWriteDate()));
@@ -165,6 +164,8 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
             }
         });
 
+        holder.seekBar.setClickable(false);
+        holder.seekBar.setEnabled(false);
     }
 
     private void resetCurrentHolder(CorePostHolder holder) {
@@ -449,7 +450,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
             if(context == null || currentHolder.textView_currentPosion.getText().equals(currentHolder.textView_maxTime.getText())){
                 // 사운드 재생 끝
                 currentHolder.startAndPause.setChecked(false);  // 버튼 Stop
-//                coreListItems.get(currentSeekBarPosition).setCurrentPlayPosition(0);    // CurrentPlayPosition 초기화
+                currentHolder.textView_currentPosion.setText("0:0");
                 currentHolder.seekBar.setProgress(0);   // SeekBar Init
                 return;
             }

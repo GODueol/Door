@@ -116,6 +116,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
+                android:clickable="false"
                 android:progressTint="@color/skyblue"
                 android:thumbTint="@color/skyblue" />
 

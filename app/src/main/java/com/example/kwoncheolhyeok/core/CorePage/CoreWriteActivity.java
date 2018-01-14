@@ -3,20 +3,26 @@ package com.example.kwoncheolhyeok.core.CorePage;
 import android.animation.Animator;
 import android.app.Activity;
 import android.content.Intent;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.bumptech.glide.Glide;
 import com.example.kwoncheolhyeok.core.Entity.CorePost;
@@ -41,8 +47,10 @@ import com.yanzhenjie.album.Album;
 import com.yanzhenjie.album.AlbumFile;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 import cafe.adriel.androidaudiorecorder.AndroidAudioRecorder;
 import cafe.adriel.androidaudiorecorder.model.AudioChannel;
@@ -82,6 +90,16 @@ public class CoreWriteActivity extends AppCompatActivity {
     private Uri soundUri;
     private StorageReference storageRef;
     private CorePost corePost;
+    private RelativeLayout edit_audio_layout;
+
+    private TextView textMaxTime;
+    private TextView textCurrentPosition;
+    private ToggleButton startAndPause;
+    private SeekBar seekBar = (SeekBar) this.findViewById(R.id.seekBar);
+    private Handler threadHandler = new Handler();
+
+    private MediaPlayer mediaPlayer;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -114,7 +132,7 @@ public class CoreWriteActivity extends AppCompatActivity {
         editImage = findViewById(R.id.edit_img);
         saveBtn = findViewById(R.id.save);
         textContents = findViewById(R.id.edit_txt);
-        TextView editAudio = findViewById(R.id.edit_audio);
+        edit_audio_layout = findViewById(R.id.edit_audio_layout);
         image_x_btn = findViewById(R.id.image_x_btn);
         image_edit_layout = findViewById(R.id.image_edit_layout);
 
@@ -122,7 +140,7 @@ public class CoreWriteActivity extends AppCompatActivity {
         if (!cUuid.equals(mUuid)) {    // 타인
             fab.setVisibility(View.GONE);
             editImage.setVisibility(View.GONE);
-            editAudio.setVisibility(View.GONE);
+            edit_audio_layout.setVisibility(View.GONE);
             textContents.setHint("질문해주세요 익명입니다");
         }
 
@@ -262,7 +280,21 @@ public class CoreWriteActivity extends AppCompatActivity {
                         Glide.with(CoreWriteActivity.this).load(corePost.getPictureUrl()).into(editImage);
                         image_edit_layout.setVisibility(View.VISIBLE);
                     } else {
-                        image_edit_layout.setVisibility(View.INVISIBLE);
+                        image_edit_layout.setVisibility(View.GONE);
+                    }
+
+                    if(corePost.getSoundUrl() != null){
+                        mediaPlayer.reset();
+                        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                        try {
+                            mediaPlayer.setDataSource(corePost.getSoundUrl());
+                            mediaPlayer.prepare(); // 필연적으로 지연됨 (버퍼채움)
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        edit_audio_layout.setVisibility(View.VISIBLE);
+                    } else {
+                        edit_audio_layout.setVisibility(View.GONE);
                     }
                 }
 
@@ -277,8 +309,29 @@ public class CoreWriteActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // 사진 삭제
-                image_edit_layout.setVisibility(View.INVISIBLE);
+                image_edit_layout.setVisibility(View.GONE);
                 editImageUri = null;
+            }
+        });
+
+
+        // set media player
+
+        textCurrentPosition = findViewById(R.id.textView_currentPosion);
+        textMaxTime= findViewById(R.id.textView_maxTime);
+        startAndPause = findViewById(R.id.button_start_pause);
+        seekBar.setClickable(false);
+        seekBar.setEnabled(false);
+        mediaPlayer = new MediaPlayer();
+
+        startAndPause.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(b){
+                    doStart();
+                } else {
+                    doPause();
+                }
             }
         });
 
@@ -300,7 +353,7 @@ public class CoreWriteActivity extends AppCompatActivity {
         });
 
         // image
-        if(corePost.getPictureUrl() != null && image_edit_layout.getVisibility() == View.INVISIBLE) {
+        if(corePost.getPictureUrl() != null && image_edit_layout.getVisibility() == View.GONE) {
             // deletePicture
             deletePicture();
         } else if(editImageUri != null){
@@ -406,6 +459,18 @@ public class CoreWriteActivity extends AppCompatActivity {
                 // Great! User has recorded and saved the audio file
                 // 파일 저장
                 soundUri = Uri.fromFile(new File(recordFilePath));
+
+                // mediaPlayer Set
+                this.mediaPlayer.reset();
+                this.mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                try {
+                    this.mediaPlayer.setDataSource(CoreWriteActivity.this, soundUri);
+                    this.mediaPlayer.prepare(); // 필연적으로 지연됨 (버퍼채움)
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                edit_audio_layout.setVisibility(View.VISIBLE);
+
                 closeFABMenu();
             }
         }
@@ -450,5 +515,89 @@ public class CoreWriteActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         pictureFab_layout.setClickable(true);
+    }
+
+    // Convert millisecond to string.
+    private String millisecondsToString(int milliseconds)  {
+        long minutes = TimeUnit.MILLISECONDS.toMinutes((long) milliseconds);
+        long seconds =  TimeUnit.MILLISECONDS.toSeconds((long) milliseconds) ;
+        return minutes+":"+ seconds;
+    }
+
+
+    public void doStart()  {
+        // The duration in milliseconds
+        int duration = this.mediaPlayer.getDuration();
+
+        int currentPosition = this.mediaPlayer.getCurrentPosition();
+
+        if(currentPosition== 0)  {
+            this.seekBar.setMax(duration);
+            String maxTimeString = this.millisecondsToString(duration);
+            this.textMaxTime.setText(maxTimeString);
+        }
+
+        this.mediaPlayer.start();
+        // Create a thread to update position of SeekBar.
+        UpdateSeekBarThread updateSeekBarThread= new UpdateSeekBarThread();
+        threadHandler.postDelayed(updateSeekBarThread,50);
+
+    }
+
+    // Thread to Update position for SeekBar.
+    class UpdateSeekBarThread implements Runnable {
+
+        public void run()  {
+            int currentPosition = mediaPlayer.getCurrentPosition();
+            String currentPositionStr = millisecondsToString(currentPosition);
+            textCurrentPosition.setText(currentPositionStr);
+
+            if(CoreWriteActivity.this == null || textCurrentPosition.getText().equals(textMaxTime.getText())){
+                // 사운드 재생 끝
+                startAndPause.setChecked(false);  // 버튼 Stop
+                textCurrentPosition.setText("0:0");
+                seekBar.setProgress(0);   // SeekBar Init
+                mediaPlayer.seekTo(0);
+                return;
+            }
+
+            seekBar.setProgress(currentPosition);
+            // Delay thread 50 milisecond.
+            threadHandler.postDelayed(this, 50);
+        }
+    }
+
+    // When user click to "Pause".
+    public void doPause()  {
+        this.mediaPlayer.pause();
+    }
+
+    // When user click to "Rewind".
+    public void doRewind(View view)  {
+        int currentPosition = this.mediaPlayer.getCurrentPosition();
+        // 5 seconds.
+        int SUBTRACT_TIME = 5000;
+
+        if(currentPosition - SUBTRACT_TIME > 0 )  {
+            this.mediaPlayer.seekTo(currentPosition - SUBTRACT_TIME);
+        }
+    }
+
+    // When user click to "Fast-Forward".
+    public void doFastForward(View view)  {
+        int currentPosition = this.mediaPlayer.getCurrentPosition();
+        int duration = this.mediaPlayer.getDuration();
+        // 5 seconds.
+        int ADD_TIME = 5000;
+
+        if(currentPosition + ADD_TIME < duration)  {
+            this.mediaPlayer.seekTo(currentPosition + ADD_TIME);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        startAndPause.setChecked(false);
     }
 }
