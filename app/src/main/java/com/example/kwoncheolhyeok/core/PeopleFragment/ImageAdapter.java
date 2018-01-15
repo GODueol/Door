@@ -2,7 +2,6 @@ package com.example.kwoncheolhyeok.core.PeopleFragment;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,38 +17,27 @@ import com.example.kwoncheolhyeok.core.Util.IndexedTreeSet;
 
 import java.io.Serializable;
 import java.util.Comparator;
+import java.util.HashMap;
 
 public class ImageAdapter extends BaseAdapter {
 
-    private IndexedTreeSet<Item, String> mItems = new IndexedTreeSet<>(new Comparator<Item>() {
+    private IndexedTreeSet<Item> mItems = new IndexedTreeSet<>(new Comparator<Item>() {
         @Override
         public int compare(Item item1, Item item2) {
             if(item1.getUuid().equals(item2.getUuid())) return 0;
             if(item2.getUuid().equals(DataContainer.getInstance().getUid())) return 1;   // 1. 본인계정
             if(item1.getUuid().equals(DataContainer.getInstance().getUid())) return -1;   // 1. 본인계정
             if(item1.distance != item2.distance) return (int) (item1.distance - item2.distance);    // 2. 거리
-            return 1;
+            return item1.getUuid().compareTo(item2.getUuid());
         }
     });
+
+    private HashMap<String, Item> itemHashMap = new HashMap<>();
 
     private final LayoutInflater mInflater;
 
     ImageAdapter(Context context) {
         mInflater = LayoutInflater.from(context);
-    }
-
-    void addItem(Item item){
-        mItems.add(item);
-    }
-
-    Item getItem(String uuid){
-        Item item = mItems.get(uuid);
-        if(item == null) return null;
-        return item;
-    }
-
-    boolean removeItem(String uuid){
-        return mItems.remove(new Item(0,uuid,null,null));
     }
 
     @Override
@@ -110,8 +98,31 @@ public class ImageAdapter extends BaseAdapter {
         return v;
     }
 
+    void addItem(Item item){
+        if(itemHashMap.containsKey(item.getUuid())){
+            mItems.remove(itemHashMap.get(item.getUuid()));
+        }
+        mItems.add(item);
+        itemHashMap.put(item.getUuid(), item);
+    }
+
+    Item getItem(String uuid){
+        return itemHashMap.get(uuid);
+
+//        Item item = mItems.get(uuid);
+//        if(item == null) return null;
+//        return item;
+    }
+
+    void remove(String uuid){
+        mItems.remove(itemHashMap.get(uuid));
+        itemHashMap.remove(uuid);
+//        return mItems.remove(new Item(0,uuid,null,null));
+    }
+
     void clear() {
         mItems.clear();
+        itemHashMap.clear();
         notifyDataSetChanged();
     }
 
@@ -125,14 +136,6 @@ public class ImageAdapter extends BaseAdapter {
         @Override
         public int hashCode() {
             return getUuid().hashCode();
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if(!(obj instanceof Item)) return false;
-            Item item = (Item) obj;
-            if(uuid == item.uuid) return true;
-            else return false;
         }
 
         public Item(float distance, String uuid, User user, String picUrl) {

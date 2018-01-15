@@ -78,6 +78,7 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
             @Override
             public void onRefresh() {
                 // 위치 새로고침
+                imageAdapter.clear();
                 refreshGrid(null);
 
                 mSwipeRefreshLayout.setRefreshing(false);
@@ -104,8 +105,8 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
     @Subscribe
     public void refreshGrid(RefreshLocationEvent pushEvent) {
         // 데이터 비움
-        imageAdapter.clear();
-        imageAdapter.notifyDataSetChanged();
+//        imageAdapter.clear();
+//        imageAdapter.notifyDataSetChanged();
 
         // 현재 자신의 위치를 가져옴
         saveMyGPS();
@@ -165,7 +166,7 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
             public void onKeyExited(String key) {
                 System.out.println(String.format("Key %s is no longer in the search area", key));
                 // 아이템 삭제
-                imageAdapter.removeItem(key);
+                imageAdapter.remove(key);
                 imageAdapter.notifyDataSetChanged();
             }
 
@@ -179,6 +180,7 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
                 targetLocation.setLongitude(geoLocation.longitude);
                 ImageAdapter.Item item = imageAdapter.getItem(key);
                 if(item == null) return;
+                imageAdapter.remove(key);
                 item.setDistance(location.distanceTo(targetLocation));
                 imageAdapter.addItem(item);
                 imageAdapter.notifyDataSetChanged();
