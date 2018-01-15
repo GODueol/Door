@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity
 
         setContentView(R.layout.activity_main);
 
-        ScreenshotSetApplication.getInstance().allowUserSaveScreenshot(true);
+//        ScreenshotSetApplication.getInstance().allowUserSaveScreenshot(true);
 
         // (Main View)네비게이션바 관련
         drawer = findViewById(R.id.drawer_layout);
@@ -384,13 +384,13 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onResume() {
         super.onResume();
-        ScreenshotSetApplication.getInstance().registerScreenshotObserver();
+//        ScreenshotSetApplication.getInstance().registerScreenshotObserver();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        ScreenshotSetApplication.getInstance().unregisterScreenshotObserver();
+//        ScreenshotSetApplication.getInstance().unregisterScreenshotObserver();
     }
 }
 

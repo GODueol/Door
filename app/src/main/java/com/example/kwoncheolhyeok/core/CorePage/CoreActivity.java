@@ -46,7 +46,7 @@ public class CoreActivity extends AppCompatActivity {
         final String cUuid = intent.getStringExtra("uuid");
 
         //스크린샷 방지
-        ScreenshotSetApplication.getInstance().allowUserSaveScreenshot(false);
+//        ScreenshotSetApplication.getInstance().allowUserSaveScreenshot(false);
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -178,13 +178,13 @@ public class CoreActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        ScreenshotSetApplication.getInstance().registerScreenshotObserver();
+//        ScreenshotSetApplication.getInstance().registerScreenshotObserver();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        ScreenshotSetApplication.getInstance().unregisterScreenshotObserver();
+//        ScreenshotSetApplication.getInstance().unregisterScreenshotObserver();
         coreListAdapter.clickPause();
     }
 

@@ -98,7 +98,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         super.onCreate(savedInstanceState);
         setContentView(R.layout.full_image_activity_main);
 
-        ScreenshotSetApplication.getInstance().allowUserSaveScreenshot(true);
+//        ScreenshotSetApplication.getInstance().allowUserSaveScreenshot(true);
 
         ButterKnife.bind(this);
 
@@ -480,13 +480,13 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
     @Override
     public void onResume() {
         super.onResume();
-        ScreenshotSetApplication.getInstance().registerScreenshotObserver();
+//        ScreenshotSetApplication.getInstance().registerScreenshotObserver();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        ScreenshotSetApplication.getInstance().unregisterScreenshotObserver();
+//        ScreenshotSetApplication.getInstance().unregisterScreenshotObserver();
     }
 
 }

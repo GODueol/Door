@@ -2,6 +2,7 @@ package com.example.kwoncheolhyeok.core.PeopleFragment;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -92,7 +93,6 @@ public class ImageAdapter extends BaseAdapter {
 
         // 거리 출력
         holder.textView.setText(item.getUser().getCorePostCount()+ " CORE" );
-//        holder.textView.setText(String.format("%.1fkm", item.distance/1000));
         holder.textView.setTextSize((float) 15.5);
 
         return v;
@@ -100,24 +100,34 @@ public class ImageAdapter extends BaseAdapter {
 
     void addItem(Item item){
         if(itemHashMap.containsKey(item.getUuid())){
-            mItems.remove(itemHashMap.get(item.getUuid()));
+            if(!mItems.remove(itemHashMap.get(item.getUuid()))){
+                Log.d("kbj", "addItem fail, item.getDistance() : " + item.getDistance());
+                Log.d("kbj", "addItem fail, itemHashMap.get(item.getUuid()).getDistance() : " + itemHashMap.get(item.getUuid()).getDistance());
+                Log.d("kbj", "addItem fail, mItems.get(item.getUuid()).getDistance() : " + mItems.get(item.getUuid()).getDistance());
+
+                return;
+            }
         }
-        mItems.add(item);
+        if(!mItems.add(item)){
+
+        }
         itemHashMap.put(item.getUuid(), item);
+        if(mItems.size() != itemHashMap.size()){
+            Log.d("kbj", "size : " + mItems.size() + "," + itemHashMap.size());
+        }
     }
 
     Item getItem(String uuid){
         return itemHashMap.get(uuid);
-
-//        Item item = mItems.get(uuid);
-//        if(item == null) return null;
-//        return item;
     }
 
-    void remove(String uuid){
-        mItems.remove(itemHashMap.get(uuid));
-        itemHashMap.remove(uuid);
-//        return mItems.remove(new Item(0,uuid,null,null));
+    boolean remove(String uuid){
+        if(mItems.remove(itemHashMap.get(uuid))) {
+            itemHashMap.remove(uuid);
+            return true;
+        }
+        Log.d("kbj", "remove fail : " + uuid);
+        return false;
     }
 
     void clear() {

@@ -25,7 +25,7 @@ public class DetailImageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.full_image_4_activity);
 
-        ScreenshotSetApplication.getInstance().allowUserSaveScreenshot(true);
+//        ScreenshotSetApplication.getInstance().allowUserSaveScreenshot(true);
 
         Intent intent = getIntent();
         picUrlList = intent.getStringArrayListExtra("picUrlList");
@@ -45,12 +45,12 @@ public class DetailImageActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        ScreenshotSetApplication.getInstance().registerScreenshotObserver();
+//        ScreenshotSetApplication.getInstance().registerScreenshotObserver();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        ScreenshotSetApplication.getInstance().unregisterScreenshotObserver();
+//        ScreenshotSetApplication.getInstance().unregisterScreenshotObserver();
     }
 }
