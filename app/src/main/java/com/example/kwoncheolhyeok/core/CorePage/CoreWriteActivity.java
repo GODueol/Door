@@ -376,10 +376,9 @@ public class CoreWriteActivity extends AppCompatActivity {
                 public void onComplete(@NonNull Task taskRtn) {
                     for (Task task : tasks.keySet())
                         if (!task.isComplete()) return;
-                    UiUtil.getInstance().stopProgressDialog();  // 프로그레스바 중단
-
                     setResult(Activity.RESULT_OK);
                     finish();
+                    UiUtil.getInstance().stopProgressDialog();  // 프로그레스바 중단
                 }
             });
         }
