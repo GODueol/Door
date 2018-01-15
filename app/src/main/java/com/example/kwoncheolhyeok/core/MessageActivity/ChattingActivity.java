@@ -15,10 +15,12 @@ import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -48,11 +50,12 @@ public class ChattingActivity extends AppCompatActivity {
     private ImageButton mButtonSend;
     private EditText mEditTextMessage;
     private ImageButton mImageView;
-
+    public static Toast mToast;
     private ChattingMessageAdapter chattingMessageAdapter;
     private LinearLayoutManager linearLayoutManager;
     private List<ChatMessage> chatListItem;
     private FirebaseAuth mAuth;
+    InputMethodManager imm;
 
     ChatFirebaseUtil chatFirebaseUtil;
 
@@ -61,22 +64,23 @@ public class ChattingActivity extends AppCompatActivity {
     private User targetUser;
     private String targetUuid;
 
-    @SuppressLint("ClickableViewAccessibility")
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chatting_activity);
-        Intent p = getIntent();
-
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        mToast = Toast.makeText(this, "null", Toast.LENGTH_SHORT);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //액션바 아이콘을 업 네비게이션 형태로 표시합니다.
         getSupportActionBar().setDisplayShowHomeEnabled(true); //홈 아이콘을 숨김처리합니다.
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
 
-        mAuth = FirebaseAuth.getInstance();
+        Intent p = getIntent();
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
+        mAuth = FirebaseAuth.getInstance();
+        imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
         chattingRecyclerview = (RecyclerView) findViewById(R.id.listView);
         mButtonSend = (ImageButton) findViewById(R.id.btn_send);
         mEditTextMessage = (EditText) findViewById(R.id.et_message);
@@ -87,27 +91,8 @@ public class ChattingActivity extends AppCompatActivity {
         chattingMessageAdapter = new ChattingMessageAdapter(chatListItem,litener);
         chattingRecyclerview.setAdapter(chattingMessageAdapter);
         chattingRecyclerview.setLayoutManager(linearLayoutManager);
+        chattingRecyclerview.setOnTouchListener(onTouchListener);
         chattingRecyclerview.addOnScrollListener(detectTopPosition);
-        chattingRecyclerview.setOnTouchListener(new View.OnTouchListener() {
-
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-
-                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-
-                return false;
-            }
-        });
-
-        chattingRecyclerview.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                chattingMessageAdapter.deletRequestListener();
-                return false;
-            }
-        });
-
         // 상대방 데이터 셋
         targetUser = (User) p.getSerializableExtra("user");
         targetUuid = (String) p.getSerializableExtra("userUuid");
@@ -249,21 +234,32 @@ public class ChattingActivity extends AppCompatActivity {
     RecyclerView.OnScrollListener  detectTopPosition= new RecyclerView.OnScrollListener() {
         @Override
         public void onScrollStateChanged(RecyclerView absListView, int i) {
-
         }
 
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
             super.onScrolled(recyclerView, dx, dy);
-            if (recyclerView.computeVerticalScrollOffset() == 0) {
-                Toast.makeText(getApplicationContext(),"탑이다",-1).show();
+            int lastVisibleItemPosition = ((LinearLayoutManager)recyclerView.getLayoutManager()).findLastCompletelyVisibleItemPosition();
+            mToast.setText(Integer.toString(lastVisibleItemPosition));
+            mToast.show();
+            if (lastVisibleItemPosition == 30) {
                 chatFirebaseUtil.addChatLog();
             } else {
-                // isn't top of scroll.
             }
         }
     };
 
+    @SuppressLint("ClickableViewAccessibility")
+    View.OnTouchListener onTouchListener = new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View view, MotionEvent motionEvent) {
+            if (imm != null) {
+                imm.hideSoftInputFromWindow(mEditTextMessage.getWindowToken(), 0);
+            }
+            chattingMessageAdapter.deletRequestListener();
+            return false;
+        }
+    };
 
 }
 

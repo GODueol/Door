@@ -36,7 +36,6 @@ public class ChattingMessageAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     private static final int MY_MESSAGE = 0, OTHER_MESSAGE = 1, MY_IMAGE = 2, OTHER_IMAGE = 3;
     private ChattingMessageAdapter.OnCallbackList onCallbackList;
     private List<ChatMessage> itemList;
-    private List<TextView> checkText;
     private ImageAdapter.Item item;
     RequestListener requestListener;
 
@@ -51,7 +50,6 @@ public class ChattingMessageAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     public ChattingMessageAdapter(List<ChatMessage> itemList, ChattingMessageAdapter.OnCallbackList listener) {
         this.itemList = itemList;
         onCallbackList = listener;
-        checkText = new ArrayList<TextView>();
         setRequestListener();
     }
 
@@ -100,7 +98,6 @@ public class ChattingMessageAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         ChatMessage chatMessage = itemList.get(position);
         int viewType = chatMessage.getType();
 
-        Log.d("test","viewType : " + Integer.toString(viewType)+"\ngetItemType : "+Integer.toString(viewHolder.getItemViewType()));
         String profileImage = chatMessage.getProfileImage();
         String content = chatMessage.getContent();
         String image = chatMessage.getImage();
@@ -110,9 +107,6 @@ public class ChattingMessageAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         switch (viewType) {
             case MY_MESSAGE:
                 ViewHolder_mine_message holder0 = (ViewHolder_mine_message) viewHolder;
-                if (check != 0) {
-                    checkText.add(holder0.checkTextView);
-                }
                 holder0.contentTextView.setText(content);
                 holder0.contentTextView.setOnLongClickListener(copyTextListener);
                 setDateUtil(holder0.dateTextView, holder0.checkTextView, date, check);
@@ -128,9 +122,6 @@ public class ChattingMessageAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 break;
             case MY_IMAGE:
                 ViewHolder_mine_image holder2 = (ViewHolder_mine_image) viewHolder;
-                if (check != 0) {
-                    checkText.add(holder2.checkTextView);
-                }
                 setImageMessage(holder2.messageImageView, image);
                 setDateUtil(holder2.dateTextView, holder2.checkTextView, date, check);
                 break;
@@ -269,21 +260,9 @@ public class ChattingMessageAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
         if (check != 0) {
             cTextView.setText(Integer.toString(check));
+        }else{
+            cTextView.setText(Integer.toString(check));
         }
-    }
-
-
-    public void clearCheck() {
-        if (!checkText.isEmpty()) {
-            for (TextView textview : checkText) {
-                textview.setVisibility(View.GONE);
-            }
-            checkText.clear();
-        }
-    }
-
-    public ChatMessage getItemChatMessage(int position) {
-        return itemList.get(position);
     }
 
     View.OnLongClickListener copyTextListener = new View.OnLongClickListener() {
