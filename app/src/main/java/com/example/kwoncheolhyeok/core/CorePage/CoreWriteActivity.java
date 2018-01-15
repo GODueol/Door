@@ -74,6 +74,7 @@ public class CoreWriteActivity extends AppCompatActivity {
 
     FloatingActionButton fab, picture_fab, audio_fab;
     LinearLayout pictureFab_layout, audioFab_layout;
+
     RelativeLayout image_edit_layout;
     View fabBGLayout;
     boolean isFABOpen = false;
@@ -130,8 +131,8 @@ public class CoreWriteActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true); //홈 아이콘을 숨김처리합니다.
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
 
-        pictureFab_layout = findViewById(R.id.fabLayout2);
-        audioFab_layout = findViewById(R.id.fabLayout3);
+        audioFab_layout = findViewById(R.id.fabLayout2);
+        pictureFab_layout = findViewById(R.id.fabLayout3);
         fab = findViewById(R.id.fab);
         picture_fab = findViewById(R.id.fab2);
         audio_fab = findViewById(R.id.fab3);
@@ -147,10 +148,6 @@ public class CoreWriteActivity extends AppCompatActivity {
         textMaxTime= findViewById(R.id.textView_maxTime);
         startAndPause = findViewById(R.id.button_start_pause);
         seekBar = findViewById(R.id.seekBar);
-        Drawable myThumb = getResources().getDrawable(R.drawable.icon);
-        myThumb.setBounds(new Rect(8, 8, myThumb.getIntrinsicWidth(),myThumb.getIntrinsicHeight()));
-        seekBar.setThumb(myThumb);
-
 
         sound_x_btn = findViewById(R.id.sound_x_btn);
 
@@ -182,7 +179,9 @@ public class CoreWriteActivity extends AppCompatActivity {
 
         // Get Picture Btn Set
         LoadPicture loadPicture = new LoadPicture(this, this);
-        pictureFab_layout.setOnClickListener(new View.OnClickListener() {
+
+        // 사진 FAB 버튼 아래에 녹음 FAB 버튼을 달려고 위치를 수정했더니, pictureFab_layout 과 audioFab_layout 객체 이름이 바뀌었다능...ㅠ.ㅠ 헷갈리지 마세요!!
+        audioFab_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -217,7 +216,7 @@ public class CoreWriteActivity extends AppCompatActivity {
                         .start();
 
 //                loadPicture.onGallery();
-                pictureFab_layout.setClickable(false);
+                audioFab_layout.setClickable(false);
 
             }
         });
@@ -229,8 +228,9 @@ public class CoreWriteActivity extends AppCompatActivity {
             }
         });
 
-        
-        audioFab_layout.setOnClickListener(new View.OnClickListener() {
+
+        // 사진 FAB 버튼 아래에 녹음 FAB 버튼을 달려고 위치를 수정했더니, pictureFab_layout 과 audioFab_layout 객체 이름이 바뀌었다능...ㅠ.ㅠ 헷갈리지 마세요!!
+        pictureFab_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
