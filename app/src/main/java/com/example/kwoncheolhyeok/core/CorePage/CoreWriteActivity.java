@@ -335,6 +335,7 @@ public class CoreWriteActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // 음성 삭제
+                startAndPause.setChecked(false);
                 edit_audio_layout.setVisibility(View.GONE);
                 soundUri = null;
             }
