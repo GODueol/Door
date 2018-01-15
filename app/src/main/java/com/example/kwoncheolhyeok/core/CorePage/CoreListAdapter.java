@@ -231,7 +231,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
             holder.core_media.setVisibility(View.VISIBLE);
 
             // 미디어 플레이어를 수정했을 경우 초기화
-            if(!currentPlayUrl.equals(corePost.getSoundUrl())) {
+            if(currentSeekBarPosition == holder.getAdapterPosition() && !currentPlayUrl.equals(corePost.getSoundUrl())) {
                 mediaPlayer.seekTo(0);
                 if (currentHolder.textView_maxTime != null) {
                     currentHolder.textView_maxTime.setText("");
