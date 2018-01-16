@@ -220,7 +220,7 @@
         />
 
     <LinearLayout
-        android:id="@+id/fabLayout2"
+        android:id="@+id/pictureFab_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
@@ -242,7 +242,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/fabLayout3"
+        android:id="@+id/audioFab_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"

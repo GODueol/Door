@@ -122,6 +122,7 @@ public class ImageAdapter extends BaseAdapter {
     }
 
     boolean remove(String uuid){
+        if(!itemHashMap.containsKey(uuid)) return false;
         if(mItems.remove(itemHashMap.get(uuid))) {
             itemHashMap.remove(uuid);
             return true;

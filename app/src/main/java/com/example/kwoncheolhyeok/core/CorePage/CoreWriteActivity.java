@@ -67,7 +67,7 @@ public class CoreWriteActivity extends AppCompatActivity {
     Toolbar toolbar = null;
 
     FloatingActionButton fab, picture_fab, audio_fab;
-    LinearLayout pictureFab_layout, audioFab_layout;
+    LinearLayout audioFab_layout, pictureFab_layout;
 
     RelativeLayout image_edit_layout;
     View fabBGLayout;
@@ -125,8 +125,8 @@ public class CoreWriteActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true); //홈 아이콘을 숨김처리합니다.
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
 
-        audioFab_layout = findViewById(R.id.fabLayout2);
-        pictureFab_layout = findViewById(R.id.fabLayout3);
+        pictureFab_layout = findViewById(R.id.pictureFab_layout);
+        audioFab_layout = findViewById(R.id.audioFab_layout);
         fab = findViewById(R.id.fab);
         picture_fab = findViewById(R.id.fab2);
         audio_fab = findViewById(R.id.fab3);
@@ -174,8 +174,7 @@ public class CoreWriteActivity extends AppCompatActivity {
         // Get Picture Btn Set
         LoadPicture loadPicture = new LoadPicture(this, this);
 
-        // 사진 FAB 버튼 아래에 녹음 FAB 버튼을 달려고 위치를 수정했더니, pictureFab_layout 과 audioFab_layout 객체 이름이 바뀌었다능...ㅠ.ㅠ 헷갈리지 마세요!!
-        audioFab_layout.setOnClickListener(new View.OnClickListener() {
+        pictureFab_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -210,7 +209,7 @@ public class CoreWriteActivity extends AppCompatActivity {
                         .start();
 
 //                loadPicture.onGallery();
-                audioFab_layout.setClickable(false);
+                pictureFab_layout.setClickable(false);
 
             }
         });
@@ -222,9 +221,7 @@ public class CoreWriteActivity extends AppCompatActivity {
             }
         });
 
-
-        // 사진 FAB 버튼 아래에 녹음 FAB 버튼을 달려고 위치를 수정했더니, pictureFab_layout 과 audioFab_layout 객체 이름이 바뀌었다능...ㅠ.ㅠ 헷갈리지 마세요!!
-        pictureFab_layout.setOnClickListener(new View.OnClickListener() {
+        audioFab_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -386,14 +383,14 @@ public class CoreWriteActivity extends AppCompatActivity {
 
     private void showFABMenu() {
         isFABOpen = true;
-        pictureFab_layout.setVisibility(View.VISIBLE);
         audioFab_layout.setVisibility(View.VISIBLE);
+        pictureFab_layout.setVisibility(View.VISIBLE);
         fabBGLayout.setVisibility(View.VISIBLE);
 
         fab.animate().rotation(135);
         fab.animate().setDuration(200);
-        pictureFab_layout.animate().translationY(-getResources().getDimension(R.dimen.standard_75));
-        audioFab_layout.animate().translationY(-getResources().getDimension(R.dimen.standard_150));
+        audioFab_layout.animate().translationY(-getResources().getDimension(R.dimen.standard_75));
+        pictureFab_layout.animate().translationY(-getResources().getDimension(R.dimen.standard_150));
     }
 
     private void closeFABMenu() {
@@ -401,8 +398,8 @@ public class CoreWriteActivity extends AppCompatActivity {
         fabBGLayout.setVisibility(View.GONE);
         fab.animate().rotation(0);
         fab.animate().setDuration(200);
-        pictureFab_layout.animate().translationY(0);
-        audioFab_layout.animate().translationY(0).setListener(new Animator.AnimatorListener() {
+        audioFab_layout.animate().translationY(0);
+        pictureFab_layout.animate().translationY(0).setListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animator) {
 
@@ -411,8 +408,8 @@ public class CoreWriteActivity extends AppCompatActivity {
             @Override
             public void onAnimationEnd(Animator animator) {
                 if (!isFABOpen) {
-                    pictureFab_layout.setVisibility(View.GONE);
                     audioFab_layout.setVisibility(View.GONE);
+                    pictureFab_layout.setVisibility(View.GONE);
                 }
 
             }
