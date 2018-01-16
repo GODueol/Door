@@ -32,6 +32,7 @@ import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -45,7 +46,7 @@ public class ChatFirebaseUtil {
     final static String chatRoomList = "chatRoomList";
     final static String chat = "chat";
     final static String image = "image";
-    public final static int MessageCount = 21;
+    public final static int MessageCount = 30;
 
     private Context context;
     private String userUuid, targetUuid;
@@ -57,18 +58,20 @@ public class ChatFirebaseUtil {
     private FirebaseStorage storage;
 
     ///////////////////////
-    public int messageWeight = 1;
+    private int messageWeight = 1;
     private boolean destroy = false;
     private ImageAdapter.Item item;
     private ChattingMessageAdapter chattingMessageAdapter;
     private RecyclerView chattingRecyclerview;
     private List<String> childKeyList;
     private List<ChatMessage> chatMessageList;
+    private List<ChatMessage> uncheckMessageList;
 
     public ChatFirebaseUtil(Context context, User currentUser, User targetUser, String userUuid, String targetUuid) {
         databaseRef = FirebaseDatabase.getInstance().getReference();
         storage = FirebaseStorage.getInstance();
         childKeyList = new ArrayList<String>();
+        uncheckMessageList = new ArrayList<ChatMessage>();
         this.context = context;
         this.currentUser = currentUser;
         this.targetUser = targetUser;
@@ -196,7 +199,7 @@ public class ChatFirebaseUtil {
 
                 chatDatabaseRef = FirebaseDatabase.getInstance().getReference().child(chat).child(roomName);
                 // 처음 모든 메세지 읽음처리
-                chatDatabaseRef.orderByChild("check").equalTo("1").addListenerForSingleValueEvent(checkChatListener);
+                chatDatabaseRef.orderByChild("check").equalTo(1).addListenerForSingleValueEvent(checkChatListener);
                 chatDatabaseRef.removeEventListener(checkChatListener);
                 // 그후 메세지 통신
                 chatDatabaseRef.orderByKey().limitToLast(MessageCount).addChildEventListener(chatInitListener);
@@ -216,17 +219,12 @@ public class ChatFirebaseUtil {
             childKeyList.add(childChatKey);
 
             MessageVO message = dataSnapshot.getValue(MessageVO.class);
-            // 상대방이 쓴 글은 읽음처리
-            if (!message.getWriter().equals(userUuid) && message.getCheck() == 1) {
-                databaseRef.child(chat).child(roomName).child(childChatKey).child("check").setValue(0);
-                message.setCheck(0);
-            }
-            initMessage(message, childChatKey, previousChildName);
+            initMessage(message, childChatKey);
         }
 
         @Override
         public void onChildChanged(DataSnapshot dataSnapshot, String previousChildName) {
-            chattingMessageAdapter.clearCheck();
+            checkRefreshChatLog();
         }
 
         @Override
@@ -247,73 +245,27 @@ public class ChatFirebaseUtil {
     // 처음 메세지 읽음 처리
     ValueEventListener checkChatListener = new ValueEventListener() {
         @Override
-        public void onDataChange(DataSnapshot ds) {
-            String key2 = ds.getKey();
-            MessageVO message = ds.getValue(MessageVO.class);
-            if (message != null && !message.getWriter().equals(userUuid)) {
-                databaseRef.child(chat).child(roomName).child(key2).child("check").setValue(0);
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            Iterator<DataSnapshot> child = dataSnapshot.getChildren().iterator();
+            while (child.hasNext()) {//마찬가지로 중복 유무 확인
+                DataSnapshot ds = child.next();
+                MessageVO message = ds.getValue(MessageVO.class);
+                if (message != null && !message.getWriter().equals(userUuid)) {
+                    databaseRef.child(chat).child(roomName).child(ds.getKey()).child("check").setValue(0);
+                }
             }
         }
 
         @Override
         public void onCancelled(DatabaseError databaseError) {
-        }
-    };
-    // 초기화 후에 메세지 로드
-    ChildEventListener chatAddtListener = new ChildEventListener() {
-        public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
-            childChatKey = dataSnapshot.getKey();
-            childKeyList.add(childChatKey);
-
-            MessageVO message = dataSnapshot.getValue(MessageVO.class);
-            // 상대방이 쓴 글은 읽음처리
-            if (!message.getWriter().equals(userUuid) && message.getCheck() == 1) {
-                databaseRef.child(chat).child(roomName).child(childChatKey).child("check").setValue(0);
-                message.setCheck(0);
-            }
-            addMessage(message, childChatKey, previousChildName);
-        }
-
-        @Override
-        public void onChildChanged(DataSnapshot dataSnapshot, String previousChildName) {
-            chattingMessageAdapter.clearCheck();
-        }
-
-        @Override
-        public void onChildRemoved(DataSnapshot dataSnapshot) {
-            destroy = true;
-        }
-
-        @Override
-        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-        }
-
-        @Override
-        public void onCancelled(DatabaseError databaseError) {
-
         }
     };
     // 채팅로그 로딩
-    ChildEventListener chatLoadListener = new ChildEventListener() {
-
-        public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
-            childChatKey = dataSnapshot.getKey();
-            childKeyList.add(childChatKey);
-            MessageVO message = dataSnapshot.getValue(MessageVO.class);
-            loadMessage(message, childChatKey, previousChildName);
-        }
-
+    ValueEventListener chatLoadListener = new ValueEventListener() {
         @Override
-        public void onChildChanged(DataSnapshot dataSnapshot, String previousChildName) {
-        }
-
-        @Override
-        public void onChildRemoved(DataSnapshot dataSnapshot) {
-        }
-
-        @Override
-        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            Iterator<DataSnapshot> child = dataSnapshot.getChildren().iterator();
+            loadMessage(child);
         }
 
         @Override
@@ -330,7 +282,7 @@ public class ChatFirebaseUtil {
         chatDatabaseRef.removeEventListener(chatLoadListener);
     }
 
-    public void initMessage(MessageVO message, String key, String previousChildName) {
+    public void initMessage(MessageVO message, String key) {
 
         ChatMessage chatMessage;
         int check = message.getCheck();
@@ -342,93 +294,78 @@ public class ChatFirebaseUtil {
 
         if (message.getWriter().equals(userUuid) && message.getImage() == null) {
             chatMessage = new ChatMessage(message, true, false);
+            if (chatMessage.getCheck() == 1) {
+                uncheckMessageList.add(chatMessage);
+            }
         } else if (!message.getWriter().equals(userUuid) && message.getImage() == null) {
             chatMessage = new ChatMessage(message, false, false, item);
         } else if (message.getWriter().equals(userUuid) && message.getContent() == null) {
             chattingMessageAdapter.setRequestListener();
             chatMessage = new ChatMessage(message, true, true);
+            if (chatMessage.getCheck() == 1) {
+                uncheckMessageList.add(chatMessage);
+            }
         } else {
             chattingMessageAdapter.setRequestListener();
             chatMessage = new ChatMessage(message, false, true, item);
         }
         chatMessageList.add(chatMessage);
-        if (previousChildName == null) {
-            chattingMessageAdapter.notifyDataSetChanged();
-            chattingRecyclerview.smoothScrollToPosition(chattingMessageAdapter.getItemCount());
-            chatDatabaseRef.removeEventListener(chatInitListener);
-            chatDatabaseRef.addChildEventListener(chatAddtListener);
-
-        }
-    }
-
-    public void addMessage(MessageVO message, String key, String previousChildName) {
-
-        ChatMessage chatMessage;
-        int check = message.getCheck();
-
-        if (check != 0 && !message.getWriter().equals(userUuid)) {
-            message.setCheck(0);
-            databaseRef.child(chat).child(roomName).child(key).child("check").setValue(check - 1);
-        }
-
-        if (message.getWriter().equals(userUuid) && message.getImage() == null) {
-            chatMessage = new ChatMessage(message, true, false);
-        } else if (!message.getWriter().equals(userUuid) && message.getImage() == null) {
-            chatMessage = new ChatMessage(message, false, false, item);
-        } else if (message.getWriter().equals(userUuid) && message.getContent() == null) {
-            chattingMessageAdapter.setRequestListener();
-            chatMessage = new ChatMessage(message, true, true);
-        } else {
-            chattingMessageAdapter.setRequestListener();
-            chatMessage = new ChatMessage(message, false, true, item);
-        }
-        chatMessageList.add(chatMessage);
+        chattingRecyclerview.getRecycledViewPool().clear();
         chattingMessageAdapter.notifyDataSetChanged();
         chattingRecyclerview.smoothScrollToPosition(chattingMessageAdapter.getItemCount());
     }
 
-    public void loadMessage(MessageVO message, String key, String previousChildName) {
+    public void loadMessage(Iterator<DataSnapshot> child) {
 
         ChatMessage chatMessage;
-        int check = message.getCheck();
 
-        if (check != 0 && !message.getWriter().equals(userUuid)) {
-            message.setCheck(0);
-            databaseRef.child(chat).child(roomName).child(key).child("check").setValue(check - 1);
+        while (child.hasNext()) {//마찬가지로 중복 유무 확인
+            DataSnapshot ds = child.next();
+            childChatKey = ds.getKey();
+            childKeyList.add(childChatKey);
+            MessageVO message = ds.getValue(MessageVO.class);
+
+            if (message.getWriter().equals(userUuid) && message.getImage() == null) {
+                chatMessage = new ChatMessage(message, true, false);
+            } else if (!message.getWriter().equals(userUuid) && message.getImage() == null) {
+                chatMessage = new ChatMessage(message, false, false, item);
+            } else if (message.getWriter().equals(userUuid) && message.getContent() == null) {
+                chatMessage = new ChatMessage(message, true, true);
+            } else {
+                chatMessage = new ChatMessage(message, false, true, item);
+            }
+
+            int size = childKeyList.size() - 1;
+            chatMessageList.add(size, chatMessage);
         }
 
-        if (message.getWriter().equals(userUuid) && message.getImage() == null) {
-            chatMessage = new ChatMessage(message, true, false);
-        } else if (!message.getWriter().equals(userUuid) && message.getImage() == null) {
-            chatMessage = new ChatMessage(message, false, false, item);
-        } else if (message.getWriter().equals(userUuid) && message.getContent() == null) {
-            chatMessage = new ChatMessage(message, true, true);
-        } else {
-            chatMessage = new ChatMessage(message, false, true, item);
-        }
-        int size = childKeyList.size() - 1;
-        chatMessageList.add(size, chatMessage);
-        if (previousChildName == null) {
-            chattingMessageAdapter.notifyDataSetChanged();
-            chattingRecyclerview.smoothScrollToPosition(0);
-        }
-        //chattingMessageAdapter.insert(chatMessage, size);
+        chattingRecyclerview.getRecycledViewPool().clear();
+        chattingMessageAdapter.notifyDataSetChanged();
+        //로딩 후 제거
+        chatDatabaseRef.removeEventListener(chatLoadListener);
     }
 
     public void addChatLog() {
-        int size = childKeyList.size();
-        if (size != 1 && MessageCount * messageWeight <= size) {
+        if(!childKeyList.isEmpty()) {
+            // 마지막으로 불러온 채팅 아이디
             String lastChildChatKey = childKeyList.get(0);
             childKeyList.clear();
             // 맨 위 아이템 제거(중복발생)
-
-            /*ChatMessage ch = chattingMessageAdapter.getItemChatMessage(0);
-            chattingMessageAdapter.remove(ch);*/
             chatMessageList.remove(0);
-            messageWeight *= 5;
-            chatDatabaseRef.orderByKey().endAt(lastChildChatKey).limitToLast(MessageCount * messageWeight).addChildEventListener(chatLoadListener);
+            messageWeight *= 1;
+            chatDatabaseRef.orderByKey().endAt(lastChildChatKey).limitToLast(MessageCount * messageWeight).addValueEventListener(chatLoadListener);
         }
     }
+
+    public void checkRefreshChatLog() {
+        for (ChatMessage chatMessage : uncheckMessageList) {
+            chatMessage.setCheck(0);
+        }
+        uncheckMessageList.clear();
+        chattingRecyclerview.getRecycledViewPool().clear();
+        chattingMessageAdapter.notifyDataSetChanged();
+    }
+
 
     public ImageAdapter.Item getItem() {
         return item;
