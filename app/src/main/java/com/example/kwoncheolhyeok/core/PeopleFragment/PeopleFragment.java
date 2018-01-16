@@ -128,8 +128,10 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         User oUser = dataSnapshot.getValue(User.class);
-                        if(isInBlock(oUser, oUuid)) return;  // 블러킹
-                        if(!isInFilter(oUser)) return;  // 필터링
+                        if(isInBlock(oUser, oUuid) || !isInFilter(oUser)){
+                            onKeyExited(oUuid);
+                            return;
+                        }
 
                         Log.d(getClass().toString(),String.format("Key %s entered the search area at [%f,%f]", oUuid, geoLocation.latitude, geoLocation.longitude));
                         addItemToGrid(oUuid, geoLocation, oUser);
