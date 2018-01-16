@@ -2,7 +2,6 @@ package com.example.kwoncheolhyeok.core.PeopleFragment;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,8 +27,17 @@ public class ImageAdapter extends BaseAdapter {
             if(item1.getUuid().equals(item2.getUuid())) return 0;
             if(item2.getUuid().equals(DataContainer.getInstance().getUid())) return 1;   // 1. 본인계정
             if(item1.getUuid().equals(DataContainer.getInstance().getUid())) return -1;   // 1. 본인계정
-            if(item1.distance != item2.distance) return (int) (item1.distance - item2.distance);    // 2. 거리
-            return item1.getUuid().compareTo(item2.getUuid());
+            if(item1.distance != item2.distance) {
+                int diff = (int) (item1.distance - item2.distance);
+                if(diff<0) return -1;
+                if(diff>0) return 1;
+                return 0;
+            }
+
+            int compReturn = item1.getUuid().compareTo(item2.getUuid());
+            if(compReturn<0) return -1;
+            if(compReturn>0) return 1;
+            return 0;
         }
     });
 
@@ -85,7 +93,6 @@ public class ImageAdapter extends BaseAdapter {
         }
 
         // 프사 출력
-
         GlideApp.with(mInflater.getContext() /* context */)
                 .load(item.getPicUrl())
                 .placeholder(R.drawable.a)
@@ -100,21 +107,10 @@ public class ImageAdapter extends BaseAdapter {
 
     void addItem(Item item){
         if(itemHashMap.containsKey(item.getUuid())){
-            if(!mItems.remove(itemHashMap.get(item.getUuid()))){
-                Log.d("kbj", "addItem fail, item.getDistance() : " + item.getDistance());
-                Log.d("kbj", "addItem fail, itemHashMap.get(item.getUuid()).getDistance() : " + itemHashMap.get(item.getUuid()).getDistance());
-                Log.d("kbj", "addItem fail, mItems.get(item.getUuid()).getDistance() : " + mItems.get(item.getUuid()).getDistance());
-
-                return;
-            }
+            if(!mItems.remove(itemHashMap.get(item.getUuid()))) return;
         }
-        if(!mItems.add(item)){
-
-        }
+        mItems.add(item);
         itemHashMap.put(item.getUuid(), item);
-        if(mItems.size() != itemHashMap.size()){
-            Log.d("kbj", "size : " + mItems.size() + "," + itemHashMap.size());
-        }
     }
 
     Item getItem(String uuid){
@@ -127,7 +123,6 @@ public class ImageAdapter extends BaseAdapter {
             itemHashMap.remove(uuid);
             return true;
         }
-        Log.d("kbj", "remove fail : " + uuid);
         return false;
     }
 
