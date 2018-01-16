@@ -5,6 +5,7 @@ import android.content.Context;
 import android.location.Location;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
@@ -155,6 +156,7 @@ public class ChatFirebaseUtil {
         this.chattingRecyclerview = chattingRecyclerview;
         chattingMessageAdapter = (ChattingMessageAdapter) chattingRecyclerview.getAdapter();
         this.chatMessageList = chatMessageList;
+        chattingRecyclerview.addOnScrollListener(detectTopPosition);
         // 채팅방 세팅
         chatRoomRef.child(userUuid).child(targetUuid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -211,7 +213,6 @@ public class ChatFirebaseUtil {
             }
         });
     }
-
     // 첫 채팅방 초기화
     ChildEventListener chatInitListener = new ChildEventListener() {
         public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
@@ -276,12 +277,7 @@ public class ChatFirebaseUtil {
     public Long getTime() {
         return System.currentTimeMillis();
     }
-
-    public void deleteFirebaseRef() {
-        chatDatabaseRef.removeEventListener(chatInitListener);
-        chatDatabaseRef.removeEventListener(chatLoadListener);
-    }
-
+    // 채팅 초기화
     public void initMessage(MessageVO message, String key) {
 
         ChatMessage chatMessage;
@@ -312,13 +308,14 @@ public class ChatFirebaseUtil {
         chatMessageList.add(chatMessage);
         chattingRecyclerview.getRecycledViewPool().clear();
         chattingMessageAdapter.notifyDataSetChanged();
-        chattingRecyclerview.smoothScrollToPosition(chattingMessageAdapter.getItemCount());
+        chattingRecyclerview.scrollToPosition(chattingMessageAdapter.getItemCount()-1);
     }
-
+    // 채팅 로딩
     public void loadMessage(Iterator<DataSnapshot> child) {
 
         ChatMessage chatMessage;
-
+        int visilbeCompFirstPosition = ((LinearLayoutManager)chattingRecyclerview.getLayoutManager()).findFirstCompletelyVisibleItemPosition();
+        int visiblieCompLastPosition = ((LinearLayoutManager)chattingRecyclerview.getLayoutManager()).findLastCompletelyVisibleItemPosition();
         while (child.hasNext()) {//마찬가지로 중복 유무 확인
             DataSnapshot ds = child.next();
             childChatKey = ds.getKey();
@@ -327,10 +324,16 @@ public class ChatFirebaseUtil {
 
             if (message.getWriter().equals(userUuid) && message.getImage() == null) {
                 chatMessage = new ChatMessage(message, true, false);
+                if (chatMessage.getCheck() == 1) {
+                    uncheckMessageList.add(chatMessage);
+                }
             } else if (!message.getWriter().equals(userUuid) && message.getImage() == null) {
                 chatMessage = new ChatMessage(message, false, false, item);
             } else if (message.getWriter().equals(userUuid) && message.getContent() == null) {
                 chatMessage = new ChatMessage(message, true, true);
+                if (chatMessage.getCheck() == 1) {
+                    uncheckMessageList.add(chatMessage);
+                }
             } else {
                 chatMessage = new ChatMessage(message, false, true, item);
             }
@@ -342,11 +345,15 @@ public class ChatFirebaseUtil {
         chattingRecyclerview.getRecycledViewPool().clear();
         chattingMessageAdapter.notifyDataSetChanged();
         //로딩 후 제거
+        int messageViewCount  = childKeyList.size()+(visiblieCompLastPosition-visilbeCompFirstPosition)-2;
+        chattingRecyclerview.scrollToPosition(messageViewCount);
+        chattingRecyclerview.addOnScrollListener(detectTopPosition);
         chatDatabaseRef.removeEventListener(chatLoadListener);
     }
-
+    // 채팅 로딩 발생 메소드
     public void addChatLog() {
         if(!childKeyList.isEmpty()) {
+            chattingRecyclerview.removeOnScrollListener(detectTopPosition);
             // 마지막으로 불러온 채팅 아이디
             String lastChildChatKey = childKeyList.get(0);
             childKeyList.clear();
@@ -356,7 +363,21 @@ public class ChatFirebaseUtil {
             chatDatabaseRef.orderByKey().endAt(lastChildChatKey).limitToLast(MessageCount * messageWeight).addValueEventListener(chatLoadListener);
         }
     }
+    // 채팅 로딩 리스너 (상단 포지션 탐지)
+    RecyclerView.OnScrollListener  detectTopPosition= new RecyclerView.OnScrollListener() {
+        @Override
+        public void onScrollStateChanged(RecyclerView absListView, int i) {
+        }
 
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+            if (recyclerView.computeVerticalScrollOffset() == 0) {
+                addChatLog();
+            }
+        }
+    };
+    // 읽음 처리 (클라이언트)
     public void checkRefreshChatLog() {
         for (ChatMessage chatMessage : uncheckMessageList) {
             chatMessage.setCheck(0);
@@ -366,9 +387,15 @@ public class ChatFirebaseUtil {
         chattingMessageAdapter.notifyDataSetChanged();
     }
 
+    public void deleteFirebaseRef() {
+        chatDatabaseRef.removeEventListener(chatInitListener);
+        chatDatabaseRef.removeEventListener(chatLoadListener);
+    }
 
     public ImageAdapter.Item getItem() {
         return item;
     }
+
+
 }
 

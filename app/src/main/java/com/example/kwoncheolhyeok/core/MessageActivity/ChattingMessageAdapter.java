@@ -258,8 +258,8 @@ public class ChattingMessageAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         String time = dateUtil.getTime();
         dTextView.setText(time);
 
-        if (check != 0) {
-            cTextView.setText(Integer.toString(check));
+        if (check == 0) {
+            cTextView.setText("");
         }else{
             cTextView.setText(Integer.toString(check));
         }

@@ -92,7 +92,6 @@ public class ChattingActivity extends AppCompatActivity {
         chattingRecyclerview.setAdapter(chattingMessageAdapter);
         chattingRecyclerview.setLayoutManager(linearLayoutManager);
         chattingRecyclerview.setOnTouchListener(onTouchListener);
-        chattingRecyclerview.addOnScrollListener(detectTopPosition);
         // 상대방 데이터 셋
         targetUser = (User) p.getSerializableExtra("user");
         targetUuid = (String) p.getSerializableExtra("userUuid");
@@ -231,23 +230,7 @@ public class ChattingActivity extends AppCompatActivity {
     };
 
 
-    RecyclerView.OnScrollListener  detectTopPosition= new RecyclerView.OnScrollListener() {
-        @Override
-        public void onScrollStateChanged(RecyclerView absListView, int i) {
-        }
 
-        @Override
-        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-            super.onScrolled(recyclerView, dx, dy);
-            int lastVisibleItemPosition = ((LinearLayoutManager)recyclerView.getLayoutManager()).findLastCompletelyVisibleItemPosition();
-            mToast.setText(Integer.toString(lastVisibleItemPosition));
-            mToast.show();
-            if (lastVisibleItemPosition == 30) {
-                chatFirebaseUtil.addChatLog();
-            } else {
-            }
-        }
-    };
 
     @SuppressLint("ClickableViewAccessibility")
     View.OnTouchListener onTouchListener = new View.OnTouchListener() {

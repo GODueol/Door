@@ -27,10 +27,13 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/listView"
         android:layout_below="@id/toolbar"
+        android:layout_above="@+id/send_message_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:windowSoftInputMode="adjustResize"
-        android:layout_above="@+id/send_message_layout" />
+        android:scrollbarStyle="outsideOverlay"
+        android:scrollbars="vertical"/>
+
 
     <LinearLayout
         android:id="@+id/send_message_layout"
