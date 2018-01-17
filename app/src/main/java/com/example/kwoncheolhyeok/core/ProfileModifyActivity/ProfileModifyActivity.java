@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -29,6 +31,7 @@ import com.example.kwoncheolhyeok.core.Entity.StringBoundary;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.Event.SetProfilePicEvent;
 import com.example.kwoncheolhyeok.core.R;
+import com.example.kwoncheolhyeok.core.Util.BitmapUtil;
 import com.example.kwoncheolhyeok.core.Util.BusProvider;
 import com.example.kwoncheolhyeok.core.Util.Camera.LoadPicture;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
@@ -655,7 +658,11 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
                 Uri outputFileUri = data.getData();
 
                 uriMap.put(modifyingPic.getId(), outputFileUri);
-                modifyingPic.setImageURI(outputFileUri);
+                String filePath = BitmapUtil.getRealPathFromURI(this, outputFileUri);
+                Bitmap originalBitmap  = BitmapFactory.decodeFile(filePath);
+                Bitmap orientedBitmap = BitmapUtil.rotateBitmap(filePath, originalBitmap);
+
+                modifyingPic.setImageBitmap(orientedBitmap);
 
             }
         }

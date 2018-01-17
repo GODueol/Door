@@ -3,6 +3,8 @@ package com.example.kwoncheolhyeok.core.CorePage;
 import android.animation.Animator;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -27,6 +29,7 @@ import android.widget.ToggleButton;
 import com.bumptech.glide.Glide;
 import com.example.kwoncheolhyeok.core.Entity.CorePost;
 import com.example.kwoncheolhyeok.core.R;
+import com.example.kwoncheolhyeok.core.Util.BitmapUtil;
 import com.example.kwoncheolhyeok.core.Util.Camera.LoadPicture;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
@@ -196,7 +199,12 @@ public class CoreWriteActivity extends AppCompatActivity {
                                 AlbumFile albumFile = result.get(0);
 
                                 editImageUri = Uri.fromFile(new File(albumFile.getPath()));
-                                editImage.setImageURI(editImageUri);   // Local Set
+
+                                Bitmap originalBitmap  = BitmapFactory.decodeFile(albumFile.getPath());
+                                Bitmap orientedBitmap = BitmapUtil.rotateBitmap(albumFile.getPath(), originalBitmap);
+
+                                editImage.setImageBitmap(orientedBitmap);
+
                                 image_edit_layout.setVisibility(View.VISIBLE);
                                 closeFABMenu();
                             }

@@ -107,7 +107,7 @@ public class ImageAdapter extends BaseAdapter {
 
     void addItem(Item item){
         if(itemHashMap.containsKey(item.getUuid())){
-            if(!mItems.remove(itemHashMap.get(item.getUuid()))) return;
+            mItems.remove(itemHashMap.get(item.getUuid()));
         }
         mItems.add(item);
         itemHashMap.put(item.getUuid(), item);
