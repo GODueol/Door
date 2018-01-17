@@ -6,6 +6,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -65,7 +66,10 @@ public class AudioRecorderActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.aar_activity_audio_recorder);
-        getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, 1300);    // 전체 레이아웃 가로세로는 여기서 수정
+
+        DisplayMetrics displayMetrics = this.getResources().getDisplayMetrics();
+        int deviceHeight = displayMetrics.heightPixels;
+        getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, (int) (deviceHeight*0.55));    // 전체 레이아웃 가로세로는 여기서 수정
         this.setFinishOnTouchOutside(false);
 
         if(savedInstanceState != null) {
