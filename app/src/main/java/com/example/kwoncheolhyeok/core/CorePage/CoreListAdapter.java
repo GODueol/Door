@@ -294,6 +294,9 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                                 .removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
+
+                                UiUtil.getInstance().startProgressDialog((Activity) context);
+
                                 final ArrayList<Task> deleteTasks = new ArrayList<>();
                                 // 갯수 갱신
                                 FireBaseUtil.getInstance().syncCorePostCount(cUuid);
@@ -304,7 +307,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                                     deleteTasks.add(postStorageRef.child("sound").delete());
                                 if(coreListItem.getCorePost().getPictureUrl() != null)
                                     deleteTasks.add(postStorageRef.child("picture").delete());
-                                UiUtil.getInstance().startProgressDialog((Activity) context);
+
                                 for(Task task : deleteTasks){
                                     task.addOnCompleteListener(new OnCompleteListener() {
                                         @Override
