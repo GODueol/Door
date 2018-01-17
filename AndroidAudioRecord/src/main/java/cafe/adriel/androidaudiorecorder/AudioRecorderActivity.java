@@ -65,7 +65,7 @@ public class AudioRecorderActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.aar_activity_audio_recorder);
-        getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, 1500);    // 전체 레이아웃 가로세로는 여기서 수정
+        getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, 1300);    // 전체 레이아웃 가로세로는 여기서 수정
         this.setFinishOnTouchOutside(false);
 
         if(savedInstanceState != null) {
@@ -81,7 +81,7 @@ public class AudioRecorderActivity extends AppCompatActivity
             source = (AudioSource) getIntent().getSerializableExtra(AndroidAudioRecorder.EXTRA_SOURCE);
             channel = (AudioChannel) getIntent().getSerializableExtra(AndroidAudioRecorder.EXTRA_CHANNEL);
             sampleRate = (AudioSampleRate) getIntent().getSerializableExtra(AndroidAudioRecorder.EXTRA_SAMPLE_RATE);
-            color = getIntent().getIntExtra(AndroidAudioRecorder.EXTRA_COLOR, Color.WHITE);
+            color = getIntent().getIntExtra(AndroidAudioRecorder.EXTRA_COLOR, Color.BLUE);
             autoStart = getIntent().getBooleanExtra(AndroidAudioRecorder.EXTRA_AUTO_START, false);
             keepDisplayOn = getIntent().getBooleanExtra(AndroidAudioRecorder.EXTRA_KEEP_DISPLAY_ON, false);
         }
@@ -95,11 +95,11 @@ public class AudioRecorderActivity extends AppCompatActivity
                 .setWavesCount(2)
                 .setWavesHeight(R.dimen.aar_wave_height)
                 .setWavesFooterHeight(R.dimen.aar_footer_height)
-                .setBubblesPerLayer(20)
+                .setBubblesPerLayer(30)
                 .setBubblesSize(R.dimen.aar_bubble_size)
                 .setBubblesRandomizeSize(true)
-                .setBackgroundColor(Util.getDarkerColor(color))
-                .setLayerColors(new int[]{color})
+                .setBackgroundColor(0xffffffff) // 녹음 라이브러리 배경색
+                .setLayerColors(new int[]{5100031}) // 녹음 라이브러리 버블 레이어색
                 .build();
 
         contentLayout = (RelativeLayout) findViewById(R.id.content);
@@ -112,7 +112,7 @@ public class AudioRecorderActivity extends AppCompatActivity
         clear = (ImageView) findViewById(R.id.clear);
 
         contentLayout.addView(visualizerView, 0);
-        visualizerView.setBackgroundColor(Color.WHITE);
+//        visualizerView.setBackgroundColor(Color.WHITE);
         restartView.setVisibility(View.INVISIBLE);
         playView.setVisibility(View.INVISIBLE);
         save.setVisibility(View.INVISIBLE);
@@ -137,9 +137,11 @@ public class AudioRecorderActivity extends AppCompatActivity
                     .setColorFilter(Color.BLACK, PorterDuff.Mode.SRC_ATOP);
             statusView.setTextColor(Color.BLACK);
             timerView.setTextColor(Color.BLACK);
-            restartView.setColorFilter(Color.BLACK);
-            recordView.setColorFilter(Color.BLACK);
-            playView.setColorFilter(Color.BLACK);
+
+            //이미지 아이콘이 단색일때만 셋컬러필터 사용할 수 있는듯
+//            restartView.setColorFilter(Color.BLACK);
+//            recordView.setColorFilter(Color.BLACK);
+//            playView.setColorFilter(Color.BLACK);
         }
     }
 
@@ -252,7 +254,7 @@ public class AudioRecorderActivity extends AppCompatActivity
         restartView.setVisibility(View.INVISIBLE);
         playView.setVisibility(View.INVISIBLE);
         recordView.setImageResource(R.drawable.aar_ic_rec);
-        timerView.setText("00:00");
+        timerView.setText("00:00:00");
         recorderSecondsElapsed = 0;
         playerSecondsElapsed = 0;
     }
@@ -272,7 +274,7 @@ public class AudioRecorderActivity extends AppCompatActivity
         visualizerView.linkTo(visualizerHandler);
 
         if(recorder == null) {
-            timerView.setText("00:00");
+            timerView.setText("00:00:00");
 
             recorder = OmRecorder.wav(
                     new PullTransport.Default(Util.getMic(source, channel, sampleRate), AudioRecorderActivity.this),
@@ -339,7 +341,7 @@ public class AudioRecorderActivity extends AppCompatActivity
                 }
             });
 
-            timerView.setText("00:00");
+            timerView.setText("00:00:00");
             statusView.setText(R.string.aar_playing);
             statusView.setVisibility(View.VISIBLE);
             playView.setImageResource(R.drawable.aar_ic_stop);
