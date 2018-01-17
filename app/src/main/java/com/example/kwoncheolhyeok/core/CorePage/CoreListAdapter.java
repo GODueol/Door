@@ -290,13 +290,11 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
 
+                        UiUtil.getInstance().startProgressDialog((Activity) context);
                         postsRef.child(cUuid).child(coreListItem.getPostKey())
                                 .removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
-
-                                UiUtil.getInstance().startProgressDialog((Activity) context);
-
                                 final ArrayList<Task> deleteTasks = new ArrayList<>();
                                 // 갯수 갱신
                                 FireBaseUtil.getInstance().syncCorePostCount(cUuid);
