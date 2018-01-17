@@ -1,31 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/content"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+    android:layout_height="match_parent">
 
     <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="30dp"
+        android:layout_marginTop="20dp"
         >
+
         <ImageView
             android:id="@+id/clear"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src = "@drawable/aar_ic_clear"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:layout_alignParentLeft="true"
-
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"
+            android:background="@drawable/aar_ic_clear"
             />
+
         <ImageView
             android:id="@+id/save"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src = "@drawable/aar_ic_check"
+            android:layout_width="25dp"
+            android:layout_height="19dp"
             android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/save_check"
             android:visibility="invisible"
-        />
+            />
 
     </RelativeLayout>
 
@@ -42,68 +46,66 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="-10dp"
-            android:textSize="20sp"
+            android:layout_gravity="center"
             android:textColor="@android:color/white"
-            android:visibility="invisible"/>
+            android:textSize="20sp"
+            android:visibility="invisible" />
 
         <TextView
             android:id="@+id/timer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="60sp"
+            android:text="00:00:00"
             android:textColor="@android:color/white"
-            android:text="00:00"/>
+            android:textSize="60sp" />
 
     </LinearLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/aar_footer_height"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@drawable/profile_modify_background"
+        android:layout_marginBottom="30dp"
         >
 
         <ImageButton
             android:id="@+id/restart"
+            style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_centerVertical="true"
-            android:layout_toStartOf="@+id/record"
             android:layout_toLeftOf="@+id/record"
-            android:layout_marginTop="50dp"
-            android:padding="10dp"
+            android:layout_toStartOf="@+id/record"
+            android:layout_marginRight="40dp"
+            android:onClick="restartRecording"
             android:scaleType="fitCenter"
             android:src="@drawable/aar_ic_restart"
-            android:onClick="restartRecording"
             android:visibility="invisible"
-            style="@style/Widget.AppCompat.Button.Borderless"/>
+            />
 
         <ImageButton
             android:id="@+id/record"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             android:layout_centerInParent="true"
-            android:layout_marginTop="50dp"
-            android:layout_margin="15dp"
-            android:padding="10dp"
+            android:onClick="toggleRecording"
             android:scaleType="fitCenter"
             android:src="@drawable/aar_ic_rec"
-            android:onClick="toggleRecording"
-            style="@style/Widget.AppCompat.Button.Borderless"/>
+            />
 
         <ImageButton
             android:id="@+id/play"
+            style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_centerVertical="true"
             android:layout_toEndOf="@+id/record"
             android:layout_toRightOf="@+id/record"
-            android:layout_marginTop="50dp"
-            android:padding="10dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/aar_ic_play"
+            android:layout_marginLeft="40dp"
             android:onClick="togglePlaying"
-            style="@style/Widget.AppCompat.Button.Borderless"/>
+            android:scaleType="fitCenter"
+            android:src="@drawable/aar_ic_play" />
 
     </RelativeLayout>
 
