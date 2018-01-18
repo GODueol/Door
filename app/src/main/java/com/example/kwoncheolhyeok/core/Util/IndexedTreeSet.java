@@ -13,9 +13,9 @@ public class IndexedTreeSet<K> extends TreeSet<K> {
     @Override
     public String toString() {
         StringBuilder rst = new StringBuilder();
-
+        rst.append("***treeset : \n");
         for (K k : this) {
-            rst.append("item hash : ").append(k.hashCode()).append(",\n");
+            rst.append("item : ").append(k.toString()).append(",\n");
         }
 
         return rst.toString();

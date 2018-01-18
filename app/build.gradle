@@ -57,7 +57,6 @@ dependencies {
     compile 'com.github.ittianyu:BottomNavigationViewEx:1.2.4'
     //    compile 'com.github.adrielcafe:AndroidAudioRecorder:0.3.0' // MIT
     compile project(':AndroidAudioRecord')
-    compile 'com.yanzhenjie:album:2.0.2'
 }
 apply plugin: 'com.google.gms.google-services'
 

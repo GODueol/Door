@@ -4,8 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -31,11 +29,10 @@ import com.example.kwoncheolhyeok.core.Entity.StringBoundary;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.Event.SetProfilePicEvent;
 import com.example.kwoncheolhyeok.core.R;
-import com.example.kwoncheolhyeok.core.Util.BitmapUtil;
 import com.example.kwoncheolhyeok.core.Util.BusProvider;
-import com.example.kwoncheolhyeok.core.Util.Camera.LoadPicture;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
+import com.example.kwoncheolhyeok.core.Util.GalleryPick;
 import com.example.kwoncheolhyeok.core.Util.UiUtil;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -130,6 +127,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 
     @Bind(R.id.delete4)
     ImageView delete4Image;
+    private GalleryPick galleryPick;
 
     // filter boundary
     enum FILTER {
@@ -139,8 +137,6 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
     private static final int minBoundary[] = {20, 100, 40};
     private static final int maxBoundary[] = {99, 220, 140};
 
-    private static final int REQUEST_GALLERY = 2;
-    private LoadPicture loadPicture;
     private ImageView modifyingPic;
 
     @SuppressLint("UseSparseArrays")
@@ -277,13 +273,15 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         }
 
         // Set Event of Getting Picture
-        loadPicture = new LoadPicture(this, this);
+        galleryPick = new GalleryPick(ProfileModifyActivity.this);
         View.OnClickListener onProfilePicClickListener = new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 modifyingPic = (ImageView) v;
-                loadPicture.onGallery();
+
+
+                galleryPick.goToGallery();
 
                 profilePic1.setClickable(false);
                 profilePic2.setClickable(false);
@@ -654,16 +652,12 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == RESULT_OK) {
-            if (requestCode == REQUEST_GALLERY) {
-                Uri outputFileUri = data.getData();
+            if (requestCode == GalleryPick.REQUEST_GALLERY && data != null && data.getData() != null) {
+                galleryPick.invoke(data);
+                if (galleryPick.is()) return;
 
-                uriMap.put(modifyingPic.getId(), outputFileUri);
-                String filePath = BitmapUtil.getRealPathFromURI(this, outputFileUri);
-                Bitmap originalBitmap  = BitmapFactory.decodeFile(filePath);
-                Bitmap orientedBitmap = BitmapUtil.rotateBitmap(filePath, originalBitmap);
-
-                modifyingPic.setImageBitmap(orientedBitmap);
-
+                uriMap.put(modifyingPic.getId(), galleryPick.getUri());
+                modifyingPic.setImageBitmap(galleryPick.getBitmap());
             }
         }
     }

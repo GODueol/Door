@@ -2,6 +2,7 @@ package com.example.kwoncheolhyeok.core.PeopleFragment;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,7 +70,7 @@ public class ImageAdapter extends BaseAdapter {
         TextView textView;
     }
 
-    @SuppressLint("DefaultLocale")
+    @SuppressLint({"DefaultLocale", "SetTextI18n"})
     @Override
     public View getView(int i, View v, ViewGroup viewGroup) {
         ViewHolder holder;
@@ -107,9 +108,16 @@ public class ImageAdapter extends BaseAdapter {
 
     void addItem(Item item){
         if(itemHashMap.containsKey(item.getUuid())){
-            mItems.remove(itemHashMap.get(item.getUuid()));
+            if(!mItems.remove(itemHashMap.get(item.getUuid()))){
+                Log.d("kbj r itemHashMapItem", itemHashMap.get(item.getUuid()).toString());
+                Log.d("kbj r mItems", mItems.toString());
+            }
         }
-        mItems.add(item);
+        if(!mItems.add(item)){
+            Log.d("kbj a item", item.toString());
+            Log.d("kbj a mItems", mItems.toString());
+
+        }
         itemHashMap.put(item.getUuid(), item);
     }
 
@@ -117,13 +125,11 @@ public class ImageAdapter extends BaseAdapter {
         return itemHashMap.get(uuid);
     }
 
-    boolean remove(String uuid){
-        if(!itemHashMap.containsKey(uuid)) return false;
+    void remove(String uuid){
+        if(!itemHashMap.containsKey(uuid)) return;
         if(mItems.remove(itemHashMap.get(uuid))) {
             itemHashMap.remove(uuid);
-            return true;
         }
-        return false;
     }
 
     void clear() {
@@ -142,6 +148,12 @@ public class ImageAdapter extends BaseAdapter {
         @Override
         public int hashCode() {
             return getUuid().hashCode();
+        }
+
+        @Override
+        public String toString() {
+            return "[ distance : " + distance + ", uuid : " + uuid + "]";
+//            return super.toString();
         }
 
         public Item(float distance, String uuid, User user, String picUrl) {

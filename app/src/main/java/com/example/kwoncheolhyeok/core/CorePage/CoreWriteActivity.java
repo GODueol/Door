@@ -2,28 +2,19 @@ package com.example.kwoncheolhyeok.core.CorePage;
 
 import android.animation.Animator;
 import android.app.Activity;
-import android.content.ContentUris;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.provider.DocumentsContract;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -36,10 +27,9 @@ import android.widget.ToggleButton;
 import com.bumptech.glide.Glide;
 import com.example.kwoncheolhyeok.core.Entity.CorePost;
 import com.example.kwoncheolhyeok.core.R;
-import com.example.kwoncheolhyeok.core.Util.BitmapUtil;
-import com.example.kwoncheolhyeok.core.Util.Camera.LoadPicture;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
+import com.example.kwoncheolhyeok.core.Util.GalleryPick;
 import com.example.kwoncheolhyeok.core.Util.UiUtil;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -55,12 +45,8 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Pattern;
 
 import cafe.adriel.androidaudiorecorder.AndroidAudioRecorder;
 import cafe.adriel.androidaudiorecorder.model.AudioChannel;
@@ -82,7 +68,6 @@ public class CoreWriteActivity extends AppCompatActivity {
     RelativeLayout image_edit_layout;
     View fabBGLayout;
     boolean isFABOpen = false;
-    private static final int REQUEST_GALLERY = 2;
     private static final int REQUEST_RECORD = 0;
 
     ImageView editImage;
@@ -93,7 +78,6 @@ public class CoreWriteActivity extends AppCompatActivity {
     private String cUuid;
     private String postKey;
     private String recordFilePath;
-    private RecordSelectDialog recordSelectDialog;
     private HashMap<Task, OnSuccessListener> tasks;
     private boolean isEdit = true;
     private DatabaseReference postRef;
@@ -107,10 +91,10 @@ public class CoreWriteActivity extends AppCompatActivity {
     private TextView textCurrentPosition;
     private ToggleButton startAndPause;
     private SeekBar seekBar;
-    private ViewTreeObserver vto;
     private Handler threadHandler = new Handler();
 
     private MediaPlayer mediaPlayer;
+    private GalleryPick galleryPick;
 
 
     @Override
@@ -182,60 +166,11 @@ public class CoreWriteActivity extends AppCompatActivity {
         });
 
         // Get Picture Btn Set
-        LoadPicture loadPicture = new LoadPicture(this, this);
-
         pictureFab_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                // ===========test =====
-
-                if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                    Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-                    intent.addCategory(Intent.CATEGORY_OPENABLE);
-                    intent.setType("image/*");
-                    startActivityForResult(Intent.createChooser(intent, "Select Picture"), 1);
-                } else {
-                    Intent intent = new Intent();
-                    intent.setType("image/*");
-                    intent.setAction(Intent.ACTION_GET_CONTENT);
-                    startActivityForResult(Intent.createChooser(intent, "Select Picture"), 1);
-                }
-                /*
-
-                // 사진파일 가져오기 라이브러리 적용
-                Album.image(CoreWriteActivity.this) // Image selection.
-                        .singleChoice()
-                        .requestCode(2)
-                        .camera(false)
-                        .onResult(new Action<ArrayList<AlbumFile>>() {
-                            @Override
-                            public void onAction(int requestCode, @NonNull ArrayList<AlbumFile> result) {
-                                AlbumFile albumFile = result.get(0);
-
-                                editImageUri = Uri.fromFile(new File(albumFile.getPath()));
-
-                                Bitmap originalBitmap  = BitmapFactory.decodeFile(albumFile.getPath());
-                                Bitmap orientedBitmap = BitmapUtil.rotateBitmap(albumFile.getPath(), originalBitmap);
-
-                                editImage.setImageBitmap(orientedBitmap);
-
-                                image_edit_layout.setVisibility(View.VISIBLE);
-                                closeFABMenu();
-                            }
-                        })
-                        .onCancel(new Action<String>() {
-                            @Override
-                            public void onAction(int requestCode, @NonNull String result) {
-                            }
-                        })
-                        .start();
-
-//                loadPicture.onGallery();
-                */
-
+                galleryPick = new GalleryPick(CoreWriteActivity.this).goToGallery();
                 pictureFab_layout.setClickable(false);
-
             }
         });
 
@@ -253,12 +188,11 @@ public class CoreWriteActivity extends AppCompatActivity {
                 // 다이얼로그 녹음
                 recordFilePath = Environment.getExternalStorageDirectory() + "/recorded_audio.wav";
                 int color = getResources().getColor(R.color.white);
-                int requestCode = 0;
                 AndroidAudioRecorder.with(CoreWriteActivity.this)
                         // Required
                         .setFilePath(recordFilePath)
                         .setColor(color)
-                        .setRequestCode(requestCode)
+                        .setRequestCode(REQUEST_RECORD)
 
                         // Optional
                         .setSource(AudioSource.MIC)
@@ -471,18 +405,11 @@ public class CoreWriteActivity extends AppCompatActivity {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == RESULT_OK) {
-            if (requestCode == REQUEST_GALLERY) {
-                editImageUri = data.getData();
-                editImage.setImageURI(editImageUri);   // Local Set
-                closeFABMenu();
-                return;
-            }
             if(requestCode == REQUEST_RECORD){
                 // Great! User has recorded and saved the audio file
                 // 파일 저장
@@ -502,182 +429,17 @@ public class CoreWriteActivity extends AppCompatActivity {
                 closeFABMenu();
                 return;
             }
-            if (data != null && data.getData() != null) {
-                boolean isImageFromGoogleDrive = false;
-                Uri uri = data.getData();
+            if (requestCode == GalleryPick.REQUEST_GALLERY && data != null && data.getData() != null) {
+                galleryPick.invoke(data);
+                if (galleryPick.is()) return;
+                Uri uri = galleryPick.getUri();
+                Bitmap originalBitmap = galleryPick.getBitmap();
 
-                String imgPath = null;
-                ImageView img = null;
+                editImageUri = uri;
+                editImage.setImageBitmap(originalBitmap);
+                image_edit_layout.setVisibility(View.VISIBLE);
+                closeFABMenu();
 
-                if (DocumentsContract.isDocumentUri(CoreWriteActivity.this, uri)) {
-                    if ("com.android.externalstorage.documents".equals(uri.getAuthority())) {
-                        String docId = DocumentsContract.getDocumentId(uri);
-                        String[] split = docId.split(":");
-                        String type = split[0];
-
-                        if ("primary".equalsIgnoreCase(type)) {
-                            imgPath = Environment.getExternalStorageDirectory() + "/" + split[1];
-                        }
-                        else {
-                            Pattern DIR_SEPORATOR = Pattern.compile("/");
-                            Set<String> rv = new HashSet<>();
-                            String rawExternalStorage = System.getenv("EXTERNAL_STORAGE");
-                            String rawSecondaryStoragesStr = System.getenv("SECONDARY_STORAGE");
-                            String rawEmulatedStorageTarget = System.getenv("EMULATED_STORAGE_TARGET");
-                            if(TextUtils.isEmpty(rawEmulatedStorageTarget))
-                            {
-                                if(TextUtils.isEmpty(rawExternalStorage))
-                                {
-                                    rv.add("/storage/sdcard0");
-                                }
-                                else
-                                {
-                                    rv.add(rawExternalStorage);
-                                }
-                            }
-                            else
-                            {
-                                String rawUserId;
-                                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1)
-                                {
-                                    rawUserId = "";
-                                }
-                                else
-                                {
-                                    String path = Environment.getExternalStorageDirectory().getAbsolutePath();
-                                    String[] folders = DIR_SEPORATOR.split(path);
-                                    String lastFolder = folders[folders.length - 1];
-                                    boolean isDigit = false;
-                                    try
-                                    {
-                                        Integer.valueOf(lastFolder);
-                                        isDigit = true;
-                                    }
-                                    catch(NumberFormatException ignored)
-                                    {
-                                    }
-                                    rawUserId = isDigit ? lastFolder : "";
-                                }
-                                if(TextUtils.isEmpty(rawUserId))
-                                {
-                                    rv.add(rawEmulatedStorageTarget);
-                                }
-                                else
-                                {
-                                    rv.add(rawEmulatedStorageTarget + File.separator + rawUserId);
-                                }
-                            }
-                            if(!TextUtils.isEmpty(rawSecondaryStoragesStr))
-                            {
-                                String[] rawSecondaryStorages = rawSecondaryStoragesStr.split(File.pathSeparator);
-                                Collections.addAll(rv, rawSecondaryStorages);
-                            }
-                            String[] temp = rv.toArray(new String[rv.size()]);
-                            for (String aTemp : temp) {
-                                File tempf = new File(aTemp + "/" + split[1]);
-                                if (tempf.exists()) {
-                                    imgPath = aTemp + "/" + split[1];
-                                }
-                            }
-                        }
-                    }
-                    else if ("com.android.providers.downloads.documents".equals(uri.getAuthority())) {
-                        String id = DocumentsContract.getDocumentId(uri);
-                        Uri contentUri = ContentUris.withAppendedId( Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
-
-                        Cursor cursor = null;
-                        String column = "_data";
-                        String[] projection = { column };
-                        try {
-                            cursor = CoreWriteActivity.this.getContentResolver().query(contentUri, projection, null, null,
-                                    null);
-                            if (cursor != null && cursor.moveToFirst()) {
-                                int column_index = cursor.getColumnIndexOrThrow(column);
-                                imgPath = cursor.getString(column_index);
-                            }
-                        } finally {
-                            if (cursor != null)
-                                cursor.close();
-                        }
-                    }
-                    else if("com.android.providers.media.documents".equals(uri.getAuthority())) {
-                        String docId = DocumentsContract.getDocumentId(uri);
-                        String[] split = docId.split(":");
-                        String type = split[0];
-
-                        Uri contentUri = null;
-                        if ("image".equals(type)) {
-                            contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-                        } else if ("video".equals(type)) {
-                            contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
-                        } else if ("audio".equals(type)) {
-                            contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-                        }
-
-                        String selection = "_id=?";
-                        String[] selectionArgs = new String[]{ split[1] };
-
-                        Cursor cursor = null;
-                        String column = "_data";
-                        String[] projection = { column };
-
-                        try {
-                            cursor = CoreWriteActivity.this.getContentResolver().query(contentUri, projection, selection, selectionArgs, null);
-                            if (cursor != null && cursor.moveToFirst()) {
-                                int column_index = cursor.getColumnIndexOrThrow(column);
-                                imgPath = cursor.getString(column_index);
-                            }
-                        } finally {
-                            if (cursor != null)
-                                cursor.close();
-                        }
-                    }
-                    else if("com.google.android.apps.docs.storage".equals(uri.getAuthority()))   {
-                        isImageFromGoogleDrive = true;
-                    }
-                }
-                else if ("content".equalsIgnoreCase(uri.getScheme())) {
-                    Cursor cursor = null;
-                    String column = "_data";
-                    String[] projection = { column };
-
-                    try {
-                        cursor = CoreWriteActivity.this.getContentResolver().query(uri, projection, null, null, null);
-                        if (cursor != null && cursor.moveToFirst()) {
-                            int column_index = cursor.getColumnIndexOrThrow(column);
-                            imgPath = cursor.getString(column_index);
-                        }
-                    }
-                    finally {
-                        if (cursor != null)
-                            cursor.close();
-                    }
-                }
-                else if ("file".equalsIgnoreCase(uri.getScheme())) {
-                    imgPath = uri.getPath();
-                }
-
-                if(isImageFromGoogleDrive)  {
-                    try {
-                        Bitmap bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(uri));
-                        img.setImageBitmap(bitmap);
-                    }
-                    catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-                else    {
-
-                    File f = new File(imgPath);
-                    BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-                    Bitmap originalBitmap = BitmapFactory.decodeFile(f.getAbsolutePath(),bmOptions);
-                    editImageUri = uri;
-                    Bitmap orientedBitmap = BitmapUtil.rotateBitmap(imgPath, originalBitmap);
-                    editImage.setImageBitmap(orientedBitmap);
-                    image_edit_layout.setVisibility(View.VISIBLE);
-                    closeFABMenu();
-
-                }
             }
         }
 
@@ -817,4 +579,5 @@ public class CoreWriteActivity extends AppCompatActivity {
         super.onPause();
         startAndPause.setChecked(false);
     }
+
 }
