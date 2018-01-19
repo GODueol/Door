@@ -39,6 +39,7 @@ import com.example.kwoncheolhyeok.core.SettingActivity.SettingActivity;
 import com.example.kwoncheolhyeok.core.Util.BusProvider;
 import com.example.kwoncheolhyeok.core.Util.CloseActivityHandler;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
+import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
 import com.example.kwoncheolhyeok.core.Util.UiUtil;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -255,11 +256,11 @@ public class MainActivity extends AppCompatActivity
                     "모든 유저 대상으로 블럭을 해제하시겠습니까?", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int whichButton) {
                     UiUtil.getInstance().startProgressDialog(MainActivity.this);
-                    user.getBlockUsers().clear();
-                    DataContainer.getInstance().getUsersRef().child(DataContainer.getInstance().getUid()).setValue(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+
+                    FireBaseUtil.getInstance().allUnblock(user.getBlockUsers()).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
-                            DataContainer.getInstance().setUser(user);
+                            user.getBlockUsers().clear();
                             BusProvider.getInstance().post(new RefreshLocationEvent());
                         }
                     }).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -268,6 +269,7 @@ public class MainActivity extends AppCompatActivity
                             UiUtil.getInstance().stopProgressDialog();
                         }
                     });
+
                 }
             }, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int whichButton) {

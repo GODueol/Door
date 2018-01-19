@@ -27,9 +27,15 @@ public class User implements Serializable{
     private PictureUrls picUrls = new PictureUrls();
     private IsLockPictures isLockPics = new IsLockPictures();
 
+    private int corePostCount;
+    private long loginDate;
+    private boolean isUseFilter;
+
     private Map<String, Long> unLockUsers = new HashMap<>();    // uuid, 추가 시간
 
     private Map<String, Long> blockUsers = new HashMap<>();    // uuid, 추가 시간
+
+    private Map<String, Long> blockMeUsers = new HashMap<>();    // uuid, 추가 시간
 
     private Map<String, Long> followingUsers = new HashMap<>();    // uuid, 추가 시간
 
@@ -41,7 +47,13 @@ public class User implements Serializable{
 
     private Map<String, Long> viewedMeUsers = new HashMap<>();    // uuid, 추가 시간
 
-    private int corePostCount;
+    public Map<String, Long> getBlockMeUsers() {
+        return blockMeUsers;
+    }
+
+    public void setBlockMeUsers(Map<String, Long> blockMeUsers) {
+        this.blockMeUsers = blockMeUsers;
+    }
 
     public int getCorePostCount() {
         return corePostCount;
@@ -123,8 +135,6 @@ public class User implements Serializable{
         this.isLockPics = isLockPics;
     }
 
-    private long loginDate;
-
     public long getLoginDate() {
         return loginDate;
     }
@@ -133,7 +143,6 @@ public class User implements Serializable{
         this.loginDate = loginDate;
     }
 
-    private boolean isUseFilter;
 
     public boolean isUseFilter() {
         return isUseFilter;

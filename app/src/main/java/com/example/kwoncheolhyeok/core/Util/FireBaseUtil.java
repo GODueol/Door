@@ -100,7 +100,9 @@ public class FireBaseUtil {
         // block 리스트 삭제
         // 로컬 상에서 Block 리스트 추가
         mUser.getBlockUsers().put(oUuid, now);
-        childUpdate.put("/" + mUuid + "/blockUsers/" + oUuid, now);  // DB 상에서 Block 리스트 추가
+        childUpdate.put("/" + mUuid + "/blockUsers/" + oUuid, now);  // DB 상에서 본인 Block 리스트 추가
+        childUpdate.put("/" + oUuid + "/blockMeUsers/" + mUuid, now);  // DB 상에서 상대 BlockMe 리스트 추가
+
 
         // 내 팔로우 관계 모두 삭제(로컬)
         mUser.getFollowerUsers().remove(oUuid);
@@ -131,6 +133,7 @@ public class FireBaseUtil {
                     FirebaseDatabase.getInstance().getReference("chatRoomList").child(mUuid).child(oUuid).removeValue();
                     FirebaseDatabase.getInstance().getReference("chatRoomList").child(oUuid).child(mUuid).removeValue();
                 }catch (Exception e){
+                    e.printStackTrace();
                 }
             }
             @Override
@@ -164,8 +167,29 @@ public class FireBaseUtil {
         });
     }
 
-    public Task<Void> unblock(String uuid) {
-        DataContainer.getInstance().getUser().getBlockUsers().remove(uuid);
-        return DataContainer.getInstance().getMyUserRef().child("blockUsers").child(uuid).setValue(null);
+    public Task<Void> unblock(String oUuid) {
+
+        DatabaseReference mDatabase = DataContainer.getInstance().getUsersRef();
+        String mUuid = DataContainer.getInstance().getUid();
+        final Map<String, Object> childUpdate = new HashMap<>();
+
+        childUpdate.put("/" + oUuid + "/blockMeUsers/" + mUuid, null);
+        childUpdate.put("/" + mUuid + "/blockUsers/" + oUuid, null);
+
+        return mDatabase.updateChildren(childUpdate);
+    }
+
+    public Task allUnblock(Map<String,Long> blockUsers){
+        DatabaseReference mDatabase = DataContainer.getInstance().getUsersRef();
+        String mUuid = DataContainer.getInstance().getUid();
+        final Map<String, Object> childUpdate = new HashMap<>();
+
+        for(String oUuid : blockUsers.keySet()) {
+            childUpdate.put("/" + oUuid + "/blockMeUsers/" + mUuid, null);
+        }
+
+        childUpdate.put("/" + mUuid + "/blockUsers", null);
+
+        return mDatabase.updateChildren(childUpdate);
     }
 }
