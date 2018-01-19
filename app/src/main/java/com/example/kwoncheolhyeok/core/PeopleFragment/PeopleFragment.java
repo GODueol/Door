@@ -128,7 +128,7 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         User oUser = dataSnapshot.getValue(User.class);
-                        if(isInBlock(oUser, oUuid) || !isInFilter(oUser)){
+                        if(isInBlock(oUuid) || !isInFilter(oUser)){
                             onKeyExited(oUuid);
                             return;
                         }
@@ -200,9 +200,9 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
         });
     }
 
-    private boolean isInBlock(User oUser, String oUuid) {
+    private boolean isInBlock(String oUuid) {
         String mUuid = DataContainer.getInstance().getUid();
-        return oUser.getBlockUsers().containsKey(mUuid) || mUser.getBlockUsers().containsKey(oUuid);
+        return mUser.getBlockMeUsers().containsKey(mUuid) || mUser.getBlockUsers().containsKey(oUuid);
     }
 
     private boolean isInFilter(User oUser) {
