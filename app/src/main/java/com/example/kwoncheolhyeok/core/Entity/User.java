@@ -47,6 +47,11 @@ public class User implements Serializable{
 
     private Map<String, Long> viewedMeUsers = new HashMap<>();    // uuid, 추가 시간
 
+
+    public SummaryUser getSummaryUser(){
+        return new SummaryUser(getPicUrls().getPicUrl1(), age, height, weight, bodyType, corePostCount);
+    }
+
     public Map<String, Long> getBlockMeUsers() {
         return blockMeUsers;
     }
@@ -251,5 +256,73 @@ public class User implements Serializable{
 
     public  String getTotalProfile(){
         return getAge()+" / "+getHeight()+" / "+getWeight()+" / "+getBodyType();
+    }
+
+    public class SummaryUser{
+        String pictureUrl;
+
+        private int age;
+        private int height;
+        private int weight;
+        private String bodyType;
+
+        private int corePostCount;
+
+        public SummaryUser(String pictureUrl, int age, int height, int weight, String bodyType, int corePostCount) {
+            this.pictureUrl = pictureUrl;
+            this.age = age;
+            this.height = height;
+            this.weight = weight;
+            this.bodyType = bodyType;
+            this.corePostCount = corePostCount;
+        }
+
+        public String getPictureUrl() {
+            return pictureUrl;
+        }
+
+        public void setPictureUrl(String pictureUrl) {
+            this.pictureUrl = pictureUrl;
+        }
+
+        public int getAge() {
+            return age;
+        }
+
+        public void setAge(int age) {
+            this.age = age;
+        }
+
+        public int getHeight() {
+            return height;
+        }
+
+        public void setHeight(int height) {
+            this.height = height;
+        }
+
+        public int getWeight() {
+            return weight;
+        }
+
+        public void setWeight(int weight) {
+            this.weight = weight;
+        }
+
+        public String getBodyType() {
+            return bodyType;
+        }
+
+        public void setBodyType(String bodyType) {
+            this.bodyType = bodyType;
+        }
+
+        public int getCorePostCount() {
+            return corePostCount;
+        }
+
+        public void setCorePostCount(int corePostCount) {
+            this.corePostCount = corePostCount;
+        }
     }
 }

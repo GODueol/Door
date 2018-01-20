@@ -29,9 +29,9 @@ public class ImageAdapter extends BaseAdapter {
             if(item2.getUuid().equals(DataContainer.getInstance().getUid())) return 1;   // 1. 본인계정
             if(item1.getUuid().equals(DataContainer.getInstance().getUid())) return -1;   // 1. 본인계정
             if(item1.distance != item2.distance) {
-                int diff = (int) (item1.distance - item2.distance);
-                if(diff<0) return -1;
-                if(diff>0) return 1;
+                float diff = (item1.distance - item2.distance);
+                if(diff<0.0) return -1;
+                if(diff>0.0) return 1;
                 return 0;
             }
 
