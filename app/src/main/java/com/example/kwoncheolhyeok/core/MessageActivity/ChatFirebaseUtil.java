@@ -13,7 +13,7 @@ import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.MessageActivity.util.CryptoImeageName;
 import com.example.kwoncheolhyeok.core.MessageActivity.util.MessageVO;
 import com.example.kwoncheolhyeok.core.MessageActivity.util.RoomVO;
-import com.example.kwoncheolhyeok.core.PeopleFragment.ImageAdapter;
+import com.example.kwoncheolhyeok.core.PeopleFragment.GridItem;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
 import com.example.kwoncheolhyeok.core.Util.GPSInfo;
 import com.firebase.geofire.GeoFire;
@@ -61,7 +61,7 @@ public class ChatFirebaseUtil {
     ///////////////////////
     private int messageWeight = 1;
     private boolean destroy = false;
-    private ImageAdapter.Item item;
+    private GridItem item;
     private ChattingMessageAdapter chattingMessageAdapter;
     private RecyclerView chattingRecyclerview;
     private List<String> childKeyList;
@@ -178,7 +178,7 @@ public class ChatFirebaseUtil {
                     databaseRef.updateChildren(childUpdates);
                     chatRoomRef.child(userUuid).child(targetUuid).child("lastViewTime").setValue(currentTime);
                 }
-                item = new ImageAdapter.Item(0, targetUuid, targetUser, targetPicuri);
+                item = new GridItem(0, targetUuid, targetUser.getSummaryUser(), targetPicuri);
                 // 상대방과의 거리 셋팅
                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference(FireBaseUtil.currentLocationPath);
                 GeoFire geoFire = new GeoFire(ref);
@@ -392,7 +392,7 @@ public class ChatFirebaseUtil {
         chatDatabaseRef.removeEventListener(chatLoadListener);
     }
 
-    public ImageAdapter.Item getItem() {
+    public GridItem getItem() {
         return item;
     }
 

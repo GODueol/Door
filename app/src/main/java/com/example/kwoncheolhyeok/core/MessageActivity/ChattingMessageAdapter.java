@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,11 +18,10 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.example.kwoncheolhyeok.core.MessageActivity.util.DateUtil;
 import com.example.kwoncheolhyeok.core.PeopleFragment.FullImageActivity;
-import com.example.kwoncheolhyeok.core.PeopleFragment.ImageAdapter;
+import com.example.kwoncheolhyeok.core.PeopleFragment.GridItem;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.GlideApp;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -36,7 +34,7 @@ public class ChattingMessageAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     private static final int MY_MESSAGE = 0, OTHER_MESSAGE = 1, MY_IMAGE = 2, OTHER_IMAGE = 3;
     private ChattingMessageAdapter.OnCallbackList onCallbackList;
     private List<ChatMessage> itemList;
-    private ImageAdapter.Item item;
+    private GridItem item;
     RequestListener requestListener;
 
     private Context context;

@@ -1,12 +1,12 @@
 package com.example.kwoncheolhyeok.core.Util;
 
-import com.example.kwoncheolhyeok.core.PeopleFragment.ImageAdapter;
+import com.example.kwoncheolhyeok.core.PeopleFragment.GridItem;
 
 import java.util.Comparator;
 import java.util.TreeSet;
 
 public class IndexedTreeSet<K> extends TreeSet<K> {
-    public IndexedTreeSet(Comparator<ImageAdapter.Item> comparable) {
+    public IndexedTreeSet(Comparator<GridItem> comparable) {
         super((Comparator<? super K>) comparable);
     }
 

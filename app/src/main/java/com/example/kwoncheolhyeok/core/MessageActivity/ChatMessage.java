@@ -1,7 +1,7 @@
 package com.example.kwoncheolhyeok.core.MessageActivity;
 
 import com.example.kwoncheolhyeok.core.MessageActivity.util.MessageVO;
-import com.example.kwoncheolhyeok.core.PeopleFragment.ImageAdapter;
+import com.example.kwoncheolhyeok.core.PeopleFragment.GridItem;
 
 /**
  * Created by himanshusoni on 06/09/15.
@@ -17,7 +17,7 @@ public class ChatMessage {
     private String image;
     private Long time;
     private int check;
-    private ImageAdapter.Item item;
+    private GridItem item;
 
 
     public ChatMessage(MessageVO message, boolean mine, boolean isImage) {
@@ -28,7 +28,7 @@ public class ChatMessage {
         isMine = mine;
         this.isImage = isImage;
     }
-    public ChatMessage(MessageVO message, boolean mine, boolean image, ImageAdapter.Item item) {
+    public ChatMessage(MessageVO message, boolean mine, boolean image, GridItem item) {
         content = message.getContent();
         time = message.getTime();
         check = message.getCheck();
@@ -96,11 +96,11 @@ public class ChatMessage {
     }
 
 
-    public ImageAdapter.Item getItem() {
+    public GridItem getItem() {
         return item;
     }
 
-    public void setItem(ImageAdapter.Item item) {
+    public void setItem(GridItem item) {
         this.item = item;
     }
 

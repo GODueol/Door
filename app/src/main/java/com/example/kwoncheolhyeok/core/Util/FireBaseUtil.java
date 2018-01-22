@@ -41,7 +41,7 @@ public class FireBaseUtil {
     public Task<Void> follow(final User oUser, String oUuid, boolean isFollowed) {
         String myUuid = DataContainer.getInstance().getUid();
         final User mUser = DataContainer.getInstance().getUser();
-        //final User oUser = item.getUser();
+        //final User oUser = item.getSummaryUser();
         DatabaseReference mDatabase = DataContainer.getInstance().getUsersRef();
         Map<String, Object> childUpdates = new HashMap<>();
 
@@ -144,7 +144,7 @@ public class FireBaseUtil {
     }
 
     public void syncCorePostCount(String cUuid){
-        final DatabaseReference corePostCountRef = DataContainer.getInstance().getUserRef(cUuid).child("corePostCount");
+        final DatabaseReference corePostCountRef = DataContainer.getInstance().getUserRef(cUuid);
         DatabaseReference postRef = FirebaseDatabase.getInstance().getReference()
                 .child("posts").child(cUuid);
         postRef.runTransaction(new Transaction.Handler() {
@@ -156,7 +156,13 @@ public class FireBaseUtil {
                     count = ((Map)mutableData.getValue()).size();
                 }
 
-                corePostCountRef.setValue(count);
+                final Map<String, Object> childUpdate = new HashMap<>();
+
+                childUpdate.put("/corePostCount", count);
+                childUpdate.put("/summaryUser/corePostCount", count);
+
+                corePostCountRef.updateChildren(childUpdate);
+
                 return Transaction.success(mutableData);
             }
 

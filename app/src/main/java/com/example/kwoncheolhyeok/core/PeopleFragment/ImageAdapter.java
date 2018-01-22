@@ -10,21 +10,19 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.GlideApp;
 import com.example.kwoncheolhyeok.core.Util.IndexedTreeSet;
 
-import java.io.Serializable;
 import java.util.Comparator;
 import java.util.HashMap;
 
 public class ImageAdapter extends BaseAdapter {
 
-    private IndexedTreeSet<Item> mItems = new IndexedTreeSet<>(new Comparator<Item>() {
+    private IndexedTreeSet<GridItem> mItems = new IndexedTreeSet<>(new Comparator<GridItem>() {
         @Override
-        public int compare(Item item1, Item item2) {
+        public int compare(GridItem item1, GridItem item2) {
             if(item1.getUuid().equals(item2.getUuid())) return 0;
             if(item2.getUuid().equals(DataContainer.getInstance().getUid())) return 1;   // 1. 본인계정
             if(item1.getUuid().equals(DataContainer.getInstance().getUid())) return -1;   // 1. 본인계정
@@ -42,7 +40,7 @@ public class ImageAdapter extends BaseAdapter {
         }
     });
 
-    private HashMap<String, Item> itemHashMap = new HashMap<>();
+    private HashMap<String, GridItem> itemHashMap = new HashMap<>();
 
     private final LayoutInflater mInflater;
 
@@ -56,8 +54,8 @@ public class ImageAdapter extends BaseAdapter {
     }
 
     @Override
-    public Item getItem(int i) {
-        return (Item) mItems.toArray()[i];
+    public GridItem getItem(int i) {
+        return (GridItem) mItems.toArray()[i];
     }
 
     @Override
@@ -74,7 +72,7 @@ public class ImageAdapter extends BaseAdapter {
     @Override
     public View getView(int i, View v, ViewGroup viewGroup) {
         ViewHolder holder;
-        Item item;
+        GridItem item;
         try {
             item = getItem(i);
         } catch (Exception e){
@@ -100,13 +98,13 @@ public class ImageAdapter extends BaseAdapter {
                 .into(holder.imageView);
 
         // 거리 출력
-        holder.textView.setText(item.getUser().getCorePostCount()+ " CORE" );
+        holder.textView.setText(item.getSummaryUser().getCorePostCount()+ " CORE" );
         holder.textView.setTextSize((float) 15.5);
 
         return v;
     }
 
-    void addItem(Item item){
+    void addItem(GridItem item){
         if(itemHashMap.containsKey(item.getUuid())){
             if(!mItems.remove(itemHashMap.get(item.getUuid()))){
                 Log.d("kbj r itemHashMapItem", itemHashMap.get(item.getUuid()).toString());
@@ -121,7 +119,7 @@ public class ImageAdapter extends BaseAdapter {
         itemHashMap.put(item.getUuid(), item);
     }
 
-    Item getItem(String uuid){
+    GridItem getItem(String uuid){
         return itemHashMap.get(uuid);
     }
 
@@ -138,61 +136,4 @@ public class ImageAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
-    public static class Item implements Serializable {
-
-        float distance;
-        String uuid;
-        User user;
-        String picUrl;
-
-        @Override
-        public int hashCode() {
-            return getUuid().hashCode();
-        }
-
-        @Override
-        public String toString() {
-            return "[ distance : " + distance + ", uuid : " + uuid + "]";
-//            return super.toString();
-        }
-
-        public Item(float distance, String uuid, User user, String picUrl) {
-            this.distance = distance;
-            this.uuid = uuid;
-            this.user = user;
-            this.picUrl = picUrl;
-        }
-
-        public String getPicUrl() {
-            return picUrl;
-        }
-
-        public void setPicUrl(String picUrl) {
-            this.picUrl = picUrl;
-        }
-
-        float getDistance() {
-            return distance;
-        }
-
-        public void setDistance(float distance) {
-            this.distance = distance;
-        }
-
-        public String getUuid() {
-            return uuid;
-        }
-
-        public void setUuid(String uuid) {
-            this.uuid = uuid;
-        }
-
-        public User getUser() {
-            return user;
-        }
-
-        public void setUser(User user) {
-            this.user = user;
-        }
-    }
 }

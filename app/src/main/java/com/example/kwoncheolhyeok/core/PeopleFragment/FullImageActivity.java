@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -21,7 +20,6 @@ import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.MessageActivity.ChattingActivity;
 import com.example.kwoncheolhyeok.core.PeopleFragment.FullImageViewPager.DetailImageActivity;
 import com.example.kwoncheolhyeok.core.R;
-import com.example.kwoncheolhyeok.core.ScreenshotSetApplication;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
 import com.example.kwoncheolhyeok.core.Util.GPSInfo;
@@ -89,7 +87,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
 
     @Bind(R.id.core_counts)
     TextView corePostCount;
-
+    private User oUser;
 
 
     @SuppressLint("DefaultLocale")
@@ -123,19 +121,20 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         page4.setOnClickListener(this);
 
         Intent p = getIntent();
-        final ImageAdapter.Item item = (ImageAdapter.Item) p.getSerializableExtra("item");
-
-        // viewedMeUser
-        setViewedMeUsers(item);
+        final GridItem item = (GridItem) p.getSerializableExtra("item");
 
         // 리스너를 달아서 실시간 정보 변경
         UiUtil.getInstance().startProgressDialog(FullImageActivity.this);
         DataContainer.getInstance().getUserRef(item.getUuid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+
+                // viewedMeUser
                 UiUtil.getInstance().stopProgressDialog();
-                item.setUser(dataSnapshot.getValue(User.class));
+                oUser = dataSnapshot.getValue(User.class);
+                item.setSummaryUser(oUser.getSummaryUser());
                 setView(item);
+                setViewedMeUsers(item);
             }
 
             @Override
@@ -146,7 +145,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
     }
 
     @SuppressLint("SetTextI18n")
-    private void setView(final ImageAdapter.Item item) {
+    private void setView(final GridItem item) {
         if (item.getUuid().equals(DataContainer.getInstance().getUid())) {  // 본인
             message.setVisibility(View.INVISIBLE);  // 가림
         } else {
@@ -154,7 +153,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(getApplicationContext(), ChattingActivity.class);
-                    intent.putExtra("user", item.getUser());
+                    intent.putExtra("user", oUser);
                     intent.putExtra("userUuid", item.getUuid());
                     intent.putExtra("userPicuri", item.getPicUrl());
                     startActivity(intent);
@@ -172,13 +171,12 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         });
 
         // 개인정보 Set
-        User oUser = item.getUser();
         textId.setText(oUser.getId());
         textPhysical.setText(UiUtil.getInstance().setSubProfile(oUser));
         textIntroduce.setText(oUser.getIntro());
 
         // 코어 카운트
-        corePostCount.setText(Integer.toString(oUser.getCorePostCount()));
+        corePostCount.setText(Integer.toString(oUser.getSummaryUser().getCorePostCount()));
 
         // 거리 Set
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(FireBaseUtil.currentLocationPath);
@@ -229,7 +227,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
 
     }
 
-    public void setViewedMeUsers(ImageAdapter.Item item) {
+    public void setViewedMeUsers(GridItem item) {
 
         if(item.getUuid().equals(DataContainer.getInstance().getUid())) return; // 자신일 경우
 
@@ -237,7 +235,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
 
         Map<String, Object> childUpdate = new HashMap<>();
 
-        Map<String, Long> viewedMeUsers = item.getUser().getViewedMeUsers();
+        Map<String, Long> viewedMeUsers = oUser.getViewedMeUsers();
 
         if (viewedMeUsers.size() >= 45) {   // 데이터 관리 갯수 45
             long min = -1;
@@ -257,13 +255,13 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
 
     }
 
-    private void setFollowing(final ImageAdapter.Item item) {
+    private void setFollowing(final GridItem item) {
         final String myUuid = DataContainer.getInstance().getUid();
         if (item.getUuid().equals(myUuid)) {  // 본인
             addFriends.setVisibility(View.INVISIBLE);  // 가림
             return;
         }
-        if (item.getUser().getFollowerUsers().containsKey(myUuid)) {   //  이미 팔로우함
+        if (oUser.getFollowerUsers().containsKey(myUuid)) {   //  이미 팔로우함
             addFriends.setImageResource(R.drawable.unfollow); // 팔로우 취소 버튼
         } else {
             addFriends.setImageResource(R.drawable.follow); // 팔로우 버튼
@@ -273,7 +271,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
             @Override
             public void onClick(View view) {
                 String title, message;
-                final boolean isFollow = item.getUser().getFollowerUsers().containsKey(myUuid);  // 이미 팔로우한 유저
+                final boolean isFollow = oUser.getFollowerUsers().containsKey(myUuid);  // 이미 팔로우한 유저
                 if (isFollow) {
                     title = "팔로우 해제";
                     message = "해당유저를 팔로우해제하시겠습니까?";
@@ -287,7 +285,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
                         UiUtil.getInstance().startProgressDialog(FullImageActivity.this);
 
                         // 내 following 추가, 유저 follower c추가
-                        Task<Void> task = FireBaseUtil.getInstance().follow(item.getUser(), item.getUuid(), isFollow);
+                        Task<Void> task = FireBaseUtil.getInstance().follow(oUser, item.getUuid(), isFollow);
                         if(task == null) {
                             Toast.makeText(getBaseContext(),"오류 발생", Toast.LENGTH_SHORT).show();
                             UiUtil.getInstance().stopProgressDialog();
@@ -296,7 +294,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
                         task.addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
-                                if (item.getUser().getFollowerUsers().containsKey(myUuid)) {   //  이미 팔로우함
+                                if (oUser.getFollowerUsers().containsKey(myUuid)) {   //  이미 팔로우함
                                     addFriends.setImageResource(R.drawable.unfollow); // 팔로우 취소 버튼
                                 } else {
                                     addFriends.setImageResource(R.drawable.follow); // 팔로우 버튼
@@ -318,7 +316,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         });
     }
 
-    private void setBlock(final ImageAdapter.Item item) {
+    private void setBlock(final GridItem item) {
         final String myUuid = DataContainer.getInstance().getUid();
         if (item.getUuid().equals(myUuid)) {  // 본인
             blockFriends.setVisibility(View.INVISIBLE);  // 가림
@@ -352,7 +350,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         });
     }
 
-    private void setPicLock(final ImageAdapter.Item item) {
+    private void setPicLock(final GridItem item) {
         final String myUuid = DataContainer.getInstance().getUid();
         final User mUser = DataContainer.getInstance().getUser();
 

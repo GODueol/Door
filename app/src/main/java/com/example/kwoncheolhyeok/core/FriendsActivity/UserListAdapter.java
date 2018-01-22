@@ -11,18 +11,16 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.PeopleFragment.FullImageActivity;
-import com.example.kwoncheolhyeok.core.PeopleFragment.ImageAdapter;
+import com.example.kwoncheolhyeok.core.PeopleFragment.GridItem;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
@@ -100,7 +98,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
             public void onClick(View view) {
                 Intent p = new Intent(view.getContext(), FullImageActivity.class);
 
-                p.putExtra("item", new ImageAdapter.Item(0, item.getUuid(), user, ""));
+                p.putExtra("item", new GridItem(0, item.getUuid(), user.getSummaryUser(), ""));
 
                 view.getContext().startActivity(p);
             }

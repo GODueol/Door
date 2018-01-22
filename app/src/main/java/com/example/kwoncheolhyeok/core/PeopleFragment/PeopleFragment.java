@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
 
+import com.example.kwoncheolhyeok.core.Entity.SummaryUser;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.Event.RefreshLocationEvent;
 import com.example.kwoncheolhyeok.core.R;
@@ -86,7 +87,7 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
         };
         mSwipeRefreshLayout.setOnRefreshListener(onRefreshListener);
 
-        mUser = DataContainer.getInstance().getUser();  // user 정보 가져옴
+        mUser = DataContainer.getInstance().getUser();  // summaryUser 정보 가져옴
 
         bus = BusProvider.getInstance();
 
@@ -104,9 +105,6 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
 
     @Subscribe
     public void refreshGrid(RefreshLocationEvent pushEvent) {
-        // 데이터 비움
-//        imageAdapter.clear();
-//        imageAdapter.notifyDataSetChanged();
 
         // 현재 자신의 위치를 가져옴
         saveMyGPS();
@@ -123,18 +121,18 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
             @Override
             public void onKeyEntered(final String oUuid, final GeoLocation geoLocation) {
 
-                DataContainer.getInstance().getUserRef(oUuid).addListenerForSingleValueEvent(new ValueEventListener() {
+                DataContainer.getInstance().getUserRef(oUuid).child("summaryUser").addListenerForSingleValueEvent(new ValueEventListener() {
 
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        User oUser = dataSnapshot.getValue(User.class);
-                        if(isInBlock(oUuid) || !isInFilter(oUser)){
+                        SummaryUser oSummary = dataSnapshot.getValue(SummaryUser.class);
+                        if(isInBlock(oUuid) || !isInFilter(oSummary)){
                             onKeyExited(oUuid);
                             return;
                         }
 
                         Log.d(getClass().toString(),String.format("Key %s entered the search area at [%f,%f]", oUuid, geoLocation.latitude, geoLocation.longitude));
-                        addItemToGrid(oUuid, geoLocation, oUser);
+                        addItemToGrid(oUuid, geoLocation, oSummary);
                     }
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
@@ -143,7 +141,7 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
                 });
             }
 
-            private void addItemToGrid(final String key, GeoLocation geoLocation, final User oUser) {
+            private void addItemToGrid(final String key, GeoLocation geoLocation, final SummaryUser summary) {
 
                 // key로 프사url, 거리 가져옴
                 Location targetLocation = new Location("");//provider name is unnecessary
@@ -155,7 +153,7 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
                 // grid에 사진, distance추가
 
                 if(imageAdapter != null){
-                    imageAdapter.addItem(new ImageAdapter.Item(distance, key, oUser, oUser.getPicUrls().getPicUrl1()));
+                    imageAdapter.addItem(new GridItem(distance, key, summary, summary.getPictureUrl()));
                     imageAdapter.notifyDataSetChanged();
 //                    gridView.invalidateViews();
                     Log.d(getTag(), "addItemToGrid : " + key );
@@ -180,7 +178,7 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
                 Location targetLocation = new Location("");//provider name is unnecessary
                 targetLocation.setLatitude(geoLocation.latitude);//your coords of course
                 targetLocation.setLongitude(geoLocation.longitude);
-                ImageAdapter.Item item = imageAdapter.getItem(key);
+                GridItem item = imageAdapter.getItem(key);
                 if(item == null) return;
                 imageAdapter.remove(key);
                 item.setDistance(location.distanceTo(targetLocation));
@@ -205,14 +203,14 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
         return mUser.getBlockMeUsers().containsKey(mUuid) || mUser.getBlockUsers().containsKey(oUuid);
     }
 
-    private boolean isInFilter(User oUser) {
+    private boolean isInFilter(SummaryUser summaryUser) {
         if(!mUser.isUseFilter()) return true;   // 필터 적용여부
-        if(!(mUser.getAgeBoundary().getMin() <= oUser.getAge() && oUser.getAge() <= mUser.getAgeBoundary().getMax())) return false;
-        if(!(mUser.getHeightBoundary().getMin() <= oUser.getHeight() && oUser.getHeight() <= mUser.getHeightBoundary().getMax())) return false;
-        if(!(mUser.getWeightBoundary().getMin() <= oUser.getWeight() && oUser.getWeight() <= mUser.getWeightBoundary().getMax())) return false;
+        if(!(mUser.getAgeBoundary().getMin() <= summaryUser.getAge() && summaryUser.getAge() <= mUser.getAgeBoundary().getMax())) return false;
+        if(!(mUser.getHeightBoundary().getMin() <= summaryUser.getHeight() && summaryUser.getHeight() <= mUser.getHeightBoundary().getMax())) return false;
+        if(!(mUser.getWeightBoundary().getMin() <= summaryUser.getWeight() && summaryUser.getWeight() <= mUser.getWeightBoundary().getMax())) return false;
         int minBodyType = Arrays.asList(DataContainer.bodyTypes).indexOf(mUser.getBodyTypeBoundary().getMin());
         int maxBodyType = Arrays.asList(DataContainer.bodyTypes).indexOf(mUser.getBodyTypeBoundary().getMax());
-        int bodyType = Arrays.asList(DataContainer.bodyTypes).indexOf(oUser.getBodyType());
+        int bodyType = Arrays.asList(DataContainer.bodyTypes).indexOf(summaryUser.getBodyType());
         return minBodyType <= bodyType && bodyType <= maxBodyType;
     }
 
