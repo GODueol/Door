@@ -60,6 +60,7 @@ public class AudioRecorderActivity extends AppCompatActivity
     private ImageButton playView;
     private ImageView save;
     private ImageView clear;
+    static String timerInitStr = "00:00";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -257,8 +258,9 @@ public class AudioRecorderActivity extends AppCompatActivity
         statusView.setVisibility(View.INVISIBLE);
         restartView.setVisibility(View.INVISIBLE);
         playView.setVisibility(View.INVISIBLE);
+        recordView.setVisibility(View.VISIBLE);
         recordView.setImageResource(R.drawable.aar_ic_rec);
-        timerView.setText("00:00:00");
+        timerView.setText(timerInitStr);
         recorderSecondsElapsed = 0;
         playerSecondsElapsed = 0;
     }
@@ -278,7 +280,7 @@ public class AudioRecorderActivity extends AppCompatActivity
         visualizerView.linkTo(visualizerHandler);
 
         if(recorder == null) {
-            timerView.setText("00:00:00");
+            timerView.setText(timerInitStr);
 
             recorder = OmRecorder.wav(
                     new PullTransport.Default(Util.getMic(source, channel, sampleRate), AudioRecorderActivity.this),
@@ -345,7 +347,7 @@ public class AudioRecorderActivity extends AppCompatActivity
                 }
             });
 
-            timerView.setText("00:00:00");
+            timerView.setText(timerInitStr);
             statusView.setText(R.string.aar_playing);
             statusView.setVisibility(View.VISIBLE);
             playView.setImageResource(R.drawable.aar_ic_stop);
@@ -409,9 +411,15 @@ public class AudioRecorderActivity extends AppCompatActivity
             @Override
             public void run() {
                 if(isRecording) {
+                    // 최대 녹음 시간 5분
+                    if(recorderSecondsElapsed >= 60*5){
+                        pauseRecording();
+                        recordView.setVisibility(View.INVISIBLE);
+                        return;
+                    }
                     recorderSecondsElapsed++;
                     timerView.setText(Util.formatSeconds(recorderSecondsElapsed));
-                } else if(isPlaying()){
+                }else if(isPlaying()){
                     playerSecondsElapsed++;
                     timerView.setText(Util.formatSeconds(playerSecondsElapsed));
                 }

@@ -54,8 +54,7 @@ public class Util {
     }
 
     public static String formatSeconds(int seconds) {
-        return getTwoDecimalsValue(seconds / 3600) + ":"
-                + getTwoDecimalsValue(seconds / 60) + ":"
+        return getTwoDecimalsValue(seconds / 60) + ":"
                 + getTwoDecimalsValue(seconds % 60);
     }
 
