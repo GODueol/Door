@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/chatting_other_image_layout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="3dp">
 
@@ -30,8 +30,7 @@
             android:id="@+id/chatImage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:src="@drawable/a" />
+            android:padding="5dp"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -49,11 +48,9 @@
 
             <TextView
                 android:id="@+id/time"
-                android:layout_width="wrap_content"
+                android:layout_width="60dp"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/check"
                 android:layout_gravity="bottom"
-                android:minEms="2"
                 android:text="13:00" />
         </LinearLayout>
 

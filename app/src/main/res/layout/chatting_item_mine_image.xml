@@ -22,12 +22,10 @@
 
         <TextView
             android:id="@+id/time"
-            android:layout_width="wrap_content"
+            android:layout_width="60dp"
             android:layout_height="wrap_content"
-            android:layout_below="@id/check"
             android:layout_gravity="bottom"
-            android:minEms="2"
-            android:text="13:00" />
+            android:text="12:36 AM" />
     </LinearLayout>
 
     <ImageView
@@ -35,6 +33,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="#aaffffff"
-        android:padding="5dp"
-        android:src="@drawable/a" />
+        android:padding="5dp" />
 </LinearLayout>

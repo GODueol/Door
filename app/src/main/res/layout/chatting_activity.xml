@@ -1,14 +1,17 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/white"
+    android:fitsSystemWindows="true"
+    android:windowSoftInputMode="adjustResize"
     tools:context=".MessageActivity.ChattingActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
+        android:layout_alignParentTop="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
@@ -26,11 +29,9 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/listView"
-        android:layout_below="@id/toolbar"
-        android:layout_above="@+id/send_message_layout"
+        android:layout_weight="1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:windowSoftInputMode="adjustResize"
         android:scrollbarStyle="outsideOverlay"
         android:scrollbars="vertical"/>
 
@@ -67,16 +68,6 @@
             android:maxLength="500"
             />
 
-        <!--<Button-->
-            <!--android:id="@+id/btn_send"-->
-            <!--android:background="@color/message_color"-->
-            <!--android:layout_width="50dp"-->
-            <!--android:layout_height="30dp"-->
-            <!--android:layout_marginRight="10dp"-->
-            <!--android:text="Send"-->
-            <!--android:textColor="@color/text_white"-->
-            <!--android:textSize="10dip"/>-->
-
         <ImageButton
             android:id="@+id/btn_send"
             android:layout_width="40dp"
@@ -90,4 +81,4 @@
 
     </LinearLayout>
 
-</RelativeLayout>
+</LinearLayout>

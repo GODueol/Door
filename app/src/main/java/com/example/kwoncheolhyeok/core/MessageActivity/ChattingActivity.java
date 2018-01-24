@@ -16,14 +16,18 @@ import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.kwoncheolhyeok.core.Entity.User;
@@ -50,7 +54,7 @@ public class ChattingActivity extends AppCompatActivity {
     private ImageButton mButtonSend;
     private EditText mEditTextMessage;
     private ImageButton mImageView;
-    public static Toast mToast;
+    public Toast mToast;
     private ChattingMessageAdapter chattingMessageAdapter;
     private LinearLayoutManager linearLayoutManager;
     private List<ChatMessage> chatListItem;
@@ -71,7 +75,7 @@ public class ChattingActivity extends AppCompatActivity {
         setContentView(R.layout.chatting_activity);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        mToast = Toast.makeText(this, "null", Toast.LENGTH_SHORT);
+        setToastMessage();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //액션바 아이콘을 업 네비게이션 형태로 표시합니다.
         getSupportActionBar().setDisplayShowHomeEnabled(true); //홈 아이콘을 숨김처리합니다.
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
@@ -101,7 +105,7 @@ public class ChattingActivity extends AppCompatActivity {
 
         chatFirebaseUtil = new ChatFirebaseUtil(this, user, targetUser, userUuid, targetUuid);
         chatFirebaseUtil.setchatRoom(chattingRecyclerview,chatListItem);
-
+        chattingRecyclerview.addOnScrollListener(dateToastListener);
         // 메세지 보내기
         mButtonSend.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -155,6 +159,23 @@ public class ChattingActivity extends AppCompatActivity {
         LoadPicture loadPicture = new LoadPicture(this, this);
         loadPicture.onGallery();
     }
+
+    public void setToastMessage(){
+        TypedValue tv = new TypedValue();
+        int actionBarHeight = 150;
+        if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true))
+        {
+            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data,getResources().getDisplayMetrics());
+        }
+
+        mToast = Toast.makeText(this, null, Toast.LENGTH_SHORT);
+        ViewGroup group = (ViewGroup) mToast.getView();
+        TextView messageTextView = (TextView) group.getChildAt(0);
+        mToast.setGravity(Gravity.TOP,0,actionBarHeight+5);
+        messageTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 11);
+        messageTextView.setTextColor(Color.WHITE);
+        group.setBackgroundColor(Color.rgb(60,60,60));
+    }
     // 뒤로가기 버튼 기능
     public boolean onOptionsItemSelected(android.view.MenuItem item) {
 
@@ -193,7 +214,7 @@ public class ChattingActivity extends AppCompatActivity {
                 });
                 break;
             case R.id.report:
-                Toast.makeText(this,"report",-1).show();
+                Toast.makeText(this,"report",Toast.LENGTH_SHORT).show();
                 break;
             case android.R.id.home:
                 // NavUtils.navigateUpFromSameTask(this);
@@ -225,12 +246,11 @@ public class ChattingActivity extends AppCompatActivity {
         @Override
         public void onEvent() {
             // 처음으로 가려는 리스너
-            chattingRecyclerview.getLayoutManager().scrollToPosition(chattingRecyclerview.getAdapter().getItemCount());
+            //chattingRecyclerview.scrollToPosition(chattingMessageAdapter.getItemCount()-1);
+            chattingRecyclerview.smoothScrollToPosition(View.FOCUS_DOWN);
+            chattingRecyclerview.scrollToPosition(chattingMessageAdapter.getItemCount()-1);
         }
     };
-
-
-
 
     @SuppressLint("ClickableViewAccessibility")
     View.OnTouchListener onTouchListener = new View.OnTouchListener() {
@@ -244,5 +264,20 @@ public class ChattingActivity extends AppCompatActivity {
         }
     };
 
-}
+    RecyclerView.OnScrollListener  dateToastListener= new RecyclerView.OnScrollListener() {
+        @Override
+        public void onScrollStateChanged(RecyclerView absListView, int i) {
 
+        }
+
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+            int lastVisibleItemPosition = ((LinearLayoutManager)recyclerView.getLayoutManager()).findLastCompletelyVisibleItemPosition();
+            String toastString = chattingMessageAdapter.getDate(lastVisibleItemPosition);
+            mToast.setText(toastString);
+            mToast.show();
+        }
+    };
+
+}

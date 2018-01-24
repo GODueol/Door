@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.MessageActivity.util.CryptoImeageName;
@@ -377,6 +378,8 @@ public class ChatFirebaseUtil {
             }
         }
     };
+
+
     // 읽음 처리 (클라이언트)
     public void checkRefreshChatLog() {
         for (ChatMessage chatMessage : uncheckMessageList) {

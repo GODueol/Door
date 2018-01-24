@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,10 +20,15 @@ import com.bumptech.glide.request.target.Target;
 import com.example.kwoncheolhyeok.core.MessageActivity.util.DateUtil;
 import com.example.kwoncheolhyeok.core.PeopleFragment.FullImageActivity;
 import com.example.kwoncheolhyeok.core.PeopleFragment.GridItem;
+import com.example.kwoncheolhyeok.core.PeopleFragment.ImageAdapter;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.GlideApp;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 
 /**
@@ -36,7 +42,7 @@ public class ChattingMessageAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     private List<ChatMessage> itemList;
     private GridItem item;
     RequestListener requestListener;
-
+    private SimpleDateFormat sdf;
     private Context context;
 
 
@@ -48,7 +54,17 @@ public class ChattingMessageAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     public ChattingMessageAdapter(List<ChatMessage> itemList, ChattingMessageAdapter.OnCallbackList listener) {
         this.itemList = itemList;
         onCallbackList = listener;
+        sdf = new SimpleDateFormat( "yyyy. MM. dd. E", Locale.KOREAN );
         setRequestListener();
+    }
+
+    public String getDate(int position) {
+
+        Date date = new Date( itemList.get(position).getTime() );
+
+        String strResult = sdf.format( date );
+
+        return strResult;
     }
 
     @Override
