@@ -88,6 +88,8 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
     @Bind(R.id.core_counts)
     TextView corePostCount;
     private User oUser;
+    private ValueEventListener listener;
+    private DatabaseReference oUserRef;
 
 
     @SuppressLint("DefaultLocale")
@@ -125,7 +127,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
 
         // 리스너를 달아서 실시간 정보 변경
         UiUtil.getInstance().startProgressDialog(FullImageActivity.this);
-        DataContainer.getInstance().getUserRef(item.getUuid()).addValueEventListener(new ValueEventListener() {
+        listener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -141,7 +143,9 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
             public void onCancelled(DatabaseError databaseError) {
                 UiUtil.getInstance().stopProgressDialog();
             }
-        });
+        };
+        oUserRef = DataContainer.getInstance().getUserRef(item.getUuid());
+//        oUserRef.addValueEventListener(listener);
     }
 
     @SuppressLint("SetTextI18n")
@@ -353,6 +357,9 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
     private void setPicLock(final GridItem item) {
         final String myUuid = DataContainer.getInstance().getUid();
         final User mUser = DataContainer.getInstance().getUser();
+        if(mUser == null){
+            UiUtil.getInstance().restartApp(this);
+        }
 
         // 아이콘 크기 설정
         picOpen.getLayoutParams().width = (int) getResources().getDimension(R.dimen.image_lock_height);
@@ -478,12 +485,14 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
     @Override
     public void onResume() {
         super.onResume();
+        oUserRef.addValueEventListener(listener);
 //        ScreenshotSetApplication.getInstance().registerScreenshotObserver();
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        oUserRef.removeEventListener(listener);
 //        ScreenshotSetApplication.getInstance().unregisterScreenshotObserver();
     }
 

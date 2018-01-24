@@ -1,7 +1,9 @@
 package com.example.kwoncheolhyeok.core.Util;
 
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -9,9 +11,11 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.text.TextUtils;
+import android.widget.Toast;
 
 import com.example.kwoncheolhyeok.core.CorePage.CoreActivity;
 import com.example.kwoncheolhyeok.core.Entity.User;
+import com.example.kwoncheolhyeok.core.LoginActivity.IntroActivity;
 import com.example.kwoncheolhyeok.core.R;
 
 /**
@@ -54,7 +58,7 @@ public class UiUtil {
         showDialog(context, title, message, okListener, cancelListener, "OK", "Cancel");
     }
 
-    public void showDialog(Context context, String title, String message, DialogInterface.OnClickListener okListener, DialogInterface.OnClickListener cancelListener, String okStr, String cancelStr){
+    private void showDialog(Context context, String title, String message, DialogInterface.OnClickListener okListener, DialogInterface.OnClickListener cancelListener, String okStr, String cancelStr){
         AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.MyAlertDialogStyle);
         builder.setIcon(R.drawable.icon);
         builder.setTitle(title);
@@ -70,6 +74,15 @@ public class UiUtil {
         Intent intent = new Intent(context, CoreActivity.class);
         intent.putExtra("uuid", uuid);
         context.startActivity(intent);
+    }
+
+    public void restartApp(Context context){
+        Intent mStartActivity = new Intent(context, IntroActivity.class);
+        int mPendingIntentId = 123456;
+        PendingIntent mPendingIntent = PendingIntent.getActivity(context, mPendingIntentId,    mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
+        AlarmManager mgr = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+        mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
+        System.exit(0);
     }
 
 }
