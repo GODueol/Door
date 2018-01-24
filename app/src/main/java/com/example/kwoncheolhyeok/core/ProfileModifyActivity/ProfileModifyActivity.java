@@ -27,9 +27,7 @@ import com.bumptech.glide.Glide;
 import com.example.kwoncheolhyeok.core.Entity.IntBoundary;
 import com.example.kwoncheolhyeok.core.Entity.StringBoundary;
 import com.example.kwoncheolhyeok.core.Entity.User;
-import com.example.kwoncheolhyeok.core.Event.SetProfilePicEvent;
 import com.example.kwoncheolhyeok.core.R;
-import com.example.kwoncheolhyeok.core.Util.BusProvider;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
 import com.example.kwoncheolhyeok.core.Util.GalleryPick;
@@ -773,9 +771,6 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
                         @Override
                         public void onSuccess(Object o) {
                             removeUserPicUrl(targetImageView);
-                            if (targetImageView == profilePic1) {
-                                BusProvider.getInstance().post(new SetProfilePicEvent());
-                            }
                         }
                     });
                 } else {
@@ -786,9 +781,6 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             saveUserPicUrl(taskSnapshot.getDownloadUrl(), targetImageView);
-                            if (targetImageView == profilePic1) {
-                                BusProvider.getInstance().post(new SetProfilePicEvent());
-                            }
                         }
                     });
                 }

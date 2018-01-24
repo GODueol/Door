@@ -28,13 +28,11 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.Event.RefreshLocationEvent;
-import com.example.kwoncheolhyeok.core.Event.SetProfilePicEvent;
 import com.example.kwoncheolhyeok.core.FriendsActivity.FriendsActivity;
 import com.example.kwoncheolhyeok.core.LoginActivity.LoginActivity;
 import com.example.kwoncheolhyeok.core.MessageActivity.MessageActivity;
 import com.example.kwoncheolhyeok.core.ProfileModifyActivity.ProfileModifyActivity;
 import com.example.kwoncheolhyeok.core.R;
-import com.example.kwoncheolhyeok.core.ScreenshotSetApplication;
 import com.example.kwoncheolhyeok.core.SettingActivity.SettingActivity;
 import com.example.kwoncheolhyeok.core.Util.BusProvider;
 import com.example.kwoncheolhyeok.core.Util.CloseActivityHandler;
@@ -47,7 +45,9 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.squareup.otto.Subscribe;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
 /**
  *
@@ -184,10 +184,20 @@ public class MainActivity extends AppCompatActivity
                 });
     }
 
-    private void setProfilePic(ImageView profileImage) {
-        String picUrl1 = DataContainer.getInstance().getUser().getPicUrls().getPicUrl1();
-        if(picUrl1 == null) return;
-        Glide.with(getBaseContext()).load(picUrl1).into(profileImage);
+    private void setProfilePic(final ImageView profileImage) {
+        DataContainer.getInstance().getMyUserRef().child("picUrls/picUrl1").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String picUrl1 = (String) dataSnapshot.getValue();
+                if(picUrl1 == null) return;
+                Glide.with(getBaseContext()).load(picUrl1).into(profileImage);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
 
@@ -374,13 +384,6 @@ public class MainActivity extends AppCompatActivity
     protected void onDestroy() {
         BusProvider.getInstance().unregister(this);
         super.onDestroy();
-    }
-
-    @Subscribe
-    public void finishLoad(SetProfilePicEvent setProfilePicEvent) {
-        // 이벤트가 발생한뒤 수행할 작업
-        // 프로필 사진을 다시 받아옴
-        setProfilePic(profileImage);
     }
 
     @Override
