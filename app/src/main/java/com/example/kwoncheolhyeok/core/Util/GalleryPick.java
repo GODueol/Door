@@ -12,13 +12,21 @@ import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.Log;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
+
+import me.echodev.resizer.Resizer;
 
 /**
  * Created by gimbyeongjin on 2018. 1. 18..
@@ -29,6 +37,25 @@ public class GalleryPick {
     private Uri uri;
     private Bitmap bitmap;
     public static final int REQUEST_GALLERY = 2;
+    private String imgPath;
+
+    final int REQUIRED_SIZE=500;
+
+    public String getMimeType(Uri uriImage)
+    {
+        String strMimeType = null;
+
+        Cursor cursor = activity.getContentResolver().query(uriImage,
+                new String[] { MediaStore.MediaColumns.MIME_TYPE },
+                null, null, null);
+
+        if (cursor != null && cursor.moveToNext())
+        {
+            strMimeType = cursor.getString(0);
+        }
+
+        return strMimeType;
+    }
 
     public GalleryPick(Activity activity) {
         this.activity = activity;
@@ -42,8 +69,79 @@ public class GalleryPick {
         return uri;
     }
 
-    public Bitmap getBitmap() {
+
+    public File bitMapToFile() throws IOException {
+        File f = new File(activity.getCacheDir(), "temp");
+        f.createNewFile();
+
+        //Convert bitmap to byte array
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100 /*ignored for PNG*/, bos);
+        byte[] bitmapdata = bos.toByteArray();
+
+        //write the bytes in file
+        FileOutputStream fos = new FileOutputStream(f);
+        fos.write(bitmapdata);
+        fos.flush();
+        fos.close();
+
+        return f;
+    }
+
+    public byte[] getResizeImageByteArray() {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream() ;
+        getResizeBitmap().compress( Bitmap.CompressFormat.JPEG, 100, stream) ;
+        byte[] byteArray = stream.toByteArray() ;
+        return byteArray ;
+    }
+
+    // 용량 제한
+    public Bitmap getResizeBitmap(){
+        try {
+            bitmap = new Resizer(activity)
+                    .setTargetLength(1080)
+                    .setSourceImage(bitMapToFile())
+                    .getResizedBitmap();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return bitmap;
+        /*
+
+        try {
+            // Decode image size
+            BitmapFactory.Options o = new BitmapFactory.Options();
+            o.inJustDecodeBounds = true;
+
+//            File f = new File(imgPath);
+            File f = bitMapToFile();
+            BitmapFactory.decodeStream(new FileInputStream(f), null, o);
+
+
+            // Find the correct scale value. It should be the power of 2.
+            int scale = 1;
+            while(o.outWidth / scale / 2 >= REQUIRED_SIZE &&
+                    o.outHeight / scale / 2 >= REQUIRED_SIZE) {
+                scale *= 2;
+            }
+
+            Log.d("kbj", "scale : " + scale);
+
+            // Decode with inSampleSize
+            BitmapFactory.Options o2 = new BitmapFactory.Options();
+            o2.inSampleSize = scale;
+            return BitmapFactory.decodeStream(new FileInputStream(f), null, o2);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }*/
+    }
+
+    public Bitmap getBitmap() {
+        return getResizeBitmap();
     }
 
     public GalleryPick goToGallery(){
@@ -61,11 +159,15 @@ public class GalleryPick {
         return this;
     }
     public void invoke(Intent data) {
-        boolean isImageFromGoogleDrive = false;
         uri = data.getData();
+        imgPath = getImgPath(uri);
 
+        myResult = false;
+    }
+
+    public String getImgPath(Uri uri){
         String imgPath = null;
-
+        boolean isImageFromGoogleDrive = false;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             if (DocumentsContract.isDocumentUri(activity, uri)) {
                 if ("com.android.externalstorage.documents".equals(uri.getAuthority())) {
@@ -198,7 +300,6 @@ public class GalleryPick {
                 } catch (Exception e) {
                     e.printStackTrace();
                     myResult = true;
-                    return;
                 }
             } else if ("com.android.providers.media.documents".equals(uri.getAuthority())) {
                 bitmap = BitmapUtil.rotateBitmap(imgPath, BitmapFactory.decodeFile(imgPath));
@@ -215,10 +316,9 @@ public class GalleryPick {
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
                 myResult = true;
-                return;
             }
         }
-
-        myResult = false;
+        Log.d("kbj", "format : " + getMimeType(uri));
+        return imgPath;
     }
 }

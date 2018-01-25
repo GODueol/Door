@@ -7,7 +7,7 @@ android {
 
     defaultConfig {
         applicationId "com.kwoncheolhyeok.core"
-        minSdkVersion 15
+        minSdkVersion 16
         //noinspection OldTargetApi
         targetSdkVersion 26
         versionCode 1
@@ -57,6 +57,7 @@ dependencies {
     compile 'com.github.ittianyu:BottomNavigationViewEx:1.2.4'
     //    compile 'com.github.adrielcafe:AndroidAudioRecorder:0.3.0' // MIT
     compile project(':AndroidAudioRecord')
+    compile 'com.github.hkk595:Resizer:v1.3'
 }
 apply plugin: 'com.google.gms.google-services'
 

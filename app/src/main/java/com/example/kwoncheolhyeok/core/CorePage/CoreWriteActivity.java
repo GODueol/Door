@@ -447,7 +447,8 @@ public class CoreWriteActivity extends AppCompatActivity {
 
     private void uploadPicture() {
         final StorageReference spaceRef = storageRef.child("posts").child(cUuid).child(postKey).child("picture");
-        UploadTask uploadTask = spaceRef.putFile(editImageUri);
+//        UploadTask uploadTask = spaceRef.putFile(editImageUri);
+        UploadTask uploadTask = spaceRef.putBytes(galleryPick.getResizeImageByteArray());
         tasks.put(uploadTask, new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
