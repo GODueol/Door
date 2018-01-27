@@ -264,16 +264,18 @@ public class ChattingActivity extends AppCompatActivity {
         }
     };
 
-    RecyclerView.OnScrollListener  dateToastListener= new RecyclerView.OnScrollListener() {
+    RecyclerView.OnScrollListener dateToastListener= new RecyclerView.OnScrollListener() {
         @Override
         public void onScrollStateChanged(RecyclerView absListView, int i) {
-
         }
 
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
             super.onScrolled(recyclerView, dx, dy);
-            int lastVisibleItemPosition = ((LinearLayoutManager)recyclerView.getLayoutManager()).findLastCompletelyVisibleItemPosition()-1;
+            int lastVisibleItemPosition = ((LinearLayoutManager)recyclerView.getLayoutManager()).findLastCompletelyVisibleItemPosition();
+            if(lastVisibleItemPosition!=0){
+                lastVisibleItemPosition-=1;
+            }
             String toastString = chattingMessageAdapter.getDate(lastVisibleItemPosition);
             mToast.setText(toastString);
             mToast.show();
