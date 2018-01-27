@@ -70,7 +70,7 @@ public class AudioRecorderActivity extends AppCompatActivity
 
         DisplayMetrics displayMetrics = this.getResources().getDisplayMetrics();
         int deviceHeight = displayMetrics.heightPixels;
-        getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, (int) (deviceHeight*0.55));    // 전체 레이아웃 가로세로는 여기서 수정
+        getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, (int) (deviceHeight*0.55));  // 전체 레이아웃 가로세로는 여기서 수정
         this.setFinishOnTouchOutside(false);
 
         if(savedInstanceState != null) {
@@ -103,8 +103,8 @@ public class AudioRecorderActivity extends AppCompatActivity
                 .setBubblesPerLayer(30)
                 .setBubblesSize(R.dimen.aar_bubble_size)
                 .setBubblesRandomizeSize(true)
-                .setBackgroundColor(0xffffffff) // 녹음 라이브러리 배경색
-                .setLayerColors(new int[]{5100031}) // 녹음 라이브러리 버블 레이어색
+                .setBackgroundColor(0xffffffff) // 녹음 라이브러리 (상단) 배경색
+                .setLayerColors(new int[]{5100031}) // 녹음 라이브러리 버블 레이어 (하단) 색
                 .build();
 
         contentLayout = (RelativeLayout) findViewById(R.id.content);
