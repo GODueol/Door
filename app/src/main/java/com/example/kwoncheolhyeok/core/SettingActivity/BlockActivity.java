@@ -1,6 +1,7 @@
 package com.example.kwoncheolhyeok.core.SettingActivity;
 
 import android.os.Bundle;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -44,7 +45,7 @@ public class BlockActivity extends UserListBaseActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
-
+        recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL)); //리사이클뷰 구분선
         // setRecyclerView (default)
         setRecyclerView(items, adapter, "blockUsers", R.menu.block_menu);
     }

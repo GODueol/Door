@@ -68,5 +68,12 @@
     <string name="set_new_friends">새 친구가 생겼을 때</string>
     <string name="set_new_post">내 코어에 새 익명 글이 올라왔을 때</string>
     <string name="set_new_heart">내 코어 포스트에 하트가 추가되었을 때</string>
+
+    <string name="set_password">비밀번호 변경</string>
+    <string name="cur_password">현재 비밀번호</string>
+    <string name="new_password">새 비밀번호</string>
+    <string name="re_password">비밀번호 확인</string>
+    <string name="find_password">비밀번호를 잊으셨나요?</string>
+    <string name="del_account">계정 삭제</string>
 </resources>
 

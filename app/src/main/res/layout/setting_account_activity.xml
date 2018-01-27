@@ -30,7 +30,153 @@
             android:text="@string/account_setting"
             />
 
+        <ImageButton
+            android:id="@+id/saveButton"
+            android:layout_width="25dp"
+            android:layout_height="19dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/save_check"
+            android:onClick="save"
+            />
+
     </RelativeLayout>
 
+    <RelativeLayout
+        android:id="@+id/layout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar_layout"
+        android:layout_marginTop="10dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="@string/set_password"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="15dp"
+            android:textColor="@color/black"
+            android:textSize="16dp"
+
+            />
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout1"
+        android:layout_marginLeft="30dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        >
+
+        <TextView
+            android:id="@+id/cur"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/cur_password"
+            android:textColor="@color/black"
+
+            />
+
+        <EditText
+            android:id="@+id/cur_pw"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/cur"
+            android:textSize="13dp"
+            android:layout_marginRight="5dp"
+            android:textColor="@color/black"
+            android:theme="@style/EditTxtUnderBarBlack"
+            />
+
+        <TextView
+            android:id="@+id/new_p"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/cur_pw"
+            android:text="@string/new_password"
+            android:layout_marginTop="5dp"
+            android:textColor="@color/black"
+            />
+
+        <EditText
+            android:id="@+id/new_pw"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/new_p"
+            android:textSize="13dp"
+            android:layout_marginRight="5dp"
+            android:textColor="@color/black"
+            android:theme="@style/EditTxtUnderBarBlack"
+            />
+
+        <TextView
+            android:id="@+id/re_p"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/new_pw"
+            android:text="@string/re_password"
+            android:layout_marginTop="5dp"
+            android:textColor="@color/black"
+            />
+
+        <EditText
+            android:id="@+id/re_pw"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/re_p"
+            android:textSize="13dp"
+            android:layout_marginRight="5dp"
+            android:textColor="@color/black"
+            android:theme="@style/EditTxtUnderBarBlack"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/re_pw"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="5dp"
+            android:gravity="right"
+            android:text="@string/find_password"
+            android:textColor="@color/black"
+            />
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/layout3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout2"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:layout_marginTop="10dp"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="@string/del_account"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="15dp"
+            android:textColor="@color/black"
+            android:textSize="16dp"
+            />
+
+
+    </RelativeLayout>
 
 </RelativeLayout>
