@@ -1,5 +1,6 @@
 package com.example.kwoncheolhyeok.core.Util;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentUris;
 import android.content.Intent;
@@ -12,7 +13,11 @@ import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.text.TextUtils;
-import android.util.Log;
+import android.widget.ImageView;
+
+import com.example.kwoncheolhyeok.core.R;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -37,11 +42,11 @@ public class GalleryPick {
     public static final int REQUEST_GALLERY = 2;
     private String imgPath;
 
-    public String getMimeType(Uri uriImage)
+    private String getMimeType(Uri uriImage)
     {
         String strMimeType = null;
 
-        Cursor cursor = activity.getContentResolver().query(uriImage,
+        @SuppressLint("Recycle") Cursor cursor = activity.getContentResolver().query(uriImage,
                 new String[] { MediaStore.MediaColumns.MIME_TYPE },
                 null, null, null);
 
@@ -66,7 +71,7 @@ public class GalleryPick {
     }
 
 
-    public File bitMapToFile() throws IOException {
+    private File bitMapToFile() throws IOException {
         File f = new File(activity.getCacheDir(), "temp");
         f.createNewFile();
 
@@ -84,15 +89,14 @@ public class GalleryPick {
         return f;
     }
 
-    public byte[] getResizeImageByteArray() {
+    private byte[] getResizeImageByteArray() {
         ByteArrayOutputStream stream = new ByteArrayOutputStream() ;
         getResizeBitmap().compress( Bitmap.CompressFormat.JPEG, 100, stream) ;
-        byte[] byteArray = stream.toByteArray() ;
-        return byteArray ;
+        return stream.toByteArray();
     }
 
     // 용량 제한
-    public Bitmap getResizeBitmap(){
+    private Bitmap getResizeBitmap(){
         try {
             bitmap = new Resizer(activity)
                     .setTargetLength(1080)
@@ -102,38 +106,6 @@ public class GalleryPick {
             e.printStackTrace();
         }
         return bitmap;
-        /*
-
-        try {
-            // Decode image size
-            BitmapFactory.Options o = new BitmapFactory.Options();
-            o.inJustDecodeBounds = true;
-
-//            File f = new File(imgPath);
-            File f = bitMapToFile();
-            BitmapFactory.decodeStream(new FileInputStream(f), null, o);
-
-
-            // Find the correct scale value. It should be the power of 2.
-            int scale = 1;
-            while(o.outWidth / scale / 2 >= REQUIRED_SIZE &&
-                    o.outHeight / scale / 2 >= REQUIRED_SIZE) {
-                scale *= 2;
-            }
-
-            Log.d("kbj", "scale : " + scale);
-
-            // Decode with inSampleSize
-            BitmapFactory.Options o2 = new BitmapFactory.Options();
-            o2.inSampleSize = scale;
-            return BitmapFactory.decodeStream(new FileInputStream(f), null, o2);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return null;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }*/
     }
 
     public Bitmap getBitmap() {
@@ -154,14 +126,15 @@ public class GalleryPick {
         }
         return this;
     }
-    public void invoke(Intent data) {
+
+    public void invoke(Intent data) throws FileNotFoundException {
         uri = data.getData();
         imgPath = getImgPath(uri);
 
         myResult = false;
     }
 
-    public String getImgPath(Uri uri){
+    private String getImgPath(Uri uri) throws FileNotFoundException {
         String imgPath = null;
         boolean isImageFromGoogleDrive = false;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -291,12 +264,7 @@ public class GalleryPick {
             }
 
             if (isImageFromGoogleDrive) {
-                try {
-                    bitmap = BitmapFactory.decodeStream(activity.getContentResolver().openInputStream(uri));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    myResult = true;
-                }
+                bitmap = BitmapFactory.decodeStream(activity.getContentResolver().openInputStream(uri));
             } else if ("com.android.providers.media.documents".equals(uri.getAuthority())) {
                 bitmap = BitmapUtil.rotateBitmap(imgPath, BitmapFactory.decodeFile(imgPath));
             } else {
@@ -307,16 +275,56 @@ public class GalleryPick {
             }
 
         } else {
-            try {
-                bitmap = BitmapFactory.decodeStream(activity.getContentResolver().openInputStream(uri));
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-                myResult = true;
-            }
+            bitmap = BitmapFactory.decodeStream(activity.getContentResolver().openInputStream(uri));
         }
-        Log.d("kbj", "format : " + getMimeType(uri));
         return imgPath;
     }
 
+    public UploadTask upload(StorageReference ref){
+        // Check Gif
+        if(isGif()){
+            if(getFileSizeInMB() > 5) {
+                return null;    // 올릴수 없음
+            } else {
+                return ref.putFile(uri);
+            }
+        } else {
+            return ref.putBytes(this.getResizeImageByteArray());
+        }
+    }
 
+    private long getFileSizeInMB() {
+        long fileSizeInMB;// 크기 확인 : 5MB
+        File file = new File(imgPath);
+
+        // Get length of file in bytes
+        long fileSizeInBytes = file.length();
+        // Convert the bytes to Kilobytes (1 KB = 1024 Bytes)
+        long fileSizeInKB = fileSizeInBytes / 1024;
+        // Convert the KB to MegaBytes (1 MB = 1024 KBytes)
+        fileSizeInMB = fileSizeInKB / 1024;
+
+        return fileSizeInMB;
+    }
+
+    private boolean isGif() {
+        return getMimeType(uri).contains("gif");
+    }
+
+
+    public boolean setImage(ImageView editImage) {
+        // Gif 파일인 경우
+        if(isGif()){
+            if(getFileSizeInMB() > 5) return false;
+            //Uri
+            GlideApp.with(editImage.getContext())
+                    .load(uri)
+                    .placeholder(R.drawable.a)
+                    .into(editImage);
+        } else {
+            Bitmap originalBitmap = this.getBitmap();
+            editImage.setImageBitmap(originalBitmap);
+        }
+        return true;
+    }
 }

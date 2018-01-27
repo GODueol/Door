@@ -22,6 +22,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.bumptech.glide.Glide;
@@ -30,6 +31,7 @@ import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
 import com.example.kwoncheolhyeok.core.Util.GalleryPick;
+import com.example.kwoncheolhyeok.core.Util.GlideApp;
 import com.example.kwoncheolhyeok.core.Util.UiUtil;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -44,6 +46,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
@@ -430,13 +433,26 @@ public class CoreWriteActivity extends AppCompatActivity {
                 return;
             }
             if (requestCode == GalleryPick.REQUEST_GALLERY && data != null && data.getData() != null) {
-                galleryPick.invoke(data);
-                if (galleryPick.is()) return;
-                Uri uri = galleryPick.getUri();
-                Bitmap originalBitmap = galleryPick.getBitmap();
 
-                editImageUri = uri;
-                editImage.setImageBitmap(originalBitmap);
+                try {
+                    galleryPick.invoke(data);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                    Toast.makeText(CoreWriteActivity.this, "Error : " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+
+                if(!galleryPick.setImage(editImage)){
+                    Toast.makeText(CoreWriteActivity.this, "GIF 파일이 5MB를 넘어서 불가능합니다", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                editImageUri = galleryPick.getUri();
+
+//                GlideApp.with(this /* context */)
+//                        .load(editImageUri)
+//                        .placeholder(R.drawable.a)
+//                        .into(editImage);
+
                 image_edit_layout.setVisibility(View.VISIBLE);
                 closeFABMenu();
 
@@ -448,7 +464,10 @@ public class CoreWriteActivity extends AppCompatActivity {
     private void uploadPicture() {
         final StorageReference spaceRef = storageRef.child("posts").child(cUuid).child(postKey).child("picture");
 //        UploadTask uploadTask = spaceRef.putFile(editImageUri);
-        UploadTask uploadTask = spaceRef.putBytes(galleryPick.getResizeImageByteArray());
+//        UploadTask uploadTask = spaceRef.putBytes(galleryPick.getResizeImageByteArray());
+
+        UploadTask uploadTask = galleryPick.upload(spaceRef);
+
         tasks.put(uploadTask, new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
