@@ -27,7 +27,10 @@ public class UserListBaseActivity extends AppCompatActivity {
         adapter.setItemMenu(item_menu, field);
         items.clear();
         items.add(new UserListAdapter.Item(true));
-        if(ref != null && listener != null) ref.removeEventListener(listener);  // 이전 리스너 해제
+
+        // removeListener
+        removeListener();
+
         ref = DataContainer.getInstance().getMyUserRef().child(field).orderByValue();
         listener = ref.addValueEventListener(new ValueEventListener() {
             @Override
@@ -64,4 +67,23 @@ public class UserListBaseActivity extends AppCompatActivity {
         });
     }
 
+    private void addListener() {
+        if(ref != null && listener != null) ref.addValueEventListener(listener);  // 이전 리스너 등록
+    }
+
+    private void removeListener() {
+        if(ref != null && listener != null) ref.removeEventListener(listener);  // 이전 리스너 해제
+    }
+
+    @Override
+    protected void onResume() {
+        addListener();
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        removeListener();
+        super.onPause();
+    }
 }
