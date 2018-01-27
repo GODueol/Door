@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -37,6 +38,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -125,6 +128,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         Intent p = getIntent();
         final GridItem item = (GridItem) p.getSerializableExtra("item");
 
+        setViewedMeUsers(item);
         // 리스너를 달아서 실시간 정보 변경
         UiUtil.getInstance().startProgressDialog(FullImageActivity.this);
         listener = new ValueEventListener() {
@@ -136,7 +140,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
                 oUser = dataSnapshot.getValue(User.class);
                 item.setSummaryUser(oUser.getSummaryUser());
                 setView(item);
-                setViewedMeUsers(item);
+
             }
 
             @Override
@@ -231,31 +235,48 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
 
     }
 
-    public void setViewedMeUsers(GridItem item) {
+    public void setViewedMeUsers(final GridItem item) {
 
         if(item.getUuid().equals(DataContainer.getInstance().getUid())) return; // 자신일 경우
 
-        DatabaseReference oUserViewedMeUsers = DataContainer.getInstance().getUserRef(item.getUuid()).child("viewedMeUsers");
+        // 트랜잭션을 이용해야함
+        DatabaseReference viewedMeUsersRef = DataContainer.getInstance().getUserRef(item.getUuid()).child("viewedMeUsers");
+        viewedMeUsersRef.runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                Map<String, Long> map = (Map<String, Long>) mutableData.getValue();
 
-        Map<String, Object> childUpdate = new HashMap<>();
-
-        Map<String, Long> viewedMeUsers = oUser.getViewedMeUsers();
-
-        if (viewedMeUsers.size() >= 45) {   // 데이터 관리 갯수 45
-            long min = -1;
-            String minUuid = null;
-            for (String key : viewedMeUsers.keySet()) {
-                if (min == -1 || min > viewedMeUsers.get(key)) {
-                    min = viewedMeUsers.get(key);
-                    minUuid = key;
+                if (map == null) {
+                    return Transaction.success(mutableData);
                 }
+
+                if(!map.containsKey(item.getUuid()) && map.size() >= 45){
+                    // 데이터 삭제
+                    Map.Entry<String, Long> min = null;
+                    for (Map.Entry<String, Long> entry : map.entrySet()) {
+                        if (min == null || min.getValue() > entry.getValue()) {
+                            min = entry;
+                        }
+                    }
+
+                    map.remove(min);
+                }
+
+                // 데이터 추가
+                map.put(item.getUuid(), System.currentTimeMillis());
+
+                // Set value and report transaction success
+                mutableData.setValue(map);
+                return Transaction.success(mutableData);
             }
-            if(minUuid!= null) childUpdate.put(minUuid, null);
-        }
 
-        childUpdate.put(DataContainer.getInstance().getUid(), System.currentTimeMillis());  // 추가
-
-        oUserViewedMeUsers.updateChildren(childUpdate);
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean b,
+                                   DataSnapshot dataSnapshot) {
+                // Transaction completed
+                Log.d(getClass().getName(), "viewedMeUsersTransaction:onComplete:" + databaseError);
+            }
+        });
 
     }
 
