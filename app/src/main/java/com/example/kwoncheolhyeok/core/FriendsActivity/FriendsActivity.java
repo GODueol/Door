@@ -98,6 +98,6 @@ public class FriendsActivity extends UserListBaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        adapter.notifyDataSetChanged();
+//        adapter.notifyDataSetChanged();
     }
 }

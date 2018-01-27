@@ -16,11 +16,9 @@ import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -38,8 +36,6 @@ public class GalleryPick {
     private Bitmap bitmap;
     public static final int REQUEST_GALLERY = 2;
     private String imgPath;
-
-    final int REQUIRED_SIZE=500;
 
     public String getMimeType(Uri uriImage)
     {
@@ -321,4 +317,6 @@ public class GalleryPick {
         Log.d("kbj", "format : " + getMimeType(uri));
         return imgPath;
     }
+
+
 }
