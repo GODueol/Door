@@ -449,7 +449,8 @@
                 android:layout_below="@+id/filter_nouse"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="10dp"
-                android:theme="@style/ColorSwitchStyle" />
+                android:theme="@style/ColorSwitchStyle"
+                />
 
             <RelativeLayout
                 android:id="@+id/AGE_FILTER"
