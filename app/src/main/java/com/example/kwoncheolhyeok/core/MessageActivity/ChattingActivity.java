@@ -273,7 +273,7 @@ public class ChattingActivity extends AppCompatActivity {
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
             super.onScrolled(recyclerView, dx, dy);
-            int lastVisibleItemPosition = ((LinearLayoutManager)recyclerView.getLayoutManager()).findLastCompletelyVisibleItemPosition();
+            int lastVisibleItemPosition = ((LinearLayoutManager)recyclerView.getLayoutManager()).findLastCompletelyVisibleItemPosition()-1;
             String toastString = chattingMessageAdapter.getDate(lastVisibleItemPosition);
             mToast.setText(toastString);
             mToast.show();
