@@ -24,6 +24,7 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.bumptech.glide.Glide;
+import com.example.kwoncheolhyeok.core.CorePage.CoreWriteActivity;
 import com.example.kwoncheolhyeok.core.Entity.IntBoundary;
 import com.example.kwoncheolhyeok.core.Entity.StringBoundary;
 import com.example.kwoncheolhyeok.core.Entity.User;
@@ -41,6 +42,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -651,8 +653,12 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 
         if (resultCode == RESULT_OK) {
             if (requestCode == GalleryPick.REQUEST_GALLERY && data != null && data.getData() != null) {
-                galleryPick.invoke(data);
-                if (galleryPick.is()) return;
+                try {
+                    galleryPick.invoke(data);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                    Toast.makeText(ProfileModifyActivity.this, "Error : " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
 
                 uriMap.put(modifyingPic.getId(), galleryPick.getUri());
                 modifyingPic.setImageBitmap(galleryPick.getBitmap());

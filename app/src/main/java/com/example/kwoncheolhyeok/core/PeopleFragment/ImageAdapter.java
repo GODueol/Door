@@ -106,16 +106,9 @@ public class ImageAdapter extends BaseAdapter {
 
     void addItem(GridItem item){
         if(itemHashMap.containsKey(item.getUuid())){
-            if(!mItems.remove(itemHashMap.get(item.getUuid()))){
-                Log.d("kbj r itemHashMapItem", itemHashMap.get(item.getUuid()).toString());
-                Log.d("kbj r mItems", mItems.toString());
-            }
+            mItems.remove(itemHashMap.get(item.getUuid()));
         }
-        if(!mItems.add(item)){
-            Log.d("kbj a item", item.toString());
-            Log.d("kbj a mItems", mItems.toString());
-
-        }
+        mItems.add(item);
         itemHashMap.put(item.getUuid(), item);
     }
 
