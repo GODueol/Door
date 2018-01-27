@@ -59,6 +59,9 @@
     <string name="newOrder">최신 순</string>
     <string name="unknown">Unknown</string>
 
+    <string name="noReportBlock">신고하지 않고 차단하기</string>
+    <string name="cancle">취소</string>
+    <string name="report">신고</string>
 
 </resources>
 
