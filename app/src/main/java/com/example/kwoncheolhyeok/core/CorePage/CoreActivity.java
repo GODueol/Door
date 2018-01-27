@@ -10,7 +10,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 
 import com.example.kwoncheolhyeok.core.Entity.CoreListItem;
@@ -103,7 +102,6 @@ public class CoreActivity extends AppCompatActivity {
         listner = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-
                 final CorePost corePost = dataSnapshot.getValue(CorePost.class);
                 final String postKey = dataSnapshot.getKey();
                 if(corePost.getUuid().equals(cUuid)) { // 작성자가 코어의 주인인 경우
@@ -121,8 +119,6 @@ public class CoreActivity extends AppCompatActivity {
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                Log.d("kbj","dataSnapshot : " + dataSnapshot);
-                Log.d("kbj","s : " + s);
                 final CorePost corePost = dataSnapshot.getValue(CorePost.class);
                 final String postKey = dataSnapshot.getKey();
 
@@ -178,14 +174,12 @@ public class CoreActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        if(postQuery != null && listner != null) postQuery.addChildEventListener(listner);
 //        ScreenshotSetApplication.getInstance().registerScreenshotObserver();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-//        if(postQuery != null && listner != null) postQuery.removeEventListener(listner);
 //        ScreenshotSetApplication.getInstance().unregisterScreenshotObserver();
         coreListAdapter.clickPause();
     }
@@ -201,5 +195,11 @@ public class CoreActivity extends AppCompatActivity {
         if(requestCode == WRITE_SUCC){
             if(resultCode == Activity.RESULT_OK) recyclerView.scrollToPosition(0);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if(postQuery != null && listner != null) postQuery.removeEventListener(listner);
+        super.onDestroy();
     }
 }

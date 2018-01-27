@@ -79,8 +79,6 @@ public class FriendsActivity extends UserListBaseActivity {
 
         // setRecyclerView (default)
         navigation.setSelectedItemId(R.id.navigation_friends);
-
-
     }
 
     // 뒤로가기 버튼 기능

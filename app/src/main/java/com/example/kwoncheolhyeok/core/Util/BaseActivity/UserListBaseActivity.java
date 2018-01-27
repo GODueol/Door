@@ -32,7 +32,7 @@ public class UserListBaseActivity extends AppCompatActivity {
         removeListener();
 
         ref = DataContainer.getInstance().getMyUserRef().child(field).orderByValue();
-        listener = ref.addValueEventListener(new ValueEventListener() {
+        listener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -64,7 +64,8 @@ public class UserListBaseActivity extends AppCompatActivity {
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }
-        });
+        };
+        addListener();
     }
 
     private void addListener() {
@@ -76,14 +77,8 @@ public class UserListBaseActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() {
-        addListener();
-        super.onResume();
-    }
-
-    @Override
-    protected void onPause() {
+    protected void onDestroy() {
         removeListener();
-        super.onPause();
+        super.onDestroy();
     }
 }

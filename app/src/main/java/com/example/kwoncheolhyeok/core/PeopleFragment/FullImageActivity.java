@@ -43,7 +43,6 @@ import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 import butterknife.Bind;
@@ -149,7 +148,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
             }
         };
         oUserRef = DataContainer.getInstance().getUserRef(item.getUuid());
-//        oUserRef.addValueEventListener(listener);
+        oUserRef.addValueEventListener(listener);
     }
 
     @SuppressLint("SetTextI18n")
@@ -507,15 +506,19 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
     @Override
     public void onResume() {
         super.onResume();
-        oUserRef.addValueEventListener(listener);
+
 //        ScreenshotSetApplication.getInstance().registerScreenshotObserver();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        oUserRef.removeEventListener(listener);
 //        ScreenshotSetApplication.getInstance().unregisterScreenshotObserver();
     }
 
+    @Override
+    protected void onDestroy() {
+        oUserRef.removeEventListener(listener);
+        super.onDestroy();
+    }
 }
