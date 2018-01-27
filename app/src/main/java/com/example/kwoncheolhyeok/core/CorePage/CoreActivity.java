@@ -16,13 +16,12 @@ import com.example.kwoncheolhyeok.core.Entity.CoreListItem;
 import com.example.kwoncheolhyeok.core.Entity.CorePost;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.R;
-import com.example.kwoncheolhyeok.core.ScreenshotSetApplication;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -35,6 +34,8 @@ public class CoreActivity extends AppCompatActivity {
 
     private CoreListAdapter coreListAdapter;
     private RecyclerView recyclerView;
+    private Query postQuery;
+    private ChildEventListener listner;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,7 +56,6 @@ public class CoreActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
 
                 // 자신, 타인 액티비티 구별
                 Intent i;
@@ -63,7 +63,6 @@ public class CoreActivity extends AppCompatActivity {
                 i.putExtra("cUuid",cUuid);
 
                 startActivityForResult(i, WRITE_SUCC);
-//                startActivity(i);
             }
         });
 
@@ -80,7 +79,6 @@ public class CoreActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(coreListAdapter);
-//        recyclerView.getItemAnimator().setChangeDuration(0);
 
         ((SimpleItemAnimator) recyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
 
@@ -100,8 +98,8 @@ public class CoreActivity extends AppCompatActivity {
     }
 
     private void addPostToList(final String cUuid, final ArrayList<CoreListItem> list, final User cUser) {
-        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-        mDatabase.child("posts").child(cUuid).orderByChild("writeDate").addChildEventListener(new ChildEventListener() {
+        postQuery = FirebaseDatabase.getInstance().getReference().child("posts").child(cUuid).orderByChild("writeDate");
+        listner = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
 
@@ -129,7 +127,6 @@ public class CoreActivity extends AppCompatActivity {
                 for(CoreListItem coreListItem : list){
                     if(coreListItem.getPostKey().equals(postKey)){
                         coreListItem.setCorePost(corePost);
-//                        coreListAdapter.notifyDataSetChanged();
                         coreListAdapter.notifyItemChanged(i);
                         break;
                     }
@@ -145,7 +142,6 @@ public class CoreActivity extends AppCompatActivity {
                     if(coreListItem.getPostKey().equals(postKey)){
                         list.remove(coreListItem);
                         coreListAdapter.notifyItemRemoved(i);
-//                        coreListAdapter.notifyDataSetChanged();
                         break;
                     }
                     i++;
@@ -161,7 +157,8 @@ public class CoreActivity extends AppCompatActivity {
             public void onCancelled(DatabaseError databaseError) {
 
             }
-        });
+        };
+        postQuery.addChildEventListener(listner);
     }
 
     // 뒤로가기 버튼 기능
@@ -178,12 +175,14 @@ public class CoreActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
+        if(postQuery != null && listner != null) postQuery.addChildEventListener(listner);
 //        ScreenshotSetApplication.getInstance().registerScreenshotObserver();
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        if(postQuery != null && listner != null) postQuery.removeEventListener(listner);
 //        ScreenshotSetApplication.getInstance().unregisterScreenshotObserver();
         coreListAdapter.clickPause();
     }
