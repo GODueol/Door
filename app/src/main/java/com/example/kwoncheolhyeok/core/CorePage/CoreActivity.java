@@ -10,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 
 import com.example.kwoncheolhyeok.core.Entity.CoreListItem;
@@ -120,6 +121,8 @@ public class CoreActivity extends AppCompatActivity {
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                Log.d("kbj","dataSnapshot : " + dataSnapshot);
+                Log.d("kbj","s : " + s);
                 final CorePost corePost = dataSnapshot.getValue(CorePost.class);
                 final String postKey = dataSnapshot.getKey();
 
@@ -182,7 +185,7 @@ public class CoreActivity extends AppCompatActivity {
     @Override
     public void onPause() {
         super.onPause();
-        if(postQuery != null && listner != null) postQuery.removeEventListener(listner);
+//        if(postQuery != null && listner != null) postQuery.removeEventListener(listner);
 //        ScreenshotSetApplication.getInstance().unregisterScreenshotObserver();
         coreListAdapter.clickPause();
     }

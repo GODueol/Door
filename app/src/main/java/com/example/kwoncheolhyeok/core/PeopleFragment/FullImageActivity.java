@@ -237,6 +237,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
 
     public void setViewedMeUsers(final GridItem item) {
 
+        final String mUuid = DataContainer.getInstance().getUid();
         if(item.getUuid().equals(DataContainer.getInstance().getUid())) return; // 자신일 경우
 
         // 트랜잭션을 이용해야함
@@ -250,7 +251,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
                     return Transaction.success(mutableData);
                 }
 
-                if(!map.containsKey(item.getUuid()) && map.size() >= 45){
+                if(!map.containsKey(mUuid) && map.size() >= 45){
                     // 데이터 삭제
                     Map.Entry<String, Long> min = null;
                     for (Map.Entry<String, Long> entry : map.entrySet()) {
@@ -263,7 +264,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
                 }
 
                 // 데이터 추가
-                map.put(item.getUuid(), System.currentTimeMillis());
+                map.put(mUuid, System.currentTimeMillis());
 
                 // Set value and report transaction success
                 mutableData.setValue(map);
