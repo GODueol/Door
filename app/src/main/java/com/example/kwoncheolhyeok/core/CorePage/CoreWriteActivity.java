@@ -3,7 +3,6 @@ package com.example.kwoncheolhyeok.core.CorePage;
 import android.animation.Animator;
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -27,11 +26,11 @@ import android.widget.ToggleButton;
 
 import com.bumptech.glide.Glide;
 import com.example.kwoncheolhyeok.core.Entity.CorePost;
+import com.example.kwoncheolhyeok.core.GifException;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
 import com.example.kwoncheolhyeok.core.Util.GalleryPick;
-import com.example.kwoncheolhyeok.core.Util.GlideApp;
 import com.example.kwoncheolhyeok.core.Util.UiUtil;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -316,7 +315,13 @@ public class CoreWriteActivity extends AppCompatActivity {
             // deletePicture
             deletePicture();
         } else if(editImageUri != null){
-            uploadPicture();
+            try {
+                uploadPicture();
+            } catch (GifException e) {
+                e.printStackTrace();
+                Toast.makeText(CoreWriteActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                return;
+            }
         }
 
         // sound
@@ -436,38 +441,25 @@ public class CoreWriteActivity extends AppCompatActivity {
 
                 try {
                     galleryPick.invoke(data);
+                    galleryPick.setImage(editImage);
+                    editImageUri = galleryPick.getUri();
+                    image_edit_layout.setVisibility(View.VISIBLE);
+                    closeFABMenu();
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
-                    Toast.makeText(CoreWriteActivity.this, "Error : " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CoreWriteActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(CoreWriteActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
-
-                if(!galleryPick.setImage(editImage)){
-                    Toast.makeText(CoreWriteActivity.this, "GIF 파일이 5MB를 넘어서 불가능합니다", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                editImageUri = galleryPick.getUri();
-
-//                GlideApp.with(this /* context */)
-//                        .load(editImageUri)
-//                        .placeholder(R.drawable.a)
-//                        .into(editImage);
-
-                image_edit_layout.setVisibility(View.VISIBLE);
-                closeFABMenu();
-
             }
         }
 
     }
 
-    private void uploadPicture() {
+    private void uploadPicture() throws GifException {
         final StorageReference spaceRef = storageRef.child("posts").child(cUuid).child(postKey).child("picture");
-//        UploadTask uploadTask = spaceRef.putFile(editImageUri);
-//        UploadTask uploadTask = spaceRef.putBytes(galleryPick.getResizeImageByteArray());
-
         UploadTask uploadTask = galleryPick.upload(spaceRef);
-
         tasks.put(uploadTask, new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {

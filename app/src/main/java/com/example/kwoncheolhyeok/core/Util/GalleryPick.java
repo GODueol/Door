@@ -15,6 +15,7 @@ import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.widget.ImageView;
 
+import com.example.kwoncheolhyeok.core.GifException;
 import com.example.kwoncheolhyeok.core.R;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -36,7 +37,6 @@ import me.echodev.resizer.Resizer;
  */
 public class GalleryPick {
     private Activity activity;
-    private boolean myResult;
     private Uri uri;
     private Bitmap bitmap;
     public static final int REQUEST_GALLERY = 2;
@@ -62,10 +62,6 @@ public class GalleryPick {
         this.activity = activity;
     }
 
-    public boolean is() {
-        return myResult;
-    }
-
     public Uri getUri() {
         return uri;
     }
@@ -78,11 +74,11 @@ public class GalleryPick {
         //Convert bitmap to byte array
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100 /*ignored for PNG*/, bos);
-        byte[] bitmapdata = bos.toByteArray();
+        byte[] bitmapData = bos.toByteArray();
 
         //write the bytes in file
         FileOutputStream fos = new FileOutputStream(f);
-        fos.write(bitmapdata);
+        fos.write(bitmapData);
         fos.flush();
         fos.close();
 
@@ -130,8 +126,6 @@ public class GalleryPick {
     public void invoke(Intent data) throws FileNotFoundException {
         uri = data.getData();
         imgPath = getImgPath(uri);
-
-        myResult = false;
     }
 
     private String getImgPath(Uri uri) throws FileNotFoundException {
@@ -280,11 +274,11 @@ public class GalleryPick {
         return imgPath;
     }
 
-    public UploadTask upload(StorageReference ref){
+    public UploadTask upload(StorageReference ref) throws GifException {
         // Check Gif
         if(isGif()){
             if(getFileSizeInMB() > 5) {
-                return null;    // 올릴수 없음
+                throw new GifException("5MB가 넘는 GIF는 업로드 할 수 없습니다");
             } else {
                 return ref.putFile(uri);
             }
@@ -312,10 +306,10 @@ public class GalleryPick {
     }
 
 
-    public boolean setImage(ImageView editImage) {
+    public void setImage(ImageView editImage) throws Exception {
         // Gif 파일인 경우
         if(isGif()){
-            if(getFileSizeInMB() > 5) return false;
+            if(getFileSizeInMB() > 5) throw new Exception("GIF 파일이 5MB를 넘어서 불가능합니다");
             //Uri
             GlideApp.with(editImage.getContext())
                     .load(uri)
@@ -325,6 +319,5 @@ public class GalleryPick {
             Bitmap originalBitmap = this.getBitmap();
             editImage.setImageBitmap(originalBitmap);
         }
-        return true;
     }
 }
