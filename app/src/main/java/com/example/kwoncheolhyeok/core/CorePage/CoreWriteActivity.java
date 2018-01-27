@@ -186,7 +186,7 @@ public class CoreWriteActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 // 다이얼로그 녹음
-                recordFilePath = Environment.getExternalStorageDirectory() + "/recorded_audio.wav";
+                recordFilePath = Environment.getExternalStorageDirectory() + "/core_recorded_audio.wav";
                 int color = getResources().getColor(R.color.white);
                 AndroidAudioRecorder.with(CoreWriteActivity.this)
                         // Required
