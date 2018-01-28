@@ -290,40 +290,9 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
 
-                        UiUtil.getInstance().startProgressDialog((Activity) context);
-                        postsRef.child(cUuid).child(coreListItem.getPostKey())
-                                .removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
+//                        UiUtil.getInstance().startProgressDialog((Activity) context);
 
-                                final ArrayList<Task> deleteTasks = new ArrayList<>();
-                                // 갯수 갱신
-                                FireBaseUtil.getInstance().syncCorePostCount(cUuid);
-
-                                // Storage Delete
-                                StorageReference postStorageRef = FirebaseStorage.getInstance().getReference().child("posts").child(cUuid).child(coreListItem.getPostKey());
-                                if(coreListItem.getCorePost().getSoundUrl() != null)
-                                    deleteTasks.add(postStorageRef.child("sound").delete());
-                                if(coreListItem.getCorePost().getPictureUrl() != null)
-                                    deleteTasks.add(postStorageRef.child("picture").delete());
-
-                                if(deleteTasks.isEmpty()) UiUtil.getInstance().stopProgressDialog();    // 사진이나 음성이 없으면 프로그레스바 종료
-
-                                for(Task task : deleteTasks){
-                                    task.addOnCompleteListener(new OnCompleteListener() {
-                                        @Override
-                                        public void onComplete(@NonNull Task mTask) {
-                                            for(Task t : deleteTasks){
-                                                if(!t.isComplete()) return;
-                                                UiUtil.getInstance().stopProgressDialog();
-                                            }
-                                        }
-                                    });
-                                }
-
-                            }
-                        });
-
+                        FireBaseUtil.getInstance().deletePostExcution(coreListItem, postsRef, cUuid);
 
 
                     }

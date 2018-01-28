@@ -244,28 +244,30 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         viewedMeUsersRef.runTransaction(new Transaction.Handler() {
             @Override
             public Transaction.Result doTransaction(MutableData mutableData) {
-                Map<String, Long> map = (Map<String, Long>) mutableData.getValue();
+                Map map = (Map) mutableData.getValue();
 
                 if (map == null) {
                     return Transaction.success(mutableData);
                 }
 
-                if(!map.containsKey(mUuid) && map.size() >= 45){
-                    // 데이터 삭제
-                    Map.Entry<String, Long> min = null;
-                    for (Map.Entry<String, Long> entry : map.entrySet()) {
-                        if (min == null || min.getValue() > entry.getValue()) {
-                            min = entry;
-                        }
-                    }
+                if(!map.containsKey(mUuid)){
+                    while(map.size() >= DataContainer.ViewedMeMax) {
+                        // 데이터 삭제
+                        MutableData min = null;
 
-                    map.remove(min);
+                        for (MutableData mutableChild : mutableData.getChildren()) {
+                            if (min == null || min.getValue(Long.class) > mutableChild.getValue(Long.class)) {
+                                min = mutableChild;
+                            }
+                        }
+
+                        map.remove(min.getKey());
+                        mutableData.setValue(map);
+                    }
                 }
 
                 // 데이터 추가
                 map.put(mUuid, System.currentTimeMillis());
-
-                // Set value and report transaction success
                 mutableData.setValue(map);
                 return Transaction.success(mutableData);
             }

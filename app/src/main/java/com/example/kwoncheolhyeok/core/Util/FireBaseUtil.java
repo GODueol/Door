@@ -1,9 +1,14 @@
 package com.example.kwoncheolhyeok.core.Util;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
+import com.example.kwoncheolhyeok.core.Entity.CoreListItem;
+import com.example.kwoncheolhyeok.core.Entity.CorePost;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.MessageActivity.util.RoomVO;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -12,7 +17,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -143,7 +151,8 @@ public class FireBaseUtil {
         return mDatabase.updateChildren(childUpdate);
     }
 
-    public void syncCorePostCount(String cUuid){
+    public void syncCorePostCount(final String cUuid){
+
         final DatabaseReference corePostCountRef = DataContainer.getInstance().getUserRef(cUuid);
         DatabaseReference postRef = FirebaseDatabase.getInstance().getReference()
                 .child("posts").child(cUuid);
@@ -151,9 +160,29 @@ public class FireBaseUtil {
 
             @Override
             public Transaction.Result doTransaction(MutableData mutableData) {
+
                 int count = 0;
                 if(mutableData.getValue() != null){
-                    count = ((Map)mutableData.getValue()).size();
+
+                    // 갯수 제한
+                    Map map = (Map) mutableData.getValue();
+                    while(map.size() > DataContainer.ChildrenMax) {
+                        MutableData min = null;
+                        for(final MutableData mutableChild : mutableData.getChildren()){
+                            if(min == null || min.getValue(CorePost.class).getWriteDate() > mutableChild.getValue(CorePost.class).getWriteDate()){
+                                min = mutableChild;
+                            }
+                        }
+
+                        StorageReference postStorageRef = FirebaseStorage.getInstance().getReference().child("posts").child(cUuid).child(min.getKey());
+                        postStorageRef.child("sound").delete();
+                        postStorageRef.child("picture").delete();
+
+                        map.remove(min.getKey());
+                        mutableData.setValue(map);
+                    }
+
+                    count = map.size();
                 }
 
                 final Map<String, Object> childUpdate = new HashMap<>();
@@ -168,7 +197,6 @@ public class FireBaseUtil {
 
             @Override
             public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
-
             }
         });
     }
@@ -197,5 +225,40 @@ public class FireBaseUtil {
         childUpdate.put("/" + mUuid + "/blockUsers", null);
 
         return mDatabase.updateChildren(childUpdate);
+    }
+
+    public void deletePostExcution(final CoreListItem coreListItem, DatabaseReference postsRef, final String cUuid) {
+        postsRef.child(cUuid).child(coreListItem.getPostKey())
+                .removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+
+                final ArrayList<Task> deleteTasks = new ArrayList<>();
+                // 갯수 갱신
+                FireBaseUtil.getInstance().syncCorePostCount(cUuid);
+
+                // Storage Delete
+                StorageReference postStorageRef = FirebaseStorage.getInstance().getReference().child("posts").child(cUuid).child(coreListItem.getPostKey());
+                if(coreListItem.getCorePost().getSoundUrl() != null)
+                    deleteTasks.add(postStorageRef.child("sound").delete());
+                if(coreListItem.getCorePost().getPictureUrl() != null)
+                    deleteTasks.add(postStorageRef.child("picture").delete());
+
+//                                if(deleteTasks.isEmpty()) UiUtil.getInstance().stopProgressDialog();    // 사진이나 음성이 없으면 프로그레스바 종료
+
+                for(Task task : deleteTasks){
+                    task.addOnCompleteListener(new OnCompleteListener() {
+                        @Override
+                        public void onComplete(@NonNull Task mTask) {
+                            for(Task t : deleteTasks){
+                                if(!t.isComplete()) return;
+//                                                UiUtil.getInstance().stopProgressDialog();
+                            }
+                        }
+                    });
+                }
+
+            }
+        });
     }
 }
