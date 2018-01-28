@@ -15,7 +15,7 @@ import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.widget.ImageView;
 
-import com.example.kwoncheolhyeok.core.GifException;
+import com.example.kwoncheolhyeok.core.Exception.GifException;
 import com.example.kwoncheolhyeok.core.R;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;

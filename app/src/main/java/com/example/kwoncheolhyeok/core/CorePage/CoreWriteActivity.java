@@ -26,7 +26,7 @@ import android.widget.ToggleButton;
 
 import com.bumptech.glide.Glide;
 import com.example.kwoncheolhyeok.core.Entity.CorePost;
-import com.example.kwoncheolhyeok.core.GifException;
+import com.example.kwoncheolhyeok.core.Exception.GifException;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;

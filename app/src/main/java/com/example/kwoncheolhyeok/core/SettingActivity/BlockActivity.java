@@ -1,14 +1,34 @@
 package com.example.kwoncheolhyeok.core.SettingActivity;
 
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.Toast;
 
+import com.example.kwoncheolhyeok.core.Activity.MainActivity;
+import com.example.kwoncheolhyeok.core.Activity.MapsActivity;
+import com.example.kwoncheolhyeok.core.Entity.User;
+import com.example.kwoncheolhyeok.core.Event.RefreshLocationEvent;
 import com.example.kwoncheolhyeok.core.FriendsActivity.UserListAdapter;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.BaseActivity.UserListBaseActivity;
+import com.example.kwoncheolhyeok.core.Util.BusProvider;
+import com.example.kwoncheolhyeok.core.Util.DataContainer;
+import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
+import com.example.kwoncheolhyeok.core.Util.UiUtil;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 
 import java.util.ArrayList;
 
@@ -50,15 +70,56 @@ public class BlockActivity extends UserListBaseActivity {
         setRecyclerView(items, adapter, "blockUsers", R.menu.block_menu);
     }
 
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        menu.clear();
+        getMenuInflater().inflate(R.menu.block_activity_menu, menu);
+        return super.onPrepareOptionsMenu(menu);
+    }
 
-    // 뒤로가기 버튼 기능
-    public boolean onOptionsItemSelected(android.view.MenuItem item) {
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
                 // NavUtils.navigateUpFromSameTask(this);
                 finish();
                 return true;
+            case R.id.unblock_all:
+                final User user = DataContainer.getInstance().getUser();
+                if(user.getBlockUsers().size()==0) {
+                    Toast.makeText(getBaseContext(),"이미 모든 유저 블락이 해제되어있습니다",Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+
+                // 다이얼로그
+                UiUtil.getInstance().showDialog(BlockActivity.this, "모든 유저 블락 해제",
+                        "모든 유저 대상으로 블럭을 해제하시겠습니까?", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                UiUtil.getInstance().startProgressDialog(BlockActivity.this);
+
+                                FireBaseUtil.getInstance().allUnblock(user.getBlockUsers()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        user.getBlockUsers().clear();
+                                        BusProvider.getInstance().post(new RefreshLocationEvent());
+                                    }
+                                }).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        UiUtil.getInstance().stopProgressDialog();
+                                    }
+                                });
+
+                            }
+                        }, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                            }
+                        });
+                break;
+            default:
+                break;
         }
+
         return super.onOptionsItemSelected(item);
     }
 

@@ -217,75 +217,48 @@ public class MainActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.find_map) {
-            Intent i = new Intent(MainActivity.this, MapsActivity.class);
-            startActivityForResult(i, 0);
-            return true;
-        } else if (id == R.id.find_id) {
-            return true;
-        } else if (id == R.id.lock_all) {
-
-            final User user = DataContainer.getInstance().getUser();
-            if(user.getUnLockUsers().size()==0) {
-                Toast.makeText(getBaseContext(),"이미 모든 유저에게 사진 잠금이 설정되어있습니다",Toast.LENGTH_SHORT).show();
+        switch (id) {
+            case R.id.find_map :
+                Intent i = new Intent(MainActivity.this, MapsActivity.class);
+                startActivityForResult(i, 0);
                 return true;
-            }
-
-            // 다이얼로그
-            UiUtil.getInstance().showDialog(MainActivity.this, "모든 유저 사진 잠금"
-                    , "모든 유저 대상으로 사진을 잠그시겠습니까?", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int whichButton) {
-                    UiUtil.getInstance().startProgressDialog(MainActivity.this);
-                    user.getUnLockUsers().clear();
-                    DataContainer.getInstance().getUsersRef().child(DataContainer.getInstance().getUid()).setValue(user).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            DataContainer.getInstance().setUser(user);
-                        }
-                    }).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            UiUtil.getInstance().stopProgressDialog();
-                        }
-                    });
-                }
-            }, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int whichButton) {
-                }
-            });
-            return true;
-        } else if(id == R.id.unblock_all) {
-            final User user = DataContainer.getInstance().getUser();
-            if(user.getBlockUsers().size()==0) {
-                Toast.makeText(getBaseContext(),"이미 모든 유저 블락이 해제되어있습니다",Toast.LENGTH_SHORT).show();
+            case R.id.find_id :
                 return true;
-            }
+            case R.id.lock_all :
 
-            // 다이얼로그
-            UiUtil.getInstance().showDialog(MainActivity.this, "모든 유저 블락 해제",
-                    "모든 유저 대상으로 블럭을 해제하시겠습니까?", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int whichButton) {
-                    UiUtil.getInstance().startProgressDialog(MainActivity.this);
-
-                    FireBaseUtil.getInstance().allUnblock(user.getBlockUsers()).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            user.getBlockUsers().clear();
-                            BusProvider.getInstance().post(new RefreshLocationEvent());
-                        }
-                    }).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            UiUtil.getInstance().stopProgressDialog();
-                        }
-                    });
-
+                final User user = DataContainer.getInstance().getUser();
+                if(user.getUnLockUsers().size()==0) {
+                    Toast.makeText(getBaseContext(),"이미 모든 유저에게 사진 잠금이 설정되어있습니다",Toast.LENGTH_SHORT).show();
+                    return true;
                 }
-            }, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int whichButton) {
-                }
-            });
-            return true;
+
+                // 다이얼로그
+                UiUtil.getInstance().showDialog(MainActivity.this, "모든 유저 사진 잠금"
+                        , "모든 유저 대상으로 사진을 잠그시겠습니까?", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                UiUtil.getInstance().startProgressDialog(MainActivity.this);
+                                user.getUnLockUsers().clear();
+                                DataContainer.getInstance().getUsersRef().child(DataContainer.getInstance().getUid()).setValue(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        DataContainer.getInstance().setUser(user);
+                                    }
+                                }).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        UiUtil.getInstance().stopProgressDialog();
+                                    }
+                                });
+                            }
+                        }, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                            }
+                        });
+                return true;
+
+
+            default:
+                break;
         }
 
         return super.onOptionsItemSelected(item);

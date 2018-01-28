@@ -1,4 +1,4 @@
-package com.example.kwoncheolhyeok.core;
+package com.example.kwoncheolhyeok.core.Exception;
 
 /**
  * Created by gimbyeongjin on 2018. 1. 27..
