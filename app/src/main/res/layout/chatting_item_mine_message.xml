@@ -16,23 +16,22 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
+            android:layout_gravity="bottom|right"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/check"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom|right"
-                android:text="" />
+                android:layout_gravity="right"
+                android:text="1" />
 
             <TextView
                 android:id="@+id/time"
                 android:layout_width="60dp"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/check"
-                android:layout_gravity="bottom"
-                android:text="13:00 AM" />
+                android:gravity="right"
+                android:text="13:00" />
         </LinearLayout>
 
 

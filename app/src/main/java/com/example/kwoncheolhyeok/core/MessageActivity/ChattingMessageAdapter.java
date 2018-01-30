@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
@@ -23,6 +24,7 @@ import com.example.kwoncheolhyeok.core.PeopleFragment.GridItem;
 import com.example.kwoncheolhyeok.core.PeopleFragment.ImageAdapter;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.GlideApp;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -59,11 +61,8 @@ public class ChattingMessageAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     }
 
     public String getDate(int position) {
-
         Date date = new Date( itemList.get(position).getTime() );
-
         String strResult = sdf.format( date );
-
         return strResult;
     }
 
@@ -137,6 +136,7 @@ public class ChattingMessageAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             case MY_IMAGE:
                 ViewHolder_mine_image holder2 = (ViewHolder_mine_image) viewHolder;
                 setImageMessage(holder2.messageImageView, image);
+
                 setDateUtil(holder2.dateTextView, holder2.checkTextView, date, check);
                 break;
             case OTHER_IMAGE:
@@ -258,13 +258,31 @@ public class ChattingMessageAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 .into(imageView);
     }
 
-    public void setImageMessage(ImageView imageView, String uri) {
+    public void setImageMessage(ImageView imageView, final String uri) {
         GlideApp.with(imageView.getContext())
+                .asBitmap()
                 .load(uri)
                 .override(600, 600)
                 .fitCenter()
                 .listener(requestListener)
                 .into(imageView);
+
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent p = new Intent(context.getApplicationContext(), ChattingFullImage.class);
+                p.putExtra("imageUri", uri);
+                p.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                context.getApplicationContext().startActivity(p);
+            }
+        });
+        imageView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                Toast.makeText(context,"메세지삭제 예정",Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        });
     }
 
     public void setDateUtil(TextView dTextView, TextView cTextView, Long date, int check) {

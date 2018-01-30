@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.example.kwoncheolhyeok.core.Entity.User;
@@ -297,13 +298,11 @@ public class ChatFirebaseUtil {
         } else if (!message.getWriter().equals(userUuid) && message.getImage() == null) {
             chatMessage = new ChatMessage(message, false, false, item);
         } else if (message.getWriter().equals(userUuid) && message.getContent() == null) {
-            chattingMessageAdapter.setRequestListener();
             chatMessage = new ChatMessage(message, true, true);
             if (chatMessage.getCheck() == 1) {
                 uncheckMessageList.add(chatMessage);
             }
         } else {
-            chattingMessageAdapter.setRequestListener();
             chatMessage = new ChatMessage(message, false, true, item);
         }
         chatMessageList.add(chatMessage);
@@ -343,18 +342,24 @@ public class ChatFirebaseUtil {
             chatMessageList.add(size, chatMessage);
         }
 
-        chattingRecyclerview.getRecycledViewPool().clear();
-        chattingMessageAdapter.notifyDataSetChanged();
+
         //로딩 후 제거
-        int messageViewCount  = childKeyList.size()+(visiblieCompLastPosition-visilbeCompFirstPosition)-2;
-        chattingRecyclerview.scrollToPosition(messageViewCount);
-        chattingRecyclerview.addOnScrollListener(detectTopPosition);
+        if(detectTopPosition!=null) {
+            chattingRecyclerview.getRecycledViewPool().clear();
+            chattingMessageAdapter.notifyDataSetChanged();
+            int messageViewCount = childKeyList.size() + (visiblieCompLastPosition - visilbeCompFirstPosition) - 2;
+            chattingRecyclerview.scrollToPosition(messageViewCount);
+            chattingRecyclerview.addOnScrollListener(detectTopPosition);
+        }
         chatDatabaseRef.removeEventListener(chatLoadListener);
     }
     // 채팅 로딩 발생 메소드
     public void addChatLog() {
-        if(!childKeyList.isEmpty()) {
+        if(!childKeyList.isEmpty()&&childKeyList.size()!=1) {
             chattingRecyclerview.removeOnScrollListener(detectTopPosition);
+            if(childKeyList.size()<MessageCount){
+                detectTopPosition=null;
+            }
             // 마지막으로 불러온 채팅 아이디
             String lastChildChatKey = childKeyList.get(0);
             childKeyList.clear();
