@@ -45,7 +45,7 @@
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
 
-    <string name="core_plus">core +</string>
+    <string name="core_plus">CORE +</string>
     <string name="notice">공지사항</string>
     <string name="account_setting">계정</string>
     <string name="alarm_setting">알림</string>

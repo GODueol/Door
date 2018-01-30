@@ -127,7 +127,6 @@
         <activity
             android:name=".SettingActivity.AccountActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden"
             tools:ignore="InnerclassSeparator"></activity>
         <activity
             android:name=".SettingActivity.AlarmActivity"

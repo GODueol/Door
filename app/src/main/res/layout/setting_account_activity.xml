@@ -28,6 +28,9 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="@string/account_setting"
+            android:textStyle="bold"
+            android:textSize="15.5dp"
+            android:textColor="@color/black"
             />
 
         <ImageButton
@@ -61,7 +64,7 @@
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="15dp"
             android:textColor="@color/black"
-            android:textSize="16dp"
+            android:textSize="15dp"
 
             />
 
@@ -117,6 +120,9 @@
             android:layout_marginRight="5dp"
             android:textColor="@color/black"
             android:theme="@style/EditTxtUnderBarBlack"
+            android:ems="10"
+            android:inputType="textPassword"
+
             />
 
         <TextView
@@ -138,6 +144,8 @@
             android:layout_marginRight="5dp"
             android:textColor="@color/black"
             android:theme="@style/EditTxtUnderBarBlack"
+            android:ems="10"
+            android:inputType="textPassword"
             />
 
         <TextView
@@ -173,10 +181,10 @@
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="15dp"
             android:textColor="@color/black"
-            android:textSize="16dp"
+            android:textSize="15dp"
             />
 
 
     </RelativeLayout>
 
-</RelativeLayout>
+   </RelativeLayout>
