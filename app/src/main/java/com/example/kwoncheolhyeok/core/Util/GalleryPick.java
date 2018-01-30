@@ -85,14 +85,14 @@ public class GalleryPick {
         return f;
     }
 
-    private byte[] getResizeImageByteArray() {
+    private byte[] getResizeImageByteArray(Bitmap bitmap) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream() ;
-        getResizeBitmap().compress( Bitmap.CompressFormat.JPEG, 100, stream) ;
+        getResizeBitmap(bitmap).compress( Bitmap.CompressFormat.JPEG, 100, stream) ;
         return stream.toByteArray();
     }
 
     // 용량 제한
-    private Bitmap getResizeBitmap(){
+    private Bitmap getResizeBitmap(Bitmap bitmap){
         try {
             bitmap = new Resizer(activity)
                     .setTargetLength(1080)
@@ -105,7 +105,7 @@ public class GalleryPick {
     }
 
     public Bitmap getBitmap() {
-        return getResizeBitmap();
+        return getResizeBitmap(bitmap);
     }
 
     public GalleryPick goToGallery(){
@@ -125,11 +125,10 @@ public class GalleryPick {
 
     public void invoke(Intent data) throws FileNotFoundException {
         uri = data.getData();
-        imgPath = getImgPath(uri);
+        getImgPath(uri);
     }
 
-    private String getImgPath(Uri uri) throws FileNotFoundException {
-        String imgPath = null;
+    private void getImgPath(Uri uri) throws FileNotFoundException {
         boolean isImageFromGoogleDrive = false;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             if (DocumentsContract.isDocumentUri(activity, uri)) {
@@ -271,7 +270,6 @@ public class GalleryPick {
         } else {
             bitmap = BitmapFactory.decodeStream(activity.getContentResolver().openInputStream(uri));
         }
-        return imgPath;
     }
 
     public UploadTask upload(StorageReference ref) throws GifException {
@@ -283,9 +281,24 @@ public class GalleryPick {
                 return ref.putFile(uri);
             }
         } else {
-            return ref.putBytes(this.getResizeImageByteArray());
+            return ref.putBytes(this.getResizeImageByteArray(bitmap));
         }
     }
+
+    public UploadTask upload(StorageReference ref, Uri uri) throws GifException, FileNotFoundException {
+        // Check Gif
+        getImgPath(uri);
+        if(isGif()){
+            if(getFileSizeInMB() > 5) {
+                throw new GifException("5MB가 넘는 GIF는 업로드 할 수 없습니다");
+            } else {
+                return ref.putFile(uri);
+            }
+        } else {
+            return ref.putBytes(this.getResizeImageByteArray(bitmap));
+        }
+    }
+
 
     private long getFileSizeInMB() {
         long fileSizeInMB;// 크기 확인 : 5MB

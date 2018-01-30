@@ -24,10 +24,10 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.bumptech.glide.Glide;
-import com.example.kwoncheolhyeok.core.CorePage.CoreWriteActivity;
 import com.example.kwoncheolhyeok.core.Entity.IntBoundary;
 import com.example.kwoncheolhyeok.core.Entity.StringBoundary;
 import com.example.kwoncheolhyeok.core.Entity.User;
+import com.example.kwoncheolhyeok.core.Exception.GifException;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
@@ -655,13 +655,16 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
             if (requestCode == GalleryPick.REQUEST_GALLERY && data != null && data.getData() != null) {
                 try {
                     galleryPick.invoke(data);
+                    galleryPick.setImage(modifyingPic);
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                     Toast.makeText(ProfileModifyActivity.this, "Error : " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
 
                 uriMap.put(modifyingPic.getId(), galleryPick.getUri());
-                modifyingPic.setImageBitmap(galleryPick.getBitmap());
+//                modifyingPic.setImageBitmap(galleryPick.getBitmap());
             }
         }
     }
@@ -781,14 +784,25 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
                     });
                 } else {
                     // 저장
-                    UploadTask task = spaceRef.putFile(uri);
-                    tasks.add(task);
-                    task.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            saveUserPicUrl(taskSnapshot.getDownloadUrl(), targetImageView);
-                        }
-                    });
+                    UploadTask task;
+                    try {
+                        task = galleryPick.upload(spaceRef, uri);
+                        tasks.add(task);
+                        task.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                saveUserPicUrl(taskSnapshot.getDownloadUrl(), targetImageView);
+                            }
+                        });
+                    } catch (GifException e) {
+                        e.printStackTrace();
+                        Toast.makeText(ProfileModifyActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                        return;
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                        Toast.makeText(ProfileModifyActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                        return;
+                    }
                 }
             }
 
