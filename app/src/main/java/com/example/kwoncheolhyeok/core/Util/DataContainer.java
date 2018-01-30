@@ -10,7 +10,7 @@ import com.google.firebase.database.FirebaseDatabase;
  */
 
 public class DataContainer {
-    static final int ChildrenMax = 1000;
+    public static final int ChildrenMax = 1000;
     public static final int ViewedMeMax = 45;
     private static class TIME_MAXIMUM
     {

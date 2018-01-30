@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.kwoncheolhyeok.core.Entity.User;
+import com.example.kwoncheolhyeok.core.Exception.ChildSizeMaxException;
 import com.example.kwoncheolhyeok.core.PeopleFragment.FullImageActivity;
 import com.example.kwoncheolhyeok.core.PeopleFragment.GridItem;
 import com.example.kwoncheolhyeok.core.R;
@@ -141,13 +142,24 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
                         UiUtil.getInstance().showDialog(context, "유저 차단", "해당 유저를 차단하시겠습니까?", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
+                                final User mUser = DataContainer.getInstance().getUser();
+                                if(mUser.getBlockUsers().size() >= DataContainer.ChildrenMax) {
+                                    Toast.makeText(context, DataContainer.ChildrenMax + "명을 초과할 수 없습니다", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+
                                 UiUtil.getInstance().startProgressDialog((Activity) context);
-                                FireBaseUtil.getInstance().block(item.getUuid()).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        UiUtil.getInstance().stopProgressDialog();
-                                    }
-                                });
+                                try {
+                                    FireBaseUtil.getInstance().block(item.getUuid()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            UiUtil.getInstance().stopProgressDialog();
+                                        }
+                                    });
+                                } catch (ChildSizeMaxException e) {
+                                    Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    UiUtil.getInstance().stopProgressDialog();
+                                }
                             }
                         }, new DialogInterface.OnClickListener() {
                             @Override
@@ -182,7 +194,14 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 UiUtil.getInstance().startProgressDialog((Activity) context);
-                                Task<Void> task = FireBaseUtil.getInstance().follow(user, item.getUuid(), true);
+                                Task<Void> task;
+                                try {
+                                    task = FireBaseUtil.getInstance().follow(user, item.getUuid(), true);
+                                } catch (ChildSizeMaxException e) {
+                                    Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    UiUtil.getInstance().stopProgressDialog();
+                                    return;
+                                }
                                 if(task == null){
                                     Toast.makeText(context, "팔로우 취소 상태입니다", Toast.LENGTH_SHORT).show();
                                     UiUtil.getInstance().stopProgressDialog();
@@ -208,7 +227,14 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 UiUtil.getInstance().startProgressDialog((Activity) context);
-                                Task<Void> task = FireBaseUtil.getInstance().follow(user, item.getUuid(), false);
+                                Task<Void> task;
+                                try {
+                                    task = FireBaseUtil.getInstance().follow(user, item.getUuid(), false);
+                                } catch (ChildSizeMaxException e) {
+                                    Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    UiUtil.getInstance().stopProgressDialog();
+                                    return;
+                                }
                                 if(task == null){
                                     Toast.makeText(context, "팔로우 신청 되어있습니다", Toast.LENGTH_SHORT).show();
                                     UiUtil.getInstance().stopProgressDialog();
@@ -235,6 +261,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
         });
     }
 
+    @SuppressLint("SetTextI18n")
     private boolean setHeader(UserHolder userHolder, User user) {
         if(user == null) {
             ViewGroup.LayoutParams params = userHolder.itemView.getLayoutParams();
