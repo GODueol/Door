@@ -29,6 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.kwoncheolhyeok.core.Entity.User;
+import com.example.kwoncheolhyeok.core.Exception.ChildSizeMaxException;
 import com.example.kwoncheolhyeok.core.MessageActivity.util.MessageVO;
 import com.example.kwoncheolhyeok.core.PeopleFragment.FullImageActivity;
 import com.example.kwoncheolhyeok.core.R;
@@ -189,28 +190,27 @@ public class ChattingActivity extends AppCompatActivity {
                 // 다이얼로그
                 UiUtil.getInstance().showDialog(ChattingActivity.this, "유저 차단", "해당 유저를 차단하시겠습니까?", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-
-                        if(user.getBlockMeUsers().size() >= DataContainer.ChildrenMax) {
-                            Toast.makeText(ChattingActivity.this, DataContainer.ChildrenMax + "명을 초과할 수 없습니다", Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-
                         UiUtil.getInstance().startProgressDialog(ChattingActivity.this);
                         // blockUsers 추가
-                        FireBaseUtil.getInstance().block(chatFirebaseUtil.getItem().getUuid()).addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                finish();
-                            }
-                        }).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                UiUtil.getInstance().stopProgressDialog();
-                                Intent p = new Intent(ChattingActivity.this, MessageActivity.class);
-                                p.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                ChattingActivity.this.startActivity(p);
-                            }
-                        });
+                        try {
+                            FireBaseUtil.getInstance().block(chatFirebaseUtil.getItem().getUuid()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    finish();
+                                }
+                            }).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    UiUtil.getInstance().stopProgressDialog();
+                                    Intent p = new Intent(ChattingActivity.this, MessageActivity.class);
+                                    p.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    ChattingActivity.this.startActivity(p);
+                                }
+                            });
+                        } catch (ChildSizeMaxException e) {
+                            Toast.makeText(ChattingActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                            UiUtil.getInstance().stopProgressDialog();
+                        }
                     }
                 }, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {

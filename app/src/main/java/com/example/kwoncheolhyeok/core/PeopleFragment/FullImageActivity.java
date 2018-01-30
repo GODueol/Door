@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.kwoncheolhyeok.core.Entity.User;
+import com.example.kwoncheolhyeok.core.Exception.ChildSizeMaxException;
 import com.example.kwoncheolhyeok.core.MessageActivity.ChattingActivity;
 import com.example.kwoncheolhyeok.core.PeopleFragment.FullImageViewPager.DetailImageActivity;
 import com.example.kwoncheolhyeok.core.R;
@@ -311,7 +312,14 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
                         UiUtil.getInstance().startProgressDialog(FullImageActivity.this);
 
                         // 내 following 추가, 유저 follower c추가
-                        Task<Void> task = FireBaseUtil.getInstance().follow(oUser, item.getUuid(), isFollow);
+                        Task<Void> task;
+                        try {
+                            task = FireBaseUtil.getInstance().follow(oUser, item.getUuid(), isFollow);
+                        } catch (ChildSizeMaxException e) {
+                            Toast.makeText(FullImageActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                            UiUtil.getInstance().stopProgressDialog();
+                            return;
+                        }
                         if(task == null) {
                             Toast.makeText(getBaseContext(),"오류 발생", Toast.LENGTH_SHORT).show();
                             UiUtil.getInstance().stopProgressDialog();
@@ -362,17 +370,22 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
 
                         UiUtil.getInstance().startProgressDialog(FullImageActivity.this);
                         // blockUsers 추가
-                        FireBaseUtil.getInstance().block(item.getUuid()).addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                finish();
-                            }
-                        }).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                UiUtil.getInstance().stopProgressDialog();
-                            }
-                        });
+                        try {
+                            FireBaseUtil.getInstance().block(item.getUuid()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    finish();
+                                }
+                            }).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    UiUtil.getInstance().stopProgressDialog();
+                                }
+                            });
+                        } catch (ChildSizeMaxException e) {
+                            Toast.makeText(FullImageActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                            UiUtil.getInstance().stopProgressDialog();
+                        }
                     }
                 }, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {

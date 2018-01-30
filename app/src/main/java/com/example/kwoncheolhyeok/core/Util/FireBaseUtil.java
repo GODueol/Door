@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import com.example.kwoncheolhyeok.core.Entity.CoreListItem;
 import com.example.kwoncheolhyeok.core.Entity.CorePost;
 import com.example.kwoncheolhyeok.core.Entity.User;
+import com.example.kwoncheolhyeok.core.Exception.ChildSizeMaxException;
 import com.example.kwoncheolhyeok.core.MessageActivity.util.RoomVO;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -45,9 +46,12 @@ public class FireBaseUtil {
     }
 
 
-    public Task<Void> follow(final User oUser, String oUuid, boolean isFollowed) {
+    public Task<Void> follow(final User oUser, String oUuid, boolean isFollowed) throws ChildSizeMaxException {
         String myUuid = DataContainer.getInstance().getUid();
         final User mUser = DataContainer.getInstance().getUser();
+        if(mUser.getFollowingUsers().size() >= DataContainer.ChildrenMax){
+            throw  new ChildSizeMaxException("Follow가 " + DataContainer.ChildrenMax + "명 이상이므로 Follow 불가능합니다");
+        }
         //final User oUser = item.getSummaryUser();
         DatabaseReference mDatabase = DataContainer.getInstance().getUsersRef();
         Map<String, Object> childUpdates = new HashMap<>();
@@ -96,10 +100,14 @@ public class FireBaseUtil {
         return mDatabase.updateChildren(childUpdates);
     }
 
-    public Task<Void> block(final String oUuid) {
+    public Task<Void> block(final String oUuid) throws ChildSizeMaxException {
 
         final String mUuid = DataContainer.getInstance().getUid();
         final User mUser = DataContainer.getInstance().getUser();
+
+        if(mUser.getBlockUsers().size() >= DataContainer.ChildrenMax){
+            throw new ChildSizeMaxException("Block된 유저들이 " + DataContainer.ChildrenMax + "명 이상이므로 Block 불가능합니다");
+        }
 
         long now = System.currentTimeMillis();
         DatabaseReference mDatabase = DataContainer.getInstance().getUsersRef();
