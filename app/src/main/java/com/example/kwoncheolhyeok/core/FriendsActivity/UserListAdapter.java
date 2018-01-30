@@ -141,6 +141,12 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
                         UiUtil.getInstance().showDialog(context, "유저 차단", "해당 유저를 차단하시겠습니까?", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
+                                final User mUser = DataContainer.getInstance().getUser();
+                                if(mUser.getBlockUsers().size() >= DataContainer.ChildrenMax) {
+                                    Toast.makeText(context, DataContainer.ChildrenMax + "명을 초과할 수 없습니다", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+
                                 UiUtil.getInstance().startProgressDialog((Activity) context);
                                 FireBaseUtil.getInstance().block(item.getUuid()).addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
@@ -235,6 +241,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
         });
     }
 
+    @SuppressLint("SetTextI18n")
     private boolean setHeader(UserHolder userHolder, User user) {
         if(user == null) {
             ViewGroup.LayoutParams params = userHolder.itemView.getLayoutParams();

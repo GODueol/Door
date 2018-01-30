@@ -1,7 +1,6 @@
 package com.example.kwoncheolhyeok.core.MessageActivity;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -15,7 +14,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.Menu;
@@ -191,6 +189,12 @@ public class ChattingActivity extends AppCompatActivity {
                 // 다이얼로그
                 UiUtil.getInstance().showDialog(ChattingActivity.this, "유저 차단", "해당 유저를 차단하시겠습니까?", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
+
+                        if(user.getBlockMeUsers().size() >= DataContainer.ChildrenMax) {
+                            Toast.makeText(ChattingActivity.this, DataContainer.ChildrenMax + "명을 초과할 수 없습니다", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
                         UiUtil.getInstance().startProgressDialog(ChattingActivity.this);
                         // blockUsers 추가
                         FireBaseUtil.getInstance().block(chatFirebaseUtil.getItem().getUuid()).addOnSuccessListener(new OnSuccessListener<Void>() {

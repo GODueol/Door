@@ -173,7 +173,6 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
             @Override
             public void onClick(View v) {
                 UiUtil.getInstance().goToCoreActivity(FullImageActivity.this,item.getUuid());
-                // TODO : 확인, 다른 부부노 수정
             }
         });
 
@@ -197,7 +196,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
                 targetLocation.setLatitude(geoLocation.latitude);//your coords of course
                 targetLocation.setLongitude(geoLocation.longitude);
                 final float distance = location.distanceTo(targetLocation);
-                distanceText.setText(String.format("%.1f", distance / 1000));
+                distanceText.setText(String.format("%.0f", distance / 1000));
             }
 
             @Override
@@ -355,6 +354,12 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
                 // 다이얼로그
                 UiUtil.getInstance().showDialog(FullImageActivity.this, "유저 차단", "해당 유저를 차단하시겠습니까?", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
+                        final User mUser = DataContainer.getInstance().getUser();
+                        if(mUser.getBlockUsers().size() >= DataContainer.ChildrenMax) {
+                            Toast.makeText(FullImageActivity.this, DataContainer.ChildrenMax + "명을 초과할 수 없습니다", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
                         UiUtil.getInstance().startProgressDialog(FullImageActivity.this);
                         // blockUsers 추가
                         FireBaseUtil.getInstance().block(item.getUuid()).addOnSuccessListener(new OnSuccessListener<Void>() {

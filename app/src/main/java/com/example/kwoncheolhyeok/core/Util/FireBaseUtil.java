@@ -1,7 +1,6 @@
 package com.example.kwoncheolhyeok.core.Util;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.example.kwoncheolhyeok.core.Entity.CoreListItem;
 import com.example.kwoncheolhyeok.core.Entity.CorePost;
@@ -101,6 +100,7 @@ public class FireBaseUtil {
 
         final String mUuid = DataContainer.getInstance().getUid();
         final User mUser = DataContainer.getInstance().getUser();
+
         long now = System.currentTimeMillis();
         DatabaseReference mDatabase = DataContainer.getInstance().getUsersRef();
         final Map<String, Object> childUpdate = new HashMap<>();
