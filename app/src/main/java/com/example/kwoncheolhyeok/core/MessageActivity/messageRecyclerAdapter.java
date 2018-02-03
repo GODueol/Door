@@ -62,6 +62,7 @@ public class messageRecyclerAdapter extends  RecyclerView.Adapter<messageRecycle
         GlideApp.with(holder.img.getContext())
                 .load(room.getTargetUri())
                 .override(width,height)
+                .placeholder(R.drawable.a)
                 .centerCrop()
                 .into(holder.img);
     }

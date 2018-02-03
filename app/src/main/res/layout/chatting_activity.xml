@@ -3,82 +3,82 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/white"
     android:fitsSystemWindows="true"
+    android:orientation="vertical"
     android:windowSoftInputMode="adjustResize"
     tools:context=".MessageActivity.ChattingActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
-        android:layout_alignParentTop="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
         android:background="@color/white"
         android:minHeight="?attr/actionBarSize"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" >
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
         <ImageView
             android:layout_width="28dp"
             android:layout_height="28dp"
-            android:scaleType="centerCrop"
             android:layout_gravity="center"
-            android:src="@drawable/nav_message"/>
+            android:scaleType="centerCrop"
+            android:src="@drawable/nav_message" />
     </android.support.v7.widget.Toolbar>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/listView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
         android:scrollbarStyle="outsideOverlay"
-        android:scrollbars="vertical"/>
+        android:scrollbars="vertical" />
 
-
-    <LinearLayout
-        android:id="@+id/send_message_layout"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="6dp"
-        android:paddingBottom="6dp"
-        android:layout_alignParentBottom="true"
-        android:background="@color/tr_gray35"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:id="@+id/send_message_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/tr_gray35"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingBottom="6dp"
+            android:paddingTop="6dp">
 
-        <ImageButton
-            android:id="@+id/iv_image"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginLeft="3dp"
-            android:background="@drawable/album" />
+            <ImageButton
+                android:id="@+id/iv_image"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="3dp"
+                android:background="@drawable/album" />
 
-        <EditText
-            android:id="@+id/et_message"
+            <EditText
+                android:id="@+id/et_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="8dp"
+                android:layout_weight="1"
+                android:ems="10"
+                android:inputType="textMultiLine"
+                android:maxLength="500"
+                android:maxLines="5"
+                android:textSize="15.5dp"
+                android:theme="@style/Theme.App.Base" />
+
+            <ImageButton
+                android:id="@+id/btn_send"
+                android:layout_width="40dp"
+                android:layout_height="30dp"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/send" />
+        </LinearLayout>
+        <TextView
+            android:layout_above="@id/send_message_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="8dp"
-            android:layout_weight="1"
-            android:theme="@style/Theme.App.Base"
-            android:ems="10"
-            android:textSize="15.5dp"
-            android:inputType="textMultiLine"
-            android:maxLines="5"
-            android:maxLength="500"
-            />
-
-        <ImageButton
-            android:id="@+id/btn_send"
-            android:layout_width="40dp"
-            android:layout_height="30dp"
-            android:layout_marginRight="10dp"
-            android:background="@drawable/send"
-            />
-
-
-
-
-    </LinearLayout>
-
+            android:text="dsagsdfg"/>
+    </RelativeLayout>
 </LinearLayout>
