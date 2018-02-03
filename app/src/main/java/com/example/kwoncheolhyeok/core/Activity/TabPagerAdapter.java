@@ -8,10 +8,10 @@ import com.example.kwoncheolhyeok.core.PeopleFragment.PeopleFragment;
 
 public class TabPagerAdapter extends FragmentPagerAdapter {
 
-    int position;
+    private int position;
     private String[] mNumOfTabs;
 
-    public TabPagerAdapter(FragmentManager fm, String[] NumOfTabs) {
+    TabPagerAdapter(FragmentManager fm, String[] NumOfTabs) {
         super(fm);
         this.mNumOfTabs = NumOfTabs;
     }
@@ -29,8 +29,7 @@ public class TabPagerAdapter extends FragmentPagerAdapter {
         this.position = position;
         switch (position) {
             case 0:
-                PeopleFragment tab1 = PeopleFragment.getInstance();
-                return tab1;
+                return new PeopleFragment();
 //            case 1:
 //                PeopleFragment tab1 = PeopleFragment.getInstance();
 //                return tab1;

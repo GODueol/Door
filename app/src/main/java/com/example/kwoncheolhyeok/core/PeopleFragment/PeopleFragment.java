@@ -37,17 +37,6 @@ import java.util.Arrays;
 
 public class PeopleFragment extends android.support.v4.app.Fragment {
 
-    // 싱글톤 패턴
-    @SuppressLint("StaticFieldLeak")
-    private static PeopleFragment mInstance;
-
-    public static PeopleFragment getInstance() {
-        if (mInstance == null) mInstance = new PeopleFragment();
-        return mInstance;
-    }
-    @SuppressLint("ValidFragment")
-    private PeopleFragment(){}
-
     GridView gridView = null;
     ImageAdapter imageAdapter;
     private User mUser;
