@@ -1,6 +1,7 @@
 package com.example.kwoncheolhyeok.core.CorePage;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -21,17 +22,24 @@ import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.bumptech.glide.Glide;
 import com.example.kwoncheolhyeok.core.Entity.CoreListItem;
 import com.example.kwoncheolhyeok.core.Entity.CorePost;
 import com.example.kwoncheolhyeok.core.Entity.User;
+import com.example.kwoncheolhyeok.core.Exception.ChildSizeMaxException;
+import com.example.kwoncheolhyeok.core.MessageActivity.MessageActivity;
+import com.example.kwoncheolhyeok.core.PeopleFragment.FullImageActivity;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
 import com.example.kwoncheolhyeok.core.Util.GlideApp;
 import com.example.kwoncheolhyeok.core.Util.UiUtil;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.like.LikeButton;
@@ -260,15 +268,54 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                     public boolean onMenuItemClick(MenuItem menuItem) {
                         int i = menuItem.getItemId();
 
-                        if (i == R.id.edit) {   // 수정
-                            Intent intent = new Intent(context, CoreWriteActivity.class);
-                            intent.putExtra("cUuid", cUuid);
-                            intent.putExtra("postKey", coreListItem.getPostKey());
-                            context.startActivity(intent);
+                        switch (i){
+                            case R.id.edit:
+                                Intent intent = new Intent(context, CoreWriteActivity.class);
+                                intent.putExtra("cUuid", cUuid);
+                                intent.putExtra("postKey", coreListItem.getPostKey());
+                                context.startActivity(intent);
+                                break;
+                            case R.id.delete:
+                                deletePost(coreListItem);
+                                break;
+                            case R.id.block:
+                                // 다이얼로그
+                                UiUtil.getInstance().showDialog(context, "유저 차단", "해당 유저를 차단하시겠습니까?", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+                                        final User mUser = DataContainer.getInstance().getUser();
+                                        if(mUser.getBlockUsers().size() >= DataContainer.ChildrenMax) {
+                                            Toast.makeText(context, DataContainer.ChildrenMax + "명을 초과할 수 없습니다", Toast.LENGTH_SHORT).show();
+                                            return;
+                                        }
 
-                        } else if (i == R.id.delete) {  // 삭제
-                            deletePost(coreListItem);
+                                        UiUtil.getInstance().startProgressDialog((Activity) context);
+                                        // blockUsers 추가
+                                        try {
+                                            FireBaseUtil.getInstance().block(coreListItem.getCorePost().getUuid()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    Toast.makeText(context, "차단되었습니다", Toast.LENGTH_SHORT).show();
+                                                }
+                                            }).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    UiUtil.getInstance().stopProgressDialog();
+                                                }
+                                            });
+                                        } catch (ChildSizeMaxException e) {
+                                            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                            UiUtil.getInstance().stopProgressDialog();
+                                        }
+                                    }
+                                }, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+                                    }
+                                });
+                                break;
+                            default:
+                                break;
                         }
+
                         return false;
                     }
                 });

@@ -81,19 +81,10 @@ public class DataContainer {
             // hour
             msg = (diffTime ) + "시간전";
         }
-        else if ((diffTime /= TIME_MAXIMUM.HOUR) < TIME_MAXIMUM.DAY)
+        else
         {
             // day
             msg = (diffTime ) + "일전";
-        }
-        else if ((diffTime /= TIME_MAXIMUM.DAY) < TIME_MAXIMUM.MONTH)
-        {
-            // day
-            msg = (diffTime ) + "달전";
-        }
-        else
-        {
-            msg = (diffTime) + "년전";
         }
 
         return msg;

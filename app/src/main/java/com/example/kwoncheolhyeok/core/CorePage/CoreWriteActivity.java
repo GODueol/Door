@@ -182,23 +182,13 @@ public class CoreWriteActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 // 차단관계인 경우 불가능
-                DataContainer.getInstance().getMyUserRef().child("blockMeUsers").addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        Map map = (Map) dataSnapshot.getValue();
-                        if(map != null || map.containsKey(cUuid)){ // 차단
-                            Toast.makeText(CoreWriteActivity.this, "차단되어 익명글을 쓸 수 없습니다", Toast.LENGTH_SHORT).show();
-                            finish();
-                        } else {
-                            saveCore();
-                        }
-                    }
+                if(DataContainer.getInstance().getUser().getBlockMeUsers().containsKey(cUuid)) {// 차단
+                    Toast.makeText(CoreWriteActivity.this, "차단되어 익명글을 쓸 수 없습니다", Toast.LENGTH_SHORT).show();
+                    finish();
+                } else {
+                    saveCore();
+                }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
             }
         });
 
