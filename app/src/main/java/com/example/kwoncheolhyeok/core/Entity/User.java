@@ -51,7 +51,7 @@ public class User implements Serializable{
 
 
     public SummaryUser getSummaryUser(){
-        return new SummaryUser(getPicUrls().getPicUrl1(), age, height, weight, bodyType, corePostCount);
+        return new SummaryUser(getPicUrls().getThumbNail_picUrl1(), age, height, weight, bodyType, corePostCount);
     }
 
     public Map<String, Long> getBlockMeUsers() {

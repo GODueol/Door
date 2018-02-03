@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.widget.ImageView;
 
@@ -88,6 +89,12 @@ public class GalleryPick {
     private byte[] getResizeImageByteArray(Bitmap bitmap) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream() ;
         getResizeBitmap(bitmap).compress( Bitmap.CompressFormat.JPEG, 100, stream) ;
+        return stream.toByteArray();
+    }
+
+    private byte[] getThumbNailImageByteArray(Bitmap bitmap) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream() ;
+        getResizeBitmap(bitmap).compress( Bitmap.CompressFormat.JPEG, 10, stream) ;
         return stream.toByteArray();
     }
 
@@ -274,20 +281,17 @@ public class GalleryPick {
 
     public UploadTask upload(StorageReference ref) throws GifException {
         // Check Gif
-        if(isGif()){
-            if(getFileSizeInMB() > 5) {
-                throw new GifException("5MB가 넘는 GIF는 업로드 할 수 없습니다");
-            } else {
-                return ref.putFile(uri);
-            }
-        } else {
-            return ref.putBytes(this.getResizeImageByteArray(bitmap));
-        }
+        return getUploadTask(ref, uri);
     }
 
     public UploadTask upload(StorageReference ref, Uri uri) throws GifException, FileNotFoundException {
         // Check Gif
         getImgPath(uri);
+        return getUploadTask(ref, uri);
+    }
+
+    @NonNull
+    private UploadTask getUploadTask(StorageReference ref, Uri uri) throws GifException {
         if(isGif()){
             if(getFileSizeInMB() > 5) {
                 throw new GifException("5MB가 넘는 GIF는 업로드 할 수 없습니다");
@@ -332,5 +336,15 @@ public class GalleryPick {
             Bitmap originalBitmap = this.getBitmap();
             editImage.setImageBitmap(originalBitmap);
         }
+    }
+
+    public UploadTask makeThumbNail(StorageReference thumbNailSpaceRef, Uri uri) throws FileNotFoundException {
+        getImgPath(uri);
+        if(isGif()){
+            return null;
+        } else {
+            return thumbNailSpaceRef.putBytes(this.getThumbNailImageByteArray(bitmap));
+        }
+
     }
 }

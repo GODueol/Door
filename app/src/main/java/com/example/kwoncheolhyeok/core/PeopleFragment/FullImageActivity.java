@@ -25,6 +25,7 @@ import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
 import com.example.kwoncheolhyeok.core.Util.GPSInfo;
+import com.example.kwoncheolhyeok.core.Util.GlideApp;
 import com.example.kwoncheolhyeok.core.Util.UiUtil;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
@@ -93,6 +94,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
     private User oUser;
     private ValueEventListener listener;
     private DatabaseReference oUserRef;
+    private GridItem item;
 
 
     @SuppressLint("DefaultLocale")
@@ -126,7 +128,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         page4.setOnClickListener(this);
 
         Intent p = getIntent();
-        final GridItem item = (GridItem) p.getSerializableExtra("item");
+        item = (GridItem) p.getSerializableExtra("item");
 
         setViewedMeUsers(item);
         // 리스너를 달아서 실시간 정보 변경
@@ -212,15 +214,21 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
 
         // 사진 출력
         ImageView profilePics[] = {page1, page2, page3, page4};
-        picUrlList = oUser.getPicUrls().toNotNullArray(oUser.getIsLockPics(), oUser.getUnLockUsers(), item.getUuid());
+        picUrlList = oUser.getPicUrls().toNotNullArrayThumbNail(oUser.getIsLockPics(), oUser.getUnLockUsers(), item.getUuid());
         for (int i = 0; i < picUrlList.size(); i++) {
             String url = picUrlList.get(i);
             if (url == null) continue;
-            Glide.with(getBaseContext()).load(url).into(profilePics[i]);
-            if (i == 0) { // 프사
-                Glide.with(getBaseContext()).load(url).into(fullImageView);
-            }
+
+            GlideApp.with(getBaseContext())
+                    .load(url)
+                    .placeholder(R.drawable.a)
+                    .into(profilePics[i]);
         }
+
+        GlideApp.with(getBaseContext())
+                .load(oUser.getPicUrls().getPicUrl1())
+                .placeholder(R.drawable.a)
+                .into(fullImageView);
 
         // 사진 잠금 해제
         setPicLock(item);
@@ -499,7 +507,9 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
     @Override
     public void onClick(View view) {
         Intent myIntent = new Intent(getApplicationContext(), DetailImageActivity.class);
-        myIntent.putExtra("picUrlList", picUrlList);
+
+        // 큰 사진으로 넘김
+        myIntent.putExtra("picUrlList", oUser.getPicUrls().toNotNullArray(oUser.getIsLockPics(), oUser.getUnLockUsers(), item.getUuid()));
 
         if (picUrlList.size() == 0) return;
         switch (view.getId()) {

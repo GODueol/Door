@@ -683,6 +683,19 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         DataContainer.getInstance().getUsersRef().child(DataContainer.getInstance().getUid()).setValue(user);
     }
 
+    private void saveUserThumbNailPicUrl(Uri downloadUrl, ImageView modifyingPic) {
+        if (modifyingPic == profilePic1) {
+            user.getPicUrls().setThumbNail_picUrl1(downloadUrl.toString());
+        } else if (modifyingPic == profilePic2) {
+            user.getPicUrls().setThumbNail_picUrl2(downloadUrl.toString());
+        } else if (modifyingPic == profilePic3) {
+            user.getPicUrls().setThumbNail_picUrl3(downloadUrl.toString());
+        } else if (modifyingPic == profilePic4) {
+            user.getPicUrls().setThumbNail_picUrl4(downloadUrl.toString());
+        }
+        DataContainer.getInstance().getUsersRef().child(DataContainer.getInstance().getUid()).setValue(user);
+    }
+
     @NonNull
     private String getPicPath(ImageView targetImage) {
         String profilePicPath = FireBaseUtil.getInstance().getStorageProfilePicPath();
@@ -770,6 +783,8 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 
                 StorageReference storageRef = FirebaseStorage.getInstance().getReference();
                 final StorageReference spaceRef = storageRef.child(getPicPath(targetImageView));
+                final StorageReference thumbNailSpaceRef = storageRef.child(getPicPath(targetImageView).replace(".jpg", "_thumbNail.jpg"));
+
 
                 if(uri == null){
                     // 삭제
@@ -780,6 +795,12 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
                         @Override
                         public void onSuccess(Object o) {
                             removeUserPicUrl(targetImageView);
+                            thumbNailSpaceRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    removeUserThumbNailPicUrl(targetImageView);
+                                }
+                            });
                         }
                     });
                 } else {
@@ -792,6 +813,18 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
                             @Override
                             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                                 saveUserPicUrl(taskSnapshot.getDownloadUrl(), targetImageView);
+                                // make thumbnail
+                                try {
+                                    UploadTask thumNailTask = galleryPick.makeThumbNail(thumbNailSpaceRef, uri);
+                                    if(thumNailTask != null) thumNailTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                        @Override
+                                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                            saveUserThumbNailPicUrl(taskSnapshot.getDownloadUrl(), targetImageView);
+                                        }
+                                    });
+                                } catch (FileNotFoundException e) {
+                                    e.printStackTrace();
+                                }
                             }
                         });
                     } catch (GifException e) {
@@ -827,6 +860,19 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
             Log.d(this.getClass().getName(), "onAuthStateChanged:signed_out");
         }
 
+    }
+
+    private void removeUserThumbNailPicUrl(ImageView targetPic) {
+        if (targetPic == profilePic1) {
+            user.getPicUrls().setThumbNail_picUrl1(null);
+        } else if (targetPic == profilePic2) {
+            user.getPicUrls().setThumbNail_picUrl2(null);
+        } else if (targetPic == profilePic3) {
+            user.getPicUrls().setThumbNail_picUrl3(null);
+        } else if (targetPic == profilePic4) {
+            user.getPicUrls().setThumbNail_picUrl4(null);
+        }
+        DataContainer.getInstance().getUsersRef().child(DataContainer.getInstance().getUid()).setValue(user);
     }
 
     @Override
