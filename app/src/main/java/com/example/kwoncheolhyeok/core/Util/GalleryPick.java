@@ -41,6 +41,7 @@ public class GalleryPick {
     private Uri uri;
     private Bitmap bitmap;
     public static final int REQUEST_GALLERY = 2;
+    private static final int THUMB_NAIL_RATIO = 35;
     private String imgPath;
 
     private String getMimeType(Uri uriImage)
@@ -94,7 +95,7 @@ public class GalleryPick {
 
     private byte[] getThumbNailImageByteArray(Bitmap bitmap) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream() ;
-        getResizeBitmap(bitmap).compress( Bitmap.CompressFormat.JPEG, 10, stream) ;
+        getResizeBitmap(bitmap).compress( Bitmap.CompressFormat.JPEG, THUMB_NAIL_RATIO, stream) ;
         return stream.toByteArray();
     }
 
