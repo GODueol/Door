@@ -249,8 +249,8 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
 
     @Override
     public void onDestroy() {
-        geoQuery.removeAllListeners();
-        userRef.removeEventListener(userListener);
+        if(geoQuery!= null) geoQuery.removeAllListeners();
+        if(userRef != null && userListener != null) userRef.removeEventListener(userListener);
         super.onDestroy();
     }
 }
