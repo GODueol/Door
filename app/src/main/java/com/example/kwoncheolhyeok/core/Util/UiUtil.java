@@ -11,7 +11,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.text.TextUtils;
-import android.widget.Toast;
+import android.util.Log;
 
 import com.example.kwoncheolhyeok.core.CorePage.CoreActivity;
 import com.example.kwoncheolhyeok.core.Entity.User;
@@ -51,6 +51,7 @@ public class UiUtil {
     }
 
     public void stopProgressDialog(){
+        Log.d("kbj", "stop Dialog");
         if(progressDialog != null) progressDialog.dismiss();
     }
 

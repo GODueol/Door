@@ -16,7 +16,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.Exception.ChildSizeMaxException;
 import com.example.kwoncheolhyeok.core.MessageActivity.ChattingActivity;
@@ -139,13 +138,11 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
 
         setViewedMeUsers(item);
         // 리스너를 달아서 실시간 정보 변경
-        UiUtil.getInstance().startProgressDialog(FullImageActivity.this);
         listener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 // viewedMeUser
-                UiUtil.getInstance().stopProgressDialog();
                 oUser = dataSnapshot.getValue(User.class);
                 item.setSummaryUser(oUser.getSummaryUser());
                 setView(item);

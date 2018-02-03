@@ -48,7 +48,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import cafe.adriel.androidaudiorecorder.AndroidAudioRecorder;
@@ -348,11 +347,11 @@ public class CoreWriteActivity extends AppCompatActivity {
             task.addOnCompleteListener(new OnCompleteListener() {
                 @Override
                 public void onComplete(@NonNull Task taskRtn) {
-                    for (Task task : tasks.keySet())
+                    for (Task task : tasks.keySet()) {
                         if (!task.isComplete()) return;
+                    }
                     setResult(Activity.RESULT_OK);
                     finish();
-                    UiUtil.getInstance().stopProgressDialog();  // 프로그레스바 중단
                 }
             });
         }
@@ -601,5 +600,4 @@ public class CoreWriteActivity extends AppCompatActivity {
         super.onPause();
         startAndPause.setChecked(false);
     }
-
 }
