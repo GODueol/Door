@@ -225,6 +225,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
                     .into(profilePics[i]);
         }
 
+        // 큰사진
         GlideApp.with(getBaseContext())
                 .load(oUser.getPicUrls().getPicUrl1())
                 .placeholder(R.drawable.a)

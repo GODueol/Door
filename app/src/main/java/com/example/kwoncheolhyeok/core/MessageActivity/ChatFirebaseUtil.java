@@ -80,8 +80,8 @@ public class ChatFirebaseUtil {
         this.targetUser = targetUser;
         this.userUuid = userUuid;
         this.targetUuid = targetUuid;
-        userPickuri = currentUser.getPicUrls().getPicUrl1();
-        targetPicuri = targetUser.getPicUrls().getPicUrl1();
+        userPickuri = currentUser.getPicUrls().getThumbNail_picUrl1();
+        targetPicuri = targetUser.getPicUrls().getThumbNail_picUrl1();
     }
 
     public void setLastChatView() {

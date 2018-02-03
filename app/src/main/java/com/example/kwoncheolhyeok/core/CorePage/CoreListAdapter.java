@@ -237,7 +237,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 
         // Picture
         GlideApp.with(context /* context */)
-                .load(user.getPicUrls().getPicUrl1())
+                .load(user.getPicUrls().getThumbNail_picUrl1())
                 .placeholder(R.drawable.a)
                 .into(holder.core_pic);
         holder.core_id.setText(user.getId());

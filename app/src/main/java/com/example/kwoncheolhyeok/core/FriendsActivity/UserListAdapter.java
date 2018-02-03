@@ -89,7 +89,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
         // setHeader
         if (setHeader(userHolder, user)) return;
 
-        Glide.with(userHolder.profilePicImage.getContext()).load(user.getPicUrls().getPicUrl1()).into(userHolder.profilePicImage);
+        Glide.with(userHolder.profilePicImage.getContext()).load(user.getPicUrls().getThumbNail_picUrl1()).into(userHolder.profilePicImage);
         userHolder.idText.setText(user.getId());
         userHolder.subProfileText.setText(UiUtil.getInstance().setSubProfile(user));
         userHolder.dateText.setText( DataContainer.getInstance().convertBeforeFormat(item.getDate()));
@@ -281,7 +281,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
 
                 User mUser = DataContainer.getInstance().getUser();
 
-                if(mUser.getPicUrls().getPicUrl1() != null) GlideApp.with(context).load(mUser.getPicUrls().getPicUrl1()).centerCrop()
+                if(mUser.getPicUrls().getThumbNail_picUrl1() != null) GlideApp.with(context).load(mUser.getPicUrls().getThumbNail_picUrl1()).centerCrop()
                         .into(profile_image);
                 userNick.setText(mUser.getId());
                 userProfile.setText(UiUtil.getInstance().setSubProfile(mUser));
