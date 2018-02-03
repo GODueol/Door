@@ -185,7 +185,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void setProfilePic(final ImageView profileImage) {
-        DataContainer.getInstance().getMyUserRef().child("picUrls/picUrl1").addValueEventListener(new ValueEventListener() {
+        DataContainer.getInstance().getMyUserRef().child("picUrls/thumbNail_picUrl1").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String picUrl1 = (String) dataSnapshot.getValue();
