@@ -130,6 +130,13 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         Intent p = getIntent();
         item = (GridItem) p.getSerializableExtra("item");
 
+        // 차단된 경우
+        User mUser = DataContainer.getInstance().getUser();
+        if(mUser.getBlockMeUsers().containsKey(item.getUuid())) {
+            Toast.makeText(FullImageActivity.this, "당신은 차단되었습니다", Toast.LENGTH_SHORT).show();
+            finish();
+        }
+
         setViewedMeUsers(item);
         // 리스너를 달아서 실시간 정보 변경
         UiUtil.getInstance().startProgressDialog(FullImageActivity.this);

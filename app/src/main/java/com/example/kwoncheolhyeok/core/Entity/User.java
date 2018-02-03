@@ -32,6 +32,7 @@ public class User implements Serializable{
     private int corePostCount;
     private long loginDate;
     private boolean isUseFilter;
+    private boolean isAnonymityProhibition;
 
     private Map<String, Long> unLockUsers = new HashMap<>();    // uuid, 추가 시간
 
@@ -49,6 +50,13 @@ public class User implements Serializable{
 
     private Map<String, Long> viewedMeUsers = new HashMap<>();    // uuid, 추가 시간
 
+    public boolean isAnonymityProhibition() {
+        return isAnonymityProhibition;
+    }
+
+    public void setAnonymityProhibition(boolean anonymityProhibition) {
+        isAnonymityProhibition = anonymityProhibition;
+    }
 
     public SummaryUser getSummaryUser(){
         return new SummaryUser(getPicUrls().getThumbNail_picUrl1(), age, height, weight, bodyType, corePostCount);

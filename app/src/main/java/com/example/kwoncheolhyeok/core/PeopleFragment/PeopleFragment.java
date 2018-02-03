@@ -41,6 +41,9 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
     ImageAdapter imageAdapter;
     private User mUser;
     Bus bus;
+    private ValueEventListener userListener;
+    private DatabaseReference userRef;
+    private GeoQuery geoQuery;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -76,7 +79,22 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
         };
         mSwipeRefreshLayout.setOnRefreshListener(onRefreshListener);
 
-        mUser = DataContainer.getInstance().getUser();  // summaryUser 정보 가져옴
+        mUser = DataContainer.getInstance().getUser();  // User 정보 가져옴
+
+        userListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                mUser = dataSnapshot.getValue(User.class);
+                DataContainer.getInstance().setUser(mUser);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        userRef = DataContainer.getInstance().getMyUserRef();
+        userRef.addValueEventListener(userListener);
 
         bus = BusProvider.getInstance();
 
@@ -102,7 +120,7 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(FireBaseUtil.currentLocationPath);
         GeoFire geoFire = new GeoFire(ref);
         final Location location = GPSInfo.getmInstance(getActivity()).getGPSLocation();
-        GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(location.getLatitude(), location.getLongitude()), 300);
+        geoQuery = geoFire.queryAtLocation(new GeoLocation(location.getLatitude(), location.getLongitude()), 300);
 
         // 쿼리받은 값을 처리
         geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
@@ -188,8 +206,7 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
     }
 
     private boolean isInBlock(String oUuid) {
-        String mUuid = DataContainer.getInstance().getUid();
-        return mUser.getBlockUsers().containsKey(mUuid) || mUser.getBlockUsers().containsKey(oUuid);
+        return mUser.getBlockUsers().containsKey(oUuid) || mUser.getBlockMeUsers().containsKey(oUuid);
     }
 
     private boolean isInFilter(SummaryUser summaryUser) {
@@ -228,6 +245,13 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
         super.onResume();
 
         refreshGrid(null);
+    }
+
+    @Override
+    public void onDestroy() {
+        geoQuery.removeAllListeners();
+        userRef.removeEventListener(userListener);
+        super.onDestroy();
     }
 }
 

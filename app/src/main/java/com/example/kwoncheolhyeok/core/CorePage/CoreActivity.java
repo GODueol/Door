@@ -10,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.View;
 
 import com.example.kwoncheolhyeok.core.Entity.CoreListItem;
@@ -36,6 +37,8 @@ public class CoreActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private Query postQuery;
     private ChildEventListener listner;
+    private DataContainer dc;
+    private String cUuid;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -44,7 +47,7 @@ public class CoreActivity extends AppCompatActivity {
         setContentView(R.layout.core_activity);
 
         Intent intent = getIntent();
-        final String cUuid = intent.getStringExtra("uuid");
+        cUuid = intent.getStringExtra("uuid");
 
         //스크린샷 방지
 //        ScreenshotSetApplication.getInstance().allowUserSaveScreenshot(false);
@@ -52,7 +55,7 @@ public class CoreActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
+        final FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -60,7 +63,7 @@ public class CoreActivity extends AppCompatActivity {
                 // 자신, 타인 액티비티 구별
                 Intent i;
                 i = new Intent(CoreActivity.this, CoreWriteActivity.class);
-                i.putExtra("cUuid",cUuid);
+                i.putExtra("cUuid", cUuid);
 
                 startActivityForResult(i, WRITE_SUCC);
             }
@@ -83,7 +86,7 @@ public class CoreActivity extends AppCompatActivity {
         ((SimpleItemAnimator) recyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
 
         // 코어 주인의 User Get
-        DataContainer dc = DataContainer.getInstance();
+        dc = DataContainer.getInstance();
         dc.getUserRef(cUuid).addListenerForSingleValueEvent(new ValueEventListener() {
              @Override
              public void onDataChange(DataSnapshot dataSnapshot) {
@@ -160,14 +163,31 @@ public class CoreActivity extends AppCompatActivity {
         postQuery.addChildEventListener(listner);
     }
 
-    // 뒤로가기 버튼 기능
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        menu.clear();
+        if(cUuid.equals(dc.getUid())) {
+            getMenuInflater().inflate(R.menu.core_activity_menu, menu);
+            menu.getItem(0).setChecked(dc.getUser().isAnonymityProhibition());
+        }
+
+        return super.onPrepareOptionsMenu(menu);
+    }
+    
     public boolean onOptionsItemSelected(android.view.MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
                 // NavUtils.navigateUpFromSameTask(this);
                 finish();
                 return true;
+            case R.id.anonymity_prohibition:
+                boolean isChecked = !item.isChecked();
+                item.setChecked(isChecked);
+
+                dc.getUser().setAnonymityProhibition(isChecked);
+                dc.getMyUserRef().child("anonymityProhibition").setValue(isChecked);
         }
+
         return super.onOptionsItemSelected(item);
     }
 

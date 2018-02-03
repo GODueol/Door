@@ -48,6 +48,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import cafe.adriel.androidaudiorecorder.AndroidAudioRecorder;
@@ -179,7 +180,25 @@ public class CoreWriteActivity extends AppCompatActivity {
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                saveCore();
+
+                // 차단관계인 경우 불가능
+                DataContainer.getInstance().getMyUserRef().child("blockMeUsers").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Map map = (Map) dataSnapshot.getValue();
+                        if(map != null || map.containsKey(cUuid)){ // 차단
+                            Toast.makeText(CoreWriteActivity.this, "차단되어 익명글을 쓸 수 없습니다", Toast.LENGTH_SHORT).show();
+                            finish();
+                        } else {
+                            saveCore();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
             }
         });
 
@@ -296,6 +315,7 @@ public class CoreWriteActivity extends AppCompatActivity {
     }
 
     private void saveCore() {
+
         UiUtil.getInstance().startProgressDialog(CoreWriteActivity.this);
 
         if(corePost == null) corePost = new CorePost(mUuid);
