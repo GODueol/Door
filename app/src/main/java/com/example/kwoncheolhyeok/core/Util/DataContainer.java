@@ -84,7 +84,7 @@ public class DataContainer {
         else
         {
             // day
-            msg = (diffTime ) + "일전";
+            msg = (diffTime/TIME_MAXIMUM.HOUR) + "일전";
         }
 
         return msg;
