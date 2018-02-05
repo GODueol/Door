@@ -32,14 +32,14 @@ public class DataContainer {
     private DataContainer() {
     }
 
-    private User user = null;
+    static private User user = null;
 
     public User getUser() {
         return user;
     }
 
     public void setUser(User user) {
-        this.user = user;
+        DataContainer.user = user;
     }
 
     public String getUid() {
