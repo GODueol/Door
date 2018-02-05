@@ -55,6 +55,7 @@ import com.google.firebase.database.ValueEventListener;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private static final int SETTING = 4;
     DrawerLayout drawer = null;
     ActionBarDrawerToggle toggle = null;
     Toolbar toolbar = null;
@@ -300,10 +301,8 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_setting) {
             Intent i = new Intent(MainActivity.this, SettingActivity.class);
-            startActivity(i);
+            startActivityForResult(i, SETTING);
 
-        } else if (id == R.id.nav_logout) {
-            logout();
         }
 
         changeToggleIcon();
@@ -369,6 +368,16 @@ public class MainActivity extends AppCompatActivity
     public void onPause() {
         super.onPause();
 //        ScreenshotSetApplication.getInstance().unregisterScreenshotObserver();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == SETTING) {
+            if (resultCode == SettingActivity.LOGOUT) {
+                logout();
+            }
+        }
     }
 }
 

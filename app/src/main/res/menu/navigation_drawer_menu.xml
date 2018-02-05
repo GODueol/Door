@@ -56,11 +56,6 @@
             app:theme="@style/NavigationViewStyle"
             />
 
-        <item
-            android:id="@+id/nav_logout"
-            android:title="Logout"
-            app:theme="@style/NavigationViewStyle"
-            />
     </group>
 
 </menu>

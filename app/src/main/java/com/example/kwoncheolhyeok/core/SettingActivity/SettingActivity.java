@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.example.kwoncheolhyeok.core.R;
 
@@ -21,13 +20,10 @@ import java.util.Arrays;
 
 public class SettingActivity extends AppCompatActivity {
 
+    public static final int LOGOUT = 4;
     Toolbar toolbar = null;
 
     ListView setting_list = null;
-    private ArrayAdapter<String> listAdapter;
-
-    TextView t = null;
-    TextView dasdf = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -42,14 +38,14 @@ public class SettingActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true); //홈 아이콘을 숨김처리합니다.
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
 
-        setting_list = (ListView) findViewById(R.id.setting_list);
+        setting_list = findViewById(R.id.setting_list);
 
         String[] setting_contents = new String[]{"CORE +", "공지사항", "계정", "알림", "블럭", "앱 정보", "로그아웃"};
 
-        ArrayList<String> setting = new ArrayList<String>();
+        ArrayList<String> setting = new ArrayList<>();
         setting.addAll(Arrays.asList(setting_contents));
 
-        listAdapter = new ArrayAdapter<String>(this, R.layout.setting_activity_list_item, setting);
+        ArrayAdapter<String> listAdapter = new ArrayAdapter<>(this, R.layout.setting_activity_list_item, setting);
 
 
         setting_list.setAdapter(listAdapter);
@@ -86,6 +82,8 @@ public class SettingActivity extends AppCompatActivity {
                         break;
                     case 6:
 //                        logout();
+                        setResult(LOGOUT, null);
+                        finish();
                         break;
                 }
             }
