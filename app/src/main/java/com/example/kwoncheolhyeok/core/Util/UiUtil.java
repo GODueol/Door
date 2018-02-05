@@ -51,7 +51,6 @@ public class UiUtil {
     }
 
     public void stopProgressDialog(){
-        Log.d("kbj", "stop Dialog");
         if(progressDialog != null) progressDialog.dismiss();
     }
 

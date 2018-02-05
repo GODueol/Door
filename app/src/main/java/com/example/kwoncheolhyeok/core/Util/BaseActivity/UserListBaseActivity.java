@@ -9,6 +9,7 @@ import com.example.kwoncheolhyeok.core.FriendsActivity.UserListAdapter;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
@@ -23,7 +24,7 @@ public class UserListBaseActivity extends AppCompatActivity {
     public ValueEventListener listener;
     public Query ref;
 
-    public void setRecyclerView(final ArrayList<UserListAdapter.Item> items, final UserListAdapter adapter, final String field, int item_menu) {
+    public void setRecyclerView(final ArrayList<UserListAdapter.Item> items, final UserListAdapter adapter, final String field, int item_menu, Query ref){
         adapter.setItemMenu(item_menu, field);
         items.clear();
         items.add(new UserListAdapter.Item(true));
@@ -31,7 +32,8 @@ public class UserListBaseActivity extends AppCompatActivity {
         // removeListener
         removeListener();
 
-        ref = DataContainer.getInstance().getMyUserRef().child(field).orderByValue();
+        this.ref = ref;
+
         listener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -41,31 +43,50 @@ public class UserListBaseActivity extends AppCompatActivity {
                 items.add(new UserListAdapter.Item(true));
                 if(dataSnapshot.getValue() == null) adapter.notifyDataSetChanged();
 
-                for(final DataSnapshot snapshot : dataSnapshot.getChildren()){
-                    Log.d("snapshot", snapshot.getValue().toString());
-                    final String oUuid = snapshot.getKey();
-                    DataContainer.getInstance().getUsersRef().child(oUuid).addListenerForSingleValueEvent(new ValueEventListener() {
+                if(field.equals("Find User")){
 
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            User oUser = dataSnapshot.getValue(User.class);
+                    for(final DataSnapshot snapshot : dataSnapshot.getChildren()){
+                        String oUuid = snapshot.getKey();
+                        User oUser = snapshot.getValue(User.class);
+                        if(adapter.isReverse) items.add(new UserListAdapter.Item(oUser, oUser.getLoginDate(), oUuid));
+                        else items.add(1, new UserListAdapter.Item(oUser, oUser.getLoginDate(), oUuid));
+                        adapter.notifyDataSetChanged();
+                    }
+                } else {
 
-                            if(adapter.isReverse) items.add(new UserListAdapter.Item(oUser, (long)snapshot.getValue(), oUuid));
-                            else items.add(1, new UserListAdapter.Item(oUser, (long)snapshot.getValue(), oUuid));
-                            adapter.notifyDataSetChanged();
-                        }
+                    for (final DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        Log.d("snapshot", snapshot.getValue().toString());
+                        final String oUuid = snapshot.getKey();
+                        DataContainer.getInstance().getUsersRef().child(oUuid).addListenerForSingleValueEvent(new ValueEventListener() {
 
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                        }
-                    });
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                User oUser = dataSnapshot.getValue(User.class);
+
+                                if (adapter.isReverse)
+                                    items.add(new UserListAdapter.Item(oUser, (long) snapshot.getValue(), oUuid));
+                                else
+                                    items.add(1, new UserListAdapter.Item(oUser, (long) snapshot.getValue(), oUuid));
+                                adapter.notifyDataSetChanged();
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                            }
+                        });
+                    }
                 }
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }
         };
+
         addListener();
+    }
+
+    public void setRecyclerView(final ArrayList<UserListAdapter.Item> items, final UserListAdapter adapter, final String field, int item_menu) {
+        setRecyclerView(items, adapter, field, item_menu, DataContainer.getInstance().getMyUserRef().child(field).orderByValue());
     }
 
     private void addListener() {
