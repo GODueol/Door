@@ -29,6 +29,9 @@ import com.example.kwoncheolhyeok.core.Util.UiUtil;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -56,18 +59,31 @@ public class BlockActivity extends UserListBaseActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true); //홈 아이콘을 숨김처리합니다.
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
 
-        // 리사이클뷰
         final RecyclerView recyclerView = findViewById(R.id.friendsRecyclerView);
-        items = new ArrayList<>();
-        items.add(new UserListAdapter.Item(true));
 
-        adapter = new UserListAdapter(this, items);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(adapter);
-        recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL)); //리사이클뷰 구분선
-        // setRecyclerView (default)
-        setRecyclerView(items, adapter, "blockUsers", R.menu.block_menu);
+        DataContainer.getInstance().getMyUserRef().addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                DataContainer.getInstance().setUser(dataSnapshot.getValue(User.class));
+
+                // 리사이클뷰
+                items = new ArrayList<>();
+                items.add(new UserListAdapter.Item(true));
+                adapter = new UserListAdapter(BlockActivity.this, items);
+                LinearLayoutManager layoutManager = new LinearLayoutManager(BlockActivity.this);
+                recyclerView.setLayoutManager(layoutManager);
+                recyclerView.setAdapter(adapter);
+                recyclerView.addItemDecoration(new DividerItemDecoration(BlockActivity.this, DividerItemDecoration.VERTICAL)); //리사이클뷰 구분선
+                // setRecyclerView (default)
+                setRecyclerView(items, adapter, "blockUsers", R.menu.block_menu);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
     }
 
     @Override

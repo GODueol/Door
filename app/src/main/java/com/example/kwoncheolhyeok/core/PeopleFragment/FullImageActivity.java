@@ -95,6 +95,8 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
     private DatabaseReference oUserRef;
     private GridItem item;
 
+    User mUser;
+
 
     @SuppressLint("DefaultLocale")
     @Override
@@ -129,33 +131,44 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         Intent p = getIntent();
         item = (GridItem) p.getSerializableExtra("item");
 
-        // 차단된 경우
-        User mUser = DataContainer.getInstance().getUser();
-        if(mUser.getBlockMeUsers().containsKey(item.getUuid())) {
-            Toast.makeText(FullImageActivity.this, "당신은 차단되었습니다", Toast.LENGTH_SHORT).show();
-            finish();
-        }
-
-        setViewedMeUsers(item);
-        // 리스너를 달아서 실시간 정보 변경
-        listener = new ValueEventListener() {
+        DataContainer.getInstance().getMyUserRef().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                mUser = dataSnapshot.getValue(User.class);
 
-                // viewedMeUser
-                oUser = dataSnapshot.getValue(User.class);
-                item.setSummaryUser(oUser.getSummaryUser());
-                setView(item);
+                // 차단된 경우
+                if(mUser.getBlockMeUsers().containsKey(item.getUuid())) {
+                    Toast.makeText(FullImageActivity.this, "당신은 차단되었습니다", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
 
+                setViewedMeUsers(item);
+                // 리스너를 달아서 실시간 정보 변경
+                listener = new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+
+                        // viewedMeUser
+                        oUser = dataSnapshot.getValue(User.class);
+                        item.setSummaryUser(oUser.getSummaryUser());
+                        setView(item);
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        UiUtil.getInstance().stopProgressDialog();
+                    }
+                };
+                oUserRef = DataContainer.getInstance().getUserRef(item.getUuid());
+                oUserRef.addValueEventListener(listener);
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                UiUtil.getInstance().stopProgressDialog();
+
             }
-        };
-        oUserRef = DataContainer.getInstance().getUserRef(item.getUuid());
-        oUserRef.addValueEventListener(listener);
+        });
     }
 
     @SuppressLint("SetTextI18n")
@@ -375,7 +388,6 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
                 // 다이얼로그
                 UiUtil.getInstance().showDialog(FullImageActivity.this, "유저 차단", "해당 유저를 차단하시겠습니까?", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        final User mUser = DataContainer.getInstance().getUser();
                         if(mUser.getBlockUsers().size() >= DataContainer.ChildrenMax) {
                             Toast.makeText(FullImageActivity.this, DataContainer.ChildrenMax + "명을 초과할 수 없습니다", Toast.LENGTH_SHORT).show();
                             return;
@@ -410,7 +422,6 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
 
     private void setPicLock(final GridItem item) {
         final String myUuid = DataContainer.getInstance().getUid();
-        final User mUser = DataContainer.getInstance().getUser();
         if(mUser == null){
             UiUtil.getInstance().restartApp(this);
         }

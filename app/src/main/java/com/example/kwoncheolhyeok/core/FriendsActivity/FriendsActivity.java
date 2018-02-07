@@ -9,8 +9,13 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.BaseActivity.UserListBaseActivity;
+import com.example.kwoncheolhyeok.core.Util.DataContainer;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
 import java.util.ArrayList;
@@ -28,7 +33,7 @@ public class FriendsActivity extends UserListBaseActivity {
         setContentView(R.layout.friends_activity);
 
         // bottomTab
-        BottomNavigationViewEx navigation = findViewById(R.id.navigation);
+        final BottomNavigationViewEx navigation = findViewById(R.id.navigation);
         navigation.enableAnimation(false);
         navigation.enableShiftingMode(false);
         navigation.enableItemShiftingMode(false);
@@ -62,23 +67,39 @@ public class FriendsActivity extends UserListBaseActivity {
 
 
         toolbar = findViewById(R.id.toolbar);
+        final RecyclerView recyclerView = findViewById(R.id.friendsRecyclerView);
+
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //액션바 아이콘을 업 네비게이션 형태로 표시합니다.
         getSupportActionBar().setDisplayShowHomeEnabled(true); //홈 아이콘을 숨김처리합니다.
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
 
-        // 리사이클뷰
-        final RecyclerView recyclerView = findViewById(R.id.friendsRecyclerView);
-        items = new ArrayList<>();
-        adapter = new UserListAdapter(this, items);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(adapter);
-        recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL)); //리사이클뷰 구분선
+        DataContainer.getInstance().getMyUserRef().addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
 
-        // setRecyclerView (default)
-        navigation.setSelectedItemId(R.id.navigation_friends);
+                DataContainer.getInstance().setUser(dataSnapshot.getValue(User.class));
+
+                // 리사이클뷰
+                items = new ArrayList<>();
+                adapter = new UserListAdapter(FriendsActivity.this, items);
+                LinearLayoutManager layoutManager = new LinearLayoutManager(FriendsActivity.this);
+                recyclerView.setLayoutManager(layoutManager);
+                recyclerView.setAdapter(adapter);
+                recyclerView.addItemDecoration(new DividerItemDecoration(FriendsActivity.this, DividerItemDecoration.VERTICAL)); //리사이클뷰 구분선
+
+                // setRecyclerView (default)
+                navigation.setSelectedItemId(R.id.navigation_friends);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
     }
 
     // 뒤로가기 버튼 기능
@@ -90,12 +111,5 @@ public class FriendsActivity extends UserListBaseActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-//        adapter.notifyDataSetChanged();
     }
 }

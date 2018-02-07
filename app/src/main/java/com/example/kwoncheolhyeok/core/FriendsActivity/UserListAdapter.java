@@ -281,7 +281,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
 
                 User mUser = DataContainer.getInstance().getUser();
 
-                if(mUser.getPicUrls().getThumbNail_picUrl1() != null) GlideApp.with(context).load(mUser.getPicUrls().getThumbNail_picUrl1()).centerCrop()
+                if(mUser.getPicUrls() != null &&mUser.getPicUrls().getThumbNail_picUrl1() != null) GlideApp.with(context).load(mUser.getPicUrls().getThumbNail_picUrl1()).centerCrop()
                         .into(profile_image);
                 userNick.setText(mUser.getId());
                 userProfile.setText(UiUtil.getInstance().setSubProfile(mUser));
