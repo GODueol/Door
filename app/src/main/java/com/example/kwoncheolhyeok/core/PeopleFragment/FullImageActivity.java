@@ -385,7 +385,23 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         blockFriends.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // 다이얼로그
+
+                new BlockReportSelectDialog(FullImageActivity.this, new BlockReportSelectDialog.BlockReportSelectDialogListener() {
+                    @Override
+                    public void block() {
+                        // show block dialog
+                        showBlockDialog();
+                    }
+
+                    @Override
+                    public void report() {
+                        new ReportDialog(FullImageActivity.this).show();
+                    }
+                }).show();
+
+            }
+
+            private void showBlockDialog() {
                 UiUtil.getInstance().showDialog(FullImageActivity.this, "유저 차단", "해당 유저를 차단하시겠습니까?", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         if(mUser.getBlockUsers().size() >= DataContainer.ChildrenMax) {
