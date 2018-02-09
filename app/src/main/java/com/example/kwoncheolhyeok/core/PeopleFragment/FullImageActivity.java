@@ -395,7 +395,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
 
                     @Override
                     public void report() {
-                        new ReportDialog(FullImageActivity.this).show();
+                        new ReportDialog(FullImageActivity.this, item.getUuid()).show();
                     }
                 }).show();
 
