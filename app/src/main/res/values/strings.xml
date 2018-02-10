@@ -4,7 +4,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="find_map">Find MAP</string>
-    <string name="find_id">Find ID</string>
+    <string name="find_id">Find NickName</string>
 
     <string name="Join_this_club">Join</string>
 
@@ -80,9 +80,9 @@
     <string name="app_policies">앱 약관</string>
     <string name="app_license">오픈소스 라이선스</string>
     <string name="app_bug_report">의견 보내기</string>
-    <string name="anonymityProhibition">익명포스트 받지않기</string>
-    <string name="find_user">Find User</string>
 
+    <string name="anonymityProhibition">익명 포스트 받지 않기</string>
+    <string name="find_nickname_hint">닉네임을 검색하세요</string>
 
 </resources>
 

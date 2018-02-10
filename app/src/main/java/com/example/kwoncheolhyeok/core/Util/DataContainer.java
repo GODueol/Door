@@ -74,24 +74,24 @@ public class DataContainer {
         if (diffTime < TIME_MAXIMUM.SEC)
         {
             // sec
-            msg = diffTime + "초전";
+            msg = diffTime + "초 전";
         }
         else if ((diffTime /= TIME_MAXIMUM.SEC) < TIME_MAXIMUM.MIN)
         {
             // min
             System.out.println(diffTime);
 
-            msg = diffTime + "분전";
+            msg = diffTime + "분 전";
         }
         else if ((diffTime /= TIME_MAXIMUM.MIN) < TIME_MAXIMUM.HOUR)
         {
             // hour
-            msg = (diffTime ) + "시간전";
+            msg = (diffTime ) + "시간 전";
         }
         else
         {
             // day
-            msg = (diffTime/TIME_MAXIMUM.HOUR) + "일전";
+            msg = (diffTime/TIME_MAXIMUM.HOUR) + "일 전";
         }
 
         return msg;

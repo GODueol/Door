@@ -53,7 +53,8 @@ public class CoreActivity extends AppCompatActivity {
         //스크린샷 방지
 //        ScreenshotSetApplication.getInstance().allowUserSaveScreenshot(false);
 
-        toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(
+                R.id.toolbar);
         setSupportActionBar(toolbar);
 
         fab = findViewById(R.id.fab);

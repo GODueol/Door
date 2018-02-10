@@ -32,9 +32,7 @@
             android:textSize="15.5dp"
             android:textColor="@color/black"
             />
-
     </RelativeLayout>
-
 
     <RelativeLayout
         android:id="@+id/layout1"
@@ -201,14 +199,5 @@
             />
 
     </RelativeLayout>
-
-
-
-
-
-
-
-
-
 
 </RelativeLayout>

@@ -1,4 +1,4 @@
-package com.example.kwoncheolhyeok.core.CorePage;
+package com.example.kwoncheolhyeok.core.Activity;
 
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
@@ -52,6 +52,7 @@ public class FindUserActivity extends UserListBaseActivity {
 
 
         SearchView search_view = findViewById(R.id.search_view);
+        search_view.onActionViewExpanded();
         search_view.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String id) {

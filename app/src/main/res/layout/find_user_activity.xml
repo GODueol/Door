@@ -22,30 +22,24 @@
 
         </android.support.v7.widget.Toolbar>
 
-        <TextView
-            android:layout_width="wrap_content"
+        <SearchView
+            android:id="@+id/search_view"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="@string/find_user"
-            android:textColor="@color/black"
-            android:textSize="15.5dp"
-            android:textStyle="bold" />
+            android:layout_centerVertical="true"
+            android:queryHint="@string/find_nickname_hint"
+            android:layout_marginLeft="45dp"
+            />
 
     </RelativeLayout>
-
-    <SearchView
-        android:id="@+id/search_view"
-        android:layout_width="match_parent"
-        android:layout_below="@id/toolbar_layout"
-        android:layout_height="wrap_content" />
 
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/friendsRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/search_view"
+        android:layout_below="@id/toolbar_layout"
         >
-
     </android.support.v7.widget.RecyclerView>
+
 </RelativeLayout>

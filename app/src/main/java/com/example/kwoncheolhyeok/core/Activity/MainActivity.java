@@ -26,7 +26,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.kwoncheolhyeok.core.CorePage.FindUserActivity;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.FriendsActivity.FriendsActivity;
 import com.example.kwoncheolhyeok.core.LoginActivity.LoginActivity;
@@ -285,7 +284,6 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_People) {
-
             viewPager.setCurrentItem(0);
         } else if (id == R.id.nav_mycore) {
             UiUtil.getInstance().goToCoreActivity(MainActivity.this,DataContainer.getInstance().getUid());
