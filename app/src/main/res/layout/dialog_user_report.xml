@@ -24,13 +24,13 @@
             android:id="@+id/btn_min"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/noReportBlock"
+            android:text="@string/ReportAndBlock"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:layout_marginLeft="30dp"
             />
 
-        <RadioButton
+        <CheckBox
             android:id="@+id/isOnlyBlock"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -48,7 +48,7 @@
             android:layout_height="wrap_content"
             android:theme="@style/NumberPickerText"
             android:layout_below="@+id/layout1"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="20dp"
             android:layout_centerHorizontal="true"
             />
 
@@ -57,8 +57,8 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/numberPicker1"
-        android:layout_marginTop="60dp"
+        android:layout_below="@+id/typePicker"
+        android:layout_marginTop="40dp"
         android:layout_marginBottom="40dp"
         android:orientation="horizontal"
         android:layout_centerHorizontal="true"
@@ -81,7 +81,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
             android:layout_marginLeft="10dp"
-            android:text="@string/report"
+            android:text="@string/ok"
             android:textSize="15dp"
 
             />

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.kwoncheolhyeok.core.CorePage.CustomDialog;
@@ -35,8 +36,8 @@ public class BlockReportSelectDialog extends CustomDialog {
 
 //        sizeSet();
 
-        TextView blockBtn = findViewById(R.id.block);
-        TextView reportBtn = findViewById(R.id.report);
+        RelativeLayout blockBtn = findViewById(R.id.block);
+        RelativeLayout reportBtn = findViewById(R.id.report);
 
         blockBtn.setOnClickListener(new View.OnClickListener() {
             @Override

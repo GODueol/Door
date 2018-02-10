@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.NumberPicker;
 import android.widget.RadioButton;
 import android.widget.TextView;
@@ -33,12 +34,15 @@ public class ReportDialog extends CustomDialog {
         TextView cancel = findViewById(R.id.cancel);
         TextView report = findViewById(R.id.report);
         final NumberPicker picker = findViewById(R.id.typePicker);
-        final RadioButton isOnlyBlockBtn = findViewById(R.id.isOnlyBlock);
+        final CheckBox isOnlyBlockBtn = findViewById(R.id.isOnlyBlock);
 
-        final String[] reportTypeList = new String[] { "과한 노출 사진", "타인의 사진 도용", "성매매 등 부적절한 글", "미성년자 회원", "스팸 및 광고" };
+        final String[] reportTypeList = new String[] { "성기 노출 사진", "타인의 사진 도용", "성매매 등 부적절한 글", "미성년자 회원", "스팸 및 광고" };
         picker.setMinValue(0);
         picker.setMaxValue(reportTypeList.length - 1);
         picker.setDisplayedValues(reportTypeList);
+        picker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+        picker.setWrapSelectorWheel(true);
+
 
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
