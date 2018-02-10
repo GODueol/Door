@@ -379,7 +379,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
         UserHolder(View itemView) {
             super(itemView);
             profilePicImage = itemView.findViewById(R.id.profile_image);
-            idText = itemView.findViewById(R.id.lblListItem);
+            idText = itemView.findViewById(R.id.message);
             subProfileText = itemView.findViewById(R.id.sub_profile);
             dateText = itemView.findViewById(R.id.date);
             itemMenuBtn = itemView.findViewById(R.id.item_menu_btn);
