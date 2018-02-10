@@ -1,5 +1,7 @@
 package com.example.kwoncheolhyeok.core.Util;
 
+import android.content.Context;
+
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -44,6 +46,11 @@ public class DataContainer {
 
     public String getUid() {
         return FirebaseAuth.getInstance().getCurrentUser().getUid();
+    }
+
+    public String getUid(Context context){
+        if(FirebaseAuth.getInstance().getCurrentUser() == null) UiUtil.getInstance().restartApp(context);
+        return getUid();
     }
 
     public DatabaseReference getUserRef(String uuid){

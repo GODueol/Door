@@ -263,7 +263,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
     public void setViewedMeUsers(final GridItem item) {
 
         final String mUuid = DataContainer.getInstance().getUid();
-        if(item.getUuid().equals(DataContainer.getInstance().getUid())) return; // 자신일 경우
+        if(item.getUuid().equals(DataContainer.getInstance().getUid(FullImageActivity.this))) return; // 자신일 경우
 
         // 트랜잭션을 이용해야함
         DatabaseReference viewedMeUsersRef = DataContainer.getInstance().getUserRef(item.getUuid()).child("viewedMeUsers");
