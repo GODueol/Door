@@ -2,22 +2,10 @@ package com.example.kwoncheolhyeok.core.SettingActivity;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SimpleItemAnimator;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 
-import com.example.kwoncheolhyeok.core.CorePage.CoreListAdapter;
-import com.example.kwoncheolhyeok.core.Entity.CoreListItem;
-import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.R;
-import com.example.kwoncheolhyeok.core.Util.DataContainer;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.ValueEventListener;
-
-import java.util.ArrayList;
 
 /**
  * Created by Kwon on 2018-01-04.
@@ -44,6 +32,7 @@ public class NoticeActivity extends AppCompatActivity {
 
 
         // Notice Set
+        /*
         recyclerView = findViewById(R.id.core_listview);
 
         final ArrayList<CoreListItem> list = new ArrayList<>();
@@ -69,7 +58,7 @@ public class NoticeActivity extends AppCompatActivity {
             public void onCancelled(DatabaseError databaseError) {
             }
         });
-
+        */
 
     }
 
