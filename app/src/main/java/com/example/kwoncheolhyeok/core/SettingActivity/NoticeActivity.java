@@ -2,9 +2,22 @@ package com.example.kwoncheolhyeok.core.SettingActivity;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SimpleItemAnimator;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 
+import com.example.kwoncheolhyeok.core.CorePage.CoreListAdapter;
+import com.example.kwoncheolhyeok.core.Entity.CoreListItem;
+import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.R;
+import com.example.kwoncheolhyeok.core.Util.DataContainer;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 
 /**
  * Created by Kwon on 2018-01-04.
@@ -13,6 +26,7 @@ import com.example.kwoncheolhyeok.core.R;
 public class NoticeActivity extends AppCompatActivity {
 
     Toolbar toolbar = null;
+    private RecyclerView recyclerView;
 
 
     @Override
@@ -29,6 +43,32 @@ public class NoticeActivity extends AppCompatActivity {
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
 
 
+        // Notice Set
+        recyclerView = findViewById(R.id.core_listview);
+
+        final ArrayList<CoreListItem> list = new ArrayList<>();
+        coreListAdapter = new CoreListAdapter(list, this, cUuid);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(coreListAdapter);
+
+        ((SimpleItemAnimator) recyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
+
+        // 코어 주인의 User Get
+        dc = DataContainer.getInstance();
+        dc.getUserRef(cUuid).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User cUser = dataSnapshot.getValue(User.class);
+                addPostToList(cUuid, list, cUser);
+                if(!cUuid.equals(dc.getUid()) && cUser.isAnonymityProhibition()) fab.setVisibility(View.GONE);
+                else fab.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
 
 
     }
