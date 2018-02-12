@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -13,6 +14,7 @@ import android.view.View;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.MessageActivity.util.RoomVO;
 import com.example.kwoncheolhyeok.core.R;
+import com.example.kwoncheolhyeok.core.SettingActivity.BlockActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -84,6 +86,7 @@ public class MessageActivity extends AppCompatActivity {
         messageList = (RecyclerView) findViewById(R.id.messagelist);
         messageList.setAdapter(messageRecyclerAdapter);
         messageList.setLayoutManager(linearLayoutManager);
+        messageList.addItemDecoration(new DividerItemDecoration(MessageActivity.this, DividerItemDecoration.VERTICAL)); //리사이클뷰 구분선
         messageList.setItemAnimator(new DefaultItemAnimator());
         setMessageData();
 
