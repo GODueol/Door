@@ -48,5 +48,8 @@
     <color name="base">#AAAAAA</color>
     <color name="iron">#CCCCCC</color>
 
+    <color name="cp_violet">#333366</color>
+    <color name="cp_violet2">#663399</color>
+
 
 </resources>
