@@ -3,9 +3,17 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background_imsi"
+    android:background="@color/skyblue"
     android:alpha="0.7"
     android:fitsSystemWindows="true">
+
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
 
     <ImageView
@@ -67,12 +75,43 @@
 
     </RelativeLayout>
 
+        <RelativeLayout
+            android:id="@+id/layout2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/layout0"
+            android:layout_marginTop="10dp"
+            >
+
+        <TextView
+            android:id="@+id/txt_saveid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="이메일 기억하기"
+            android:layout_centerVertical="true"
+            android:textColor="@color/white"
+            android:layout_toLeftOf="@+id/cb_save_id"
+            android:layout_marginRight="3dp"
+            />
+
+        <android.support.v7.widget.AppCompatCheckBox
+            android:id="@+id/cb_save_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:buttonTint="@color/white"
+            />
+
+        </RelativeLayout>
+
     <TextView
         android:id="@+id/btn_login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/layout0"
-        android:layout_marginTop="50dp"
+        android:layout_below="@+id/layout2"
+        android:layout_marginTop="20dp"
         android:text="로그인"
         android:textColor="@color/text_white"
         android:textSize="19dp"
@@ -91,5 +130,9 @@
         android:textStyle="bold"
         android:layout_centerHorizontal="true"
         />
+
+    </RelativeLayout>
+
+</ScrollView>
 
 </RelativeLayout>
