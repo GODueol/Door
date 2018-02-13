@@ -12,6 +12,7 @@ import android.support.v7.widget.SimpleItemAnimator;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.kwoncheolhyeok.core.Entity.CoreListItem;
 import com.example.kwoncheolhyeok.core.Entity.CorePost;
@@ -40,12 +41,14 @@ public class CoreActivity extends AppCompatActivity {
     private DataContainer dc;
     private String cUuid;
     private FloatingActionButton fab;
+    private boolean isBlocked = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Get the view from new_activity.xml
         setContentView(R.layout.core_activity);
+        dc = DataContainer.getInstance();
 
         Intent intent = getIntent();
         cUuid = intent.getStringExtra("uuid");
@@ -58,9 +61,16 @@ public class CoreActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         fab = findViewById(R.id.fab);
+        fab.setVisibility(View.INVISIBLE);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                if(isBlocked) {
+                    Toast.makeText(CoreActivity.this, "당신은 글을 쓸 수 없습니다", Toast.LENGTH_SHORT).show();
+                    finish();
+                    return ;
+                }
 
                 // 자신, 타인 액티비티 구별
                 Intent i;
@@ -88,14 +98,16 @@ public class CoreActivity extends AppCompatActivity {
         ((SimpleItemAnimator) recyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
 
         // 코어 주인의 User Get
-        dc = DataContainer.getInstance();
+
         dc.getUserRef(cUuid).addListenerForSingleValueEvent(new ValueEventListener() {
              @Override
              public void onDataChange(DataSnapshot dataSnapshot) {
                  User cUser = dataSnapshot.getValue(User.class);
                  addPostToList(cUuid, list, cUser);
-                 if(!cUuid.equals(dc.getUid()) && cUser.isAnonymityProhibition()) fab.setVisibility(View.GONE);
-                 else fab.setVisibility(View.VISIBLE);
+
+                 isBlocked = !cUuid.equals(dc.getUid()) && cUser.isAnonymityProhibition();
+
+                 fab.setVisibility(View.VISIBLE);
              }
 
              @Override
