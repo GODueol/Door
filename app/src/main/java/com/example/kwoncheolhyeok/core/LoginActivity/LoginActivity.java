@@ -1,11 +1,15 @@
 package com.example.kwoncheolhyeok.core.LoginActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -13,8 +17,8 @@ import android.widget.Toast;
 import com.example.kwoncheolhyeok.core.Activity.MainActivity;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.R;
-import com.example.kwoncheolhyeok.core.Util.UiUtil;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
+import com.example.kwoncheolhyeok.core.Util.UiUtil;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -23,7 +27,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import butterknife.Bind;
@@ -47,20 +50,52 @@ public class LoginActivity extends AppCompatActivity {
     TextView _loginButton;
     @Bind(R.id.link_signup)
     TextView _signupLink;
+    @Bind(R.id.cb_save_id)
+    CheckBox cb_save_id;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_activity);
         ButterKnife.bind(this);
+
+        final SharedPreferences pref = getSharedPreferences(DataContainer.getInstance().PREFERENCE, MODE_PRIVATE);
+        String emailPref = pref.getString("email", "");
+        if(!emailPref.equals("")){
+            cb_save_id.setChecked(true);
+            _emailText.setText(emailPref);
+        } else {
+            cb_save_id.setChecked(false);
+        }
+        cb_save_id.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(!b){
+                    SharedPreferences.Editor editor = pref.edit();
+                    editor.putString("email", "");
+                    editor.apply();
+                }
+            }
+        });
+
         _loginButton.setOnClickListener(new View.OnClickListener() {
 
+            @SuppressLint("SetTextI18n")
             @Override
             public void onClick(View v) {
                 String email = _emailText.getText().toString();
+                // TODO : Test를 위한 코드
                 if(email.equals("")){
                     _emailText.setText("kbj2@naver.com");
                     _passwordText.setText("1q2w3e4r5t");
+                }
+
+                if(cb_save_id.isChecked()){
+                    // ID 저장 : Shared Preference
+                    SharedPreferences.Editor editor = pref.edit();
+                    editor.putString("email", _emailText.getText().toString());
+                    editor.apply();
+
                 }
 
                 login();
