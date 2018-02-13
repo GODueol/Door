@@ -3,8 +3,11 @@ package com.example.kwoncheolhyeok.core.SettingActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.widget.ImageView;
 
 import com.example.kwoncheolhyeok.core.R;
+import com.example.kwoncheolhyeok.core.Util.GlideApp;
+import com.example.kwoncheolhyeok.core.Util.UiUtil;
 
 /**
  * Created by Kwon on 2018-01-04.
@@ -29,10 +32,14 @@ public class CorePlusActivity extends AppCompatActivity {
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
 
 
+        ImageView img_cp_4 = findViewById(R.id.img_cp_4);
 
+        GlideApp.with(this)
+                .load(UiUtil.resourceToUri(this, R.drawable.cp_4))
+                .fitCenter()
+                .into(img_cp_4);
 
     }
-
 
     // 뒤로가기 버튼 기능
     public boolean onOptionsItemSelected(android.view.MenuItem item) {

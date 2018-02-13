@@ -326,7 +326,6 @@
                 android:id="@+id/img_cp_4"
                 android:layout_width="115dp"
                 android:layout_height="140dp"
-                android:background="@drawable/cp_4"
                 android:layout_below="@+id/cp_function_3"
                 android:layout_marginTop="98dp"
                 android:layout_centerHorizontal="true"
