@@ -1,32 +1,32 @@
 package com.example.kwoncheolhyeok.core.Activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.kwoncheolhyeok.core.PeopleFragment.FullImageActivity;
+import com.example.kwoncheolhyeok.core.PeopleFragment.PeopleFragment;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.GPSInfo;
 import com.example.kwoncheolhyeok.core.Util.addrConvertor;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
-import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 /**
  * Created by KwonCheolHyeok on 2016-11-25.
  */
 
-public class MapsActivity extends FragmentActivity implements GoogleApiClient.OnConnectionFailedListener, OnMapReadyCallback, GoogleMap.OnMapClickListener {
+public class MapsActivity extends FragmentActivity implements GoogleApiClient.OnConnectionFailedListener, OnMapReadyCallback, GoogleMap.OnMapClickListener, GoogleMap.OnInfoWindowClickListener {
 
     private GoogleMap mGoogleMap;
     private LatLng mLatLng;
@@ -43,9 +43,9 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.On
 
         mapFragment.getMapAsync(this);
         /********************** 요기까지 지도설정 *******************/
+        /* 자동완성 기능
         PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
                 getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
-
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
@@ -67,6 +67,8 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.On
                 Log.i("app", "An error occurred: " + status);
             }
         });
+
+       */
     }
 
     @Override
@@ -107,6 +109,7 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.On
                 .position(mLatLng)
                 .title(address)
         ).showInfoWindow();
+        mGoogleMap.setOnInfoWindowClickListener(this);
     }
 
     @Override
@@ -120,5 +123,13 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.On
                 .position(latLng)
                 .title(address)
         ).showInfoWindow();
+    }
+
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        LatLng latLng = marker.getPosition();
+        Intent p = new Intent(getApplicationContext(), MainActivity.class);
+        p.putExtra("latLng", latLng);
+        startActivity(p);
     }
 }

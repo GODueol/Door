@@ -30,6 +30,7 @@ import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.FriendsActivity.FriendsActivity;
 import com.example.kwoncheolhyeok.core.LoginActivity.LoginActivity;
 import com.example.kwoncheolhyeok.core.MessageActivity.MessageActivity;
+import com.example.kwoncheolhyeok.core.PeopleFragment.GridItem;
 import com.example.kwoncheolhyeok.core.ProfileModifyActivity.ProfileModifyActivity;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.SettingActivity.SettingActivity;
@@ -37,6 +38,7 @@ import com.example.kwoncheolhyeok.core.Util.BusProvider;
 import com.example.kwoncheolhyeok.core.Util.CloseActivityHandler;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.UiUtil;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -112,10 +114,17 @@ public class MainActivity extends AppCompatActivity
 
         // people,board,club 스와이프 탭 view 관련
         // final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
+        Intent p = getIntent();
         viewPager = findViewById(R.id.pager);
         TabPagerAdapter tabPagerAdapter = new TabPagerAdapter(
                 getSupportFragmentManager(),
                 getResources().getStringArray(R.array.titles_tab));
+        try {
+            LatLng latLng = p.getExtras().getParcelable("latLng");
+            tabPagerAdapter.setLatLng(latLng);
+        }catch (Exception e){
+            Log.d("main","익셉션");
+        }
         viewPager.setAdapter(tabPagerAdapter);
         viewPager.setCurrentItem(0);
 

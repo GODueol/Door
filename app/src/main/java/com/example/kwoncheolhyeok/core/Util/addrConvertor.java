@@ -31,7 +31,7 @@ public class addrConvertor {
 
             if (address != null && address.size() > 0) {
                 // 주소 받아오기
-                nowAddress = address.get(0).getAddressLine(0);
+                nowAddress = address.get(0).getAdminArea() +" "+address.get(0).getLocality()+" "+address.get(0).getThoroughfare();
             }
 
         } catch (IOException e) {

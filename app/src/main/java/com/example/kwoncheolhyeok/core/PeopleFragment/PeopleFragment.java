@@ -25,6 +25,7 @@ import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQuery;
 import com.firebase.geofire.GeoQueryEventListener;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -40,6 +41,7 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
     GridView gridView = null;
     ImageAdapter imageAdapter;
     private User mUser;
+    private LatLng latLng;
     Bus bus;
     private ValueEventListener userListener;
     private DatabaseReference userRef;
@@ -53,6 +55,12 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
         gridView = view.findViewById(R.id.gridview);
         imageAdapter = new ImageAdapter(getContext());
         gridView.setAdapter(imageAdapter);
+
+        try {
+            latLng = getArguments().getParcelable("latlng");
+        }catch (Exception e){
+            Log.d("people","익셉션");
+        }
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
