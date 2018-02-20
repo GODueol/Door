@@ -48,8 +48,8 @@ public class ChattingMessageAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
 
     public interface OnImesageLoadingCallback {
-        public void onReady();
-        public void onRemove(String s,int i);
+        void onReady();
+        void onRemove(String s,int i);
     }
 
     public ChattingMessageAdapter(List<ChatMessage> itemList, OnImesageLoadingCallback listener) {
@@ -259,6 +259,7 @@ public class ChattingMessageAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     public void setImageMessage(final ImageView imageView, final String uri, final String parent, final int position) {
         GlideApp.with(imageView.getContext())
                 .asBitmap()
+                .placeholder(R.drawable.picture_load)
                 .load(uri)
                 .override(600, 600)
                 .fitCenter()

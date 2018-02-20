@@ -2,6 +2,7 @@ package com.example.kwoncheolhyeok.core.MessageActivity;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -62,7 +63,6 @@ public class ChatFirebaseUtil {
 
     ///////////////////////
     private int messageWeight = 1;
-    private boolean destroy = false;
     private GridItem item;
     private ChattingMessageAdapter chattingMessageAdapter;
     private RecyclerView chattingRecyclerview;
@@ -87,10 +87,22 @@ public class ChatFirebaseUtil {
     }
 
     public void setLastChatView() {
-        if (!destroy) {
-            Long currentTime = getTime();
-            databaseRef.child(chatRoomList).child(userUuid).child(targetUuid).child("lastViewTime").setValue(currentTime);
-        }
+        final DatabaseReference chatRoomRef = FirebaseDatabase.getInstance().getReference(chatRoomList);
+        chatRoomRef.child(userUuid).child(targetUuid).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()) {
+                    Long currentTime = getTime();
+                    databaseRef.child(chatRoomList).child(userUuid).child(targetUuid).child("lastViewTime").setValue(currentTime);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
     }
 
     public void sendMessage(MessageVO message) {
@@ -165,15 +177,15 @@ public class ChatFirebaseUtil {
         chatRoomRef.child(userUuid).child(targetUuid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+
                 final RoomVO checkRoomVO = dataSnapshot.getValue(RoomVO.class);
                 long currentTime = System.currentTimeMillis();
-                try {
+
+                if(dataSnapshot.exists()){
                     roomName = checkRoomVO.getChatRoomid();
                     chatRoomRef.child(userUuid).child(targetUuid).child("lastViewTime").setValue(currentTime);
-                } catch (Exception e) {
-                    // 채팅방 이름 설정
+                }else{
                     roomName = FirebaseDatabase.getInstance().getReference(chat).push().getKey();
-
                     Map<String, Object> childUpdates = new HashMap<>();
                     RoomVO roomVO = new RoomVO(roomName, null, userUuid, currentTime, userPickuri);
                     childUpdates.put("/" + chatRoomList + "/" + targetUuid + "/" + userUuid, roomVO);
@@ -182,6 +194,7 @@ public class ChatFirebaseUtil {
                     databaseRef.updateChildren(childUpdates);
                     chatRoomRef.child(userUuid).child(targetUuid).child("lastViewTime").setValue(currentTime);
                 }
+
                 item = new GridItem(0, targetUuid, targetUser.getSummaryUser(), targetPicuri);
                 // 상대방과의 거리 셋팅
                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference(FireBaseUtil.currentLocationPath);
@@ -208,7 +221,7 @@ public class ChatFirebaseUtil {
                 chatDatabaseRef.orderByChild("check").equalTo(1).addListenerForSingleValueEvent(checkChatListener);
                 chatDatabaseRef.removeEventListener(checkChatListener);
                 // 그후 메세지 통신
-                chatDatabaseRef.orderByKey().limitToLast(MessageCount).addChildEventListener(chatInitListener);
+                chatDatabaseRef.limitToLast(MessageCount).addChildEventListener(chatInitListener);
             }
 
             @Override
@@ -221,11 +234,12 @@ public class ChatFirebaseUtil {
     ChildEventListener chatInitListener = new ChildEventListener() {
         public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
             childChatKey = dataSnapshot.getKey();
-            childKeyList.add(childChatKey);
-
-            MessageVO message = dataSnapshot.getValue(MessageVO.class);
-            message.setParent(childChatKey);
-            initMessage(message, childChatKey);
+            if(!childKeyList.contains(childChatKey)) {
+                childKeyList.add(childChatKey);
+                MessageVO message = dataSnapshot.getValue(MessageVO.class);
+                message.setParent(childChatKey);
+                initMessage(message, childChatKey);
+            }
         }
 
         @Override
@@ -236,12 +250,18 @@ public class ChatFirebaseUtil {
         @Override
         public void onChildRemoved(DataSnapshot dataSnapshot) {
             MessageVO messageVO = dataSnapshot.getValue(MessageVO.class);
-            int position = chatMessageKeyList.indexOf(messageVO.getParent());
-            chatMessageList.remove(position);
-            chatMessageKeyList.remove(position);
-            chattingRecyclerview.getRecycledViewPool().clear();
-            chattingMessageAdapter.notifyDataSetChanged();
-            destroy = true;
+            if(!messageVO.getWriter().equals(userUuid)) {
+                try {
+                    String key = dataSnapshot.getKey();
+                    int position = chatMessageKeyList.indexOf(key);
+                    chatMessageList.remove(position);
+                    chatMessageKeyList.remove(position);
+                    chattingRecyclerview.getRecycledViewPool().clear();
+                    chattingMessageAdapter.notifyDataSetChanged();
+                }catch (Exception e){
+
+                }
+            }
         }
 
         @Override
@@ -376,7 +396,13 @@ public class ChatFirebaseUtil {
             String lastChildChatKey = childKeyList.get(0);
             childKeyList.clear();
             // 맨 위 아이템 제거(중복발생)
-            chatMessageList.remove(0);
+            try {
+                chatMessageList.remove(0);
+            }catch (Exception e){
+                Intent p = new Intent(context.getApplicationContext(), MessageActivity.class);
+                p.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                context.getApplicationContext().startActivity(p);
+            }
             messageWeight *= 1;
             chatDatabaseRef.orderByKey().endAt(lastChildChatKey).limitToLast(MessageCount * messageWeight).addValueEventListener(chatLoadListener);
         }

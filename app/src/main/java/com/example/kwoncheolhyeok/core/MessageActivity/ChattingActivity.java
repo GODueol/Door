@@ -30,6 +30,7 @@ import android.widget.Toast;
 
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.Exception.ChildSizeMaxException;
+import com.example.kwoncheolhyeok.core.MessageActivity.ChattingMessageAdapter.OnImesageLoadingCallback;
 import com.example.kwoncheolhyeok.core.MessageActivity.util.MessageVO;
 import com.example.kwoncheolhyeok.core.PeopleFragment.FullImageActivity;
 import com.example.kwoncheolhyeok.core.R;
@@ -273,7 +274,7 @@ public class ChattingActivity extends AppCompatActivity {
         return super.onPrepareOptionsMenu(menu);
     }
 
-    ChattingMessageAdapter.OnImesageLoadingCallback litener = new ChattingMessageAdapter.OnImesageLoadingCallback() {
+    OnImesageLoadingCallback litener = new OnImesageLoadingCallback() {
         @Override
         public void onReady() {
             // 처음으로 가려는 리스너

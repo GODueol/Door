@@ -1,18 +1,24 @@
 package com.example.kwoncheolhyeok.core.MessageActivity;
 
 import android.graphics.Color;
+import android.provider.ContactsContract;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.kwoncheolhyeok.core.MessageActivity.util.DateUtil;
 import com.example.kwoncheolhyeok.core.MessageActivity.util.RoomVO;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.GlideApp;
+import com.example.kwoncheolhyeok.core.Util.UiUtil;
 
 import java.util.List;
 
@@ -25,10 +31,16 @@ public class messageRecyclerAdapter extends  RecyclerView.Adapter<messageRecycle
     private RecyclerViewClickListener mListener;
     private List<RoomVO> roomList;
     private int itemLayout;
+    private OnRemoveChattingListCallback onRemoveChattingListCallback;
 
-    public messageRecyclerAdapter(List<RoomVO> items, int itemLayout, RecyclerViewClickListener listener){
+    public interface OnRemoveChattingListCallback {
+        void onRemove(String s);
+    }
+
+    public messageRecyclerAdapter(List<RoomVO> items, int itemLayout, RecyclerViewClickListener listener,OnRemoveChattingListCallback onRemoveChattingListCallback){
         this.roomList = items;
         this.itemLayout = itemLayout;
+        this.onRemoveChattingListCallback = onRemoveChattingListCallback;
         mListener = listener;
     }
 
@@ -40,7 +52,7 @@ public class messageRecyclerAdapter extends  RecyclerView.Adapter<messageRecycle
 
     @Override
     public void onBindViewHolder(messageRecyclerAdapter.ViewHolder holder, int position) {
-        RoomVO room = roomList.get(position);
+        final RoomVO room = roomList.get(position);
         holder.content.setText(room.getLastChat());
         holder.nickname.setText(room.getTargetNickName());
         holder.profile.setText(room.getTargetProfile());
@@ -65,6 +77,24 @@ public class messageRecyclerAdapter extends  RecyclerView.Adapter<messageRecycle
                 .placeholder(R.drawable.a)
                 .centerCrop()
                 .into(holder.img);
+
+        holder.edit_message.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final PopupMenu popup = new PopupMenu(view.getContext(), view);
+                popup.getMenuInflater().inflate(R.menu.chatting_list_menu, popup.getMenu());
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+                        int i = menuItem.getItemId();
+                        if (i == R.id.remove) {
+                            onRemoveChattingListCallback.onRemove(room.getUserUuid());
+                        }
+                        return true;
+                    }
+                });
+                popup.show();
+            }
+        });
     }
 
     @Override
@@ -87,6 +117,7 @@ public class messageRecyclerAdapter extends  RecyclerView.Adapter<messageRecycle
         public TextView nickname;
         public TextView profile;
         public TextView date;
+        public ImageView edit_message;
         private RecyclerViewClickListener mListener;
 
 
@@ -99,7 +130,7 @@ public class messageRecyclerAdapter extends  RecyclerView.Adapter<messageRecycle
             date = (TextView) itemView.findViewById(R.id.date);
             img = (ImageView) itemView.findViewById(R.id.profile_image);
             layout = (RelativeLayout) itemView.findViewById(R.id.layout);
-
+            edit_message = (ImageView) itemView.findViewById(R.id.edit_message);
             mListener = listener;
             itemView.setOnClickListener(this);
         }
