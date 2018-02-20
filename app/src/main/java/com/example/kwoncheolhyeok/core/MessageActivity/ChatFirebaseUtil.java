@@ -67,6 +67,7 @@ public class ChatFirebaseUtil {
     private ChattingMessageAdapter chattingMessageAdapter;
     private RecyclerView chattingRecyclerview;
     private List<String> childKeyList;
+    private List<String> chatMessageKeyList;
     private List<ChatMessage> chatMessageList;
     private List<ChatMessage> uncheckMessageList;
 
@@ -74,6 +75,7 @@ public class ChatFirebaseUtil {
         databaseRef = FirebaseDatabase.getInstance().getReference();
         storage = FirebaseStorage.getInstance();
         childKeyList = new ArrayList<String>();
+        chatMessageKeyList = new ArrayList<String>();
         uncheckMessageList = new ArrayList<ChatMessage>();
         this.context = context;
         this.currentUser = currentUser;
@@ -233,6 +235,12 @@ public class ChatFirebaseUtil {
 
         @Override
         public void onChildRemoved(DataSnapshot dataSnapshot) {
+            MessageVO messageVO = dataSnapshot.getValue(MessageVO.class);
+            int position = chatMessageKeyList.indexOf(messageVO.getParent());
+            chatMessageList.remove(position);
+            chatMessageKeyList.remove(position);
+            chattingRecyclerview.getRecycledViewPool().clear();
+            chattingMessageAdapter.notifyDataSetChanged();
             destroy = true;
         }
 
@@ -308,6 +316,7 @@ public class ChatFirebaseUtil {
             chatMessage = new ChatMessage(message, false, true, item);
         }
         chatMessageList.add(chatMessage);
+        chatMessageKeyList.add(key);
         chattingRecyclerview.getRecycledViewPool().clear();
         chattingMessageAdapter.notifyDataSetChanged();
         chattingRecyclerview.scrollToPosition(chattingMessageAdapter.getItemCount()-1);
@@ -341,6 +350,7 @@ public class ChatFirebaseUtil {
             }
 
             int size = childKeyList.size() - 1;
+            chatMessageKeyList.add(size,childChatKey);
             chatMessageList.add(size, chatMessage);
         }
 
@@ -389,6 +399,7 @@ public class ChatFirebaseUtil {
 
     public void removeImeageMessage(String parent,int position){
         FirebaseDatabase.getInstance().getReference("chat").child(roomName).child(parent).removeValue();
+        chatMessageKeyList.remove(position);
         chatMessageList.remove(position);
         chattingRecyclerview.getRecycledViewPool().clear();
         chattingMessageAdapter.notifyDataSetChanged();
