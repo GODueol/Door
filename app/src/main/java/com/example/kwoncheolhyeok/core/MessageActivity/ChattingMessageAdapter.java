@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.load.DataSource;
@@ -24,10 +25,7 @@ import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.GlideApp;
 import com.example.kwoncheolhyeok.core.Util.UiUtil;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 
 /**
@@ -42,7 +40,6 @@ public class ChattingMessageAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     private List<ChatMessage> itemList;
     private GridItem item;
     RequestListener requestListener;
-    private SimpleDateFormat sdf;
     private Context context;
 
 
@@ -55,13 +52,12 @@ public class ChattingMessageAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     public ChattingMessageAdapter(List<ChatMessage> itemList, OnImesageLoadingCallback listener) {
         this.itemList = itemList;
         onImesageLoadingCallback = listener;
-        sdf = new SimpleDateFormat( "yyyy. MM. dd. E", Locale.KOREAN );
         setRequestListener();
     }
 
     public String getDate(int position) {
-        Date date = new Date( itemList.get(position).getTime() );
-        String strResult = sdf.format( date );
+        DateUtil dateUtil = new DateUtil(itemList.get(position).getTime());
+        String strResult = dateUtil.getDate2();
         return strResult;
     }
 
@@ -113,6 +109,10 @@ public class ChattingMessageAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         String content = chatMessage.getContent();
         String image = chatMessage.getImage();
         Long date = chatMessage.getTime();
+        Long date2 = null;
+        if(position!=0){
+            date2 = itemList.get(position-1).getTime();
+        }
         int check = chatMessage.getCheck();
 
         switch (viewType) {
@@ -120,29 +120,32 @@ public class ChattingMessageAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 ViewHolder_mine_message holder0 = (ViewHolder_mine_message) viewHolder;
                 holder0.contentTextView.setText(content);
                 holder0.contentTextView.setOnLongClickListener(copyTextListener);
-                setDateUtil(holder0.dateTextView, holder0.checkTextView, date, check);
+                setDateLineVisiable(holder0.dateLinearLayout,date,date2);
+                setDateUtil(holder0.timeTextView, holder0.checkTextView,holder0.dateTextView, date, check);
                 break;
             case OTHER_MESSAGE:
                 ViewHolder_other_message holder1 = (ViewHolder_other_message) viewHolder;
                 item = chatMessage.getItem();
                 holder1.contentTextView.setText(content);
                 holder1.contentTextView.setOnLongClickListener(copyTextListener);
-                setDateUtil(holder1.dateTextView, holder1.checkTextView, date, check);
+                setDateLineVisiable(holder1.dateLinearLayout,date,date2);
+                setDateUtil(holder1.timeTextView, holder1.checkTextView,holder1.dateTextView, date, check);
                 setProfileImage(holder1.profileImageView, profileImage);
                 holder1.profileImageView.setOnClickListener(moveProfileListener);
                 break;
             case MY_IMAGE:
                 ViewHolder_mine_image holder2 = (ViewHolder_mine_image) viewHolder;
                 setImageMessage(holder2.messageImageView, image,chatMessage.getParent(),position);
-
-                setDateUtil(holder2.dateTextView, holder2.checkTextView, date, check);
+                setDateLineVisiable(holder2.dateLinearLayout,date,date2);
+                setDateUtil(holder2.timeTextView, holder2.checkTextView,holder2.dateTextView, date, check);
                 break;
             case OTHER_IMAGE:
                 ViewHolder_other_image holder3 = (ViewHolder_other_image) viewHolder;
                 item = chatMessage.getItem();
                 setProfileImage(holder3.profileImageView, profileImage);
                 setImageMessage(holder3.messageImageView, image,null,position);
-                setDateUtil(holder3.dateTextView, holder3.checkTextView, date, check);
+                setDateLineVisiable(holder3.dateLinearLayout,date,date2);
+                setDateUtil(holder3.timeTextView, holder3.checkTextView,holder3.dateTextView, date, check);
                 holder3.profileImageView.setOnClickListener(moveProfileListener);
                 break;
         }
@@ -175,17 +178,21 @@ public class ChattingMessageAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     public static class ViewHolder_mine_message extends RecyclerView.ViewHolder {
 
+        LinearLayout dateLinearLayout;
+        TextView dateTextView;
         TextView contentTextView;
         ImageView profileImageView;
-        TextView dateTextView;
+        TextView timeTextView;
         TextView checkTextView;
         ImageView messageImageView;
 
         public ViewHolder_mine_message(View itemView) {
             super(itemView);
+            dateLinearLayout = (LinearLayout)itemView.findViewById(R.id.dateLayout);
+            dateTextView = (TextView)itemView.findViewById(R.id.dateText);
             contentTextView = (TextView) itemView.findViewById(R.id.chatText);
             profileImageView = (ImageView) itemView.findViewById(R.id.profile_image);
-            dateTextView = (TextView) itemView.findViewById(R.id.time);
+            timeTextView = (TextView) itemView.findViewById(R.id.time);
             checkTextView = (TextView) itemView.findViewById(R.id.check);
             messageImageView = (ImageView) itemView.findViewById(R.id.chatImage);
         }
@@ -193,34 +200,43 @@ public class ChattingMessageAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     public static class ViewHolder_other_message extends RecyclerView.ViewHolder {
 
+        LinearLayout dateLinearLayout;
+        TextView dateTextView;
         TextView contentTextView;
         ImageView profileImageView;
-        TextView dateTextView;
+        TextView timeTextView;
         TextView checkTextView;
         ImageView messageImageView;
 
         public ViewHolder_other_message(View itemView) {
             super(itemView);
+            dateLinearLayout = (LinearLayout)itemView.findViewById(R.id.dateLayout);
+            dateTextView = (TextView)itemView.findViewById(R.id.dateText);
             contentTextView = (TextView) itemView.findViewById(R.id.chatText);
             profileImageView = (ImageView) itemView.findViewById(R.id.profile_image);
-            dateTextView = (TextView) itemView.findViewById(R.id.time);
+            timeTextView = (TextView) itemView.findViewById(R.id.time);
             checkTextView = (TextView) itemView.findViewById(R.id.check);
             messageImageView = (ImageView) itemView.findViewById(R.id.chatImage);
         }
     }
 
     public static class ViewHolder_mine_image extends RecyclerView.ViewHolder {
+
+        LinearLayout dateLinearLayout;
+        TextView dateTextView;
         TextView contentTextView;
         ImageView profileImageView;
-        TextView dateTextView;
+        TextView timeTextView;
         TextView checkTextView;
         ImageView messageImageView;
 
         public ViewHolder_mine_image(View itemView) {
             super(itemView);
+            dateLinearLayout = (LinearLayout)itemView.findViewById(R.id.dateLayout);
+            dateTextView = (TextView)itemView.findViewById(R.id.dateText);
             contentTextView = (TextView) itemView.findViewById(R.id.chatText);
             profileImageView = (ImageView) itemView.findViewById(R.id.profile_image);
-            dateTextView = (TextView) itemView.findViewById(R.id.time);
+            timeTextView = (TextView) itemView.findViewById(R.id.time);
             checkTextView = (TextView) itemView.findViewById(R.id.check);
             messageImageView = (ImageView) itemView.findViewById(R.id.chatImage);
         }
@@ -228,17 +244,21 @@ public class ChattingMessageAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     public static class ViewHolder_other_image extends RecyclerView.ViewHolder {
 
+        LinearLayout dateLinearLayout;
+        TextView dateTextView;
         TextView contentTextView;
         ImageView profileImageView;
-        TextView dateTextView;
+        TextView timeTextView;
         TextView checkTextView;
         ImageView messageImageView;
 
         public ViewHolder_other_image(View itemView) {
             super(itemView);
+            dateLinearLayout = (LinearLayout)itemView.findViewById(R.id.dateLayout);
+            dateTextView = (TextView)itemView.findViewById(R.id.dateText);
             contentTextView = (TextView) itemView.findViewById(R.id.chatText);
             profileImageView = (ImageView) itemView.findViewById(R.id.profile_image);
-            dateTextView = (TextView) itemView.findViewById(R.id.time);
+            timeTextView = (TextView) itemView.findViewById(R.id.time);
             checkTextView = (TextView) itemView.findViewById(R.id.check);
             messageImageView = (ImageView) itemView.findViewById(R.id.chatImage);
         }
@@ -294,10 +314,31 @@ public class ChattingMessageAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         }
     }
 
-    public void setDateUtil(TextView dTextView, TextView cTextView, Long date, int check) {
+    public void setDateLineVisiable(LinearLayout linearLayout,Long date, Long date2){
         DateUtil dateUtil = new DateUtil(date);
+        String dstr = null;
+        String dstr2 = null;
+
+        if(date2!=null) {
+            dstr = dateUtil.getDate();
+            dateUtil.setDate(date2);
+            dstr2 = dateUtil.getDate();
+        }
+
+        if(date2==null || !dstr.equals(dstr2)){
+            linearLayout.setVisibility(View.VISIBLE);
+        }else{
+            linearLayout.setVisibility(View.GONE);
+        }
+
+    }
+    public void setDateUtil(TextView tTextView, TextView cTextView,TextView dTextView, Long date, int check) {
+        DateUtil dateUtil = new DateUtil(date);
+
         String time = dateUtil.getTime();
-        dTextView.setText(time);
+        String dateStr = dateUtil.getDate();
+        tTextView.setText(time);
+        dTextView.setText(dateStr);
 
         if (check == 0) {
             cTextView.setText("");

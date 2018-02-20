@@ -4,6 +4,7 @@ import com.example.kwoncheolhyeok.core.Util.DataContainer;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by Administrator on 2018-01-07.
@@ -16,13 +17,30 @@ public class DateUtil {
     public DateUtil(Long date) {
         this.date = date;
     }
-
+    public void setDate(Long date){
+        this.date = date;
+    }
     public  String getTime(){
         Date time = new Date(date);
         SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a");
-        String strTime = sdf.format(time);
-        return strTime;
+        String strResult = sdf.format(time);
+        return strResult;
     }
+
+    public String getDate(){
+        Date time = new Date(date);
+        SimpleDateFormat sdf = new SimpleDateFormat( "yyyy년 MM월 dd일 E요일", Locale.KOREAN );
+        String strResult = sdf.format(time);
+        return strResult;
+    }
+
+    public String getDate2(){
+        Date time = new Date(date);
+        SimpleDateFormat  sdf = new SimpleDateFormat( "yyyy. MM. dd. E", Locale.KOREAN );
+        String strResult = sdf.format(time);
+        return strResult;
+    }
+
 
     public String getPreTime() {
         return DataContainer.getInstance().convertBeforeFormat(date);

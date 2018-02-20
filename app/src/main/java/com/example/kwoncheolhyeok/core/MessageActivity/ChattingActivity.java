@@ -21,10 +21,13 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,11 +54,12 @@ public class ChattingActivity extends AppCompatActivity {
 
     private Toolbar toolbar = null;
     private RecyclerView chattingRecyclerview;
-    private ImageButton mButtonSend;
+    private ImageButton mButtonSend,mImageView;
     private EditText mEditTextMessage;
-    private ImageButton mImageView;
+    private ImageView scrollDown;
+    private LinearLayout send_message_layout,overlay;
     private Toast mToast;
-    private TextView toastText;
+    private TextView toastText,hideText;
     private ChattingMessageAdapter chattingMessageAdapter;
     private LinearLayoutManager linearLayoutManager;
     private List<ChatMessage> chatListItem;
@@ -73,7 +77,9 @@ public class ChattingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.chatting_activity);
+        Window window = getWindow();
+
+        window.setContentView(R.layout.chatting_activity);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         setToastMessage();
@@ -90,8 +96,25 @@ public class ChattingActivity extends AppCompatActivity {
         mButtonSend = (ImageButton) findViewById(R.id.btn_send);
         mEditTextMessage = (EditText) findViewById(R.id.et_message);
         mImageView = (ImageButton) findViewById(R.id.iv_image);
-        chatListItem = new ArrayList<ChatMessage>();
 
+        LayoutInflater inflater = (LayoutInflater) getSystemService(getApplicationContext().LAYOUT_INFLATER_SERVICE);
+        LinearLayout linear = (LinearLayout) inflater.inflate(R.layout.chatting_list_overlay, null);
+        LinearLayout.LayoutParams paramlinear = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT
+        );
+        send_message_layout = (LinearLayout) findViewById(R.id.send_message_layout);
+        send_message_layout.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+        int layout_height = send_message_layout.getMeasuredHeight();
+        paramlinear.setMargins(0,0,0,layout_height);
+        paramlinear.weight=1.0f;
+        paramlinear.gravity = Gravity.BOTTOM;
+        window.addContentView(linear, paramlinear);
+        overlay = (LinearLayout)findViewById(R.id.overlay);
+        hideText = (TextView)findViewById(R.id.hideText);
+        scrollDown = (ImageView) findViewById(R.id.scrollDown);
+
+        chatListItem = new ArrayList<ChatMessage>();
         linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setStackFromEnd(true);
         chattingMessageAdapter = new ChattingMessageAdapter(chatListItem, litener);
@@ -105,7 +128,7 @@ public class ChattingActivity extends AppCompatActivity {
         user = DataContainer.getInstance().getUser();
         userUuid = mAuth.getUid();
 
-        chatFirebaseUtil = new ChatFirebaseUtil(this, user, targetUser, userUuid, targetUuid);
+        chatFirebaseUtil = new ChatFirebaseUtil(this, user, targetUser, userUuid, targetUuid,overlay ,hideText);
         chatFirebaseUtil.setchatRoom(chattingRecyclerview, chatListItem);
         chattingRecyclerview.addOnScrollListener(dateToastListener);
         // 메세지 보내기
@@ -122,6 +145,13 @@ public class ChattingActivity extends AppCompatActivity {
             }
         });
 
+        scrollDown.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                chattingRecyclerview.scrollToPosition(chattingMessageAdapter.getItemCount() - 1);
+            }
+        });
+
         mImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -129,6 +159,8 @@ public class ChattingActivity extends AppCompatActivity {
             }
         });
     }
+
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -285,7 +317,7 @@ public class ChattingActivity extends AppCompatActivity {
 
         @Override
         public void onRemove(String parent, int i) {
-            chatFirebaseUtil.removeImeageMessage(parent,i);
+            chatFirebaseUtil.removeImeageMessage(parent, i);
         }
     };
 
@@ -310,19 +342,19 @@ public class ChattingActivity extends AppCompatActivity {
             super.onScrolled(recyclerView, dx, dy);
 
             int lastVisibleItemPosition = ((LinearLayoutManager) recyclerView.getLayoutManager()).findLastCompletelyVisibleItemPosition();
-            int chattingSize = chattingMessageAdapter.getItemCount()-1;
+            int chattingSize = chattingMessageAdapter.getItemCount() - 1;
 
             try {
                 String toastString = chattingMessageAdapter.getDate(lastVisibleItemPosition);
                 toastText.setText(toastString);
-            }catch (Exception e){
+            } catch (Exception e) {
 
             }
 
-            if(lastVisibleItemPosition!=chattingSize) {
+            if (lastVisibleItemPosition != chattingSize) {
                 mToast.show();
-            }
-            else{
+            } else {
+                overlay.setVisibility(View.GONE);
                 mToast.cancel();
             }
         }
