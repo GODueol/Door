@@ -3,16 +3,15 @@ package com.example.kwoncheolhyeok.core.MessageActivity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
@@ -21,13 +20,11 @@ import com.bumptech.glide.request.target.Target;
 import com.example.kwoncheolhyeok.core.MessageActivity.util.DateUtil;
 import com.example.kwoncheolhyeok.core.PeopleFragment.FullImageActivity;
 import com.example.kwoncheolhyeok.core.PeopleFragment.GridItem;
-import com.example.kwoncheolhyeok.core.PeopleFragment.ImageAdapter;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.GlideApp;
-import com.google.firebase.database.FirebaseDatabase;
+import com.example.kwoncheolhyeok.core.Util.UiUtil;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -40,7 +37,8 @@ import java.util.Locale;
 public class ChattingMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final int MY_MESSAGE = 0, OTHER_MESSAGE = 1, MY_IMAGE = 2, OTHER_IMAGE = 3;
-    private ChattingMessageAdapter.OnCallbackList onCallbackList;
+    private OnImesageLoadingCallback onImesageLoadingCallback;
+
     private List<ChatMessage> itemList;
     private GridItem item;
     RequestListener requestListener;
@@ -49,13 +47,14 @@ public class ChattingMessageAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
 
 
-    public interface OnCallbackList {
-        public void onEvent();
+    public interface OnImesageLoadingCallback {
+        public void onReady();
+        public void onRemove(String s,int i);
     }
 
-    public ChattingMessageAdapter(List<ChatMessage> itemList, ChattingMessageAdapter.OnCallbackList listener) {
+    public ChattingMessageAdapter(List<ChatMessage> itemList, OnImesageLoadingCallback listener) {
         this.itemList = itemList;
-        onCallbackList = listener;
+        onImesageLoadingCallback = listener;
         sdf = new SimpleDateFormat( "yyyy. MM. dd. E", Locale.KOREAN );
         setRequestListener();
     }
@@ -110,7 +109,6 @@ public class ChattingMessageAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
         ChatMessage chatMessage = itemList.get(position);
         int viewType = chatMessage.getType();
-
         String profileImage = chatMessage.getProfileImage();
         String content = chatMessage.getContent();
         String image = chatMessage.getImage();
@@ -135,7 +133,7 @@ public class ChattingMessageAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 break;
             case MY_IMAGE:
                 ViewHolder_mine_image holder2 = (ViewHolder_mine_image) viewHolder;
-                setImageMessage(holder2.messageImageView, image);
+                setImageMessage(holder2.messageImageView, image,chatMessage.getParent(),position);
 
                 setDateUtil(holder2.dateTextView, holder2.checkTextView, date, check);
                 break;
@@ -143,7 +141,7 @@ public class ChattingMessageAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 ViewHolder_other_image holder3 = (ViewHolder_other_image) viewHolder;
                 item = chatMessage.getItem();
                 setProfileImage(holder3.profileImageView, profileImage);
-                setImageMessage(holder3.messageImageView, image);
+                setImageMessage(holder3.messageImageView, image,null,position);
                 setDateUtil(holder3.dateTextView, holder3.checkTextView, date, check);
                 holder3.profileImageView.setOnClickListener(moveProfileListener);
                 break;
@@ -164,7 +162,7 @@ public class ChattingMessageAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
             @Override
             public boolean onResourceReady(Object resource, Object model, Target target, DataSource dataSource, boolean isFirstResource) {
-                onCallbackList.onEvent();
+                onImesageLoadingCallback.onReady();
                 return false;
             }
         };
@@ -258,7 +256,7 @@ public class ChattingMessageAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 .into(imageView);
     }
 
-    public void setImageMessage(ImageView imageView, final String uri) {
+    public void setImageMessage(final ImageView imageView, final String uri, final String parent, final int position) {
         GlideApp.with(imageView.getContext())
                 .asBitmap()
                 .load(uri)
@@ -276,13 +274,23 @@ public class ChattingMessageAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 context.getApplicationContext().startActivity(p);
             }
         });
-        imageView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                Toast.makeText(context,"메세지삭제 예정",Toast.LENGTH_SHORT).show();
-                return false;
-            }
-        });
+        if(parent!=null) {
+            imageView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    UiUtil.getInstance().showDialog(context, "이미지 삭제", "해당 이미지를 삭제하시겠습니까?", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            onImesageLoadingCallback.onRemove(parent, position);
+                        }
+                    }, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                        }
+                    });
+                    return false;
+                }
+            });
+        }
     }
 
     public void setDateUtil(TextView dTextView, TextView cTextView, Long date, int check) {

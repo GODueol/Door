@@ -11,6 +11,7 @@ public class ChatMessage {
 
     private static final int MY_MESSAGE = 0, OTHER_MESSAGE = 1, MY_IMAGE = 2, OTHER_IMAGE = 3;
 
+    private String parent;
     private boolean isImage, isMine;
     private String content;
     private String profileImage;
@@ -21,6 +22,7 @@ public class ChatMessage {
 
 
     public ChatMessage(MessageVO message, boolean mine, boolean isImage) {
+        parent = message.getParent();
         content = message.getContent();
         time = message.getTime();
         check = message.getCheck();
@@ -29,6 +31,7 @@ public class ChatMessage {
         this.isImage = isImage;
     }
     public ChatMessage(MessageVO message, boolean mine, boolean image, GridItem item) {
+        parent = message.getParent();
         content = message.getContent();
         time = message.getTime();
         check = message.getCheck();
@@ -45,8 +48,15 @@ public class ChatMessage {
         else if (!isMine() && !isImage()) return OTHER_MESSAGE;
         else if (isMine() && isImage()) return MY_IMAGE;
         else return OTHER_IMAGE;
+
+    }
+    public String getParent() {
+        return parent;
     }
 
+    public void setParent(String parent) {
+        this.parent = parent;
+    }
     public String getContent() {
         return content;
     }

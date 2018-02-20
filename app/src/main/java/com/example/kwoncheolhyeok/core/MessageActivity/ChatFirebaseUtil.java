@@ -222,6 +222,7 @@ public class ChatFirebaseUtil {
             childKeyList.add(childChatKey);
 
             MessageVO message = dataSnapshot.getValue(MessageVO.class);
+            message.setParent(childChatKey);
             initMessage(message, childChatKey);
         }
 
@@ -253,6 +254,7 @@ public class ChatFirebaseUtil {
             while (child.hasNext()) {//마찬가지로 중복 유무 확인
                 DataSnapshot ds = child.next();
                 MessageVO message = ds.getValue(MessageVO.class);
+                message.setParent(dataSnapshot.getKey());
                 if (message != null && !message.getWriter().equals(userUuid)) {
                     databaseRef.child(chat).child(roomName).child(ds.getKey()).child("check").setValue(0);
                 }
@@ -321,7 +323,7 @@ public class ChatFirebaseUtil {
             childChatKey = ds.getKey();
             childKeyList.add(childChatKey);
             MessageVO message = ds.getValue(MessageVO.class);
-
+            message.setParent(childChatKey);
             if (message.getWriter().equals(userUuid) && message.getImage() == null) {
                 chatMessage = new ChatMessage(message, true, false);
                 if (chatMessage.getCheck() == 1) {
@@ -385,6 +387,12 @@ public class ChatFirebaseUtil {
     };
 
 
+    public void removeImeageMessage(String parent,int position){
+        FirebaseDatabase.getInstance().getReference("chat").child(roomName).child(parent).removeValue();
+        chatMessageList.remove(position);
+        chattingRecyclerview.getRecycledViewPool().clear();
+        chattingMessageAdapter.notifyDataSetChanged();
+    }
     // 읽음 처리 (클라이언트)
     public void checkRefreshChatLog() {
         for (ChatMessage chatMessage : uncheckMessageList) {

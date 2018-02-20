@@ -6,6 +6,7 @@ package com.example.kwoncheolhyeok.core.MessageActivity.util;
 
 public class MessageVO {
 
+    private String parent;
     private String content;
     private String image;
     private String nickname;
@@ -32,6 +33,13 @@ public class MessageVO {
 
     private String date;
 
+    public String getParent() {
+        return parent;
+    }
+
+    public void setParent(String parent) {
+        this.parent = parent;
+    }
 
     public String getNickname() {
         return nickname;

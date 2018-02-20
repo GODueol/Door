@@ -1,6 +1,5 @@
 package com.example.kwoncheolhyeok.core.MessageActivity;
 
-import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -26,11 +25,9 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.kwoncheolhyeok.core.CorePage.CoreWriteActivity;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.Exception.ChildSizeMaxException;
 import com.example.kwoncheolhyeok.core.MessageActivity.util.MessageVO;
@@ -180,8 +177,7 @@ public class ChattingActivity extends AppCompatActivity {
         if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
             actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
         }
-/*
-        mToast = Toast.makeText(this, null, Toast.LENGTH_SHORT);
+/*        mToast = Toast.makeText(this, null, Toast.LENGTH_SHORT);
         ViewGroup group = (ViewGroup) mToast.getView();
         TextView messageTextView = (TextView) group.getChildAt(0);
         LinearLayout linearLayout = (LinearLayout)group.getChildAt(1);
@@ -277,13 +273,18 @@ public class ChattingActivity extends AppCompatActivity {
         return super.onPrepareOptionsMenu(menu);
     }
 
-    ChattingMessageAdapter.OnCallbackList litener = new ChattingMessageAdapter.OnCallbackList() {
+    ChattingMessageAdapter.OnImesageLoadingCallback litener = new ChattingMessageAdapter.OnImesageLoadingCallback() {
         @Override
-        public void onEvent() {
+        public void onReady() {
             // 처음으로 가려는 리스너
             //chattingRecyclerview.scrollToPosition(chattingMessageAdapter.getItemCount()-1);
             chattingRecyclerview.smoothScrollToPosition(View.FOCUS_DOWN);
             //chattingRecyclerview.scrollToPosition(View.FOCUS_DOWN);
+        }
+
+        @Override
+        public void onRemove(String parent, int i) {
+            chatFirebaseUtil.removeImeageMessage(parent,i);
         }
     };
 
