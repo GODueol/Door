@@ -369,9 +369,9 @@ public class ChatFirebaseUtil {
         chattingMessageAdapter.notifyDataSetChanged();
 
 
-        int pos = chattingMessageAdapter.getItemCount() - 1;
+        int pos = chattingMessageAdapter.getItemCount() - 2;
         int visiblieCompLastPosition = ((LinearLayoutManager) chattingRecyclerview.getLayoutManager()).findLastVisibleItemPosition();
-        if (pos == visiblieCompLastPosition || key.equals(lastMessage)) {
+        if (pos <= visiblieCompLastPosition || key.equals(lastMessage)) {
             chattingRecyclerview.scrollToPosition(chattingMessageAdapter.getItemCount() - 1);
         } else if(!chatMessage.isMine()&&!chatMessage.isImage()){
             hideText.setText(message.getContent());
