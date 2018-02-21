@@ -1,5 +1,6 @@
 package com.example.kwoncheolhyeok.core.MessageActivity;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -13,12 +14,15 @@ import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
@@ -115,10 +119,9 @@ public class ChattingActivity extends AppCompatActivity {
         paramlinear.setMargins(0, actionBarHeight + 5, 0, layout_height);
         window.addContentView(linear, paramlinear);
         custom_top_container = (LinearLayout) findViewById(R.id.custom_top_container);
-        overlay = (LinearLayout) findViewById(R.id.overlay);
+        overlay = (LinearLayout) findViewById(R.id.scrollDown);
         topDateText = (TextView) findViewById(R.id.topDate);
         hideText = (TextView) findViewById(R.id.hideText);
-        scrollDown = (ImageView) findViewById(R.id.scrollDown);
 
         fadeout = AnimationUtils.loadAnimation(this,R.anim.fadeout);
         hide = AnimationUtils.loadAnimation(this,R.anim.hide);
@@ -323,12 +326,12 @@ public class ChattingActivity extends AppCompatActivity {
 
             int lastVisibleItemPosition = ((LinearLayoutManager) recyclerView.getLayoutManager()).findLastCompletelyVisibleItemPosition();
             int chattingSize = chattingMessageAdapter.getItemCount() - 1;
+
             try {
                 String toastString = chattingMessageAdapter.getDate(lastVisibleItemPosition);
-                topDateText.setText(toastString);
-            }catch (Exception e){
-                /* ignore */
+            } catch (Exception e) {
             }
+
             if (lastVisibleItemPosition != chattingSize) {
                 custom_top_container.setVisibility(View.INVISIBLE);
                     custom_top_container.startAnimation(fadeout);
