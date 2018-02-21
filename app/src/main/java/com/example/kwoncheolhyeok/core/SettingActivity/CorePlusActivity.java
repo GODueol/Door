@@ -32,8 +32,14 @@ public class CorePlusActivity extends AppCompatActivity {
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
 
 
-        ImageView img_cp_4 = findViewById(R.id.img_cp_4);
+        ImageView cor2 = findViewById(R.id.cor2);
+        GlideApp.with(this)
+                .load(UiUtil.resourceToUri(this,R.drawable.cp_main))
+                .centerCrop()
+                .into(cor2);
 
+
+        ImageView img_cp_4 = findViewById(R.id.img_cp_4);
         GlideApp.with(this)
                 .load(UiUtil.resourceToUri(this, R.drawable.cp_4))
                 .fitCenter()
