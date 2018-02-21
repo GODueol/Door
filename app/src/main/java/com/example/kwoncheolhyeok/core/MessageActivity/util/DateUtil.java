@@ -22,7 +22,7 @@ public class DateUtil {
     }
     public  String getTime(){
         Date time = new Date(date);
-        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a");
+        SimpleDateFormat sdf = new SimpleDateFormat("a hh:mm", Locale.KOREA);
         String strResult = sdf.format(time);
         return strResult;
     }
