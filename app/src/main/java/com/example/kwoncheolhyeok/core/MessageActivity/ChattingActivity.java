@@ -60,7 +60,6 @@ public class ChattingActivity extends AppCompatActivity {
     private RecyclerView chattingRecyclerview;
     private ImageButton mButtonSend, mImageView;
     private EditText mEditTextMessage;
-    private ImageView scrollDown;
     private LinearLayout send_message_layout, overlay, custom_top_container;
     private TextView hideText, topDateText;
     private ChattingMessageAdapter chattingMessageAdapter;
@@ -158,7 +157,7 @@ public class ChattingActivity extends AppCompatActivity {
             }
         });
 
-        scrollDown.setOnClickListener(new View.OnClickListener() {
+        overlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 chattingRecyclerview.scrollToPosition(chattingMessageAdapter.getItemCount() - 1);
@@ -329,6 +328,7 @@ public class ChattingActivity extends AppCompatActivity {
 
             try {
                 String toastString = chattingMessageAdapter.getDate(lastVisibleItemPosition);
+                topDateText.setText(toastString);
             } catch (Exception e) {
             }
 
