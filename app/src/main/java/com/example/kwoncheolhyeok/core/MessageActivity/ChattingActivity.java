@@ -1,6 +1,5 @@
 package com.example.kwoncheolhyeok.core.MessageActivity;
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -14,17 +13,16 @@ import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -59,13 +57,14 @@ public class ChattingActivity extends AppCompatActivity {
     private ImageButton mButtonSend, mImageView;
     private EditText mEditTextMessage;
     private ImageView scrollDown;
-    private LinearLayout send_message_layout, overlay;
-    private TextView  hideText;
+    private LinearLayout send_message_layout, overlay, custom_top_container;
+    private TextView hideText, topDateText;
     private ChattingMessageAdapter chattingMessageAdapter;
     private LinearLayoutManager linearLayoutManager;
     private List<ChatMessage> chatListItem;
     private FirebaseAuth mAuth;
     private InputMethodManager imm;
+    private Animation hide, fadeout;
 
     private ChatFirebaseUtil chatFirebaseUtil;
 
@@ -87,6 +86,12 @@ public class ChattingActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true); //홈 아이콘을 숨김처리합니다.
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
 
+        TypedValue tv = new TypedValue();
+        int actionBarHeight = 150;
+        if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
+            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
+        }
+
         Intent p = getIntent();
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
@@ -106,13 +111,18 @@ public class ChattingActivity extends AppCompatActivity {
         send_message_layout = (LinearLayout) findViewById(R.id.send_message_layout);
         send_message_layout.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
         int layout_height = send_message_layout.getMeasuredHeight();
-        paramlinear.setMargins(0, 0, 0, layout_height);
-        paramlinear.weight = 1.0f;
-        paramlinear.gravity = Gravity.BOTTOM;
+
+        paramlinear.setMargins(0, actionBarHeight + 5, 0, layout_height);
         window.addContentView(linear, paramlinear);
+        custom_top_container = (LinearLayout) findViewById(R.id.custom_top_container);
         overlay = (LinearLayout) findViewById(R.id.overlay);
+        topDateText = (TextView) findViewById(R.id.topDate);
         hideText = (TextView) findViewById(R.id.hideText);
         scrollDown = (ImageView) findViewById(R.id.scrollDown);
+
+        fadeout = AnimationUtils.loadAnimation(this,R.anim.fadeout);
+        hide = AnimationUtils.loadAnimation(this,R.anim.hide);
+
 
         chatListItem = new ArrayList<ChatMessage>();
         linearLayoutManager = new LinearLayoutManager(this);
@@ -313,15 +323,18 @@ public class ChattingActivity extends AppCompatActivity {
 
             int lastVisibleItemPosition = ((LinearLayoutManager) recyclerView.getLayoutManager()).findLastCompletelyVisibleItemPosition();
             int chattingSize = chattingMessageAdapter.getItemCount() - 1;
-
             try {
                 String toastString = chattingMessageAdapter.getDate(lastVisibleItemPosition);
-            } catch (Exception e) {
+                topDateText.setText(toastString);
+            }catch (Exception e){
+                /* ignore */
             }
-
             if (lastVisibleItemPosition != chattingSize) {
+                custom_top_container.setVisibility(View.INVISIBLE);
+                    custom_top_container.startAnimation(fadeout);
             } else {
                 overlay.setVisibility(View.GONE);
+                custom_top_container.startAnimation(hide);
             }
         }
     };
