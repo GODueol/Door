@@ -1,5 +1,6 @@
 package com.example.kwoncheolhyeok.core.MessageActivity;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -13,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -54,12 +56,11 @@ public class ChattingActivity extends AppCompatActivity {
 
     private Toolbar toolbar = null;
     private RecyclerView chattingRecyclerview;
-    private ImageButton mButtonSend,mImageView;
+    private ImageButton mButtonSend, mImageView;
     private EditText mEditTextMessage;
     private ImageView scrollDown;
-    private LinearLayout send_message_layout,overlay;
-    private Toast mToast;
-    private TextView toastText,hideText;
+    private LinearLayout send_message_layout, overlay;
+    private TextView  hideText;
     private ChattingMessageAdapter chattingMessageAdapter;
     private LinearLayoutManager linearLayoutManager;
     private List<ChatMessage> chatListItem;
@@ -82,7 +83,6 @@ public class ChattingActivity extends AppCompatActivity {
         window.setContentView(R.layout.chatting_activity);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        setToastMessage();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //액션바 아이콘을 업 네비게이션 형태로 표시합니다.
         getSupportActionBar().setDisplayShowHomeEnabled(true); //홈 아이콘을 숨김처리합니다.
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
@@ -106,12 +106,12 @@ public class ChattingActivity extends AppCompatActivity {
         send_message_layout = (LinearLayout) findViewById(R.id.send_message_layout);
         send_message_layout.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
         int layout_height = send_message_layout.getMeasuredHeight();
-        paramlinear.setMargins(0,0,0,layout_height);
-        paramlinear.weight=1.0f;
+        paramlinear.setMargins(0, 0, 0, layout_height);
+        paramlinear.weight = 1.0f;
         paramlinear.gravity = Gravity.BOTTOM;
         window.addContentView(linear, paramlinear);
-        overlay = (LinearLayout)findViewById(R.id.overlay);
-        hideText = (TextView)findViewById(R.id.hideText);
+        overlay = (LinearLayout) findViewById(R.id.overlay);
+        hideText = (TextView) findViewById(R.id.hideText);
         scrollDown = (ImageView) findViewById(R.id.scrollDown);
 
         chatListItem = new ArrayList<ChatMessage>();
@@ -128,7 +128,7 @@ public class ChattingActivity extends AppCompatActivity {
         user = DataContainer.getInstance().getUser();
         userUuid = mAuth.getUid();
 
-        chatFirebaseUtil = new ChatFirebaseUtil(this, user, targetUser, userUuid, targetUuid,overlay ,hideText);
+        chatFirebaseUtil = new ChatFirebaseUtil(this, user, targetUser, userUuid, targetUuid, overlay, hideText);
         chatFirebaseUtil.setchatRoom(chattingRecyclerview, chatListItem);
         chattingRecyclerview.addOnScrollListener(dateToastListener);
         // 메세지 보내기
@@ -159,7 +159,6 @@ public class ChattingActivity extends AppCompatActivity {
             }
         });
     }
-
 
 
     @Override
@@ -202,35 +201,6 @@ public class ChattingActivity extends AppCompatActivity {
     private void sendImageMessage() {
         galleryPick = new GalleryPick(ChattingActivity.this).goToGallery();
         mImageView.setClickable(false);
-    }
-
-    public void setToastMessage() {
-        TypedValue tv = new TypedValue();
-        int actionBarHeight = 150;
-        if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
-            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
-        }
-/*        mToast = Toast.makeText(this, null, Toast.LENGTH_SHORT);
-        ViewGroup group = (ViewGroup) mToast.getView();
-        TextView messageTextView = (TextView) group.getChildAt(0);
-        LinearLayout linearLayout = (LinearLayout)group.getChildAt(1);
-        mToast.setGravity(Gravity.TOP, 0, actionBarHeight + 5);
-        messageTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 11);
-        messageTextView.setTextColor(Color.WHITE);
-        //group.setBackgroundColor(Color.rgb(60, 60, 60));
-        linearLayout.setBackgroundResource(R.drawable.chatting_toast);*/
-
-        LayoutInflater inflater = getLayoutInflater();
-        View layout = inflater.inflate(R.layout.chatting_toast,
-                (ViewGroup) findViewById(R.id.custom_toast_container));
-
-        toastText = (TextView) layout.findViewById(R.id.text);
-        mToast = new Toast(this);
-        mToast.setDuration(Toast.LENGTH_SHORT);
-        mToast.setGravity(Gravity.TOP, 0, actionBarHeight + 5);
-        mToast.setDuration(Toast.LENGTH_LONG);
-        mToast.setView(layout);
-
     }
 
     // 뒤로가기 버튼 기능
@@ -346,16 +316,12 @@ public class ChattingActivity extends AppCompatActivity {
 
             try {
                 String toastString = chattingMessageAdapter.getDate(lastVisibleItemPosition);
-                toastText.setText(toastString);
             } catch (Exception e) {
-
             }
 
             if (lastVisibleItemPosition != chattingSize) {
-                mToast.show();
             } else {
                 overlay.setVisibility(View.GONE);
-                mToast.cancel();
             }
         }
     };
