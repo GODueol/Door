@@ -37,6 +37,7 @@ import com.example.kwoncheolhyeok.core.SettingActivity.SettingActivity;
 import com.example.kwoncheolhyeok.core.Util.BusProvider;
 import com.example.kwoncheolhyeok.core.Util.CloseActivityHandler;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
+import com.example.kwoncheolhyeok.core.Util.FirebaseIDService;
 import com.example.kwoncheolhyeok.core.Util.UiUtil;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -169,7 +170,10 @@ public class MainActivity extends AppCompatActivity
             logout();
             return;
         }
+        FirebaseIDService fids = new FirebaseIDService();
+        fids.onTokenRefresh();
         mUser.setLoginDate(System.currentTimeMillis());
+        fids.setUserToken(mUser);
         DataContainer.getInstance().getUsersRef().child(user.getUid()).setValue(mUser)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override

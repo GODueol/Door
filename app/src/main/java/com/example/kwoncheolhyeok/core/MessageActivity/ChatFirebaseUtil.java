@@ -19,6 +19,7 @@ import com.example.kwoncheolhyeok.core.MessageActivity.util.MessageVO;
 import com.example.kwoncheolhyeok.core.MessageActivity.util.RoomVO;
 import com.example.kwoncheolhyeok.core.PeopleFragment.GridItem;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
+import com.example.kwoncheolhyeok.core.Util.FirebaseSendPushMsg;
 import com.example.kwoncheolhyeok.core.Util.GPSInfo;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
@@ -136,6 +137,7 @@ public class ChatFirebaseUtil {
             childUpdates.put("/" + chatRoomList + "/" + userUuid + "/" + targetUuid + "/" + "lastChat", "사진");
         }
         databaseRef.updateChildren(childUpdates);
+        FirebaseSendPushMsg.sendPostToFCM(targetUuid,"쪽지가 도착하였습니다.");
     }
 
     public void sendImageMessage(Uri outputFileUri) {

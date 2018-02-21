@@ -18,6 +18,8 @@ public class User implements Serializable{
 
     private String intro;
 
+    private String token;
+
     private IntBoundary ageBoundary;
     private IntBoundary heightBoundary;
     private IntBoundary weightBoundary;
@@ -264,6 +266,14 @@ public class User implements Serializable{
         this.weight = weight;
     }
 
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
 
     public  String getTotalProfile(){
         return getAge()+" / "+getHeight()+" / "+getWeight()+" / "+getBodyType();
