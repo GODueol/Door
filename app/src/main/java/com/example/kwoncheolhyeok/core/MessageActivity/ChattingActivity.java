@@ -225,7 +225,7 @@ public class ChattingActivity extends AppCompatActivity {
                 (ViewGroup) findViewById(R.id.custom_toast_container));
 
         toastText = (TextView) layout.findViewById(R.id.text);
-        mToast = new Toast(getApplicationContext());
+        mToast = new Toast(this);
         mToast.setDuration(Toast.LENGTH_SHORT);
         mToast.setGravity(Gravity.TOP, 0, actionBarHeight + 5);
         mToast.setDuration(Toast.LENGTH_LONG);
