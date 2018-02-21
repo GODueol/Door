@@ -110,9 +110,8 @@ public class ChattingActivity extends AppCompatActivity {
         paramlinear.weight = 1.0f;
         paramlinear.gravity = Gravity.BOTTOM;
         window.addContentView(linear, paramlinear);
-        overlay = (LinearLayout) findViewById(R.id.overlay);
+        overlay = (LinearLayout) findViewById(R.id.scrollDown);
         hideText = (TextView) findViewById(R.id.hideText);
-        scrollDown = (ImageView) findViewById(R.id.scrollDown);
 
         chatListItem = new ArrayList<ChatMessage>();
         linearLayoutManager = new LinearLayoutManager(this);
@@ -145,7 +144,7 @@ public class ChattingActivity extends AppCompatActivity {
             }
         });
 
-        scrollDown.setOnClickListener(new View.OnClickListener() {
+        overlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 chattingRecyclerview.scrollToPosition(chattingMessageAdapter.getItemCount() - 1);

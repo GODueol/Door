@@ -53,6 +53,7 @@
                 android:layout_height="40dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/a" />
+
         </RelativeLayout>
 
         <com.example.kwoncheolhyeok.core.MessageActivity.util.ChatMessageView
@@ -80,7 +81,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|left"
-            android:layout_marginBottom="5dp"
+            android:padding="3dp"
             android:orientation="vertical">
 
             <TextView

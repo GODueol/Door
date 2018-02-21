@@ -67,7 +67,8 @@
             android:id="@+id/chatImage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="#aaffffff"
+            android:background="@color/white"
             android:padding="5dp" />
     </LinearLayout>
+
 </LinearLayout>

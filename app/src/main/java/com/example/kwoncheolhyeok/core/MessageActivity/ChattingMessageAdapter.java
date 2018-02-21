@@ -280,6 +280,7 @@ public class ChattingMessageAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         GlideApp.with(imageView.getContext())
                 .asBitmap()
                 .placeholder(R.drawable.picture_load)
+                .centerCrop()
                 .load(uri)
                 .override(600, 600)
                 .fitCenter()
@@ -299,7 +300,7 @@ public class ChattingMessageAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             imageView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
-                    UiUtil.getInstance().showDialog(context, "이미지 삭제", "해당 이미지를 삭제하시겠습니까?", new DialogInterface.OnClickListener() {
+                    UiUtil.getInstance().showDialog(context, "사진 삭제", "삭제하시면 상대방도 사진을 볼 수 없습니다.", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             onImesageLoadingCallback.onRemove(parent, position);
