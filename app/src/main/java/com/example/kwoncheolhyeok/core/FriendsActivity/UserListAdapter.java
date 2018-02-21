@@ -94,16 +94,18 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
         userHolder.subProfileText.setText(UiUtil.getInstance().setSubProfile(user));
         userHolder.dateText.setText( DataContainer.getInstance().convertBeforeFormat(item.getDate()));
 
-        userHolder.profilePicImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent p = new Intent(view.getContext(), FullImageActivity.class);
+        if(!field.equals("blockUsers")) {   // block 아닐때만 클릭 가능하도록
+            userHolder.profilePicImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent p = new Intent(view.getContext(), FullImageActivity.class);
 
-                p.putExtra("item", new GridItem(0, item.getUuid(), user.getSummaryUser(), ""));
+                    p.putExtra("item", new GridItem(0, item.getUuid(), user.getSummaryUser(), ""));
 
-                view.getContext().startActivity(p);
-            }
-        });
+                    view.getContext().startActivity(p);
+                }
+            });
+        }
         userHolder.itemMenuBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
