@@ -32,6 +32,18 @@
             android:textSize="15.5dp"
             android:textColor="@color/black"
             />
+
+        <ImageButton
+            android:id="@+id/saveButton"
+            android:layout_width="25dp"
+            android:layout_height="19dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/save_check"
+            android:onClick="save"
+            />
+
     </RelativeLayout>
 
     <RelativeLayout
