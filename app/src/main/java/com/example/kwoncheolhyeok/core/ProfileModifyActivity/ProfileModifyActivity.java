@@ -263,6 +263,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         weightPick.setText(Integer.toString(user.getWeight()));
         bodyTypePick.setText(user.getBodyType());
         introEditText.setText(user.getIntro());
+        introEditText.requestFocus();
 
         // Load the image using Glide
         ArrayList<String> picUrlList = user.getPicUrls().toArray();

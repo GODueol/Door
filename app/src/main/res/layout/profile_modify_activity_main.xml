@@ -284,7 +284,6 @@
                 android:layout_centerInParent="true"
                 android:layout_marginTop="10dp"
                 android:bufferType="editable"
-                android:focusableInTouchMode="true"
                 android:gravity="center"
                 android:hint="닉네임을 입력하세요"
                 android:maxLength="10"
@@ -324,6 +323,7 @@
                 android:layout_below="@+id/age_nouse"
                 android:layout_centerInParent="true"
                 android:layout_marginTop="20dp"
+
                 android:orientation="horizontal">
 
                 <TextView
@@ -388,7 +388,10 @@
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 android:layout_marginTop="25dp"
-                android:background="#FFFFFF"></View>
+                android:background="#FFFFFF"
+               >
+
+            </View>
 
             <TextView
                 android:id="@+id/introduce_nouse"
@@ -410,7 +413,6 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
-                android:focusableInTouchMode="true"
                 android:gravity="left"
                 android:hint="자신을 소개해주세요"
                 android:lineSpacingExtra="5dip"
@@ -699,11 +701,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_below="@+id/BODY_TYPE_FILTER"
-                android:layout_marginBottom="20dp"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 android:layout_marginTop="28dp"
-                android:background="#FFFFFF"></View>
+                android:background="#FFFFFF"
+                android:layout_marginBottom="20dp"
+                ></View>
 
         </RelativeLayout>
 
