@@ -65,7 +65,7 @@
     <string name="ok">확인</string>
 
     <string name="set_new_message">새 메세지를 받았을 때</string>
-    <string name="set_new_follower">새 팔로워가 추가되었을 때</string>
+    <string name="set_new_follower">새 팔로워가 추가됐을 때</string>
     <string name="set_new_friends">새 친구가 생겼을 때</string>
     <string name="set_new_post">내 코어에 새 익명 글이 올라왔을 때</string>
     <string name="set_new_heart">내 코어 포스트에 하트가 추가되었을 때</string>
