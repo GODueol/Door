@@ -151,13 +151,17 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.On
             float zlevel = mGoogleMap.getCameraPosition().zoom;
             Location loc = addrConvertor.findGeoPoint(getApplicationContext(), str);
             LatLng latLng = new LatLng(loc.getLatitude(), loc.getLongitude());
-            String adress = addrConvertor.getAddress(getApplicationContext(), latLng);
-            mGoogleMap.clear();
-            mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, zlevel));
-            mGoogleMap.addMarker(new MarkerOptions()
-                    .position(latLng)
-                    .title(adress)
-            ).showInfoWindow();
+            if(latLng.longitude==0&&latLng.latitude==0) {
+                Toast.makeText(getApplicationContext(), "검색 실패", Toast.LENGTH_SHORT).show();
+            }else{
+                String adress = addrConvertor.getAddress(getApplicationContext(), latLng);
+                mGoogleMap.clear();
+                mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, zlevel));
+                mGoogleMap.addMarker(new MarkerOptions()
+                        .position(latLng)
+                        .title(adress)
+                ).showInfoWindow();
+            }
         }
     };
 }
