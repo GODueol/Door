@@ -341,7 +341,7 @@ public class ChattingMessageAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             imageView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
-                    UiUtil.getInstance().showDialog(context, "사진 삭제", "삭제하시면 상대방도 사진을 볼 수 없으며\n 삭제된 사진은 복구할 수 없습니다.", new DialogInterface.OnClickListener() {
+                    UiUtil.getInstance().showDialog(context, "사진 삭제", "사진을 삭제하면 상대방도 볼 수 없습니다.", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             onImesageLoadingCallback.onRemove(parent, position);
