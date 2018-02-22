@@ -469,9 +469,9 @@ public class ChatFirebaseUtil {
 
 
     public void removeImeageMessage(String parent, int position) {
-        FirebaseDatabase.getInstance().getReference("chat").child(roomName).child(parent).removeValue();
-        chatMessageKeyList.remove(position);
-        chatMessageList.remove(position);
+        String strDelete = "DELETE";
+        FirebaseDatabase.getInstance().getReference("chat").child(roomName).child(parent).child("image").setValue(strDelete);
+        chatMessageList.get(position).setImage(strDelete);
         chattingRecyclerview.getRecycledViewPool().clear();
         chattingMessageAdapter.notifyDataSetChanged();
     }
