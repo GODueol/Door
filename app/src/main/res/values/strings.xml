@@ -3,10 +3,9 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="find_map">Find MAP</string>
-    <string name="find_id">Find NickName</string>
-
-    <string name="Join_this_club">Join</string>
+    <string name="find_map">지도 검색</string>
+    <string name="find_id">회원 검색</string>
+    <string name="lock_to_all_user">공개한 사진 모두 잠금</string>
 
     <string-array name="titles_tab">
         <!--<item>Board</item>-->
@@ -25,15 +24,10 @@
     <string name="standard">standard</string>
     <string name="muscular">muscular</string>
     <string name="overweight">overweight</string>
-    <string name="lock_to_all_user">Lock to All User</string>
-    <string name="unblock_to_all_user">Unblock to All User</string>
+
+    <string name="unblock_to_all_user">전체 회원 </string>
     <string name="people">People</string>
-    <string name="board">Board</string>
-    <string name="find_text">Find Text</string>
-    <string name="club">Club</string>
-    <string name="create">Create</string>
-    <string name="filter">Filter</string>
-    <string name="friends_button">Friends Button</string>
+
 
     <string name="friends">Friends</string>
     <string name="viewed_me">Viewed me</string>
@@ -42,17 +36,17 @@
     <string name="following">Following</string>
     <string name="unfollow">Unfollow</string>
 
-    <string name="edit">Edit</string>
-    <string name="delete">Delete</string>
+    <string name="edit">편집</string>
+    <string name="delete">삭제</string>
 
-    <string name="core_plus">CORE +</string>
+    <string name="core_plus">CORE PLUS</string>
     <string name="notice">공지사항</string>
     <string name="account_setting">계정</string>
     <string name="alarm_setting">알림</string>
     <string name="block_list">블럭</string>
     <string name="app_info">앱 정보</string>
     <string name="log_out">로그 아웃</string>
-    <string name="core">Core</string>
+    <string name="core">CORE</string>
     <string name="follow">Follow</string>
     <string name="unblock">Unblock</string>
     <string name="oldOrder">오래된 순</string>

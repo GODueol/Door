@@ -355,7 +355,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
             @Override
             public void onClick(View v) {
 
-                UiUtil.getInstance().showDialog(ProfileModifyActivity.this, "Delete Picture", " Do you want delete Picture?"
+                UiUtil.getInstance().showDialog(ProfileModifyActivity.this, "사진 삭제", " 사진을 삭제하시겠습니까?"
                     , new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
 
