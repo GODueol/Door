@@ -661,6 +661,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
                     Toast.makeText(ProfileModifyActivity.this, "Error : " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 } catch (Exception e) {
                     e.printStackTrace();
+                    Toast.makeText(ProfileModifyActivity.this, "Error : " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
 
                 uriMap.put(modifyingPic.getId(), galleryPick.getUri());

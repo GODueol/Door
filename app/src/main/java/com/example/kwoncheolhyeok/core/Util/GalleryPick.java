@@ -327,7 +327,7 @@ public class GalleryPick {
     public void setImage(ImageView editImage) throws Exception {
         // Gif 파일인 경우
         if(isGif()){
-            if(getFileSizeInMB() > 5) throw new Exception("GIF 파일이 5MB를 넘어서 불가능합니다");
+            if(getFileSizeInMB() >= 5) throw new Exception("GIF 파일이 5MB를 넘어서 불가능합니다");
             //Uri
             GlideApp.with(editImage.getContext())
                     .load(uri)
