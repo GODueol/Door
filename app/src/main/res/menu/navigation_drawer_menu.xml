@@ -51,6 +51,7 @@
 
 
         <item
+            android:icon="@drawable/coreplus_nav"
             android:id="@+id/nav_coreplus"
             android:title="@string/core_plus"
             app:theme="@style/NavigationViewStyle"

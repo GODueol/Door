@@ -115,6 +115,9 @@ public class MainActivity extends AppCompatActivity
         s.setSpan(new TextAppearanceSpan(this, R.style.CorePlusColor),0,s.length(),0);
         tools.setTitle(s);
 
+        //네비게이션 안의 아이콘 색을 오리지널로 표현
+        navigationView.setItemIconTintList(null);
+
         navigationView.setNavigationItemSelectedListener(this);
         drawer.setOnTouchListener(new View.OnTouchListener() {
             @SuppressLint("ClickableViewAccessibility")
