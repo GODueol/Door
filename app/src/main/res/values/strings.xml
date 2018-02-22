@@ -3,10 +3,9 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="find_map">Find MAP</string>
-    <string name="find_id">Find NickName</string>
-
-    <string name="Join_this_club">Join</string>
+    <string name="find_map">지도 검색</string>
+    <string name="find_id">회원 검색</string>
+    <string name="lock_to_all_user">공개한 사진 모두 잠금</string>
 
     <string-array name="titles_tab">
         <!--<item>Board</item>-->
@@ -25,15 +24,10 @@
     <string name="standard">standard</string>
     <string name="muscular">muscular</string>
     <string name="overweight">overweight</string>
-    <string name="lock_to_all_user">Lock to All User</string>
-    <string name="unblock_to_all_user">Unblock to All User</string>
+
+    <string name="unblock_to_all_user">전체 회원 </string>
     <string name="people">People</string>
-    <string name="board">Board</string>
-    <string name="find_text">Find Text</string>
-    <string name="club">Club</string>
-    <string name="create">Create</string>
-    <string name="filter">Filter</string>
-    <string name="friends_button">Friends Button</string>
+
 
     <string name="friends">Friends</string>
     <string name="viewed_me">Viewed me</string>
@@ -42,17 +36,17 @@
     <string name="following">Following</string>
     <string name="unfollow">Unfollow</string>
 
-    <string name="edit">Edit</string>
-    <string name="delete">Delete</string>
+    <string name="edit">편집</string>
+    <string name="delete">삭제</string>
 
-    <string name="core_plus">CORE +</string>
+    <string name="core_plus">CORE PLUS</string>
     <string name="notice">공지사항</string>
     <string name="account_setting">계정</string>
     <string name="alarm_setting">알림</string>
     <string name="block_list">블럭</string>
     <string name="app_info">앱 정보</string>
     <string name="log_out">로그 아웃</string>
-    <string name="core">Core</string>
+    <string name="core">CORE</string>
     <string name="follow">Follow</string>
     <string name="unblock">Unblock</string>
     <string name="oldOrder">오래된 순</string>
@@ -65,7 +59,7 @@
     <string name="ok">확인</string>
 
     <string name="set_new_message">새 메세지를 받았을 때</string>
-    <string name="set_new_follower">새 팔로워가 추가되었을 때</string>
+    <string name="set_new_follower">새 팔로워가 추가됐을 때</string>
     <string name="set_new_friends">새 친구가 생겼을 때</string>
     <string name="set_new_post">내 코어에 새 익명 글이 올라왔을 때</string>
     <string name="set_new_heart">내 코어 포스트에 하트가 추가되었을 때</string>
@@ -99,18 +93,20 @@
     <string name="cp_13">2 내 코어에 기록할 수 있는 포스트 총 개수가 증가됩니다.</string>
     <string name="cp_14">기록할 수 있는 코어 포스트의 개수가</string>
     <string name="cp_15">150개에서 500개로 늘어납니다!</string>
-    <string name="cp_16">3 움직이는 사진(gif 파일)을 업로드 할 수 있습니다.</string>
-    <string name="cp_17">좋아하는 GIF 파일을 프로필 사진과 코어 포스트에 업로드 해보세요!</string>
-    <string name="cp_18">* 500mb의 이하의 gif 파일만 가능합니다</string>
+    <string name="cp_16">3 움직이는 사진(GIF 파일)을 업로드 할 수 있습니다.</string>
+    <string name="cp_17">프로필 사진과 코어 포스트에 좋아하는 짤을 넣어보세요!</string>
+    <string name="cp_18">* 5MB 이하의 GIF 파일만 업로드 가능합니다</string>
     <string name="cp_19">4 매너 없는 포스트를 게시한 익명 회원을 차단할 수 있습니다.</string>
     <string name="cp_20">내 코어에 악성 포스트를 남긴 익명 유저를 차단할 수 있습니다!</string>
-    <string name="cp_21">5 자신이 차단한 블럭 리스트를 볼 수 있고 해제할 수 있습니다.</string>
-    <string name="cp_22">차단한 익명 포스트 회원을 볼 수 있고,</string>
-    <string name="cp_23">차단한 회원을 다시 해제할 수 있습니다.</string>
+    <string name="cp_21">5 차단한 블럭 리스트를 볼 수 있고 해제할 수 있습니다.</string>
+    <string name="cp_22">차단한 회원을 (익명 차단 포함) 모두 볼 수 있고,</string>
+    <string name="cp_23">다시 해제할 수 있습니다.</string>
     <string name="cp_24">다른 궁금한 점이 있나요?</string>
-    <string name="cp_25">운영자 문의를 통해 질문하시면 답변 드리겠습니다!</string>
+    <string name="cp_25">의견 보내기</string>
+    <string name="cp_26">를 통해 질문하시면 답변 드리겠습니다!</string>
 
     <string name="scrollDown">아래로 내려가기</string>
 
+    <string name="deleteImage">삭제된 이미지 입니다.</string>
 </resources>
 

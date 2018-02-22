@@ -1,10 +1,15 @@
 package com.example.kwoncheolhyeok.core.Activity;
 
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.kwoncheolhyeok.core.PeopleFragment.FullImageActivity;
@@ -31,11 +36,15 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.On
     private GoogleMap mGoogleMap;
     private LatLng mLatLng;
     private GPSInfo mGPSInfo;
+    public EditText addrText;
+    public ImageView search;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.google_map_activity);
+        addrText = (EditText) findViewById(R.id.addrText);
+        search = (ImageView) findViewById(R.id.search_map);
         mGPSInfo = new GPSInfo(getApplicationContext());
 
         MapFragment mapFragment = (MapFragment) getFragmentManager()
@@ -43,6 +52,8 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.On
 
         mapFragment.getMapAsync(this);
         /********************** 요기까지 지도설정 *******************/
+
+        search.setOnClickListener(search_addr);
         /* 자동완성 기능
         PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
                 getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
@@ -73,7 +84,7 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.On
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Toast.makeText(getApplicationContext(),"맵 로드 실패",Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), "맵 로드 실패", Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -132,4 +143,25 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.On
         p.putExtra("latLng", latLng);
         startActivity(p);
     }
+
+    View.OnClickListener search_addr = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            String str = addrText.getText().toString();
+            float zlevel = mGoogleMap.getCameraPosition().zoom;
+            Location loc = addrConvertor.findGeoPoint(getApplicationContext(), str);
+            LatLng latLng = new LatLng(loc.getLatitude(), loc.getLongitude());
+            if(latLng.longitude==0&&latLng.latitude==0) {
+                Toast.makeText(getApplicationContext(), "검색 실패", Toast.LENGTH_SHORT).show();
+            }else{
+                String adress = addrConvertor.getAddress(getApplicationContext(), latLng);
+                mGoogleMap.clear();
+                mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, zlevel));
+                mGoogleMap.addMarker(new MarkerOptions()
+                        .position(latLng)
+                        .title(adress)
+                ).showInfoWindow();
+            }
+        }
+    };
 }

@@ -31,7 +31,16 @@ public class addrConvertor {
 
             if (address != null && address.size() > 0) {
                 // 주소 받아오기
-                nowAddress = address.get(0).getAdminArea() +" "+address.get(0).getLocality()+" "+address.get(0).getThoroughfare();
+                nowAddress="";
+                if(address.get(0).getAdminArea()!=null){
+                nowAddress += address.get(0).getAdminArea()+" ";
+                }
+                if(address.get(0).getLocality()!=null){
+                    nowAddress +=  address.get(0).getLocality()+ " ";
+                }
+                if(address.get(0).getThoroughfare()!=null){
+                    nowAddress +=  address.get(0).getThoroughfare();
+                }
             }
 
         } catch (IOException e) {

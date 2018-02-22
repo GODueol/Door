@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.MessageActivity.util.CryptoImeageName;
@@ -49,10 +50,11 @@ import java.util.Map;
 public class ChatFirebaseUtil {
 
 
-    final static String chatRoomList = "chatRoomList";
-    final static String chat = "chat";
-    final static String image = "image";
-    public final static int MessageCount = 30;
+    private final static String chatRoomList = "chatRoomList";
+    private final static String chat = "chat";
+    private final static String image = "image";
+    private final static String strDelete = "DELETE";
+    private final static int MessageCount = 30;
 
     private Context context;
     private String userUuid, targetUuid;
@@ -270,24 +272,25 @@ public class ChatFirebaseUtil {
 
         @Override
         public void onChildChanged(DataSnapshot dataSnapshot, String previousChildName) {
-            checkRefreshChatLog();
-        }
-
-        @Override
-        public void onChildRemoved(DataSnapshot dataSnapshot) {
             MessageVO messageVO = dataSnapshot.getValue(MessageVO.class);
-            if (!messageVO.getWriter().equals(userUuid)) {
+            if(messageVO.getImage()!=null && messageVO.getImage().equals(strDelete)&&!messageVO.getWriter().equals(userUuid) ){
                 try {
                     String key = dataSnapshot.getKey();
                     int position = chatMessageKeyList.indexOf(key);
-                    chatMessageList.remove(position);
-                    chatMessageKeyList.remove(position);
+                    chatMessageList.get(position).setImage(strDelete);
                     chattingRecyclerview.getRecycledViewPool().clear();
                     chattingMessageAdapter.notifyDataSetChanged();
                 } catch (Exception e) {
 
                 }
+            }else {
+                checkRefreshChatLog();
             }
+        }
+
+        @Override
+        public void onChildRemoved(DataSnapshot dataSnapshot) {
+
         }
 
         @Override
@@ -468,12 +471,23 @@ public class ChatFirebaseUtil {
     };
 
 
-    public void removeImeageMessage(String parent, int position) {
-        FirebaseDatabase.getInstance().getReference("chat").child(roomName).child(parent).removeValue();
-        chatMessageKeyList.remove(position);
-        chatMessageList.remove(position);
-        chattingRecyclerview.getRecycledViewPool().clear();
-        chattingMessageAdapter.notifyDataSetChanged();
+    public void removeImeageMessage(final String parent, final int position) {
+        String url = chatMessageList.get(position).getImage();
+        FirebaseStorage.getInstance().getReferenceFromUrl(url).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                FirebaseDatabase.getInstance().getReference("chat").child(roomName).child(parent).child("image").setValue(strDelete);
+                chatMessageList.get(position).setImage(strDelete);
+                chattingRecyclerview.getRecycledViewPool().clear();
+                chattingMessageAdapter.notifyDataSetChanged();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(context,"이미지 삭제에 실패했습니다.",Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 
     // 읽음 처리 (클라이언트)
