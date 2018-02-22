@@ -16,6 +16,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.SpannableString;
+import android.text.style.TextAppearanceSpan;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -101,8 +103,18 @@ public class MainActivity extends AppCompatActivity
                 changeToggleIcon();
             }
         });
+
+
         //Navigation view
         NavigationView navigationView = findViewById(R.id.nav_view);
+
+        //네비게이션 드로워 안의 COREPLUS 텍스트 색 변경
+        Menu menu = navigationView.getMenu();
+        MenuItem tools = menu.findItem(R.id.nav_coreplus);
+        SpannableString s = new SpannableString(tools.getTitle());
+        s.setSpan(new TextAppearanceSpan(this, R.style.CorePlusColor),0,s.length(),0);
+        tools.setTitle(s);
+
         navigationView.setNavigationItemSelectedListener(this);
         drawer.setOnTouchListener(new View.OnTouchListener() {
             @SuppressLint("ClickableViewAccessibility")

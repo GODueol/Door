@@ -93,16 +93,17 @@
     <string name="cp_13">2 내 코어에 기록할 수 있는 포스트 총 개수가 증가됩니다.</string>
     <string name="cp_14">기록할 수 있는 코어 포스트의 개수가</string>
     <string name="cp_15">150개에서 500개로 늘어납니다!</string>
-    <string name="cp_16">3 움직이는 사진(gif 파일)을 업로드 할 수 있습니다.</string>
-    <string name="cp_17">좋아하는 GIF 파일을 프로필 사진과 코어 포스트에 업로드 해보세요!</string>
-    <string name="cp_18">* 500mb의 이하의 gif 파일만 가능합니다</string>
+    <string name="cp_16">3 움직이는 사진(GIF 파일)을 업로드 할 수 있습니다.</string>
+    <string name="cp_17">프로필 사진과 코어 포스트에 좋아하는 짤을 넣어보세요!</string>
+    <string name="cp_18">* 5MB 이하의 GIF 파일만 업로드 가능합니다</string>
     <string name="cp_19">4 매너 없는 포스트를 게시한 익명 회원을 차단할 수 있습니다.</string>
     <string name="cp_20">내 코어에 악성 포스트를 남긴 익명 유저를 차단할 수 있습니다!</string>
-    <string name="cp_21">5 자신이 차단한 블럭 리스트를 볼 수 있고 해제할 수 있습니다.</string>
-    <string name="cp_22">차단한 익명 포스트 회원을 볼 수 있고,</string>
-    <string name="cp_23">차단한 회원을 다시 해제할 수 있습니다.</string>
+    <string name="cp_21">5 차단한 블럭 리스트를 볼 수 있고 해제할 수 있습니다.</string>
+    <string name="cp_22">차단한 회원을 (익명 차단 포함) 모두 볼 수 있고,</string>
+    <string name="cp_23">다시 해제할 수 있습니다.</string>
     <string name="cp_24">다른 궁금한 점이 있나요?</string>
-    <string name="cp_25">운영자 문의를 통해 질문하시면 답변 드리겠습니다!</string>
+    <string name="cp_25">의견 보내기</string>
+    <string name="cp_26">를 통해 질문하시면 답변 드리겠습니다!</string>
 
     <string name="scrollDown">아래로 내려가기</string>
 

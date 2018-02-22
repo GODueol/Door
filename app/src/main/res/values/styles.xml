@@ -159,7 +159,11 @@
         <item name="colorControlHighlight">@color/black</item>
     </style>
 
-
+    <!--네비게이션 드로워 COREPLUS 텍스트 색 바꾸기-->
+    <style name="CorePlusColor">
+        <item name="android:textColor">@color/skyblue</item>
+        <item name="android:textStyle">bold</item>
+    </style>
 
 
 
