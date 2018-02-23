@@ -123,6 +123,7 @@ public class CoreActivity extends AppCompatActivity {
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 final CorePost corePost = dataSnapshot.getValue(CorePost.class);
                 final String postKey = dataSnapshot.getKey();
+                if(corePost.getUuid() == null) return;
                 if(corePost.getUuid().equals(cUuid)) { // 작성자가 코어의 주인인 경우
                     addCoreListItem(cUser, corePost, postKey);
                 }
