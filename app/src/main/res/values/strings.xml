@@ -25,16 +25,16 @@
     <string name="muscular">muscular</string>
     <string name="overweight">overweight</string>
 
-    <string name="unblock_to_all_user">전체 회원 </string>
+    <string name="unblock_to_all_user">전체 회원 블럭 해제</string>
     <string name="people">People</string>
 
 
     <string name="friends">Friends</string>
-    <string name="viewed_me">Viewed me</string>
-    <string name="block">Block</string>
-    <string name="follower">Follower</string>
-    <string name="following">Following</string>
-    <string name="unfollow">Unfollow</string>
+    <string name="viewed_me">나를 본 회원</string>
+    <string name="block">블럭</string>
+    <string name="follower">팔로워</string>
+    <string name="following">팔로잉</string>
+    <string name="unfollow">팔로우 취소</string>
 
     <string name="edit">편집</string>
     <string name="delete">삭제</string>
