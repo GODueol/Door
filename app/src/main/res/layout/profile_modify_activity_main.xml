@@ -283,8 +283,8 @@
                 android:layout_below="@+id/id_nouse"
                 android:layout_centerInParent="true"
                 android:layout_marginTop="10dp"
-                android:bufferType="editable"
                 android:gravity="center"
+                android:bufferType="editable"
                 android:hint="닉네임을 입력하세요"
                 android:maxLength="10"
                 android:maxLines="1"
@@ -393,11 +393,13 @@
 
             </View>
 
-            <TextView
+            <EditText
                 android:id="@+id/introduce_nouse"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/section_line4"
+                android:cursorVisible="false"
+                android:background="@null"
                 android:layout_centerInParent="true"
                 android:layout_marginTop="10dp"
                 android:text="Introduce"

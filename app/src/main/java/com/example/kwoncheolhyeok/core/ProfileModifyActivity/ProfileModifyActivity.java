@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -62,6 +63,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
     TextView heightPick = null;
     TextView weightPick = null;
     TextView bodyTypePick = null;
+
 
     private TextView min_age_filter, max_age_filter, min_height_filter, max_height_filter, min_weight_filter, max_weight_filter, min_bodytype_filter, max_bodytype_filter;
 
@@ -127,7 +129,11 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 
     @Bind(R.id.delete4)
     ImageView delete4Image;
+
     private GalleryPick galleryPick;
+
+    @Bind(R.id.introduce_nouse)
+    EditText introduce_focus;
 
     // filter boundary
     enum FILTER {
@@ -158,6 +164,8 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //액션바 아이콘을 업 네비게이션 형태로 표시합니다.
         getSupportActionBar().setDisplayShowHomeEnabled(true); //홈 아이콘을 숨김처리합니다.
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
+
+//        focusview.requestFocus();
 
         agePick = findViewById(R.id.numberPicker1);
         agePick.setOnClickListener(new View.OnClickListener() {
@@ -263,7 +271,10 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         weightPick.setText(Integer.toString(user.getWeight()));
         bodyTypePick.setText(user.getBodyType());
         introEditText.setText(user.getIntro());
-        introEditText.requestFocus();
+
+        // 텍스트뷰를 에딧텍스트로 바꿔서 포커스 준 다음에 인풋못하게 막으면 포커스도 잡으면서 수정도 막는 일석이조라고~
+        introduce_focus.requestFocus();
+        introduce_focus.setInputType(InputType.TYPE_NULL);
 
         // Load the image using Glide
         ArrayList<String> picUrlList = user.getPicUrls().toArray();
