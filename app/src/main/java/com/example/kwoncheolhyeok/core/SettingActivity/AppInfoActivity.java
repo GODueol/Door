@@ -29,8 +29,6 @@ public class AppInfoActivity extends AppCompatActivity {
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
 
 
-
-
     }
 
 

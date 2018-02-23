@@ -22,7 +22,7 @@ import java.util.List;
  * Created by Administrator on 2017-12-04.
  */
 
-public class messageRecyclerAdapter extends  RecyclerView.Adapter<messageRecyclerAdapter.ViewHolder>{
+public class messageRecyclerAdapter extends RecyclerView.Adapter<messageRecyclerAdapter.ViewHolder> {
 
     private RecyclerViewClickListener mListener;
     private List<RoomVO> roomList;
@@ -33,7 +33,7 @@ public class messageRecyclerAdapter extends  RecyclerView.Adapter<messageRecycle
         void onRemove(String s);
     }
 
-    public messageRecyclerAdapter(List<RoomVO> items, int itemLayout, RecyclerViewClickListener listener,OnRemoveChattingListCallback onRemoveChattingListCallback){
+    public messageRecyclerAdapter(List<RoomVO> items, int itemLayout, RecyclerViewClickListener listener, OnRemoveChattingListCallback onRemoveChattingListCallback) {
         this.roomList = items;
         this.itemLayout = itemLayout;
         this.onRemoveChattingListCallback = onRemoveChattingListCallback;
@@ -42,7 +42,7 @@ public class messageRecyclerAdapter extends  RecyclerView.Adapter<messageRecycle
 
     @Override
     public messageRecyclerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(itemLayout,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(itemLayout, parent, false);
         return new ViewHolder(view, mListener);
     }
 
@@ -55,9 +55,9 @@ public class messageRecyclerAdapter extends  RecyclerView.Adapter<messageRecycle
 
         Long lastChatTime = room.getLastChatTime();
         Long lastViewTime = room.getLastViewTime();
-        if(lastViewTime >= lastChatTime){
+        if (lastViewTime >= lastChatTime) {
             holder.layout.setBackgroundColor(Color.WHITE);
-        }else{
+        } else {
             holder.layout.setBackgroundColor(Color.GRAY);
         }
         DateUtil dateUtil = new DateUtil(lastChatTime);
@@ -69,7 +69,7 @@ public class messageRecyclerAdapter extends  RecyclerView.Adapter<messageRecycle
 
         GlideApp.with(holder.img.getContext())
                 .load(room.getTargetUrl())
-                .override(width,height)
+                .override(width, height)
                 .placeholder(R.drawable.a)
                 .centerCrop()
                 .into(holder.img);
@@ -98,14 +98,14 @@ public class messageRecyclerAdapter extends  RecyclerView.Adapter<messageRecycle
         return roomList.size();
     }
 
-    public RoomVO getItemRoomVO(int position){
+    public RoomVO getItemRoomVO(int position) {
         return roomList.get(position);
     }
 
     /**
      * 뷰 재활용을 위한 viewHolder
      */
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         public RelativeLayout layout;
         public ImageView img;
@@ -117,12 +117,12 @@ public class messageRecyclerAdapter extends  RecyclerView.Adapter<messageRecycle
         private RecyclerViewClickListener mListener;
 
 
-        public ViewHolder(View itemView, RecyclerViewClickListener listener){
+        public ViewHolder(View itemView, RecyclerViewClickListener listener) {
             super(itemView);
 
             content = (TextView) itemView.findViewById(R.id.chat_content);
             nickname = (TextView) itemView.findViewById(R.id.userNick);
-            profile = (TextView)itemView.findViewById(R.id.userProfile);
+            profile = (TextView) itemView.findViewById(R.id.userProfile);
             date = (TextView) itemView.findViewById(R.id.date);
             img = (ImageView) itemView.findViewById(R.id.profile_image);
             layout = (RelativeLayout) itemView.findViewById(R.id.layout);

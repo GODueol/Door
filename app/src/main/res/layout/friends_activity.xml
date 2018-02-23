@@ -1,7 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
 
@@ -10,8 +10,7 @@
         android:id="@+id/toolbar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fitsSystemWindows="true"
-        >
+        android:fitsSystemWindows="true">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
@@ -34,17 +33,17 @@
 
 
         <!--<TextView-->
-            <!--android:id="@+id/ex_header"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_alignParentRight="true"-->
-            <!--android:layout_centerVertical="true"-->
-            <!--android:layout_marginRight="20dp"-->
-            <!--android:gravity="right"-->
-            <!--android:text="헤더 확인"-->
-            <!--android:textColor="@color/skyblue"-->
-            <!--android:textSize="18sp"-->
-            <!--android:textStyle="bold" />-->
+        <!--android:id="@+id/ex_header"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:layout_centerVertical="true"-->
+        <!--android:layout_marginRight="20dp"-->
+        <!--android:gravity="right"-->
+        <!--android:text="헤더 확인"-->
+        <!--android:textColor="@color/skyblue"-->
+        <!--android:textSize="18sp"-->
+        <!--android:textStyle="bold" />-->
 
 
     </RelativeLayout>
@@ -54,25 +53,23 @@
         android:id="@+id/friendsRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/toolbar_layout"
         android:layout_above="@+id/navigation"
-        />
+        android:layout_below="@+id/toolbar_layout" />
 
     <com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx
         android:id="@+id/navigation"
         android:layout_width="0dp"
         android:layout_height="48.5dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentStart="true"
         android:layout_marginEnd="0dp"
         android:layout_marginStart="0dp"
         android:background="?android:attr/windowBackground"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
         app:itemIconTint="@color/bnv_tab_item_foreground"
         app:itemTextColor="@color/bnv_tab_item_foreground"
-        app:menu="@menu/friends_activity_menu"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        />
+        app:menu="@menu/friends_activity_menu" />
 
 </RelativeLayout>

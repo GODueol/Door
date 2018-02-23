@@ -34,7 +34,7 @@ public class CorePlusActivity extends AppCompatActivity {
 
         ImageView cor2 = findViewById(R.id.cor2);
         GlideApp.with(this)
-                .load(UiUtil.resourceToUri(this,R.drawable.cp_main))
+                .load(UiUtil.resourceToUri(this, R.drawable.cp_main))
                 .fitCenter()
                 .into(cor2);
 

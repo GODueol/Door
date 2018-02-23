@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class User implements Serializable{
+public class User implements Serializable {
 
     public User() {
     }
@@ -60,7 +60,7 @@ public class User implements Serializable{
         isAnonymityProhibition = anonymityProhibition;
     }
 
-    public SummaryUser getSummaryUser(){
+    public SummaryUser getSummaryUser() {
         return new SummaryUser(getPicUrls().getThumbNail_picUrl1(), age, height, weight, bodyType, corePostCount);
     }
 
@@ -275,8 +275,8 @@ public class User implements Serializable{
         this.token = token;
     }
 
-    public  String getTotalProfile(){
-        return getAge()+" / "+getHeight()+" / "+getWeight()+" / "+getBodyType();
+    public String getTotalProfile() {
+        return getAge() + " / " + getHeight() + " / " + getWeight() + " / " + getBodyType();
     }
 
 }

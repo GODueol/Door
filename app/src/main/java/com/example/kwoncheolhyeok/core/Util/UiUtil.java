@@ -35,7 +35,7 @@ public class UiUtil {
     private UiUtil() {
     }
 
-    public String setSubProfile(User user){
+    public String setSubProfile(User user) {
         return TextUtils.join("/", new String[]{Integer.toString(user.getAge()), Integer.toString(user.getHeight()),
                 Integer.toString(user.getWeight()), user.getBodyType()});
     }
@@ -51,15 +51,15 @@ public class UiUtil {
         progressDialog.show();
     }
 
-    public void stopProgressDialog(){
-        if(progressDialog != null && progressDialog.isShowing()) progressDialog.dismiss();
+    public void stopProgressDialog() {
+        if (progressDialog != null && progressDialog.isShowing()) progressDialog.dismiss();
     }
 
-    public void showDialog(Context context, String title, String message, DialogInterface.OnClickListener okListener, DialogInterface.OnClickListener cancelListener){
+    public void showDialog(Context context, String title, String message, DialogInterface.OnClickListener okListener, DialogInterface.OnClickListener cancelListener) {
         showDialog(context, title, message, okListener, cancelListener, "OK", "Cancel");
     }
 
-    private void showDialog(Context context, String title, String message, DialogInterface.OnClickListener okListener, DialogInterface.OnClickListener cancelListener, String okStr, String cancelStr){
+    private void showDialog(Context context, String title, String message, DialogInterface.OnClickListener okListener, DialogInterface.OnClickListener cancelListener, String okStr, String cancelStr) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.MyAlertDialogStyle);
         builder.setIcon(R.drawable.icon);
         builder.setTitle(title);
@@ -71,17 +71,17 @@ public class UiUtil {
         dialog.show();    // 알림창 띄우기
     }
 
-    public void goToCoreActivity(Context context, String uuid){
+    public void goToCoreActivity(Context context, String uuid) {
         Intent intent = new Intent(context, CoreActivity.class);
         intent.putExtra("uuid", uuid);
         context.startActivity(intent);
     }
 
-    public void restartApp(Context context){
+    public void restartApp(Context context) {
         Intent mStartActivity = new Intent(context, IntroActivity.class);
         int mPendingIntentId = 123456;
-        PendingIntent mPendingIntent = PendingIntent.getActivity(context, mPendingIntentId,    mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
-        AlarmManager mgr = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+        PendingIntent mPendingIntent = PendingIntent.getActivity(context, mPendingIntentId, mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
+        AlarmManager mgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
         System.exit(0);
     }
@@ -90,7 +90,7 @@ public class UiUtil {
         return Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" +
                 context.getResources().getResourcePackageName(resID) + '/' +
                 context.getResources().getResourceTypeName(resID) + '/' +
-                context.getResources().getResourceEntryName(resID) );
+                context.getResources().getResourceEntryName(resID));
     }
 
 }

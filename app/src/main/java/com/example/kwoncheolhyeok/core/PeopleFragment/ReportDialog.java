@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.NumberPicker;
-import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.example.kwoncheolhyeok.core.CorePage.CustomDialog;
@@ -20,6 +19,7 @@ import com.example.kwoncheolhyeok.core.Util.DataContainer;
 public class ReportDialog extends CustomDialog {
 
     String oUuid;
+
     ReportDialog(@NonNull Context context, String oUuid) {
         super(context);
         this.oUuid = oUuid;
@@ -36,7 +36,7 @@ public class ReportDialog extends CustomDialog {
         final NumberPicker picker = findViewById(R.id.typePicker);
         final CheckBox isOnlyBlockBtn = findViewById(R.id.isOnlyBlock);
 
-        final String[] reportTypeList = new String[] { "성기 노출 사진", "타인의 사진 도용", "성매매 등 부적절한 글", "미성년자 회원", "스팸 및 광고" };
+        final String[] reportTypeList = new String[]{"성기 노출 사진", "타인의 사진 도용", "성매매 등 부적절한 글", "미성년자 회원", "스팸 및 광고"};
         picker.setMinValue(0);
         picker.setMaxValue(reportTypeList.length - 1);
         picker.setDisplayedValues(reportTypeList);

@@ -39,26 +39,24 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/header_title"
-            android:layout_marginLeft="5dp"
-            android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
-            >
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp">
 
             <com.example.kwoncheolhyeok.core.PeopleFragment.SquareImageView
                 android:id="@+id/profile_image"
                 android:layout_width="62dp"
                 android:layout_height="62dp"
                 android:background="@drawable/a"
-                android:scaleType="centerCrop"
-                />
+                android:scaleType="centerCrop" />
 
             <RelativeLayout
                 android:id="@+id/layout1"
-                android:layout_centerVertical="true"
-                android:layout_toRightOf="@+id/profile_image"
-                android:layout_marginLeft="10dp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@+id/profile_image">
 
                 <TextView
                     android:id="@+id/userNick"
@@ -80,7 +78,6 @@
                     android:textSize="13.5dp" />
 
             </RelativeLayout>
-
 
 
         </RelativeLayout>
@@ -114,32 +111,29 @@
         android:id="@+id/setting_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
         android:layout_below="@+id/header_layout"
         android:orientation="horizontal"
-        android:layout_alignParentRight="true"
-        android:paddingTop="7dp"
         android:paddingBottom="7dp"
-        android:paddingRight="10dp"
         android:paddingLeft="10dp"
-        >
+        android:paddingRight="10dp"
+        android:paddingTop="7dp">
 
         <TextView
             android:id="@+id/list_sequence"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="right"
-            android:text="최신 순"
             android:layout_gravity="center_vertical"
-            />
+            android:gravity="right"
+            android:text="최신 순" />
 
 
         <ImageButton
             android:id="@+id/setting"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/ic_keyboard_arrow_down_black_24dp"
             android:layout_gravity="center_vertical"
-            />
+            android:background="@drawable/ic_keyboard_arrow_down_black_24dp" />
 
 
     </LinearLayout>

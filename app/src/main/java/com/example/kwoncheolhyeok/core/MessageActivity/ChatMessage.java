@@ -7,8 +7,6 @@ import com.example.kwoncheolhyeok.core.PeopleFragment.GridItem;
  * Created by himanshusoni on 06/09/15.
  */
 public class ChatMessage {
-
-
     private static final int MY_MESSAGE = 0, OTHER_MESSAGE = 1, MY_IMAGE = 2, OTHER_IMAGE = 3;
 
     private String parent;
@@ -30,6 +28,7 @@ public class ChatMessage {
         isMine = mine;
         this.isImage = isImage;
     }
+
     public ChatMessage(MessageVO message, boolean mine, boolean image, GridItem item) {
         parent = message.getParent();
         content = message.getContent();
@@ -50,6 +49,7 @@ public class ChatMessage {
         else return OTHER_IMAGE;
 
     }
+
     public String getParent() {
         return parent;
     }
@@ -57,6 +57,7 @@ public class ChatMessage {
     public void setParent(String parent) {
         this.parent = parent;
     }
+
     public String getContent() {
         return content;
     }

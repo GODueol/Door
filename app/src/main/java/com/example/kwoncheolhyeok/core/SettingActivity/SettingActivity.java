@@ -57,27 +57,27 @@ public class SettingActivity extends AppCompatActivity {
                 switch (position) {
                     case 0:
 //                        Toast.makeText(SettingActivity.this, setting_contents[position], Toast.LENGTH_SHORT).show();
-                        Intent i = new Intent (SettingActivity.this, CorePlusActivity.class);
+                        Intent i = new Intent(SettingActivity.this, CorePlusActivity.class);
                         startActivity(i);
                         break;
                     case 1:
-                        Intent i2 = new Intent (SettingActivity.this, NoticeActivity.class);
+                        Intent i2 = new Intent(SettingActivity.this, NoticeActivity.class);
                         startActivity(i2);
                         break;
                     case 2:
-                        Intent i3 = new Intent (SettingActivity.this, AccountActivity.class);
+                        Intent i3 = new Intent(SettingActivity.this, AccountActivity.class);
                         startActivity(i3);
                         break;
                     case 3:
-                        Intent i4 = new Intent (SettingActivity.this, AlarmActivity.class);
+                        Intent i4 = new Intent(SettingActivity.this, AlarmActivity.class);
                         startActivity(i4);
                         break;
                     case 4:
-                        Intent i5 = new Intent (SettingActivity.this, BlockActivity.class);
+                        Intent i5 = new Intent(SettingActivity.this, BlockActivity.class);
                         startActivity(i5);
                         break;
                     case 5:
-                        Intent i6 = new Intent (SettingActivity.this, AppInfoActivity.class);
+                        Intent i6 = new Intent(SettingActivity.this, AppInfoActivity.class);
                         startActivity(i6);
                         break;
                     case 6:

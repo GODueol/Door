@@ -1,6 +1,5 @@
 package com.example.kwoncheolhyeok.core.MessageActivity;
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -14,15 +13,12 @@ import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
@@ -30,7 +26,6 @@ import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -122,8 +117,8 @@ public class ChattingActivity extends AppCompatActivity {
         topDateText = (TextView) findViewById(R.id.topDate);
         hideText = (TextView) findViewById(R.id.hideText);
 
-        fadeout = AnimationUtils.loadAnimation(this,R.anim.fadeout);
-        hide = AnimationUtils.loadAnimation(this,R.anim.hide);
+        fadeout = AnimationUtils.loadAnimation(this, R.anim.fadeout);
+        hide = AnimationUtils.loadAnimation(this, R.anim.hide);
 
 
         chatListItem = new ArrayList<ChatMessage>();
@@ -334,7 +329,7 @@ public class ChattingActivity extends AppCompatActivity {
 
             if (lastVisibleItemPosition != chattingSize) {
                 custom_top_container.setVisibility(View.INVISIBLE);
-                    custom_top_container.startAnimation(fadeout);
+                custom_top_container.startAnimation(fadeout);
             } else {
                 overlay.setVisibility(View.GONE);
                 custom_top_container.startAnimation(hide);

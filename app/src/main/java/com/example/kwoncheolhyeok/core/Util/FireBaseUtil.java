@@ -49,8 +49,8 @@ public class FireBaseUtil {
     public Task<Void> follow(final User oUser, String oUuid, boolean isFollowed) throws ChildSizeMaxException {
         String myUuid = DataContainer.getInstance().getUid();
         final User mUser = DataContainer.getInstance().getUser();
-        if(mUser.getFollowingUsers().size() >= DataContainer.ChildrenMax){
-            throw  new ChildSizeMaxException("Follow가 " + DataContainer.ChildrenMax + "명 이상이므로 Follow 불가능합니다");
+        if (mUser.getFollowingUsers().size() >= DataContainer.ChildrenMax) {
+            throw new ChildSizeMaxException("Follow가 " + DataContainer.ChildrenMax + "명 이상이므로 Follow 불가능합니다");
         }
         //final User oUser = item.getSummaryUser();
         DatabaseReference mDatabase = DataContainer.getInstance().getUsersRef();
@@ -105,7 +105,7 @@ public class FireBaseUtil {
         final String mUuid = DataContainer.getInstance().getUid();
         final User mUser = DataContainer.getInstance().getUser();
 
-        if(mUser.getBlockUsers().size() >= DataContainer.ChildrenMax){
+        if (mUser.getBlockUsers().size() >= DataContainer.ChildrenMax) {
             throw new ChildSizeMaxException("Block된 유저들이 " + DataContainer.ChildrenMax + "명 이상이므로 Block 불가능합니다");
         }
 
@@ -148,10 +148,11 @@ public class FireBaseUtil {
                     FirebaseDatabase.getInstance().getReference("chat").child(roomId).removeValue();
                     FirebaseDatabase.getInstance().getReference("chatRoomList").child(mUuid).child(oUuid).removeValue();
                     FirebaseDatabase.getInstance().getReference("chatRoomList").child(oUuid).child(mUuid).removeValue();
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }
@@ -159,7 +160,7 @@ public class FireBaseUtil {
         return mDatabase.updateChildren(childUpdate);
     }
 
-    public void syncCorePostCount(final String cUuid){
+    public void syncCorePostCount(final String cUuid) {
 
         final DatabaseReference corePostCountRef = DataContainer.getInstance().getUserRef(cUuid);
         DatabaseReference postRef = FirebaseDatabase.getInstance().getReference()
@@ -170,14 +171,14 @@ public class FireBaseUtil {
             public Transaction.Result doTransaction(MutableData mutableData) {
 
                 int count = 0;
-                if(mutableData.getValue() != null){
+                if (mutableData.getValue() != null) {
 
                     // 갯수 제한
                     Map map = (Map) mutableData.getValue();
-                    while(map.size() > DataContainer.ChildrenMax) {
+                    while (map.size() > DataContainer.ChildrenMax) {
                         MutableData min = null;
-                        for(final MutableData mutableChild : mutableData.getChildren()){
-                            if(min == null || min.getValue(CorePost.class).getWriteDate() > mutableChild.getValue(CorePost.class).getWriteDate()){
+                        for (final MutableData mutableChild : mutableData.getChildren()) {
+                            if (min == null || min.getValue(CorePost.class).getWriteDate() > mutableChild.getValue(CorePost.class).getWriteDate()) {
                                 min = mutableChild;
                             }
                         }
@@ -221,12 +222,12 @@ public class FireBaseUtil {
         return mDatabase.updateChildren(childUpdate);
     }
 
-    public Task allUnblock(Map<String,Long> blockUsers){
+    public Task allUnblock(Map<String, Long> blockUsers) {
         DatabaseReference mDatabase = DataContainer.getInstance().getUsersRef();
         String mUuid = DataContainer.getInstance().getUid();
         final Map<String, Object> childUpdate = new HashMap<>();
 
-        for(String oUuid : blockUsers.keySet()) {
+        for (String oUuid : blockUsers.keySet()) {
             childUpdate.put("/" + oUuid + "/blockMeUsers/" + mUuid, null);
         }
 
@@ -247,19 +248,19 @@ public class FireBaseUtil {
 
                 // Storage Delete
                 StorageReference postStorageRef = FirebaseStorage.getInstance().getReference().child("posts").child(cUuid).child(coreListItem.getPostKey());
-                if(coreListItem.getCorePost().getSoundUrl() != null)
+                if (coreListItem.getCorePost().getSoundUrl() != null)
                     deleteTasks.add(postStorageRef.child("sound").delete());
-                if(coreListItem.getCorePost().getPictureUrl() != null)
+                if (coreListItem.getCorePost().getPictureUrl() != null)
                     deleteTasks.add(postStorageRef.child("picture").delete());
 
 //                                if(deleteTasks.isEmpty()) UiUtil.getInstance().stopProgressDialog();    // 사진이나 음성이 없으면 프로그레스바 종료
 
-                for(Task task : deleteTasks){
+                for (Task task : deleteTasks) {
                     task.addOnCompleteListener(new OnCompleteListener() {
                         @Override
                         public void onComplete(@NonNull Task mTask) {
-                            for(Task t : deleteTasks){
-                                if(!t.isComplete()) return;
+                            for (Task t : deleteTasks) {
+                                if (!t.isComplete()) return;
 //                                                UiUtil.getInstance().stopProgressDialog();
                             }
                         }

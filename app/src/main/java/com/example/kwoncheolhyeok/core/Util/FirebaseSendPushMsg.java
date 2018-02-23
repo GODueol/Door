@@ -21,7 +21,7 @@ public class FirebaseSendPushMsg {
     private static final String FCM_MESSAGE_URL = "https://fcm.googleapis.com/fcm/send";
     private static final String SERVER_KEY = "AAAAosxzawM:APA91bHueqSnwuxBizof90IP8CtUPYo9WS8tjScyi0wNX0aoysNil8z-pinrUFtZOO5lFyk5BTY7qC0Uod1JfBipng5RfyvgkzpzI7VmMgt4XO8C7ST97agxHEWR2_Cg7TbPQxVnntiZ";
 
-    public static void sendPostToFCM(final String targetUuid, final String message) {
+    public static void sendPostToFCM(final String targetUuid,final String currentUserNick, final String message) {
 
         DataContainer.getInstance().getUsersRef().child(targetUuid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -35,7 +35,7 @@ public class FirebaseSendPushMsg {
                             JSONObject root = new JSONObject();
                             JSONObject notification = new JSONObject();
                             notification.put("body", message);
-                            notification.put("title", user.getId()+"님 으로부터");
+                            notification.put("title", currentUserNick+"님 으로부터");
                             root.put("notification", notification);
                             root.put("to", user.getToken());
                             // FMC 메시지 생성 end

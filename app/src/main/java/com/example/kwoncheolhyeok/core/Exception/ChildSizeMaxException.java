@@ -13,11 +13,11 @@ public class ChildSizeMaxException extends Exception {
         this.Err_Code = errCode;
     }
 
-    public ChildSizeMaxException(String msg){
+    public ChildSizeMaxException(String msg) {
         this(msg, 100);
     }
 
-    public int getErrCode(){
+    public int getErrCode() {
         return Err_Code;
     }
 }

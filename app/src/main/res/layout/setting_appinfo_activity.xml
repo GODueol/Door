@@ -8,8 +8,7 @@
         android:id="@+id/toolbar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fitsSystemWindows="true"
-        >
+        android:fitsSystemWindows="true">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
@@ -28,10 +27,9 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="@string/app_info"
-            android:textStyle="bold"
-            android:textSize="15.5dp"
             android:textColor="@color/black"
-            />
+            android:textSize="15.5dp"
+            android:textStyle="bold" />
 
     </RelativeLayout>
 
@@ -41,20 +39,18 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/toolbar_layout"
         android:layout_marginTop="10dp"
-        android:paddingTop="10dp"
         android:paddingBottom="10dp"
-        >
+        android:paddingTop="10dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:text="@string/app_update"
             android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
             android:layout_marginLeft="15dp"
+            android:text="@string/app_update"
             android:textColor="@color/black"
-            android:textSize="15dp"
-            />
+            android:textSize="15dp" />
 
     </RelativeLayout>
 
@@ -64,20 +60,18 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/layout1"
         android:layout_marginTop="10dp"
-        android:paddingTop="10dp"
         android:paddingBottom="10dp"
-        >
+        android:paddingTop="10dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:text="@string/app_policies"
             android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
             android:layout_marginLeft="15dp"
+            android:text="@string/app_policies"
             android:textColor="@color/black"
-            android:textSize="15dp"
-            />
+            android:textSize="15dp" />
 
     </RelativeLayout>
 
@@ -87,20 +81,18 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/layout2"
         android:layout_marginTop="10dp"
-        android:paddingTop="10dp"
         android:paddingBottom="10dp"
-        >
+        android:paddingTop="10dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:text="@string/app_license"
             android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
             android:layout_marginLeft="15dp"
+            android:text="@string/app_license"
             android:textColor="@color/black"
-            android:textSize="15dp"
-            />
+            android:textSize="15dp" />
 
     </RelativeLayout>
 
@@ -110,20 +102,18 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/layout3"
         android:layout_marginTop="10dp"
-        android:paddingTop="10dp"
         android:paddingBottom="10dp"
-        >
+        android:paddingTop="10dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:text="@string/app_bug_report"
             android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
             android:layout_marginLeft="15dp"
+            android:text="@string/app_bug_report"
             android:textColor="@color/black"
-            android:textSize="15dp"
-            />
+            android:textSize="15dp" />
 
     </RelativeLayout>
 

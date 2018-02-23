@@ -5,15 +5,11 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.kwoncheolhyeok.core.PeopleFragment.FullImageActivity;
-import com.example.kwoncheolhyeok.core.PeopleFragment.PeopleFragment;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.GPSInfo;
 import com.example.kwoncheolhyeok.core.Util.addrConvertor;
@@ -151,9 +147,9 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.On
             float zlevel = mGoogleMap.getCameraPosition().zoom;
             Location loc = addrConvertor.findGeoPoint(getApplicationContext(), str);
             LatLng latLng = new LatLng(loc.getLatitude(), loc.getLongitude());
-            if(latLng.longitude==0&&latLng.latitude==0) {
+            if (latLng.longitude == 0 && latLng.latitude == 0) {
                 Toast.makeText(getApplicationContext(), "검색 실패", Toast.LENGTH_SHORT).show();
-            }else{
+            } else {
                 String adress = addrConvertor.getAddress(getApplicationContext(), latLng);
                 mGoogleMap.clear();
                 mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, zlevel));

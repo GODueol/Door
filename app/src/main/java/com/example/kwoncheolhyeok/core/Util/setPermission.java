@@ -32,11 +32,11 @@ public class setPermission {
                     break;
             }*/
 
-            new TedPermission(mContext)
-                    .setPermissionListener(permissionListener)
-                    .setDeniedMessage(message)
-                    .setPermissions(permission)
-                    .check();
+        new TedPermission(mContext)
+                .setPermissionListener(permissionListener)
+                .setDeniedMessage(message)
+                .setPermissions(permission)
+                .check();
 
     }
 }

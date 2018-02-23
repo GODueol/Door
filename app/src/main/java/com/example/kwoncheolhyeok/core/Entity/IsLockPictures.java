@@ -43,7 +43,7 @@ public class IsLockPictures implements Serializable {
         isLockPic4 = lockPic4;
     }
 
-    public Map<String, Boolean> toMap(){
+    public Map<String, Boolean> toMap() {
         Map<String, Boolean> map = new HashMap();
         map.put("isLockPic1", getIsLockPic1());
         map.put("isLockPic2", getIsLockPic2());
@@ -51,7 +51,8 @@ public class IsLockPictures implements Serializable {
         map.put("isLockPic4", getIsLockPic4());
         return map;
     }
-    public ArrayList<Boolean> toArray(){
+
+    public ArrayList<Boolean> toArray() {
         ArrayList<Boolean> booleans = new ArrayList<>();
         booleans.add(getIsLockPic1());
         booleans.add(getIsLockPic2());

@@ -18,7 +18,7 @@ public class PictureUrls implements Serializable {
     String thumbNail_picUrl4;
 
     public String getThumbNail_picUrl1() {
-        if(thumbNail_picUrl1 == null) return getPicUrl1();
+        if (thumbNail_picUrl1 == null) return getPicUrl1();
         return thumbNail_picUrl1;
     }
 
@@ -27,7 +27,7 @@ public class PictureUrls implements Serializable {
     }
 
     public String getThumbNail_picUrl2() {
-        if(thumbNail_picUrl2 == null) return getPicUrl2();
+        if (thumbNail_picUrl2 == null) return getPicUrl2();
         return thumbNail_picUrl2;
     }
 
@@ -36,7 +36,7 @@ public class PictureUrls implements Serializable {
     }
 
     public String getThumbNail_picUrl3() {
-        if(thumbNail_picUrl3 == null) return getPicUrl3();
+        if (thumbNail_picUrl3 == null) return getPicUrl3();
         return thumbNail_picUrl3;
     }
 
@@ -45,7 +45,7 @@ public class PictureUrls implements Serializable {
     }
 
     public String getThumbNail_picUrl4() {
-        if(thumbNail_picUrl4 == null) return getPicUrl4();
+        if (thumbNail_picUrl4 == null) return getPicUrl4();
         return thumbNail_picUrl4;
     }
 
@@ -85,7 +85,7 @@ public class PictureUrls implements Serializable {
         this.picUrl4 = picUrl4;
     }
 
-    public ArrayList<String> toArray(){
+    public ArrayList<String> toArray() {
         ArrayList<String> booleans = new ArrayList<>();
         booleans.add(getPicUrl1());
         booleans.add(getPicUrl2());
@@ -94,25 +94,33 @@ public class PictureUrls implements Serializable {
         return booleans;
     }
 
-    public ArrayList<String> toNotNullArrayThumbNail(IsLockPictures isLockPictures, Map<String, Long> unLockUsers, String uuid){
+    public ArrayList<String> toNotNullArrayThumbNail(IsLockPictures isLockPictures, Map<String, Long> unLockUsers, String uuid) {
         // Lock한 사진은 안나오고, 해제한 유저는 사진 나오도록 필터링
         String myUuid = DataContainer.getInstance().getUid();
         ArrayList<String> notNullArray = new ArrayList<>();
-        if(getThumbNail_picUrl1() != null && (uuid.equals(myUuid) || (!isLockPictures.getIsLockPic1() || unLockUsers.containsKey(myUuid))) ) notNullArray.add(getThumbNail_picUrl1());
-        if(getThumbNail_picUrl2() != null && (uuid.equals(myUuid) || (!isLockPictures.getIsLockPic2() || unLockUsers.containsKey(myUuid))) ) notNullArray.add(getThumbNail_picUrl2());
-        if(getThumbNail_picUrl3() != null && (uuid.equals(myUuid) || (!isLockPictures.getIsLockPic3() || unLockUsers.containsKey(myUuid))) ) notNullArray.add(getThumbNail_picUrl3());
-        if(getThumbNail_picUrl4() != null && (uuid.equals(myUuid) || (!isLockPictures.getIsLockPic4() || unLockUsers.containsKey(myUuid))) ) notNullArray.add(getThumbNail_picUrl4());
+        if (getThumbNail_picUrl1() != null && (uuid.equals(myUuid) || (!isLockPictures.getIsLockPic1() || unLockUsers.containsKey(myUuid))))
+            notNullArray.add(getThumbNail_picUrl1());
+        if (getThumbNail_picUrl2() != null && (uuid.equals(myUuid) || (!isLockPictures.getIsLockPic2() || unLockUsers.containsKey(myUuid))))
+            notNullArray.add(getThumbNail_picUrl2());
+        if (getThumbNail_picUrl3() != null && (uuid.equals(myUuid) || (!isLockPictures.getIsLockPic3() || unLockUsers.containsKey(myUuid))))
+            notNullArray.add(getThumbNail_picUrl3());
+        if (getThumbNail_picUrl4() != null && (uuid.equals(myUuid) || (!isLockPictures.getIsLockPic4() || unLockUsers.containsKey(myUuid))))
+            notNullArray.add(getThumbNail_picUrl4());
         return notNullArray;
     }
 
-    public ArrayList<String> toNotNullArray(IsLockPictures isLockPictures, Map<String, Long> unLockUsers, String uuid){
+    public ArrayList<String> toNotNullArray(IsLockPictures isLockPictures, Map<String, Long> unLockUsers, String uuid) {
         // Lock한 사진은 안나오고, 해제한 유저는 사진 나오도록 필터링
         String myUuid = DataContainer.getInstance().getUid();
         ArrayList<String> booleans = new ArrayList<>();
-        if(getPicUrl1() != null && (uuid.equals(myUuid) || (!isLockPictures.getIsLockPic1() || unLockUsers.containsKey(myUuid))) ) booleans.add(getPicUrl1());
-        if(getPicUrl2() != null && (uuid.equals(myUuid) || (!isLockPictures.getIsLockPic2() || unLockUsers.containsKey(myUuid))) ) booleans.add(getPicUrl2());
-        if(getPicUrl3() != null && (uuid.equals(myUuid) || (!isLockPictures.getIsLockPic3() || unLockUsers.containsKey(myUuid))) ) booleans.add(getPicUrl3());
-        if(getPicUrl4() != null && (uuid.equals(myUuid) || (!isLockPictures.getIsLockPic4() || unLockUsers.containsKey(myUuid))) ) booleans.add(getPicUrl4());
+        if (getPicUrl1() != null && (uuid.equals(myUuid) || (!isLockPictures.getIsLockPic1() || unLockUsers.containsKey(myUuid))))
+            booleans.add(getPicUrl1());
+        if (getPicUrl2() != null && (uuid.equals(myUuid) || (!isLockPictures.getIsLockPic2() || unLockUsers.containsKey(myUuid))))
+            booleans.add(getPicUrl2());
+        if (getPicUrl3() != null && (uuid.equals(myUuid) || (!isLockPictures.getIsLockPic3() || unLockUsers.containsKey(myUuid))))
+            booleans.add(getPicUrl3());
+        if (getPicUrl4() != null && (uuid.equals(myUuid) || (!isLockPictures.getIsLockPic4() || unLockUsers.containsKey(myUuid))))
+            booleans.add(getPicUrl4());
         return booleans;
     }
 

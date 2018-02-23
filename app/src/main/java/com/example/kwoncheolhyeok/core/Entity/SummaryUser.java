@@ -15,7 +15,8 @@ public class SummaryUser implements Serializable {
 
     private int corePostCount;
 
-    public SummaryUser(){};
+    public SummaryUser() {
+    }
 
     public SummaryUser(String pictureUrl, int age, int height, int weight, String bodyType, int corePostCount) {
         this.pictureUrl = pictureUrl;

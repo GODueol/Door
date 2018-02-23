@@ -66,10 +66,10 @@ public class CoreActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                if(isBlocked) {
+                if (isBlocked) {
                     Toast.makeText(CoreActivity.this, "당신은 글을 쓸 수 없습니다", Toast.LENGTH_SHORT).show();
                     finish();
-                    return ;
+                    return;
                 }
 
                 // 자신, 타인 액티비티 구별
@@ -100,19 +100,19 @@ public class CoreActivity extends AppCompatActivity {
         // 코어 주인의 User Get
 
         dc.getUserRef(cUuid).addListenerForSingleValueEvent(new ValueEventListener() {
-             @Override
-             public void onDataChange(DataSnapshot dataSnapshot) {
-                 User cUser = dataSnapshot.getValue(User.class);
-                 addPostToList(cUuid, list, cUser);
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User cUser = dataSnapshot.getValue(User.class);
+                addPostToList(cUuid, list, cUser);
 
-                 isBlocked = !cUuid.equals(dc.getUid()) && cUser.isAnonymityProhibition();
+                isBlocked = !cUuid.equals(dc.getUid()) && cUser.isAnonymityProhibition();
 
-                 fab.setVisibility(View.VISIBLE);
-             }
+                fab.setVisibility(View.VISIBLE);
+            }
 
-             @Override
-             public void onCancelled(DatabaseError databaseError) {
-             }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
         });
     }
 
@@ -123,17 +123,16 @@ public class CoreActivity extends AppCompatActivity {
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 final CorePost corePost = dataSnapshot.getValue(CorePost.class);
                 final String postKey = dataSnapshot.getKey();
-                if(corePost.getUuid() == null) return;
-                if(corePost.getUuid().equals(cUuid)) { // 작성자가 코어의 주인인 경우
+                if (corePost.getUuid() == null) return;
+                if (corePost.getUuid().equals(cUuid)) { // 작성자가 코어의 주인인 경우
                     addCoreListItem(cUser, corePost, postKey);
-                }
-                else {  // 익명
+                } else {  // 익명
                     addCoreListItem(null, corePost, postKey);
                 }
             }
 
             private void addCoreListItem(User user, CorePost corePost, String postKey) {
-                list.add(0,new CoreListItem(user, corePost, postKey));
+                list.add(0, new CoreListItem(user, corePost, postKey));
                 coreListAdapter.notifyItemInserted(0);
             }
 
@@ -143,8 +142,8 @@ public class CoreActivity extends AppCompatActivity {
                 final String postKey = dataSnapshot.getKey();
 
                 int i = 0;
-                for(CoreListItem coreListItem : list){
-                    if(coreListItem.getPostKey().equals(postKey)){
+                for (CoreListItem coreListItem : list) {
+                    if (coreListItem.getPostKey().equals(postKey)) {
                         coreListItem.setCorePost(corePost);
                         coreListAdapter.notifyItemChanged(i);
                         break;
@@ -157,8 +156,8 @@ public class CoreActivity extends AppCompatActivity {
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 final String postKey = dataSnapshot.getKey();
                 int i = 0;
-                for(CoreListItem coreListItem : list){
-                    if(coreListItem.getPostKey().equals(postKey)){
+                for (CoreListItem coreListItem : list) {
+                    if (coreListItem.getPostKey().equals(postKey)) {
                         list.remove(coreListItem);
                         coreListAdapter.notifyItemRemoved(i);
                         break;
@@ -183,14 +182,14 @@ public class CoreActivity extends AppCompatActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.clear();
-        if(cUuid.equals(dc.getUid())) {
+        if (cUuid.equals(dc.getUid())) {
             getMenuInflater().inflate(R.menu.core_activity_menu, menu);
             menu.getItem(0).setChecked(dc.getUser().isAnonymityProhibition());
         }
 
         return super.onPrepareOptionsMenu(menu);
     }
-    
+
     public boolean onOptionsItemSelected(android.view.MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
@@ -222,22 +221,22 @@ public class CoreActivity extends AppCompatActivity {
         coreListAdapter.clickPause();
     }
 
-    public RecyclerView.ViewHolder getHolder(int position){
-        if(recyclerView == null) return null;
+    public RecyclerView.ViewHolder getHolder(int position) {
+        if (recyclerView == null) return null;
         return recyclerView.findViewHolderForAdapterPosition(position);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == WRITE_SUCC){
-            if(resultCode == Activity.RESULT_OK) recyclerView.scrollToPosition(0);
+        if (requestCode == WRITE_SUCC) {
+            if (resultCode == Activity.RESULT_OK) recyclerView.scrollToPosition(0);
         }
     }
 
     @Override
     protected void onDestroy() {
-        if(postQuery != null && listner != null) postQuery.removeEventListener(listner);
+        if (postQuery != null && listner != null) postQuery.removeEventListener(listner);
         super.onDestroy();
     }
 }

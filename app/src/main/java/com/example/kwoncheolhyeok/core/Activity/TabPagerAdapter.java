@@ -40,7 +40,7 @@ public class TabPagerAdapter extends FragmentPagerAdapter {
             case 0:
                 PeopleFragment peopleFragment = new PeopleFragment();
                 Bundle args = new Bundle();
-                args.putParcelable("latlng",latLng);
+                args.putParcelable("latlng", latLng);
                 peopleFragment.setArguments(args);
                 return peopleFragment;
 //            case 1:

@@ -51,11 +51,12 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
         static final int Footer = 3;
     }
 
-    public UserListAdapter(Context context, List<Item> items){
+    public UserListAdapter(Context context, List<Item> items) {
         this.context = context;
         this.items = items;
     }
-    public void setItemMenu(int itemMenu, String tabName){
+
+    public void setItemMenu(int itemMenu, String tabName) {
         this.itemMenu = itemMenu;
         this.field = tabName;
     }
@@ -65,19 +66,18 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
 
         View rowView;
 
-        switch (Type)
-        {
+        switch (Type) {
             case VIEW_TYPES.Normal:
-                rowView=LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.friends_list_item, viewGroup, false);
+                rowView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.friends_list_item, viewGroup, false);
                 break;
             case VIEW_TYPES.Header:
-                rowView=LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.friends_list_header, viewGroup, false);
+                rowView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.friends_list_header, viewGroup, false);
                 break;
             default:
-                rowView=LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.friends_list_item, viewGroup, false);
+                rowView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.friends_list_item, viewGroup, false);
                 break;
         }
-        return new UserHolder (rowView);
+        return new UserHolder(rowView);
     }
 
     @SuppressLint("SetTextI18n")
@@ -92,9 +92,9 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
         Glide.with(userHolder.profilePicImage.getContext()).load(user.getPicUrls().getThumbNail_picUrl1()).into(userHolder.profilePicImage);
         userHolder.idText.setText(user.getId());
         userHolder.subProfileText.setText(UiUtil.getInstance().setSubProfile(user));
-        userHolder.dateText.setText( DataContainer.getInstance().convertBeforeFormat(item.getDate()));
+        userHolder.dateText.setText(DataContainer.getInstance().convertBeforeFormat(item.getDate()));
 
-        if(!field.equals("blockUsers")) {   // block 아닐때만 클릭 가능하도록
+        if (!field.equals("blockUsers")) {   // block 아닐때만 클릭 가능하도록
             userHolder.profilePicImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -117,25 +117,20 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
                         if (i == R.id.follow) {
                             follow();
                             return true;
-                        }
-                        else if (i == R.id.followCancel){
+                        } else if (i == R.id.followCancel) {
                             unFollow();
                             return true;
-                        }
-                        else if (i == R.id.block) {
+                        } else if (i == R.id.block) {
                             block();
                             return true;
-                        }
-                        else if(i == R.id.core){
+                        } else if (i == R.id.core) {
                             // Go to Core
                             UiUtil.getInstance().goToCoreActivity(context, item.getUuid());
                             return true;
-                        }
-                        else if (i == R.id.unblock) {
+                        } else if (i == R.id.unblock) {
                             unblock();
                             return true;
-                        }
-                        else {
+                        } else {
                             return true;
                         }
                     }
@@ -145,7 +140,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 final User mUser = DataContainer.getInstance().getUser();
-                                if(mUser.getBlockUsers().size() >= DataContainer.ChildrenMax) {
+                                if (mUser.getBlockUsers().size() >= DataContainer.ChildrenMax) {
                                     Toast.makeText(context, DataContainer.ChildrenMax + "명을 초과할 수 없습니다", Toast.LENGTH_SHORT).show();
                                     return;
                                 }
@@ -204,7 +199,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
                                     UiUtil.getInstance().stopProgressDialog();
                                     return;
                                 }
-                                if(task == null){
+                                if (task == null) {
                                     Toast.makeText(context, "팔로우 취소 상태입니다", Toast.LENGTH_SHORT).show();
                                     UiUtil.getInstance().stopProgressDialog();
                                     return;
@@ -237,7 +232,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
                                     UiUtil.getInstance().stopProgressDialog();
                                     return;
                                 }
-                                if(task == null){
+                                if (task == null) {
                                     Toast.makeText(context, "팔로우 신청 되어있습니다", Toast.LENGTH_SHORT).show();
                                     UiUtil.getInstance().stopProgressDialog();
                                     return;
@@ -265,9 +260,9 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
 
     @SuppressLint("SetTextI18n")
     private boolean setHeader(UserHolder userHolder, User user) {
-        if(user == null) {
+        if (user == null) {
             ViewGroup.LayoutParams params = userHolder.itemView.getLayoutParams();
-            if(field.equals("followingUsers") || field.equals("followerUsers") || field.equals("friendUsers") ) {  // 헤더 추가할 메뉴
+            if (field.equals("followingUsers") || field.equals("followerUsers") || field.equals("friendUsers")) {  // 헤더 추가할 메뉴
                 userHolder.itemView.setVisibility(View.VISIBLE);
                 params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
 
@@ -283,8 +278,9 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
 
                 User mUser = DataContainer.getInstance().getUser();
 
-                if(mUser.getPicUrls() != null &&mUser.getPicUrls().getThumbNail_picUrl1() != null) GlideApp.with(context).load(mUser.getPicUrls().getThumbNail_picUrl1()).centerCrop()
-                        .into(profile_image);
+                if (mUser.getPicUrls() != null && mUser.getPicUrls().getThumbNail_picUrl1() != null)
+                    GlideApp.with(context).load(mUser.getPicUrls().getThumbNail_picUrl1()).centerCrop()
+                            .into(profile_image);
                 userNick.setText(mUser.getId());
                 userProfile.setText(UiUtil.getInstance().setSubProfile(mUser));
 
@@ -297,13 +293,13 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
                             @Override
                             public boolean onMenuItemClick(MenuItem menuItem) {
 
-                                if(menuItem.getItemId() == R.id.old_order){
-                                    if(isReverse) return false;
+                                if (menuItem.getItemId() == R.id.old_order) {
+                                    if (isReverse) return false;
                                     list_sequence.setText(R.string.oldOrder);
                                     isReverse = true;
 
-                                } else if (menuItem.getItemId() == R.id.new_order){
-                                    if(!isReverse) return false;
+                                } else if (menuItem.getItemId() == R.id.new_order) {
+                                    if (!isReverse) return false;
                                     list_sequence.setText(R.string.newOrder);
                                     isReverse = false;
                                 }
@@ -344,8 +340,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
                         break;
                 }
 
-            }
-            else { // 제외할 메뉴
+            } else { // 제외할 메뉴
                 userHolder.itemView.setVisibility(View.INVISIBLE);
                 params.height = 0;
             }
@@ -358,9 +353,9 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
     @Override
     public int getItemViewType(int position) {
 
-        if(items.get(position).isHeader)
+        if (items.get(position).isHeader)
             return VIEW_TYPES.Header;
-        else if(items.get(position).isFooter)
+        else if (items.get(position).isFooter)
             return VIEW_TYPES.Footer;
         else
             return VIEW_TYPES.Normal;
@@ -378,6 +373,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
         TextView subProfileText;
         TextView dateText;
         ImageView itemMenuBtn;
+
         UserHolder(View itemView) {
             super(itemView);
             profilePicImage = itemView.findViewById(R.id.profile_image);
@@ -395,7 +391,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
 
         boolean isHeader = false, isFooter = false;
 
-        public Item(boolean isHeader){
+        public Item(boolean isHeader) {
             this.isHeader = isHeader;
         }
 

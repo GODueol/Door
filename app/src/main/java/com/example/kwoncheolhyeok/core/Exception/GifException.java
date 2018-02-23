@@ -13,11 +13,11 @@ public class GifException extends Exception {
         this.Err_Code = errCode;
     }
 
-    public GifException(String msg){
+    public GifException(String msg) {
         this(msg, 100);
     }
 
-    public int getErrCode(){
+    public int getErrCode() {
         return Err_Code;
     }
 }

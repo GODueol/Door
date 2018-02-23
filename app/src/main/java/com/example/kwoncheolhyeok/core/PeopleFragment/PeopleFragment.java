@@ -58,8 +58,8 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
 
         try {
             latLng = getArguments().getParcelable("latlng");
-        }catch (Exception e){
-            Log.d("people","익셉션");
+        } catch (Exception e) {
+            Log.d("people", "익셉션");
         }
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -108,10 +108,9 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
 
         try {
             bus.register(this); // Otto 등록
-        } catch (IllegalAccessError e){
+        } catch (IllegalAccessError e) {
             e.printStackTrace();    // 이미 등록된경우
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -141,14 +140,15 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         SummaryUser oSummary = dataSnapshot.getValue(SummaryUser.class);
-                        if(isInBlock(oUuid) || !isInFilter(oSummary)){
+                        if (isInBlock(oUuid) || !isInFilter(oSummary)) {
                             onKeyExited(oUuid);
                             return;
                         }
 
-                        Log.d(getClass().toString(),String.format("Key %s entered the search area at [%f,%f]", oUuid, geoLocation.latitude, geoLocation.longitude));
+                        Log.d(getClass().toString(), String.format("Key %s entered the search area at [%f,%f]", oUuid, geoLocation.latitude, geoLocation.longitude));
                         addItemToGrid(oUuid, geoLocation, oSummary);
                     }
+
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
                         databaseError.toException().printStackTrace();
@@ -167,11 +167,11 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
 
                 // grid에 사진, distance추가
 
-                if(imageAdapter != null){
+                if (imageAdapter != null) {
                     imageAdapter.addItem(new GridItem(distance, key, summary, summary.getPictureUrl()));
                     imageAdapter.notifyDataSetChanged();
 //                    gridView.invalidateViews();
-                    Log.d(getTag(), "addItemToGrid : " + key );
+                    Log.d(getTag(), "addItemToGrid : " + key);
                 } else {
                     Log.d(getTag(), "imageAdapter is null");
                 }
@@ -194,7 +194,7 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
                 targetLocation.setLatitude(geoLocation.latitude);//your coords of course
                 targetLocation.setLongitude(geoLocation.longitude);
                 GridItem item = imageAdapter.getItem(key);
-                if(item == null) return;
+                if (item == null) return;
                 imageAdapter.remove(key);
                 item.setDistance(location.distanceTo(targetLocation));
                 imageAdapter.addItem(item);
@@ -218,10 +218,13 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
     }
 
     private boolean isInFilter(SummaryUser summaryUser) {
-        if(!mUser.isUseFilter()) return true;   // 필터 적용여부
-        if(!(mUser.getAgeBoundary().getMin() <= summaryUser.getAge() && summaryUser.getAge() <= mUser.getAgeBoundary().getMax())) return false;
-        if(!(mUser.getHeightBoundary().getMin() <= summaryUser.getHeight() && summaryUser.getHeight() <= mUser.getHeightBoundary().getMax())) return false;
-        if(!(mUser.getWeightBoundary().getMin() <= summaryUser.getWeight() && summaryUser.getWeight() <= mUser.getWeightBoundary().getMax())) return false;
+        if (!mUser.isUseFilter()) return true;   // 필터 적용여부
+        if (!(mUser.getAgeBoundary().getMin() <= summaryUser.getAge() && summaryUser.getAge() <= mUser.getAgeBoundary().getMax()))
+            return false;
+        if (!(mUser.getHeightBoundary().getMin() <= summaryUser.getHeight() && summaryUser.getHeight() <= mUser.getHeightBoundary().getMax()))
+            return false;
+        if (!(mUser.getWeightBoundary().getMin() <= summaryUser.getWeight() && summaryUser.getWeight() <= mUser.getWeightBoundary().getMax()))
+            return false;
         int minBodyType = Arrays.asList(DataContainer.bodyTypes).indexOf(mUser.getBodyTypeBoundary().getMin());
         int maxBodyType = Arrays.asList(DataContainer.bodyTypes).indexOf(mUser.getBodyTypeBoundary().getMax());
         int bodyType = Arrays.asList(DataContainer.bodyTypes).indexOf(summaryUser.getBodyType());
@@ -240,9 +243,11 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
             @Override
             public void onComplete(String key, DatabaseError error) {
                 if (error != null) {
-                    if(getActivity()!= null) Toast.makeText(getActivity(),"There was an error saving the location to GeoFire: " + error,Toast.LENGTH_SHORT).show();
+                    if (getActivity() != null)
+                        Toast.makeText(getActivity(), "There was an error saving the location to GeoFire: " + error, Toast.LENGTH_SHORT).show();
                 } else {
-                    if(getActivity()!= null) Toast.makeText(getActivity(),"Location saved on server successfully! ",Toast.LENGTH_SHORT).show();
+                    if (getActivity() != null)
+                        Toast.makeText(getActivity(), "Location saved on server successfully! ", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -257,8 +262,8 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
 
     @Override
     public void onDestroy() {
-        if(geoQuery!= null) geoQuery.removeAllListeners();
-        if(userRef != null && userListener != null) userRef.removeEventListener(userListener);
+        if (geoQuery != null) geoQuery.removeAllListeners();
+        if (userRef != null && userListener != null) userRef.removeEventListener(userListener);
         super.onDestroy();
     }
 }

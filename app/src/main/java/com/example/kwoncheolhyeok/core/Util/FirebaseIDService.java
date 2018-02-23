@@ -1,11 +1,6 @@
 package com.example.kwoncheolhyeok.core.Util;
 
-import android.util.Log;
-
 import com.example.kwoncheolhyeok.core.Entity.User;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 
@@ -25,9 +20,10 @@ public class FirebaseIDService extends FirebaseInstanceIdService {
     }
     // [END refresh_token]
 
-    public void setUserToken(User user){
+    public void setUserToken(User user) {
         user.setToken(refreshedToken);
     }
+
     private void sendRegistrationToServer() {
      /*   try {
             DataContainer.getInstance().getUsersRef().child(DataContainer.getInstance().getUid()).child("token").setValue(refreshedToken);

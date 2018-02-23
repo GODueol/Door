@@ -4,13 +4,9 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.CompoundButton;
-import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 
 import com.example.kwoncheolhyeok.core.R;
-
-import butterknife.Bind;
 
 /**
  * Created by Kwon on 2018-01-04.
@@ -44,7 +40,7 @@ public class AccountActivity extends AppCompatActivity {
         set_password.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(new_password_layout.getVisibility() == View.VISIBLE){
+                if (new_password_layout.getVisibility() == View.VISIBLE) {
                     new_password_layout.setVisibility(View.GONE);
                 } else {
                     new_password_layout.setVisibility(View.VISIBLE);

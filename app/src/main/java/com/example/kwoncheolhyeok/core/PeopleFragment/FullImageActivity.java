@@ -117,7 +117,6 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
 
 
-
         //Tab Fragment 1에서 받아온 썸네일 이미지를 이 액티비티로 받아옴
         page1 = findViewById(R.id.image1);
         page1.setOnClickListener(this);
@@ -137,7 +136,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
                 mUser = dataSnapshot.getValue(User.class);
 
                 // 차단된 경우
-                if(mUser.getBlockMeUsers().containsKey(item.getUuid())) {
+                if (mUser.getBlockMeUsers().containsKey(item.getUuid())) {
                     Toast.makeText(FullImageActivity.this, "당신은 차단되었습니다", Toast.LENGTH_SHORT).show();
                     finish();
                 }
@@ -192,7 +191,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         core_enter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UiUtil.getInstance().goToCoreActivity(FullImageActivity.this,item.getUuid());
+                UiUtil.getInstance().goToCoreActivity(FullImageActivity.this, item.getUuid());
             }
         });
 
@@ -263,7 +262,8 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
     public void setViewedMeUsers(final GridItem item) {
 
         final String mUuid = DataContainer.getInstance().getUid();
-        if(item.getUuid().equals(DataContainer.getInstance().getUid(FullImageActivity.this))) return; // 자신일 경우
+        if (item.getUuid().equals(DataContainer.getInstance().getUid(FullImageActivity.this)))
+            return; // 자신일 경우
 
         // 트랜잭션을 이용해야함
         DatabaseReference viewedMeUsersRef = DataContainer.getInstance().getUserRef(item.getUuid()).child("viewedMeUsers");
@@ -276,8 +276,8 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
                     return Transaction.success(mutableData);
                 }
 
-                if(!map.containsKey(mUuid)){
-                    while(map.size() >= DataContainer.ViewedMeMax) {
+                if (!map.containsKey(mUuid)) {
+                    while (map.size() >= DataContainer.ViewedMeMax) {
                         // 데이터 삭제
                         MutableData min = null;
 
@@ -346,8 +346,8 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
                             UiUtil.getInstance().stopProgressDialog();
                             return;
                         }
-                        if(task == null) {
-                            Toast.makeText(getBaseContext(),"오류 발생", Toast.LENGTH_SHORT).show();
+                        if (task == null) {
+                            Toast.makeText(getBaseContext(), "오류 발생", Toast.LENGTH_SHORT).show();
                             UiUtil.getInstance().stopProgressDialog();
                             return;
                         }
@@ -404,7 +404,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
             private void showBlockDialog() {
                 UiUtil.getInstance().showDialog(FullImageActivity.this, "유저 차단", "해당 유저를 차단하시겠습니까?", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        if(mUser.getBlockUsers().size() >= DataContainer.ChildrenMax) {
+                        if (mUser.getBlockUsers().size() >= DataContainer.ChildrenMax) {
                             Toast.makeText(FullImageActivity.this, DataContainer.ChildrenMax + "명을 초과할 수 없습니다", Toast.LENGTH_SHORT).show();
                             return;
                         }
@@ -438,7 +438,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
 
     private void setPicLock(final GridItem item) {
         final String myUuid = DataContainer.getInstance().getUid();
-        if(mUser == null){
+        if (mUser == null) {
             UiUtil.getInstance().restartApp(this);
         }
 

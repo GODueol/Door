@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout android:id="@+id/full_main_layout"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/full_main_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".PeopleFragment.FullImageActivity"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
+    tools:context=".PeopleFragment.FullImageActivity">
 
 
     <!-- The toolbar -->
@@ -14,8 +12,7 @@
         android:id="@+id/toolbar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fitsSystemWindows="true"
-        >
+        android:fitsSystemWindows="true">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
@@ -33,19 +30,17 @@
             android:id="@+id/no_use_image"
             android:layout_width="80dp"
             android:layout_height="23dp"
-            android:layout_centerInParent="true"
-            />
+            android:layout_centerInParent="true" />
 
         <RelativeLayout
             android:id="@+id/core_enter_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/no_use_image"
             android:layout_marginLeft="15dp"
-            android:paddingTop="3dp"
+            android:layout_toRightOf="@+id/no_use_image"
             android:paddingBottom="3dp"
-            >
+            android:paddingTop="3dp">
 
             <TextView
                 android:id="@+id/core_counts"
@@ -81,16 +76,14 @@
         android:id="@+id/full_image_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/toolbar_layout" />
+        android:layout_below="@+id/toolbar_layout"
+        android:layout_centerHorizontal="true" />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/pager1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/toolbar_layout"
-        >
-    </android.support.v4.view.ViewPager>
+        android:layout_below="@+id/toolbar_layout"></android.support.v4.view.ViewPager>
 
     <!--fullimage 안쪽 내용 xml 디자인-->
 
@@ -101,8 +94,7 @@
         android:layout_alignParentRight="true"
         android:layout_below="@+id/toolbar_layout"
         android:background="#55000000"
-        android:padding="3dp"
-        >
+        android:padding="3dp">
 
 
         <TextView
@@ -144,121 +136,116 @@
     </RelativeLayout>
 
 
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="190dp"
         android:layout_above="@+id/image_four"
-        android:background="#55000000"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-       >
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentStart="true"
+        android:background="#55000000">
 
         <RelativeLayout
             android:id="@+id/id_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginLeft="6dp"
             android:layout_marginBottom="5dp"
-            >
+            android:layout_marginLeft="6dp"
+            android:layout_marginTop="5dp">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            >
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/text_id"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="NickName"
-            android:textSize="15.5dp"
-            android:textColor="@android:color/white"
-            android:textStyle="bold"
-            />
-        <TextView
-            android:id="@+id/text_physical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/text_id"
-            android:paddingTop="5dp"
-            android:text="age/heig/weig/bt"
-            android:textSize="13.5dp"
-            android:textColor="@android:color/white"
-            />
+                <TextView
+                    android:id="@+id/text_id"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="NickName"
+                    android:textColor="@android:color/white"
+                    android:textSize="15.5dp"
+                    android:textStyle="bold" />
 
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/text_physical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/text_id"
+                    android:paddingTop="5dp"
+                    android:text="age/heig/weig/bt"
+                    android:textColor="@android:color/white"
+                    android:textSize="13.5dp" />
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginRight="5dp"
-            >
+            </LinearLayout>
 
-            <ImageView
-                android:id="@+id/pic_open"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:src="@drawable/picture_unlock"
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="5dp"
+                android:orientation="horizontal">
 
-                />
-            <ImageView
-                android:id="@+id/message_white"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginLeft="20dp"
-                android:src="@drawable/message_white"/>
-            <ImageView
-                android:id="@+id/item_menu_btn"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginLeft="20dp"
-                android:src="@drawable/follow" />
-            <ImageView
-                android:id="@+id/block_friends"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginLeft="20dp"
-                android:src="@drawable/block_friends"/>
+                <ImageView
+                    android:id="@+id/pic_open"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/picture_unlock"
 
-        </LinearLayout>
+                    />
+
+                <ImageView
+                    android:id="@+id/message_white"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginLeft="20dp"
+                    android:src="@drawable/message_white" />
+
+                <ImageView
+                    android:id="@+id/item_menu_btn"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginLeft="20dp"
+                    android:src="@drawable/follow" />
+
+                <ImageView
+                    android:id="@+id/block_friends"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginLeft="20dp"
+                    android:src="@drawable/block_friends" />
+
+            </LinearLayout>
 
         </RelativeLayout>
 
         <View
+            android:id="@+id/view"
             android:layout_width="match_parent"
             android:layout_height="1dip"
+            android:layout_below="@+id/id_layout"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
-            android:background="@android:color/white"
-            android:id="@+id/view"
-            android:layout_below="@+id/id_layout"
-            >
-        </View>
+            android:background="@android:color/white"></View>
 
         <TextView
             android:id="@+id/text_introduce"
             android:layout_width="match_parent"
             android:layout_height="110dp"
-            android:paddingTop="10dp"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
             android:layout_alignParentBottom="true"
-            android:text="Introduce place"
-            android:textSize="15dp"
+            android:layout_below="@+id/view"
+            android:lineSpacingExtra="5dip"
             android:maxLength="200"
             android:maxLines="5"
-            android:lineSpacingExtra="5dip"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:paddingTop="10dp"
+            android:text="Introduce place"
             android:textColor="@android:color/white"
-            android:layout_below="@+id/view" />
+            android:textSize="15dp" />
         <!-- 글자수 제한 : android:maxLength="198" -->
 
     </RelativeLayout>
@@ -267,61 +254,56 @@
         android:id="@+id/image_four"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true">
+        android:layout_alignParentStart="true"
+        android:orientation="horizontal">
 
         <com.example.kwoncheolhyeok.core.PeopleFragment.SquareImageView
             android:id="@+id/image1"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:src="@drawable/a"
             android:scaleType="centerCrop"
-            />
+            android:src="@drawable/a" />
 
         <com.example.kwoncheolhyeok.core.PeopleFragment.SquareImageView
             android:id="@+id/image2"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:src="@drawable/a"
             android:scaleType="centerCrop"
-            />
+            android:src="@drawable/a" />
 
         <com.example.kwoncheolhyeok.core.PeopleFragment.SquareImageView
             android:id="@+id/image3"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:src="@drawable/a"
             android:scaleType="centerCrop"
-            />
+            android:src="@drawable/a" />
 
         <com.example.kwoncheolhyeok.core.PeopleFragment.SquareImageView
             android:id="@+id/image4"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:src="@drawable/a"
             android:scaleType="centerCrop"
-            />
+            android:src="@drawable/a" />
 
     </LinearLayout>
 
 
-
     <!--<Button-->
-        <!--android:id="@+id/btn_core"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="26dp"-->
-        <!--android:text="core"-->
-        <!--android:textSize="15.5dp"-->
-        <!--android:background="#000000"-->
-        <!--android:textColor="#FFFFFF"-->
-        <!--android:layout_alignParentRight="true"/>-->
+    <!--android:id="@+id/btn_core"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="26dp"-->
+    <!--android:text="core"-->
+    <!--android:textSize="15.5dp"-->
+    <!--android:background="#000000"-->
+    <!--android:textColor="#FFFFFF"-->
+    <!--android:layout_alignParentRight="true"/>-->
 
 </RelativeLayout>

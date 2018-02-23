@@ -18,7 +18,6 @@ import com.example.kwoncheolhyeok.core.Activity.MainActivity;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
-import com.example.kwoncheolhyeok.core.Util.FirebaseIDService;
 import com.example.kwoncheolhyeok.core.Util.UiUtil;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -62,7 +61,7 @@ public class LoginActivity extends AppCompatActivity {
 
         final SharedPreferences pref = getSharedPreferences(DataContainer.getInstance().PREFERENCE, MODE_PRIVATE);
         String emailPref = pref.getString("email", "");
-        if(!emailPref.equals("")){
+        if (!emailPref.equals("")) {
             cb_save_id.setChecked(true);
             _emailText.setText(emailPref);
         } else {
@@ -71,7 +70,7 @@ public class LoginActivity extends AppCompatActivity {
         cb_save_id.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if(!b){
+                if (!b) {
                     SharedPreferences.Editor editor = pref.edit();
                     editor.putString("email", "");
                     editor.apply();
@@ -86,12 +85,12 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String email = _emailText.getText().toString();
                 // TODO : Test를 위한 코드
-                if(email.equals("")){
+                if (email.equals("")) {
                     _emailText.setText("kbj2@naver.com");
                     _passwordText.setText("1q2w3e4r5t");
                 }
 
-                if(cb_save_id.isChecked()){
+                if (cb_save_id.isChecked()) {
                     // ID 저장 : Shared Preference
                     SharedPreferences.Editor editor = pref.edit();
                     editor.putString("email", _emailText.getText().toString());
@@ -219,7 +218,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void onLoginFailed(Exception e) {
-        Toast.makeText(getBaseContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
+        Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
         _loginButton.setEnabled(true);
         UiUtil.getInstance().stopProgressDialog();
     }

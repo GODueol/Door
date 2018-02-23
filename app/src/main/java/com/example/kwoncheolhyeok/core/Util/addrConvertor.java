@@ -21,7 +21,7 @@ import java.util.Locale;
 public class addrConvertor {
 
     public static String getAddress(Context mContext, LatLng latlng) {
-        String nowAddress ="현재 위치를 확인 할 수 없습니다.";
+        String nowAddress = "현재 위치를 확인 할 수 없습니다.";
         Geocoder geocoder = new Geocoder(mContext, Locale.KOREA);
         List<Address> address;
         try {
@@ -31,15 +31,15 @@ public class addrConvertor {
 
             if (address != null && address.size() > 0) {
                 // 주소 받아오기
-                nowAddress="";
-                if(address.get(0).getAdminArea()!=null){
-                nowAddress += address.get(0).getAdminArea()+" ";
+                nowAddress = "";
+                if (address.get(0).getAdminArea() != null) {
+                    nowAddress += address.get(0).getAdminArea() + " ";
                 }
-                if(address.get(0).getLocality()!=null){
-                    nowAddress +=  address.get(0).getLocality()+ " ";
+                if (address.get(0).getLocality() != null) {
+                    nowAddress += address.get(0).getLocality() + " ";
                 }
-                if(address.get(0).getThoroughfare()!=null){
-                    nowAddress +=  address.get(0).getThoroughfare();
+                if (address.get(0).getThoroughfare() != null) {
+                    nowAddress += address.get(0).getThoroughfare();
                 }
             }
 

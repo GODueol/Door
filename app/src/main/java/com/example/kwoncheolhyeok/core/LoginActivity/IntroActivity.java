@@ -38,22 +38,25 @@ import java.util.List;
  */
 
 public class IntroActivity extends Activity {
-    /** Called when the activity is first created. */
+    /**
+     * Called when the activity is first created.
+     */
 
-    private String[] permissions = new String[] {
+    private String[] permissions = new String[]{
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.RECORD_AUDIO
     };
+
     @Override
     protected void onStart() {
         super.onStart();
         setPermission();
     }
 
-    boolean isHaveAllPermission(){
-        for (String permission : permissions){
-            if(ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_DENIED){
+    boolean isHaveAllPermission() {
+        for (String permission : permissions) {
+            if (ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_DENIED) {
                 return false;
             }
         }
@@ -64,8 +67,8 @@ public class IntroActivity extends Activity {
         PermissionListener permissionListener = new PermissionListener() {
             @Override
             public void onPermissionGranted() {
-                Toast.makeText(getApplication(), "권한가져옴",Toast.LENGTH_SHORT).show();
-                if(isHaveAllPermission()){
+                Toast.makeText(getApplication(), "권한가져옴", Toast.LENGTH_SHORT).show();
+                if (isHaveAllPermission()) {
                     getUserInfo(FirebaseAuth.getInstance().getCurrentUser());
                 }
             }
@@ -73,12 +76,12 @@ public class IntroActivity extends Activity {
             @Override
             public void onPermissionDenied(ArrayList<String> arrayList) {
                 //new setPermission(getApplicationContext(), this, permissions); // 권한요청 및 권한에따른 구글맵 셋팅});
-                Toast.makeText(getApplication(), "권한이 없으면 앱을 실행할 수 없습니다.",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplication(), "권한이 없으면 앱을 실행할 수 없습니다.", Toast.LENGTH_SHORT).show();
                 finish();   // 권한 거부시 앱 종료
             }
         };
 
-        new setPermission(this, permissionListener , permissions);
+        new setPermission(this, permissionListener, permissions);
     }
 
     @Override
@@ -95,14 +98,14 @@ public class IntroActivity extends Activity {
 
         // wifi 또는 모바일 네트워크 어느 하나라도 연결이 되어있다면,
         if (!wifi.isConnected() && !mobile.isConnected()) {
-            Log.i("Internet Connection" , "인터넷 연결 안된 상태");
-            Toast.makeText(getApplicationContext(),"인터넷 연결이 안되어 있습니다", Toast.LENGTH_SHORT).show();
+            Log.i("Internet Connection", "인터넷 연결 안된 상태");
+            Toast.makeText(getApplicationContext(), "인터넷 연결이 안되어 있습니다", Toast.LENGTH_SHORT).show();
             finish();
         }
 
         if (user != null) {
             FirebaseAuth mAuth = FirebaseAuth.getInstance();
-            if(user.getEmail() == null) {
+            if (user.getEmail() == null) {
                 Log.d(getApplication().getClass().getName(), "계정없음:" + user.getUid());
                 logout();
                 return;
@@ -110,13 +113,13 @@ public class IntroActivity extends Activity {
             mAuth.fetchProvidersForEmail(user.getEmail()).addOnCompleteListener(new OnCompleteListener<ProviderQueryResult>() {
                 @Override
                 public void onComplete(@NonNull Task<ProviderQueryResult> task) {
-                    if(!task.isSuccessful()){
-                        Toast.makeText(getApplicationContext(), task.getException().getMessage(),Toast.LENGTH_SHORT).show();
+                    if (!task.isSuccessful()) {
+                        Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         finish();
                     }
 
                     List<String> provider = task.getResult().getProviders();
-                    if(provider == null || provider.isEmpty()) { // 계정이 없는 경우
+                    if (provider == null || provider.isEmpty()) { // 계정이 없는 경우
                         Log.d(getApplication().getClass().getName(), "계정없음:" + user.getUid());
                         logout();
                         return;
@@ -138,8 +141,8 @@ public class IntroActivity extends Activity {
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
-                            Toast.makeText(getApplicationContext(),"Getting UserInfo Cancelled",Toast.LENGTH_SHORT).show();
-                            Log.d(getApplication().getClass().getName(),databaseError.getMessage());
+                            Toast.makeText(getApplicationContext(), "Getting UserInfo Cancelled", Toast.LENGTH_SHORT).show();
+                            Log.d(getApplication().getClass().getName(), databaseError.getMessage());
                         }
 
                     });
@@ -176,7 +179,7 @@ public class IntroActivity extends Activity {
     @Override
     public void onBackPressed() {
         // 계정있으면 로그아웃
-        if(FirebaseAuth.getInstance().getCurrentUser() != null){
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             logout();
         }
     }

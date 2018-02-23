@@ -82,7 +82,7 @@ public class MessageActivity extends AppCompatActivity {
         linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setReverseLayout(true);
         linearLayoutManager.setStackFromEnd(true);
-        messageRecyclerAdapter = new messageRecyclerAdapter(listrowItem, R.layout.chatting_list_row, listener,chatlistener);
+        messageRecyclerAdapter = new messageRecyclerAdapter(listrowItem, R.layout.chatting_list_row, listener, chatlistener);
         messageList = (RecyclerView) findViewById(R.id.messagelist);
         messageList.setAdapter(messageRecyclerAdapter);
         messageList.setLayoutManager(linearLayoutManager);
@@ -121,7 +121,7 @@ public class MessageActivity extends AppCompatActivity {
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 final RoomVO roomList = dataSnapshot.getValue(RoomVO.class);
-                if(roomList.getLastChat()!=null) {
+                if (roomList.getLastChat() != null) {
                     FirebaseDatabase.getInstance().getReference("users").child(roomList.getTargetUuid()).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -138,13 +138,13 @@ public class MessageActivity extends AppCompatActivity {
                         public void onCancelled(DatabaseError databaseError) {
                         }
                     });
-                }else if(roomList.getLastChat()==null){
+                } else if (roomList.getLastChat() == null) {
                     try {
                         int key = uuidList.indexOf(roomList.getTargetUuid());
                         listrowItem.remove(key);
                         uuidList.remove(key);
                         messageRecyclerAdapter.notifyDataSetChanged();
-                    }catch (Exception e){
+                    } catch (Exception e) {
 
                     }
                 }
@@ -174,7 +174,7 @@ public class MessageActivity extends AppCompatActivity {
         });
     }
 
-    OnRemoveChattingListCallback chatlistener = new OnRemoveChattingListCallback(){
+    OnRemoveChattingListCallback chatlistener = new OnRemoveChattingListCallback() {
 
         @Override
         public void onRemove(String target) {
@@ -195,17 +195,17 @@ public class MessageActivity extends AppCompatActivity {
     public void refreshChatRoomList(User target, RoomVO roomList) {
         Log.d("test", target.getId());
 
-        if(target.getId()!=null &&!target.getId().equals(roomList.getTargetNickName())) {
+        if (target.getId() != null && !target.getId().equals(roomList.getTargetNickName())) {
             roomList.setTargetNickName(target.getId());
             chatRoomListRef.child(userId).child(roomList.getTargetUuid()).child("targetNickName").setValue(target.getId());
         }
 
-        if(target.getTotalProfile()!=null && !target.getTotalProfile().equals(roomList.getTargetProfile())) {
+        if (target.getTotalProfile() != null && !target.getTotalProfile().equals(roomList.getTargetProfile())) {
             roomList.setTargetProfile(target.getTotalProfile());
             chatRoomListRef.child(userId).child(roomList.getTargetUuid()).child("targetProfile").setValue(target.getTotalProfile());
         }
 
-        if(target.getPicUrls()!=null && target.getPicUrls().getThumbNail_picUrl1()!=null && !target.getPicUrls().getThumbNail_picUrl1().equals(roomList.getTargetUrl())) {
+        if (target.getPicUrls() != null && target.getPicUrls().getThumbNail_picUrl1() != null && !target.getPicUrls().getThumbNail_picUrl1().equals(roomList.getTargetUrl())) {
             roomList.setTargetUrl(target.getPicUrls().getThumbNail_picUrl1());
             chatRoomListRef.child(userId).child(roomList.getTargetUuid()).child("targetUrl").setValue(target.getPicUrls().getThumbNail_picUrl1());
         }
@@ -222,7 +222,7 @@ public class MessageActivity extends AppCompatActivity {
         if (startTime.equals(endTime)) {
             // 새로고침
             listrowItem.add(key, roomList);
-            refreshChatRoomList(target,roomList);
+            refreshChatRoomList(target, roomList);
         } else {      // 맨위로 올림
             uuidList.remove(key);
             uuidList.add(roomList.getTargetUuid());

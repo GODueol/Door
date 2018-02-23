@@ -15,8 +15,8 @@ public class DataContainer {
     public final String PREFERENCE = "com.example.kwoncheolhyeok.core.samplesharepreference";
     public static final int ChildrenMax = 1000;
     public static final int ViewedMeMax = 45;
-    private static class TIME_MAXIMUM
-    {
+
+    private static class TIME_MAXIMUM {
         static final int SEC = 60;
         static final int MIN = 60;
         static final int HOUR = 24;
@@ -24,7 +24,7 @@ public class DataContainer {
         static final int MONTH = 12;
     }
 
-    public static final String[] bodyTypes =  {"Underweight", "Skinny", "Standard", "Muscular", "Overweight"};
+    public static final String[] bodyTypes = {"Underweight", "Skinny", "Standard", "Muscular", "Overweight"};
 
     private static final DataContainer ourInstance = new DataContainer();
 
@@ -49,50 +49,44 @@ public class DataContainer {
         return FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 
-    public String getUid(Context context){
-        if(FirebaseAuth.getInstance().getCurrentUser() == null) UiUtil.getInstance().restartApp(context);
+    public String getUid(Context context) {
+        if (FirebaseAuth.getInstance().getCurrentUser() == null)
+            UiUtil.getInstance().restartApp(context);
         return getUid();
     }
 
-    public DatabaseReference getUserRef(String uuid){
+    public DatabaseReference getUserRef(String uuid) {
         return getUsersRef().child(uuid);
     }
 
-    public DatabaseReference getMyUserRef(){
+    public DatabaseReference getMyUserRef() {
         return getUserRef(getUid());
     }
 
-    public DatabaseReference getUsersRef(){
+    public DatabaseReference getUsersRef() {
         return FirebaseDatabase.getInstance().getReference("users");
     }
 
-    public String convertBeforeFormat(long longDate){
+    public String convertBeforeFormat(long longDate) {
         long curTime = System.currentTimeMillis();
         long diffTime = (curTime - longDate) / 1000;
 
         String msg;
 
-        if (diffTime < TIME_MAXIMUM.SEC)
-        {
+        if (diffTime < TIME_MAXIMUM.SEC) {
             // sec
             msg = diffTime + "초 전";
-        }
-        else if ((diffTime /= TIME_MAXIMUM.SEC) < TIME_MAXIMUM.MIN)
-        {
+        } else if ((diffTime /= TIME_MAXIMUM.SEC) < TIME_MAXIMUM.MIN) {
             // min
             System.out.println(diffTime);
 
             msg = diffTime + "분 전";
-        }
-        else if ((diffTime /= TIME_MAXIMUM.MIN) < TIME_MAXIMUM.HOUR)
-        {
+        } else if ((diffTime /= TIME_MAXIMUM.MIN) < TIME_MAXIMUM.HOUR) {
             // hour
-            msg = (diffTime ) + "시간 전";
-        }
-        else
-        {
+            msg = (diffTime) + "시간 전";
+        } else {
             // day
-            msg = (diffTime/TIME_MAXIMUM.HOUR) + "일 전";
+            msg = (diffTime / TIME_MAXIMUM.HOUR) + "일 전";
         }
 
         return msg;

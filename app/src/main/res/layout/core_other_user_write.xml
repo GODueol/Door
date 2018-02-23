@@ -5,47 +5,46 @@
     android:background="@android:color/white">
 
     <RelativeLayout
-        android:layout_marginTop="4dp"
         android:id="@+id/profile_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        >
+        android:layout_marginTop="4dp">
 
         <com.example.kwoncheolhyeok.core.PeopleFragment.SquareImageView
             android:id="@+id/core_pic"
             android:layout_width="49dp"
             android:layout_height="49dp"
+            android:layout_marginBottom="5dp"
             android:layout_marginLeft="5dp"
             android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
             android:scaleType="centerCrop" />
 
         <RelativeLayout
             android:id="@+id/id_layout"
-            android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/core_pic"
-            android:layout_marginLeft="10dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/core_pic">
 
             <TextView
                 android:id="@+id/core_id"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Unknown"
+                android:textColor="@color/black"
                 android:textSize="15dp"
-                android:textStyle="bold"
-                android:textColor="@color/black"/>
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/sub_profile"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=""
-                android:textSize="13.5dp"
                 android:layout_below="@+id/core_id"
                 android:layout_marginTop="3dp"
-                android:textColor="@color/black"/>
+                android:text=""
+                android:textColor="@color/black"
+                android:textSize="13.5dp" />
 
         </RelativeLayout>
 
@@ -53,26 +52,22 @@
             android:id="@+id/setting"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:background="@drawable/ic_keyboard_arrow_down_black_24dp"
             android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
             android:layout_marginRight="10dp"
-            />
+            android:background="@drawable/ic_keyboard_arrow_down_black_24dp" />
 
         <View
             android:id="@+id/section_line1"
             android:layout_width="match_parent"
             android:layout_height="0.5dip"
-            android:background="#BDBDBD"
-            android:layout_toRightOf="@+id/core_pic"
             android:layout_below="@+id/core_pic"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="5dp"
-            />
+            android:layout_toRightOf="@+id/core_pic"
+            android:background="#BDBDBD" />
 
     </RelativeLayout>
-
-
 
 
     <TextView
@@ -86,28 +81,27 @@
         android:layout_marginRight="5dp"
         android:layout_marginTop="8dp"
         android:text="안녕하세요 반갑습니다"
-        android:textSize="15.5dp"
-        android:textColor="@color/black"/>
+        android:textColor="@color/black"
+        android:textSize="15.5dp" />
 
     <!--<ImageView-->
-        <!--android:id="@+id/core_img"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_below="@+id/core_contents"-->
-        <!--android:layout_centerHorizontal="true"-->
-        <!--android:layout_marginTop="8dp"-->
-        <!--android:background="@mipmap/ic_launcher" />-->
+    <!--android:id="@+id/core_img"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_below="@+id/core_contents"-->
+    <!--android:layout_centerHorizontal="true"-->
+    <!--android:layout_marginTop="8dp"-->
+    <!--android:background="@mipmap/ic_launcher" />-->
 
     <!--<TextView-->
-        <!--android:id="@+id/media_player_txt"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_below="@+id/core_img"-->
-        <!--android:layout_centerHorizontal="true"-->
-        <!--android:layout_marginTop="8dp"-->
-        <!--android:text="미디어 플레이어가 있을 자리"-->
-        <!--android:textColor="@color/gray40"/>-->
-
+    <!--android:id="@+id/media_player_txt"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_below="@+id/core_img"-->
+    <!--android:layout_centerHorizontal="true"-->
+    <!--android:layout_marginTop="8dp"-->
+    <!--android:text="미디어 플레이어가 있을 자리"-->
+    <!--android:textColor="@color/gray40"/>-->
 
 
     <View
@@ -130,52 +124,49 @@
         android:layout_marginTop="8dp"
         android:text="1시간 전"
         android:textColor="@color/gray70"
-        android:textSize="10dp"
-        />
+        android:textSize="10dp" />
 
     <LinearLayout
         android:id="@+id/heart_btn_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/section_line2"
-        android:padding="5dp"
         android:orientation="horizontal"
+        android:padding="5dp"
         android:weightSum="3">
 
         <ToggleButton
             android:id="@+id/btn_no"
             android:layout_width="match_parent"
             android:layout_height="35dp"
-            android:layout_weight="1"
-            android:textOff="no"
-            android:textOn="no"
-            android:background="@drawable/btn_no"
             android:layout_marginLeft="3dp"
             android:layout_marginRight="3dp"
-            />
+            android:layout_weight="1"
+            android:background="@drawable/btn_no"
+            android:textOff="no"
+            android:textOn="no" />
+
         <ToggleButton
             android:id="@+id/btn_pass"
             android:layout_width="match_parent"
             android:layout_height="35dp"
-            android:layout_weight="1"
-            android:textOff="pass"
-            android:textOn="pass"
-            android:background="@drawable/btn_pass"
             android:layout_marginLeft="3dp"
             android:layout_marginRight="3dp"
-            />
+            android:layout_weight="1"
+            android:background="@drawable/btn_pass"
+            android:textOff="pass"
+            android:textOn="pass" />
 
         <ToggleButton
             android:id="@+id/btn_yes"
             android:layout_width="match_parent"
             android:layout_height="35dp"
-            android:layout_weight="1"
-            android:textOff="yes"
-            android:textOn="yes"
-            android:background="@drawable/btn_yes"
             android:layout_marginLeft="3dp"
             android:layout_marginRight="3dp"
-            />
+            android:layout_weight="1"
+            android:background="@drawable/btn_yes"
+            android:textOff="yes"
+            android:textOn="yes" />
     </LinearLayout>
 
     <View
@@ -183,9 +174,9 @@
         android:layout_width="match_parent"
         android:layout_height="2dip"
         android:layout_below="@+id/heart_btn_layout"
+        android:layout_marginBottom="4dp"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
-        android:layout_marginBottom="4dp"
         android:background="#BDBDBD"></View>
 
 

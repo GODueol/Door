@@ -304,7 +304,6 @@ public class ChattingMessageAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         }
     }
 
-
     public void setProfileImage(ImageView imageView, String url) {
         int width = imageView.getWidth();
         int height = imageView.getHeight();

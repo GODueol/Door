@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:fitsSystemWindows="true">
@@ -10,133 +9,144 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-    <LinearLayout
-        android:id="@+id/sign_up_layout2"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="15dp"
-        android:paddingLeft="24dp"
-        android:paddingRight="24dp">
+        <LinearLayout
+            android:id="@+id/sign_up_layout2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingLeft="24dp"
+            android:paddingRight="24dp"
+            android:paddingTop="15dp">
 
-        <!--<ImageView android:src="@drawable/title"-->
+            <!--<ImageView android:src="@drawable/title"-->
             <!--android:layout_width="wrap_content"-->
             <!--android:layout_height="72dp"-->
             <!--android:layout_marginBottom="24dp"-->
             <!--android:layout_gravity="center_horizontal"-->
             <!--android:id="@+id/imageView" />-->
 
-        <!--  Email Label -->
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:theme="@style/TextLabel2"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp">
-            <EditText android:id="@+id/input_email"
+            <!--  Email Label -->
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textEmailAddress"
-                android:hint="이메일" />
-        </android.support.design.widget.TextInputLayout>
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
+                android:theme="@style/TextLabel2">
 
-        <!-- Password Label -->
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:theme="@style/TextLabel2"
-            android:layout_marginBottom="5dp">
-            <EditText android:id="@+id/input_password"
+                <EditText
+                    android:id="@+id/input_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="이메일"
+                    android:inputType="textEmailAddress" />
+            </android.support.design.widget.TextInputLayout>
+
+            <!-- Password Label -->
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:hint="비밀번호"/>
-        </android.support.design.widget.TextInputLayout>
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
+                android:theme="@style/TextLabel2">
 
-        <!-- Password Re-enter Label -->
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:theme="@style/TextLabel2"
-            android:layout_marginBottom="5dp">
-            <EditText android:id="@+id/input_reEnterPassword"
+                <EditText
+                    android:id="@+id/input_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="비밀번호"
+                    android:inputType="textPassword" />
+            </android.support.design.widget.TextInputLayout>
+
+            <!-- Password Re-enter Label -->
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:hint="비밀번호 재입력"/>
-        </android.support.design.widget.TextInputLayout>
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
+                android:theme="@style/TextLabel2">
 
-        <!-- ID Label -->
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:theme="@style/TextLabel2"
-            android:layout_marginBottom="5dp">
-            <EditText android:id="@+id/input_id"
+                <EditText
+                    android:id="@+id/input_reEnterPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="비밀번호 재입력"
+                    android:inputType="textPassword" />
+            </android.support.design.widget.TextInputLayout>
+
+            <!-- ID Label -->
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPersonName"
-                android:maxLength="10"
-                android:maxLines="1"
-                android:hint="닉네임" />
-        </android.support.design.widget.TextInputLayout>
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
+                android:theme="@style/TextLabel2">
+
+                <EditText
+                    android:id="@+id/input_id"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="닉네임"
+                    android:inputType="textPersonName"
+                    android:maxLength="10"
+                    android:maxLines="1" />
+            </android.support.design.widget.TextInputLayout>
 
 
-        <!-- age -->
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:theme="@style/TextLabel2"
-            android:layout_marginBottom="5dp">
-
-            <EditText android:id="@+id/input_age"
+            <!-- age -->
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="number"
-                android:hint="나이" />
-        </android.support.design.widget.TextInputLayout>
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
+                android:theme="@style/TextLabel2">
 
-        <!-- height -->
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:theme="@style/TextLabel2"
-            android:layout_marginBottom="5dp">
+                <EditText
+                    android:id="@+id/input_age"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="나이"
+                    android:inputType="number" />
+            </android.support.design.widget.TextInputLayout>
 
-            <EditText android:id="@+id/input_height"
+            <!-- height -->
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="number"
-                android:hint="키" />
-        </android.support.design.widget.TextInputLayout>
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
+                android:theme="@style/TextLabel2">
 
-        <!-- weight -->
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:theme="@style/TextLabel2"
-            android:layout_marginBottom="5dp">
+                <EditText
+                    android:id="@+id/input_height"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="키"
+                    android:inputType="number" />
+            </android.support.design.widget.TextInputLayout>
 
-            <EditText android:id="@+id/input_weight"
+            <!-- weight -->
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="number"
-                android:hint="몸무게" />
-        </android.support.design.widget.TextInputLayout>
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
+                android:theme="@style/TextLabel2">
 
-    </LinearLayout>
+                <EditText
+                    android:id="@+id/input_weight"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="몸무게"
+                    android:inputType="number" />
+            </android.support.design.widget.TextInputLayout>
+
+        </LinearLayout>
 
         <RelativeLayout
             android:id="@+id/sign_up_layout3"
-            android:layout_below="@+id/sign_up_layout2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/sign_up_layout2"
             android:paddingLeft="24dp"
             android:paddingRight="24dp">
 
@@ -144,49 +154,45 @@
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
-                android:theme="@style/TextLabel2"
-                >
+                android:layout_marginTop="5dp"
+                android:theme="@style/TextLabel2">
 
                 <EditText
                     android:id="@+id/input_bodytype"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="체형"
-                    android:inputType="none"
-                    />
+                    android:inputType="none" />
             </android.support.design.widget.TextInputLayout>
 
 
         </RelativeLayout>
 
 
-
         <!-- Signup Button -->
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/btn_signup"
-            android:layout_below="@+id/sign_up_layout3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="24dp"
-            android:padding="12dp"
-            android:background="@android:color/transparent"
-            android:text="회원가입 완료"
+            android:layout_below="@+id/sign_up_layout3"
             android:layout_centerHorizontal="true"
-            android:textSize="16dip"
-            />
+            android:layout_marginBottom="24dp"
+            android:layout_marginTop="24dp"
+            android:background="@android:color/transparent"
+            android:padding="12dp"
+            android:text="회원가입 완료"
+            android:textSize="16dip" />
 
         <TextView
             android:id="@+id/link_login"
-            android:layout_below="@+id/btn_signup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
-            android:text="이미 가입하셨나요?"
-            android:gravity="center"
+            android:layout_below="@+id/btn_signup"
             android:layout_centerHorizontal="true"
+            android:layout_marginBottom="24dp"
+            android:gravity="center"
+            android:text="이미 가입하셨나요?"
 
             />
 

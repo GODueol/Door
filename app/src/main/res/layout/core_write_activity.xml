@@ -37,8 +37,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="20dp"
-            android:background="@drawable/save_check"
-            />
+            android:background="@drawable/save_check" />
 
 
     </RelativeLayout>
@@ -56,18 +55,17 @@
 
             <RelativeLayout
                 android:id="@+id/image_edit_layout"
-                android:layout_centerHorizontal="true"
-                android:visibility="gone"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:visibility="gone">
 
                 <ImageView
                     android:id="@+id/edit_img"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:adjustViewBounds="true"
                     android:layout_centerHorizontal="true"
-                    />
+                    android:adjustViewBounds="true" />
 
                 <ImageButton
                     android:id="@+id/image_x_btn"
@@ -82,31 +80,26 @@
             </RelativeLayout>
 
 
-
             <RelativeLayout
                 android:id="@+id/edit_audio_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/image_edit_layout"
                 android:layout_marginTop="7dp"
-                android:visibility="gone"
-                >
+                android:visibility="gone">
 
                 <ImageButton
                     android:id="@+id/sound_x_btn"
                     android:layout_width="19dp"
                     android:layout_height="19dp"
-                    android:layout_alignParentTop="true"
                     android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
                     android:layout_marginRight="7dp"
                     android:layout_marginTop="7dp"
-                    android:background="@drawable/x_btn"
-                    />
+                    android:background="@drawable/x_btn" />
 
                 <SeekBar
                     android:id="@+id/seekBar"
-                    android:layout_below="@+id/sound_x_btn"
-                    android:layout_marginTop="25dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
@@ -114,10 +107,11 @@
                     android:layout_alignParentRight="true"
                     android:layout_alignParentStart="true"
                     android:layout_alignParentTop="true"
+                    android:layout_below="@+id/sound_x_btn"
+                    android:layout_marginTop="25dp"
                     android:clickable="false"
-                    android:thumb="@drawable/seekbar_thumb"
                     android:splitTrack="false"
-                    />
+                    android:thumb="@drawable/seekbar_thumb" />
 
                 <RelativeLayout
                     android:layout_width="wrap_content"
@@ -130,11 +124,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
-                        android:orientation="horizontal"
-                        android:weightSum="3"
                         android:layout_centerVertical="true"
                         android:layout_marginTop="5dp"
-                        >
+                        android:orientation="horizontal"
+                        android:weightSum="3">
 
 
                         <ImageButton
@@ -168,11 +161,10 @@
                         android:id="@+id/time"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:orientation="horizontal"
                         android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
                         android:layout_marginRight="10dp"
-                        >
+                        android:orientation="horizontal">
 
                         <TextView
                             android:id="@+id/textView_currentPosion"

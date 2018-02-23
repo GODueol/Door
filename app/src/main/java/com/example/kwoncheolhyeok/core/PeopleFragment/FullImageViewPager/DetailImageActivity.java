@@ -8,7 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.ViewPagerFixed;
-import com.example.kwoncheolhyeok.core.ScreenshotSetApplication;
 
 import java.util.ArrayList;
 
@@ -30,9 +29,9 @@ public class DetailImageActivity extends AppCompatActivity {
         Intent intent = getIntent();
         picUrlList = intent.getStringArrayListExtra("picUrlList");
 
-        int pagenumber = intent.getIntExtra("PagerPage",1);
+        int pagenumber = intent.getIntExtra("PagerPage", 1);
         mAdapter = new DetailImageViewPagerAdapter(getSupportFragmentManager(), picUrlList);
-        ViewPagerFixed viewPager= findViewById(R.id.viewpager);        //Viewpager 선언 및 초기화
+        ViewPagerFixed viewPager = findViewById(R.id.viewpager);        //Viewpager 선언 및 초기화
         viewPager.setAdapter(mAdapter);     //선언한 viewpager에 adapter를 연결
         viewPager.setCurrentItem(pagenumber);
 

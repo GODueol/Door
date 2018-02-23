@@ -8,8 +8,7 @@
         android:id="@+id/toolbar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fitsSystemWindows="true"
-        >
+        android:fitsSystemWindows="true">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
@@ -28,10 +27,9 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="@string/alarm_setting"
-            android:textStyle="bold"
-            android:textSize="15.5dp"
             android:textColor="@color/black"
-            />
+            android:textSize="15.5dp"
+            android:textStyle="bold" />
 
         <ImageButton
             android:id="@+id/saveButton"
@@ -41,8 +39,7 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="20dp"
             android:background="@drawable/save_check"
-            android:onClick="save"
-            />
+            android:onClick="save" />
 
     </RelativeLayout>
 
@@ -52,30 +49,28 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/toolbar_layout"
         android:layout_marginTop="10dp"
-        android:paddingTop="10dp"
         android:paddingBottom="10dp"
-        >
+        android:paddingTop="10dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:text="@string/set_new_message"
             android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
             android:layout_marginLeft="15dp"
+            android:text="@string/set_new_message"
             android:textColor="@color/black"
-            android:textSize="15dp"
-            />
+            android:textSize="15dp" />
 
         <Switch
             android:id="@+id/switch1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
             android:layout_marginRight="15dp"
-            android:theme="@style/ColorSwitchStyle"
-            android:checked="true"  />
+            android:checked="true"
+            android:theme="@style/ColorSwitchStyle" />
 
     </RelativeLayout>
 
@@ -84,31 +79,29 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/layout1"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
         android:layout_marginTop="10dp"
-        >
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:text="@string/set_new_follower"
             android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
             android:layout_marginLeft="15dp"
+            android:text="@string/set_new_follower"
             android:textColor="@color/black"
-            android:textSize="15dp"
-            />
+            android:textSize="15dp" />
 
         <Switch
             android:id="@+id/switch2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
             android:layout_marginRight="15dp"
-            android:theme="@style/ColorSwitchStyle"
-            android:checked="true" />
+            android:checked="true"
+            android:theme="@style/ColorSwitchStyle" />
 
     </RelativeLayout>
 
@@ -117,31 +110,29 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/layout2"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
         android:layout_marginTop="10dp"
-        >
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:text="@string/set_new_friends"
             android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
             android:layout_marginLeft="15dp"
+            android:text="@string/set_new_friends"
             android:textColor="@color/black"
-            android:textSize="15dp"
-            />
+            android:textSize="15dp" />
 
         <Switch
             android:id="@+id/switch3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
             android:layout_marginRight="15dp"
-            android:theme="@style/ColorSwitchStyle"
-            android:checked="true" />
+            android:checked="true"
+            android:theme="@style/ColorSwitchStyle" />
 
     </RelativeLayout>
 
@@ -150,31 +141,29 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/layout3"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
         android:layout_marginTop="10dp"
-        >
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:text="@string/set_new_post"
             android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
             android:layout_marginLeft="15dp"
+            android:text="@string/set_new_post"
             android:textColor="@color/black"
-            android:textSize="15dp"
-            />
+            android:textSize="15dp" />
 
         <Switch
             android:id="@+id/switch4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
             android:layout_marginRight="15dp"
-            android:theme="@style/ColorSwitchStyle"
-            android:checked="true"  />
+            android:checked="true"
+            android:theme="@style/ColorSwitchStyle" />
 
     </RelativeLayout>
 
@@ -183,32 +172,29 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/layout4"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
         android:layout_marginTop="10dp"
-        >
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:text="@string/set_new_heart"
             android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
             android:layout_marginLeft="15dp"
+            android:text="@string/set_new_heart"
             android:textColor="@color/black"
-            android:textSize="15dp"
-            />
+            android:textSize="15dp" />
 
         <Switch
             android:id="@+id/switch5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
             android:layout_marginRight="15dp"
-            android:theme="@style/ColorSwitchStyle"
             android:checked="true"
-            />
+            android:theme="@style/ColorSwitchStyle" />
 
     </RelativeLayout>
 

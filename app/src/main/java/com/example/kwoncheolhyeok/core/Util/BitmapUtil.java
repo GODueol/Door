@@ -26,23 +26,23 @@ public class BitmapUtil {
      * @return 리사이즈된 이미지 Bitmap 객체
      */
     public static Bitmap resizeBitmapImageFn(
-            Bitmap bmpSource, int maxResolution){
+            Bitmap bmpSource, int maxResolution) {
         int iWidth = bmpSource.getWidth();      //비트맵이미지의 넓이
         int iHeight = bmpSource.getHeight();     //비트맵이미지의 높이
-        int newWidth = iWidth ;
-        int newHeight = iHeight ;
+        int newWidth = iWidth;
+        int newHeight = iHeight;
         float rate = 0.0f;
 
         //이미지의 가로 세로 비율에 맞게 조절
-        if(iWidth > iHeight ){
-            if(maxResolution < iWidth ){
-                rate = maxResolution / (float) iWidth ;
+        if (iWidth > iHeight) {
+            if (maxResolution < iWidth) {
+                rate = maxResolution / (float) iWidth;
                 newHeight = (int) (iHeight * rate);
                 newWidth = maxResolution;
             }
-        }else{
-            if(maxResolution < iHeight ){
-                rate = maxResolution / (float) iHeight ;
+        } else {
+            if (maxResolution < iHeight) {
+                rate = maxResolution / (float) iHeight;
                 newWidth = (int) (iWidth * rate);
                 newHeight = maxResolution;
             }
@@ -116,12 +116,12 @@ public class BitmapUtil {
              */
             if (Build.VERSION.SDK_INT >= 5) {
                 Class<?> exifClass = Class.forName("android.media.ExifInterface");
-                Constructor<?> exifConstructor = exifClass.getConstructor(new Class[] { String.class });
-                Object exifInstance = exifConstructor.newInstance(new Object[] { src });
-                Method getAttributeInt = exifClass.getMethod("getAttributeInt", new Class[] { String.class, int.class });
+                Constructor<?> exifConstructor = exifClass.getConstructor(new Class[]{String.class});
+                Object exifInstance = exifConstructor.newInstance(new Object[]{src});
+                Method getAttributeInt = exifClass.getMethod("getAttributeInt", new Class[]{String.class, int.class});
                 Field tagOrientationField = exifClass.getField("TAG_ORIENTATION");
                 String tagOrientation = (String) tagOrientationField.get(null);
-                orientation = (Integer) getAttributeInt.invoke(exifInstance, new Object[] { tagOrientation, 1});
+                orientation = (Integer) getAttributeInt.invoke(exifInstance, new Object[]{tagOrientation, 1});
             }
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -147,8 +147,8 @@ public class BitmapUtil {
     public static String getRealPathFromURI(Context context, Uri contentUri) {
         Cursor cursor = null;
         try {
-            String[] proj = { MediaStore.Images.Media.DATA };
-            cursor = context.getContentResolver().query(contentUri,  proj, null, null, null);
+            String[] proj = {MediaStore.Images.Media.DATA};
+            cursor = context.getContentResolver().query(contentUri, proj, null, null, null);
             int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
             cursor.moveToFirst();
             return cursor.getString(column_index);

@@ -123,7 +123,8 @@ public class ChatFirebaseUtil {
         Long currentTime = getTime();
         Map<String, Object> childUpdates = new HashMap<>();
 
-        if (message.getImage() == null) {
+
+        if (message.getImage() == null) {        // 메세지일 경우
             childUpdates.put("/" + chat + "/" + room + "/" + key, message);
 
             childUpdates.put("/" + chatRoomList + "/" + targetUuid + "/" + userUuid + "/" + "lastChatTime", currentTime);
@@ -131,7 +132,8 @@ public class ChatFirebaseUtil {
 
             childUpdates.put("/" + chatRoomList + "/" + userUuid + "/" + targetUuid + "/" + "lastViewTime", currentTime);
             childUpdates.put("/" + chatRoomList + "/" + userUuid + "/" + targetUuid + "/" + "lastChat", message.getContent());
-        } else if (message.getContent() == null) {
+        } else if (message.getContent() == null) {          // 이미지일 경우
+
             childUpdates.put("/" + chat + "/" + room + "/" + key, message);
 
             childUpdates.put("/" + chatRoomList + "/" + targetUuid + "/" + userUuid + "/" + "lastChatTime", currentTime);
@@ -139,9 +141,13 @@ public class ChatFirebaseUtil {
             childUpdates.put("/" + chatRoomList + "/" + userUuid + "/" + targetUuid + "/" + "lastViewTime", currentTime);
             childUpdates.put("/" + chatRoomList + "/" + userUuid + "/" + targetUuid + "/" + "lastChat", "사진");
         }
-        databaseRef.updateChildren(childUpdates);
-        // 상대방에게 내정보를 담아서 메세지를 보냄
-        FirebaseSendPushMsg.sendPostToFCM(userUuid, "asdasd");
+        databaseRef.updateChildren(childUpdates).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                // 상대방에게 내정보를 담아서 메세지를 보냄
+                FirebaseSendPushMsg.sendPostToFCM(targetUuid,currentUser.getId(),context.getString(R.string.alertChat));
+            }
+        });
     }
 
     public void sendImageMessage(Uri outputFileUri) {

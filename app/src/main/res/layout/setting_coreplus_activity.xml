@@ -37,14 +37,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/toolbar_layout"
-        android:background="@color/white"
-        >
+        android:background="@color/white">
 
         <RelativeLayout
             android:id="@+id/main_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/txt1"
@@ -53,8 +51,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="25dp"
                 android:text="@string/cp_1"
-                android:textColor="@color/black"
-                />
+                android:textColor="@color/black" />
 
             <TextView
                 android:id="@+id/txt2"
@@ -81,9 +78,8 @@
                     android:id="@+id/cor2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="35dp"
                     android:layout_centerHorizontal="true"
-                    />
+                    android:layout_marginTop="35dp" />
 
             </RelativeLayout>
 
@@ -98,7 +94,7 @@
                 android:text="@string/cp_3"
                 android:textColor="@color/white"
                 android:textSize="15dp"
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
 
             <RelativeLayout
                 android:id="@+id/price_layout"
@@ -114,13 +110,13 @@
                     android:layout_centerHorizontal="true"
                     android:text="@string/cp_4"
                     android:textColor="@color/black"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold" />
 
                 <View
                     android:id="@+id/section_line1"
-                    android:layout_below="@+id/price1"
                     android:layout_width="180dp"
                     android:layout_height="0.5dip"
+                    android:layout_below="@+id/price1"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="5dp"
                     android:background="@color/black"></View>
@@ -134,17 +130,15 @@
                 android:layout_height="40dp"
                 android:layout_below="@+id/price_layout"
                 android:layout_marginTop="70dp"
-                android:background="@drawable/cp_function_background"
-                >
+                android:background="@drawable/cp_function_background">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/cp_6"
                     android:layout_centerInParent="true"
-                    android:textSize="16dp"
+                    android:text="@string/cp_6"
                     android:textColor="@color/white"
-                    />
+                    android:textSize="16dp" />
             </RelativeLayout>
 
             <TextView
@@ -152,46 +146,42 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/layout2"
+                android:layout_centerHorizontal="true"
                 android:layout_marginTop="90dp"
                 android:text="@string/cp_7"
-                android:textSize="13dp"
                 android:textColor="@color/black"
-                android:layout_centerHorizontal="true"
-                />
+                android:textSize="13dp" />
 
             <TextView
                 android:id="@+id/txt4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/txt3"
+                android:layout_centerHorizontal="true"
                 android:layout_marginTop="5dp"
                 android:text="@string/cp_8"
-                android:textSize="13dp"
                 android:textColor="@color/black"
-                android:layout_centerHorizontal="true"
-                />
-            
+                android:textSize="13dp" />
+
             <ImageView
                 android:id="@+id/img_cp_1"
                 android:layout_width="115dp"
                 android:layout_height="140dp"
-                android:background="@drawable/cp_1"
                 android:layout_below="@+id/txt4"
-                android:layout_marginTop="25dp"
                 android:layout_centerHorizontal="true"
-                />
+                android:layout_marginTop="25dp"
+                android:background="@drawable/cp_1" />
 
             <TextView
                 android:id="@+id/txt5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/img_cp_1"
-                android:layout_marginTop="20dp"
                 android:layout_centerHorizontal="true"
+                android:layout_marginTop="20dp"
                 android:text="@string/cp_9"
-                android:textSize="13dp"
                 android:textColor="@color/black"
-                />
+                android:textSize="13dp" />
 
             <RelativeLayout
                 android:id="@+id/cp_function_1"
@@ -199,18 +189,16 @@
                 android:layout_height="40dp"
                 android:layout_below="@+id/txt5"
                 android:layout_marginTop="95dp"
-                android:background="@drawable/cp_function_background"
-                >
+                android:background="@drawable/cp_function_background">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/cp_10"
                     android:layout_centerInParent="true"
-                    android:textSize="14dp"
-                    android:textStyle="bold"
+                    android:text="@string/cp_10"
                     android:textColor="@color/white"
-                    />
+                    android:textSize="14dp"
+                    android:textStyle="bold" />
 
             </RelativeLayout>
 
@@ -218,33 +206,30 @@
                 android:id="@+id/img_cp_2"
                 android:layout_width="265dp"
                 android:layout_height="230dp"
-                android:background="@drawable/cp_2"
                 android:layout_below="@+id/cp_function_1"
-                android:layout_marginTop="98dp"
                 android:layout_centerHorizontal="true"
-                />
+                android:layout_marginTop="98dp"
+                android:background="@drawable/cp_2" />
 
             <TextView
                 android:id="@+id/txt6"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/cp_11"
-                android:textColor="@color/black"
                 android:layout_below="@+id/img_cp_2"
-                android:layout_marginTop="20dp"
                 android:layout_centerHorizontal="true"
-                />
+                android:layout_marginTop="20dp"
+                android:text="@string/cp_11"
+                android:textColor="@color/black" />
 
             <TextView
                 android:id="@+id/txt7"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/cp_12"
-                android:textColor="@color/black"
                 android:layout_below="@+id/txt6"
-                android:layout_marginTop="5dp"
                 android:layout_centerHorizontal="true"
-                />
+                android:layout_marginTop="5dp"
+                android:text="@string/cp_12"
+                android:textColor="@color/black" />
 
             <RelativeLayout
                 android:id="@+id/cp_function_2"
@@ -252,18 +237,16 @@
                 android:layout_height="40dp"
                 android:layout_below="@+id/txt7"
                 android:layout_marginTop="95dp"
-                android:background="@drawable/cp_function_background"
-                >
+                android:background="@drawable/cp_function_background">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/cp_13"
                     android:layout_centerInParent="true"
-                    android:textSize="14dp"
-                    android:textStyle="bold"
+                    android:text="@string/cp_13"
                     android:textColor="@color/white"
-                    />
+                    android:textSize="14dp"
+                    android:textStyle="bold" />
 
             </RelativeLayout>
 
@@ -271,33 +254,30 @@
                 android:id="@+id/img_cp_3"
                 android:layout_width="320dp"
                 android:layout_height="140dp"
-                android:background="@drawable/cp_3"
                 android:layout_below="@+id/cp_function_2"
-                android:layout_marginTop="108dp"
                 android:layout_centerHorizontal="true"
-                />
+                android:layout_marginTop="108dp"
+                android:background="@drawable/cp_3" />
 
             <TextView
                 android:id="@+id/txt8"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/cp_14"
-                android:textColor="@color/black"
                 android:layout_below="@+id/img_cp_3"
-                android:layout_marginTop="45dp"
                 android:layout_centerHorizontal="true"
-                />
+                android:layout_marginTop="45dp"
+                android:text="@string/cp_14"
+                android:textColor="@color/black" />
 
             <TextView
                 android:id="@+id/txt9"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/cp_15"
-                android:textColor="@color/black"
                 android:layout_below="@+id/txt8"
-                android:layout_marginTop="5dp"
                 android:layout_centerHorizontal="true"
-                />
+                android:layout_marginTop="5dp"
+                android:text="@string/cp_15"
+                android:textColor="@color/black" />
 
             <RelativeLayout
                 android:id="@+id/cp_function_3"
@@ -305,18 +285,16 @@
                 android:layout_height="40dp"
                 android:layout_below="@+id/txt9"
                 android:layout_marginTop="95dp"
-                android:background="@drawable/cp_function_background"
-                >
+                android:background="@drawable/cp_function_background">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/cp_16"
                     android:layout_centerInParent="true"
-                    android:textSize="14dp"
-                    android:textStyle="bold"
+                    android:text="@string/cp_16"
                     android:textColor="@color/white"
-                    />
+                    android:textSize="14dp"
+                    android:textStyle="bold" />
 
             </RelativeLayout>
 
@@ -325,32 +303,29 @@
                 android:layout_width="115dp"
                 android:layout_height="140dp"
                 android:layout_below="@+id/cp_function_3"
-                android:layout_marginTop="98dp"
                 android:layout_centerHorizontal="true"
-                />
+                android:layout_marginTop="98dp" />
 
 
             <TextView
                 android:id="@+id/txt10"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/cp_17"
-                android:textColor="@color/black"
                 android:layout_below="@+id/img_cp_4"
-                android:layout_marginTop="45dp"
                 android:layout_centerHorizontal="true"
-                />
+                android:layout_marginTop="45dp"
+                android:text="@string/cp_17"
+                android:textColor="@color/black" />
 
             <TextView
                 android:id="@+id/txt11"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/cp_18"
-                android:textColor="@color/black"
                 android:layout_below="@+id/txt10"
-                android:layout_marginTop="5dp"
                 android:layout_centerHorizontal="true"
-                />
+                android:layout_marginTop="5dp"
+                android:text="@string/cp_18"
+                android:textColor="@color/black" />
 
             <RelativeLayout
                 android:id="@+id/cp_function_4"
@@ -358,18 +333,16 @@
                 android:layout_height="40dp"
                 android:layout_below="@+id/txt10"
                 android:layout_marginTop="95dp"
-                android:background="@drawable/cp_function_background"
-                >
+                android:background="@drawable/cp_function_background">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/cp_19"
                     android:layout_centerInParent="true"
-                    android:textSize="14dp"
-                    android:textStyle="bold"
+                    android:text="@string/cp_19"
                     android:textColor="@color/white"
-                    />
+                    android:textSize="14dp"
+                    android:textStyle="bold" />
 
             </RelativeLayout>
 
@@ -378,22 +351,20 @@
                 android:id="@+id/img_cp_5"
                 android:layout_width="335dp"
                 android:layout_height="280dp"
-                android:background="@drawable/cp_5"
                 android:layout_below="@+id/cp_function_4"
-                android:layout_marginTop="98dp"
                 android:layout_centerHorizontal="true"
-                />
+                android:layout_marginTop="98dp"
+                android:background="@drawable/cp_5" />
 
             <TextView
                 android:id="@+id/txt12"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/cp_20"
-                android:textColor="@color/black"
                 android:layout_below="@+id/img_cp_5"
-                android:layout_marginTop="20dp"
                 android:layout_centerHorizontal="true"
-                />
+                android:layout_marginTop="20dp"
+                android:text="@string/cp_20"
+                android:textColor="@color/black" />
 
             <RelativeLayout
                 android:id="@+id/cp_function_5"
@@ -401,18 +372,16 @@
                 android:layout_height="40dp"
                 android:layout_below="@+id/txt12"
                 android:layout_marginTop="95dp"
-                android:background="@drawable/cp_function_background"
-                >
+                android:background="@drawable/cp_function_background">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/cp_21"
                     android:layout_centerInParent="true"
-                    android:textSize="14dp"
-                    android:textStyle="bold"
+                    android:text="@string/cp_21"
                     android:textColor="@color/white"
-                    />
+                    android:textSize="14dp"
+                    android:textStyle="bold" />
 
             </RelativeLayout>
 
@@ -420,40 +389,37 @@
                 android:id="@+id/img_cp_6"
                 android:layout_width="115dp"
                 android:layout_height="185dp"
-                android:background="@drawable/cp_6"
                 android:layout_below="@+id/cp_function_5"
-                android:layout_marginTop="85dp"
                 android:layout_centerHorizontal="true"
-                />
+                android:layout_marginTop="85dp"
+                android:background="@drawable/cp_6" />
 
 
             <TextView
                 android:id="@+id/txt13"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/cp_22"
-                android:textColor="@color/black"
                 android:layout_below="@+id/img_cp_6"
-                android:layout_marginTop="20dp"
                 android:layout_centerHorizontal="true"
-                />
+                android:layout_marginTop="20dp"
+                android:text="@string/cp_22"
+                android:textColor="@color/black" />
 
             <TextView
                 android:id="@+id/txt14"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/cp_23"
-                android:textColor="@color/black"
                 android:layout_below="@+id/txt13"
-                android:layout_marginTop="5dp"
                 android:layout_centerHorizontal="true"
-                />
+                android:layout_marginTop="5dp"
+                android:text="@string/cp_23"
+                android:textColor="@color/black" />
 
             <View
                 android:id="@+id/section_line2"
-                android:layout_below="@+id/txt14"
                 android:layout_width="match_parent"
                 android:layout_height="0.5dip"
+                android:layout_below="@+id/txt14"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="75dp"
                 android:background="@color/black"></View>
@@ -469,48 +435,44 @@
                 android:text="@string/cp_3"
                 android:textColor="@color/white"
                 android:textSize="15dp"
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/txt15"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/cp_24"
-                android:textColor="@color/black"
                 android:layout_below="@+id/btn_cp_subs2"
-                android:layout_marginTop="60dp"
                 android:layout_centerHorizontal="true"
-                />
+                android:layout_marginTop="60dp"
+                android:text="@string/cp_24"
+                android:textColor="@color/black" />
 
             <LinearLayout
                 android:id="@+id/layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/txt15"
-                android:orientation="horizontal"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="5dp"
                 android:layout_marginBottom="100dp"
-                >
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/txt16"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/cp_25"
-                android:textColor="@color/skyblue"
-                android:textStyle="bold"
-                android:layout_gravity="center_vertical"
-                />
+                <TextView
+                    android:id="@+id/txt16"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/cp_25"
+                    android:textColor="@color/skyblue"
+                    android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/txt17"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/cp_26"
-                android:textColor="@color/black"
-                android:layout_gravity="center_vertical"
-                />
+                <TextView
+                    android:id="@+id/txt17"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/cp_26"
+                    android:textColor="@color/black" />
 
             </LinearLayout>
 

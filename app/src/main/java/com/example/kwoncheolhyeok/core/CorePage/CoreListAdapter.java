@@ -30,8 +30,6 @@ import com.example.kwoncheolhyeok.core.Entity.CoreListItem;
 import com.example.kwoncheolhyeok.core.Entity.CorePost;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.Exception.ChildSizeMaxException;
-import com.example.kwoncheolhyeok.core.MessageActivity.MessageActivity;
-import com.example.kwoncheolhyeok.core.PeopleFragment.FullImageActivity;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
@@ -67,14 +65,13 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
     private int currentSeekBarPosition;
 
     private String currentPlayUrl = "";
-    
 
 
     CoreListAdapter(List<CoreListItem> coreListItems, Context context, String cUuid) {
         this.coreListItems = coreListItems;
         this.context = context;
         this.cUuid = cUuid;
-        this.mediaPlayer=  new MediaPlayer();
+        this.mediaPlayer = new MediaPlayer();
         currentHolder = new CorePostHolder(new View(context));
         postsRef = FirebaseDatabase.getInstance().getReference().child("posts");
     }
@@ -94,18 +91,18 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
         final String mUuid = DataContainer.getInstance().getUid();
 
         User user = coreListItem.getUser();
-        if(user != null) {  // 주인글
+        if (user != null) {  // 주인글
             setMasterPost(holder, corePost, user);
         } else {    // 타인글
             setAnonymousPost(holder, coreListItem, corePost, mUuid);
         }
 
 
-        if(corePost.getUuid().equals(mUuid)){   // 본인 게시물
+        if (corePost.getUuid().equals(mUuid)) {   // 본인 게시물
             // 수정 삭제 가능
             setPostMenu(holder, coreListItem, R.menu.core_post_normal_menu);
 
-        } else if(cUuid.equals(mUuid)){ // Core 주인이 뷰어일 경우
+        } else if (cUuid.equals(mUuid)) { // Core 주인이 뷰어일 경우
             // 삭제 가능, Edit은 불가능
             setPostMenu(holder, coreListItem, R.menu.core_post_master_menu);
 
@@ -136,7 +133,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
         });
 
         // seekBar Sync
-        if(currentSeekBarPosition == i) {
+        if (currentSeekBarPosition == i) {
             resetCurrentHolder(holder);
             currentHolder.seekBar.setMax(this.mediaPlayer.getDuration());
         }
@@ -144,8 +141,8 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
         holder.startAndPause.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                CoreActivity coreActivity = (CoreActivity)context;
-                if(b){
+                CoreActivity coreActivity = (CoreActivity) context;
+                if (b) {
                     doStart((CorePostHolder) coreActivity.getHolder(holder.getAdapterPosition()), corePost.getSoundUrl());
                 } else {
                     doPause();
@@ -188,7 +185,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
         holder.core_id.setText(R.string.unknown);
         holder.core_subProfile.setText("");
 
-        if(cUuid.equals(mUuid)) {   // 주인이 봤을때
+        if (cUuid.equals(mUuid)) {   // 주인이 봤을때
             holder.btn_yes.setOnCheckedChangeListener(null);
             holder.btn_pass.setOnCheckedChangeListener(null);
             holder.btn_no.setOnCheckedChangeListener(null);
@@ -198,25 +195,25 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
             holder.btn_no.setClickable(false);
         }
 
-        if(corePost.getReply() == null) {
+        if (corePost.getReply() == null) {
             holder.btn_yes.setChecked(false);
             holder.btn_pass.setChecked(false);
             holder.btn_no.setChecked(false);
-        } else if(corePost.getReply().equals("yes")){
+        } else if (corePost.getReply().equals("yes")) {
             holder.btn_yes.setChecked(true);
             holder.btn_pass.setChecked(false);
             holder.btn_no.setChecked(false);
-        } else if(corePost.getReply().equals("pass")){
+        } else if (corePost.getReply().equals("pass")) {
             holder.btn_yes.setChecked(false);
             holder.btn_pass.setChecked(true);
             holder.btn_no.setChecked(false);
-        } else if(corePost.getReply().equals("no")){
+        } else if (corePost.getReply().equals("no")) {
             holder.btn_yes.setChecked(false);
             holder.btn_pass.setChecked(false);
             holder.btn_no.setChecked(true);
         }
 
-        if(cUuid.equals(mUuid)) {   // 주인이 봤을때
+        if (cUuid.equals(mUuid)) {   // 주인이 봤을때
             holder.btn_yes.setOnCheckedChangeListener(getListener(coreListItem, "yes"));
             holder.btn_pass.setOnCheckedChangeListener(getListener(coreListItem, "pass"));
             holder.btn_no.setOnCheckedChangeListener(getListener(coreListItem, "no"));
@@ -228,11 +225,11 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
         holder.core_img.setVisibility(View.VISIBLE);
 
         // Sound
-        if(corePost.getSoundUrl() != null) {
+        if (corePost.getSoundUrl() != null) {
             holder.core_media.setVisibility(View.VISIBLE);
 
             // 미디어 플레이어를 수정했을 경우 초기화
-            if(currentSeekBarPosition == holder.getAdapterPosition() && !currentPlayUrl.equals(corePost.getSoundUrl())) {
+            if (currentSeekBarPosition == holder.getAdapterPosition() && !currentPlayUrl.equals(corePost.getSoundUrl())) {
                 mediaPlayer.seekTo(0);
                 if (currentHolder.textView_maxTime != null) {
                     currentHolder.textView_maxTime.setText("");
@@ -251,7 +248,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
         holder.core_id.setText(user.getId());
         holder.core_subProfile.setText(UiUtil.getInstance().setSubProfile(user));
 
-        if(holder.core_img != null) Glide.with(context /* context */)
+        if (holder.core_img != null) Glide.with(context /* context */)
                 .load(corePost.getPictureUrl())
                 .into(holder.core_img);
     }
@@ -268,7 +265,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                     public boolean onMenuItemClick(MenuItem menuItem) {
                         int i = menuItem.getItemId();
 
-                        switch (i){
+                        switch (i) {
                             case R.id.edit:
                                 Intent intent = new Intent(context, CoreWriteActivity.class);
                                 intent.putExtra("cUuid", cUuid);
@@ -283,7 +280,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                                 UiUtil.getInstance().showDialog(context, "유저 차단", "해당 유저를 차단하시겠습니까?", new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int whichButton) {
                                         final User mUser = DataContainer.getInstance().getUser();
-                                        if(mUser.getBlockUsers().size() >= DataContainer.ChildrenMax) {
+                                        if (mUser.getBlockUsers().size() >= DataContainer.ChildrenMax) {
                                             Toast.makeText(context, DataContainer.ChildrenMax + "명을 초과할 수 없습니다", Toast.LENGTH_SHORT).show();
                                             return;
                                         }
@@ -353,8 +350,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                 if (isChecked) {
                     postsRef.child(cUuid).child(coreListItem.getPostKey())
                             .child("reply").setValue(value);
-                }
-                else {
+                } else {
                     postsRef.child(cUuid).child(coreListItem.getPostKey())
                             .child("reply").setValue(null);
                 }
@@ -368,8 +364,8 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
     }
 
     class CorePostHolder extends RecyclerView.ViewHolder {
-        ImageView core_pic, core_img ;
-//        ImageButton Core_heart;
+        ImageView core_pic, core_img;
+        //        ImageButton Core_heart;
         ImageButton core_setting;
         TextView core_id, core_subProfile, core_date, core_contents, core_heart_count;
         LikeButton core_heart_btn;
@@ -393,7 +389,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
             core_date = itemView.findViewById(R.id.core_date);
             core_contents = itemView.findViewById(R.id.core_contents);
 
-            core_setting= itemView.findViewById(R.id.setting);
+            core_setting = itemView.findViewById(R.id.setting);
 
             core_heart_count = itemView.findViewById(R.id.heart_count_txt);
 //            core_heart= itemView.findViewById(R.id.heart_count);
@@ -415,23 +411,24 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 
 
     // Convert millisecond to string.
-    private String millisecondsToString(int milliseconds)  {
+    private String millisecondsToString(int milliseconds) {
         long minutes = TimeUnit.MILLISECONDS.toMinutes((long) milliseconds);
-        long seconds =  TimeUnit.MILLISECONDS.toSeconds((long) milliseconds) ;
-        return minutes+":"+ seconds;
+        long seconds = TimeUnit.MILLISECONDS.toSeconds((long) milliseconds);
+        return minutes + ":" + seconds;
     }
 
 
-    private void doStart(CorePostHolder holder, String url)  {
+    private void doStart(CorePostHolder holder, String url) {
 
         // 다른 아이템의 플레이어를 중단
-        if(currentSeekBarPosition != holder.getAdapterPosition() && currentHolder.startAndPause.isChecked()) currentHolder.startAndPause.performClick();
+        if (currentSeekBarPosition != holder.getAdapterPosition() && currentHolder.startAndPause.isChecked())
+            currentHolder.startAndPause.performClick();
 
         // syncHolder
         resetCurrentHolder(holder);
 
-        if(!currentPlayUrl.equals(url) || currentPlayUrl.equals("") ||
-                holder.textView_currentPosion.getText().equals(holder.textView_maxTime.getText())){
+        if (!currentPlayUrl.equals(url) || currentPlayUrl.equals("") ||
+                holder.textView_currentPosion.getText().equals(holder.textView_maxTime.getText())) {
             try {
                 this.mediaPlayer.reset();
                 this.mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -451,7 +448,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 
         int currentPosition = this.mediaPlayer.getCurrentPosition();
 
-        if(currentPosition== 0)  {
+        if (currentPosition == 0) {
 
             holder.seekBar.setMax(duration);
             String maxTimeString = this.millisecondsToString(duration);
@@ -462,18 +459,18 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 
         // Create a thread to update position of SeekBar.
         UpdateSeekBarThread updateSeekBarThread = new UpdateSeekBarThread();
-        threadHandler.postDelayed(updateSeekBarThread,50);
+        threadHandler.postDelayed(updateSeekBarThread, 50);
     }
 
     // Thread to Update position for SeekBar.
     class UpdateSeekBarThread implements Runnable {
 
-        public void run()  {
+        public void run() {
             int currentPosition = mediaPlayer.getCurrentPosition();
             String currentPositionStr = millisecondsToString(currentPosition);
             currentHolder.textView_currentPosion.setText(currentPositionStr);
 
-            if(context == null || currentHolder.textView_currentPosion.getText().equals(currentHolder.textView_maxTime.getText())){
+            if (context == null || currentHolder.textView_currentPosion.getText().equals(currentHolder.textView_maxTime.getText())) {
                 // 사운드 재생 끝
                 currentHolder.startAndPause.setChecked(false);  // 버튼 Stop
                 currentHolder.textView_currentPosion.setText("0:0");
@@ -487,38 +484,38 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
     }
 
     // When user click to "Pause".
-    private void doPause()  {
+    private void doPause() {
         this.mediaPlayer.pause();
     }
 
-    void clickPause(){
+    void clickPause() {
         CoreActivity coreActivity = (CoreActivity) context;
         CorePostHolder corePostHolder = (CorePostHolder) coreActivity.getHolder(currentSeekBarPosition);
-        if(corePostHolder == null) return;
+        if (corePostHolder == null) return;
         corePostHolder.startAndPause.setChecked(false);
     }
 
     // When user click to "Rewind".
-    private void doRewind(int position)  {
-        if(position != currentSeekBarPosition) return;
+    private void doRewind(int position) {
+        if (position != currentSeekBarPosition) return;
         int currentPosition = this.mediaPlayer.getCurrentPosition();
         // 5 seconds.
         int SUBTRACT_TIME = 5000;
 
-        if(currentPosition - SUBTRACT_TIME > 0 )  {
+        if (currentPosition - SUBTRACT_TIME > 0) {
             this.mediaPlayer.seekTo(currentPosition - SUBTRACT_TIME);
         }
     }
 
     // When user click to "Fast-Forward".
-    private void doFastForward(int position)  {
-        if(position != currentSeekBarPosition) return;
+    private void doFastForward(int position) {
+        if (position != currentSeekBarPosition) return;
         int currentPosition = this.mediaPlayer.getCurrentPosition();
         int duration = this.mediaPlayer.getDuration();
         // 5 seconds.
         int ADD_TIME = 5000;
 
-        if(currentPosition + ADD_TIME < duration)  {
+        if (currentPosition + ADD_TIME < duration) {
             this.mediaPlayer.seekTo(currentPosition + ADD_TIME);
         }
     }

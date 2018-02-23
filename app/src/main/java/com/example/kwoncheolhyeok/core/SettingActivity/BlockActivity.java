@@ -1,22 +1,16 @@
 package com.example.kwoncheolhyeok.core.SettingActivity;
 
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.SpannableString;
-import android.text.style.ForegroundColorSpan;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.example.kwoncheolhyeok.core.Activity.MainActivity;
-import com.example.kwoncheolhyeok.core.Activity.MapsActivity;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.Event.RefreshLocationEvent;
 import com.example.kwoncheolhyeok.core.FriendsActivity.UserListAdapter;
@@ -102,8 +96,8 @@ public class BlockActivity extends UserListBaseActivity {
                 return true;
             case R.id.unblock_all:
                 final User user = DataContainer.getInstance().getUser();
-                if(user.getBlockUsers().size()==0) {
-                    Toast.makeText(getBaseContext(),"이미 모든 유저 블락이 해제되어있습니다",Toast.LENGTH_SHORT).show();
+                if (user.getBlockUsers().size() == 0) {
+                    Toast.makeText(getBaseContext(), "이미 모든 유저 블락이 해제되어있습니다", Toast.LENGTH_SHORT).show();
                     return true;
                 }
 

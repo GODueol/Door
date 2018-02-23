@@ -368,16 +368,16 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
             public void onClick(View v) {
 
                 UiUtil.getInstance().showDialog(ProfileModifyActivity.this, "사진 삭제", " 사진을 삭제하시겠습니까?"
-                    , new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
+                        , new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
 
-                        targetPic.setImageResource(R.drawable.a);
-                        uriMap.put(targetPic.getId(),null);
-                    }
-                }, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                    }
-                });
+                                targetPic.setImageResource(R.drawable.a);
+                                uriMap.put(targetPic.getId(), null);
+                            }
+                        }, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                            }
+                        });
             }
         };
 
@@ -789,7 +789,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
             tasks.add(userTask);
 
             // 사진
-            for(int id : uriMap.keySet()){
+            for (int id : uriMap.keySet()) {
                 final ImageView targetImageView = findViewById(id);
                 final Uri uri = uriMap.get(id);
 
@@ -799,7 +799,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
                 final StorageReference thumbNailSpaceRef = storageRef.child(getPicPath(targetImageView).replace(".jpg", "_thumbNail.jpg"));
 
 
-                if(uri == null){
+                if (uri == null) {
                     // 삭제
                     Task task = spaceRef.delete();
 
@@ -829,12 +829,13 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
                                 // make thumbnail
                                 try {
                                     UploadTask thumNailTask = galleryPick.makeThumbNail(thumbNailSpaceRef, uri);
-                                    if(thumNailTask != null) thumNailTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                        @Override
-                                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                            saveUserThumbNailPicUrl(taskSnapshot.getDownloadUrl(), targetImageView);
-                                        }
-                                    });
+                                    if (thumNailTask != null)
+                                        thumNailTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                            @Override
+                                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                                saveUserThumbNailPicUrl(taskSnapshot.getDownloadUrl(), targetImageView);
+                                            }
+                                        });
                                     else removeUserThumbNailPicUrl(targetImageView);
                                 } catch (FileNotFoundException e) {
                                     e.printStackTrace();
@@ -853,11 +854,11 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
                 }
             }
 
-            for(Task task : tasks){
+            for (Task task : tasks) {
                 task.addOnCompleteListener(new OnCompleteListener() {
                     @Override
                     public void onComplete(@NonNull Task compTask) {
-                        for(Task task : tasks) {
+                        for (Task task : tasks) {
                             if (!task.isComplete()) return;
                         }
                         // 성공시 백버튼

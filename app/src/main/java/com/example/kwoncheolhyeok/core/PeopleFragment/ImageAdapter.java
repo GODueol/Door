@@ -2,7 +2,6 @@ package com.example.kwoncheolhyeok.core.PeopleFragment;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,19 +22,20 @@ public class ImageAdapter extends BaseAdapter {
     private IndexedTreeSet<GridItem> mItems = new IndexedTreeSet<>(new Comparator<GridItem>() {
         @Override
         public int compare(GridItem item1, GridItem item2) {
-            if(item1.getUuid().equals(item2.getUuid())) return 0;
-            if(item2.getUuid().equals(DataContainer.getInstance().getUid())) return 1;   // 1. 본인계정
-            if(item1.getUuid().equals(DataContainer.getInstance().getUid())) return -1;   // 1. 본인계정
-            if(item1.distance != item2.distance) {
+            if (item1.getUuid().equals(item2.getUuid())) return 0;
+            if (item2.getUuid().equals(DataContainer.getInstance().getUid())) return 1;   // 1. 본인계정
+            if (item1.getUuid().equals(DataContainer.getInstance().getUid()))
+                return -1;   // 1. 본인계정
+            if (item1.distance != item2.distance) {
                 float diff = (item1.distance - item2.distance);
-                if(diff<0.0) return -1;
-                if(diff>0.0) return 1;
+                if (diff < 0.0) return -1;
+                if (diff > 0.0) return 1;
                 return 0;
             }
 
             int compReturn = item1.getUuid().compareTo(item2.getUuid());
-            if(compReturn<0) return -1;
-            if(compReturn>0) return 1;
+            if (compReturn < 0) return -1;
+            if (compReturn > 0) return 1;
             return 0;
         }
     });
@@ -63,7 +63,7 @@ public class ImageAdapter extends BaseAdapter {
         return 0;
     }
 
-    static class ViewHolder{
+    static class ViewHolder {
         ImageView imageView;
         TextView textView;
     }
@@ -75,7 +75,7 @@ public class ImageAdapter extends BaseAdapter {
         GridItem item;
         try {
             item = getItem(i);
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
@@ -98,27 +98,27 @@ public class ImageAdapter extends BaseAdapter {
                 .into(holder.imageView);
 
         // 거리 출력
-        holder.textView.setText(item.getSummaryUser().getCorePostCount()+ " CORE" );
+        holder.textView.setText(item.getSummaryUser().getCorePostCount() + " CORE");
         holder.textView.setTextSize((float) 15.5);
 
         return v;
     }
 
-    void addItem(GridItem item){
-        if(itemHashMap.containsKey(item.getUuid())){
+    void addItem(GridItem item) {
+        if (itemHashMap.containsKey(item.getUuid())) {
             mItems.remove(itemHashMap.get(item.getUuid()));
         }
         mItems.add(item);
         itemHashMap.put(item.getUuid(), item);
     }
 
-    GridItem getItem(String uuid){
+    GridItem getItem(String uuid) {
         return itemHashMap.get(uuid);
     }
 
-    void remove(String uuid){
-        if(!itemHashMap.containsKey(uuid)) return;
-        if(mItems.remove(itemHashMap.get(uuid))) {
+    void remove(String uuid) {
+        if (!itemHashMap.containsKey(uuid)) return;
+        if (mItems.remove(itemHashMap.get(uuid))) {
             itemHashMap.remove(uuid);
         }
     }

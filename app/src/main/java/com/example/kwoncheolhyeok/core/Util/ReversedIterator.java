@@ -12,7 +12,7 @@ public class ReversedIterator<T> implements Iterable<T> {
 
     private List<T> list;
 
-    public ReversedIterator(List<T> list){
+    public ReversedIterator(List<T> list) {
         this.list = list;
     }
 
@@ -27,18 +27,18 @@ public class ReversedIterator<T> implements Iterable<T> {
 
         // The iterator returned to the caller will
         // work based on the ListIterator
-        return new Iterator<T>(){
+        return new Iterator<T>() {
 
             // hasNext() and next() methods call in fact
             // the reverse operations in ListIterator
 
             @Override
-            public boolean hasNext(){
+            public boolean hasNext() {
                 return iterator.hasPrevious();
             }
 
             @Override
-            public T next(){
+            public T next() {
                 return iterator.previous();
             }
 

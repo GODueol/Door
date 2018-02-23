@@ -1,17 +1,15 @@
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content" >
+    android:layout_height="wrap_content">
 
 
     <LinearLayout
         android:id="@+id/min_max_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="18dp"
-        android:orientation="horizontal"
         android:layout_centerHorizontal="true"
-        >
+        android:layout_marginTop="18dp"
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/age_nouse"
@@ -29,14 +27,13 @@
     </LinearLayout>
 
 
-
     <LinearLayout
         android:id="@+id/numberPicker_layout"
-        android:layout_below="@+id/min_max_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_below="@+id/min_max_layout"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
         android:orientation="horizontal">
 
 
@@ -47,8 +44,7 @@
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:layout_marginRight="5dp"
-            android:theme="@style/NumberPickerText"
-            />
+            android:theme="@style/NumberPickerText" />
 
         <NumberPicker
             android:id="@+id/numberPicker2"
@@ -78,9 +74,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:weightSum="1"
             android:theme="@style/NumberPickerText"
-            />
+            android:weightSum="1" />
 
     </LinearLayout>
 
@@ -88,29 +83,27 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/numberPicker_layout"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="40dp"
-        android:orientation="horizontal"
         android:layout_centerHorizontal="true"
-        android:weightSum="3"
-        >
+        android:layout_marginBottom="40dp"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal"
+        android:weightSum="3">
 
         <TextView
             android:id="@+id/button1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Set"
-            android:textSize="15dp"
-            android:layout_weight="0.5"
             android:layout_marginRight="10dp"
-            />
+            android:layout_weight="0.5"
+            android:text="Set"
+            android:textSize="15dp" />
 
         <TextView
             android:id="@+id/button2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0.5"
             android:layout_marginLeft="10dp"
+            android:layout_weight="0.5"
             android:text="Cancel"
             android:textSize="15dp"
 
@@ -118,7 +111,6 @@
             />
 
     </LinearLayout>
-
 
 
 </RelativeLayout>

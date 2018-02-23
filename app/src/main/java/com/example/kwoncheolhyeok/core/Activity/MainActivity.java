@@ -53,8 +53,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
 /**
- *
- * drawer / viewpager drag duplication issue 
+ * drawer / viewpager drag duplication issue
  */
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -66,7 +65,7 @@ public class MainActivity extends AppCompatActivity
     //View people, board, club;
 
     ViewPager viewPager = null;
-    Drawable icon_open,icon_close;
+    Drawable icon_open, icon_close;
     ImageView profileImage;
 
     private CloseActivityHandler closeActivityHandler;
@@ -112,7 +111,7 @@ public class MainActivity extends AppCompatActivity
         Menu menu = navigationView.getMenu();
         MenuItem tools = menu.findItem(R.id.nav_coreplus);
         SpannableString s = new SpannableString(tools.getTitle());
-        s.setSpan(new TextAppearanceSpan(this, R.style.CorePlusColor),0,s.length(),0);
+        s.setSpan(new TextAppearanceSpan(this, R.style.CorePlusColor), 0, s.length(), 0);
         tools.setTitle(s);
 
         //네비게이션 안의 아이콘 색을 오리지널로 표현
@@ -138,8 +137,8 @@ public class MainActivity extends AppCompatActivity
         try {
             LatLng latLng = p.getExtras().getParcelable("latLng");
             tabPagerAdapter.setLatLng(latLng);
-        }catch (Exception e){
-            Log.d("main","익셉션");
+        } catch (Exception e) {
+            Log.d("main", "익셉션");
         }
         viewPager.setAdapter(tabPagerAdapter);
         viewPager.setCurrentItem(0);
@@ -178,9 +177,9 @@ public class MainActivity extends AppCompatActivity
 
         // 로그인 시간 Update
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if(user == null) return;
+        if (user == null) return;
         User mUser = DataContainer.getInstance().getUser();
-        if(mUser == null || mUser.getEmail().isEmpty() || mUser.getEmail().equals("")) {
+        if (mUser == null || mUser.getEmail().isEmpty() || mUser.getEmail().equals("")) {
             Toast.makeText(getApplicationContext(), "로그인 실패", Toast.LENGTH_SHORT).show();
             logout();
             return;
@@ -193,7 +192,7 @@ public class MainActivity extends AppCompatActivity
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Log.d(getLocalClassName(),"Success Save Login Time");
+                        Log.d(getLocalClassName(), "Success Save Login Time");
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -216,7 +215,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String picUrl1 = (String) dataSnapshot.getValue();
-                if(picUrl1 == null) return;
+                if (picUrl1 == null) return;
                 Glide.with(getBaseContext()).load(picUrl1).into(profileImage);
             }
 
@@ -245,18 +244,18 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         switch (id) {
-            case R.id.find_map :
+            case R.id.find_map:
                 Intent i = new Intent(MainActivity.this, MapsActivity.class);
                 startActivityForResult(i, 0);
                 return true;
-            case R.id.find_id :
+            case R.id.find_id:
                 startActivity(new Intent(MainActivity.this, FindUserActivity.class));
                 return true;
-            case R.id.lock_all :
+            case R.id.lock_all:
 
                 final User user = DataContainer.getInstance().getUser();
-                if(user.getUnLockUsers().size()==0) {
-                    Toast.makeText(getBaseContext(),"이미 모든 유저에게 사진 잠금이 설정되어있습니다",Toast.LENGTH_SHORT).show();
+                if (user.getUnLockUsers().size() == 0) {
+                    Toast.makeText(getBaseContext(), "이미 모든 유저에게 사진 잠금이 설정되어있습니다", Toast.LENGTH_SHORT).show();
                     return true;
                 }
 
@@ -314,7 +313,7 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_People) {
             viewPager.setCurrentItem(0);
         } else if (id == R.id.nav_mycore) {
-            UiUtil.getInstance().goToCoreActivity(MainActivity.this,DataContainer.getInstance().getUid());
+            UiUtil.getInstance().goToCoreActivity(MainActivity.this, DataContainer.getInstance().getUid());
         } else if (id == R.id.nav_message) {
 
             Intent i = new Intent(MainActivity.this, MessageActivity.class);
@@ -329,8 +328,8 @@ public class MainActivity extends AppCompatActivity
             Intent i = new Intent(MainActivity.this, SettingActivity.class);
             startActivityForResult(i, SETTING);
 
-        } else if (id==R.id.nav_coreplus){
-            Intent i = new Intent (MainActivity.this, CorePlusActivity.class);
+        } else if (id == R.id.nav_coreplus) {
+            Intent i = new Intent(MainActivity.this, CorePlusActivity.class);
             startActivity(i);
 
         }
@@ -349,7 +348,7 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    public void ToggleIconSet(){
+    public void ToggleIconSet() {
         Drawable drawable = ResourcesCompat.getDrawable(getResources(), R.drawable.icon, getTheme());
         Drawable drawable2 = ResourcesCompat.getDrawable(getResources(), R.drawable.icon2, getTheme());
         Bitmap bitmap = null;
@@ -367,10 +366,11 @@ public class MainActivity extends AppCompatActivity
             icon_close = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap2, 85, 85, true));
         }
     }
+
     /**
      * 토클 이미지 변경
      */
-    public void changeToggleIcon(){
+    public void changeToggleIcon() {
 
         if (drawer.isDrawerVisible(GravityCompat.START)) {
             //드로워 열었을 때 아이콘
@@ -382,6 +382,7 @@ public class MainActivity extends AppCompatActivity
             drawer.openDrawer(GravityCompat.START);
         }
     }
+
     @Override
     protected void onDestroy() {
         BusProvider.getInstance().unregister(this);

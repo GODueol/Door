@@ -73,7 +73,7 @@ public class ScreenShotSetUtil {
         // 코어 아이콘 박기
         Resources r = context.getResources();
         Bitmap icon = BitmapFactory.decodeResource(r, R.drawable.icon);
-        Bitmap resizeIcon = BitmapUtil.resizeBitmapImageFn(icon,100);
+        Bitmap resizeIcon = BitmapUtil.resizeBitmapImageFn(icon, 100);
         Paint paint = new Paint(); //페인트 객체 선언
         paint.setAlpha(700);
         canvas.drawBitmap(resizeIcon, (canvas.getWidth() / 2) - (resizeIcon.getWidth() / 2),

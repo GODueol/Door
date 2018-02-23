@@ -8,8 +8,7 @@
         android:id="@+id/toolbar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fitsSystemWindows="true"
-        >
+        android:fitsSystemWindows="true">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
@@ -28,16 +27,14 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="@string/block_list"
-            android:textStyle="bold"
-            android:textSize="15.5dp"
             android:textColor="@color/black"
-            />
+            android:textSize="15.5dp"
+            android:textStyle="bold" />
     </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/friendsRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/toolbar_layout"
-        />
+        android:layout_below="@id/toolbar_layout" />
 </RelativeLayout>

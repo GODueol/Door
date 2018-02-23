@@ -21,7 +21,7 @@ public class IndexedTreeSet<K> extends TreeSet<K> {
         return rst.toString();
     }
 
-    public K get(String uuid){
+    public K get(String uuid) {
         for (K k : this) {
             if (k.hashCode() == uuid.hashCode()) {
                 return k;

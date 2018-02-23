@@ -135,7 +135,7 @@ public class CoreWriteActivity extends AppCompatActivity {
         image_edit_layout = findViewById(R.id.image_edit_layout);
 
         textCurrentPosition = findViewById(R.id.textView_currentPosion);
-        textMaxTime= findViewById(R.id.textView_maxTime);
+        textMaxTime = findViewById(R.id.textView_maxTime);
         startAndPause = findViewById(R.id.button_start_pause);
         seekBar = findViewById(R.id.seekBar);
 
@@ -181,7 +181,7 @@ public class CoreWriteActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 // 차단관계인 경우 불가능
-                if(DataContainer.getInstance().getUser().getBlockMeUsers().containsKey(cUuid)) {// 차단
+                if (DataContainer.getInstance().getUser().getBlockMeUsers().containsKey(cUuid)) {// 차단
                     Toast.makeText(CoreWriteActivity.this, "차단되어 익명글을 쓸 수 없습니다", Toast.LENGTH_SHORT).show();
                     finish();
                 } else {
@@ -218,7 +218,7 @@ public class CoreWriteActivity extends AppCompatActivity {
 
         // edit 판별
         postKey = getIntent().getStringExtra("postKey");    // edit 일 경우 값이 있음
-        if(postKey == null) {
+        if (postKey == null) {
             isEdit = false;
             postKey = mDatabase.child("posts").push().getKey();
         }
@@ -234,14 +234,14 @@ public class CoreWriteActivity extends AppCompatActivity {
                     if (corePost == null) return;
                     textContents.setText(corePost.getText());
                     if (editImage.getContext() == null) return;
-                    if(corePost.getPictureUrl() != null) {
+                    if (corePost.getPictureUrl() != null) {
                         Glide.with(CoreWriteActivity.this).load(corePost.getPictureUrl()).into(editImage);
                         image_edit_layout.setVisibility(View.VISIBLE);
                     } else {
                         image_edit_layout.setVisibility(View.GONE);
                     }
 
-                    if(corePost.getSoundUrl() != null){
+                    if (corePost.getSoundUrl() != null) {
                         mediaPlayer.reset();
                         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
                         try {
@@ -283,7 +283,7 @@ public class CoreWriteActivity extends AppCompatActivity {
         startAndPause.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if(b){
+                if (b) {
                     doStart();
                 } else {
                     doPause();
@@ -307,7 +307,7 @@ public class CoreWriteActivity extends AppCompatActivity {
 
         UiUtil.getInstance().startProgressDialog(CoreWriteActivity.this);
 
-        if(corePost == null) corePost = new CorePost(mUuid);
+        if (corePost == null) corePost = new CorePost(mUuid);
 
         corePost.setText(textContents.getText().toString());
         Task<Void> postUploadTask = postRef.setValue(corePost);
@@ -320,10 +320,10 @@ public class CoreWriteActivity extends AppCompatActivity {
         });
 
         // image
-        if(corePost.getPictureUrl() != null && image_edit_layout.getVisibility() == View.GONE) {
+        if (corePost.getPictureUrl() != null && image_edit_layout.getVisibility() == View.GONE) {
             // deletePicture
             deletePicture();
-        } else if(editImageUri != null){
+        } else if (editImageUri != null) {
             try {
                 uploadPicture();
             } catch (GifException e) {
@@ -334,10 +334,10 @@ public class CoreWriteActivity extends AppCompatActivity {
         }
 
         // sound
-        if(corePost.getSoundUrl() != null && edit_audio_layout.getVisibility() == View.GONE) {
+        if (corePost.getSoundUrl() != null && edit_audio_layout.getVisibility() == View.GONE) {
             // deleteSound
             deleteSound();
-        } else if(soundUri != null){
+        } else if (soundUri != null) {
             uploadSound();
         }
 
@@ -427,7 +427,7 @@ public class CoreWriteActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == RESULT_OK) {
-            if(requestCode == REQUEST_RECORD){
+            if (requestCode == REQUEST_RECORD) {
                 // Great! User has recorded and saved the audio file
                 // 파일 저장
                 soundUri = Uri.fromFile(new File(recordFilePath));
@@ -477,7 +477,7 @@ public class CoreWriteActivity extends AppCompatActivity {
         });
     }
 
-    private void deletePicture(){
+    private void deletePicture() {
         final StorageReference spaceRef = storageRef.child("posts").child(cUuid).child(postKey).child("picture");
         Task task = spaceRef.delete();
         tasks.put(task, new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -500,7 +500,7 @@ public class CoreWriteActivity extends AppCompatActivity {
         });
     }
 
-    private void deleteSound(){
+    private void deleteSound() {
         final StorageReference spaceRef = storageRef.child("posts").child(cUuid).child(postKey).child("sound");
         Task task = spaceRef.delete();
         tasks.put(task, new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -518,20 +518,20 @@ public class CoreWriteActivity extends AppCompatActivity {
     }
 
     // Convert millisecond to string.
-    private String millisecondsToString(int milliseconds)  {
+    private String millisecondsToString(int milliseconds) {
         long minutes = TimeUnit.MILLISECONDS.toMinutes((long) milliseconds);
-        long seconds =  TimeUnit.MILLISECONDS.toSeconds((long) milliseconds) ;
-        return minutes+":"+ seconds;
+        long seconds = TimeUnit.MILLISECONDS.toSeconds((long) milliseconds);
+        return minutes + ":" + seconds;
     }
 
 
-    public void doStart()  {
+    public void doStart() {
         // The duration in milliseconds
         int duration = this.mediaPlayer.getDuration();
 
         int currentPosition = this.mediaPlayer.getCurrentPosition();
 
-        if(currentPosition== 0)  {
+        if (currentPosition == 0) {
             this.seekBar.setMax(duration);
             String maxTimeString = this.millisecondsToString(duration);
             this.textMaxTime.setText(maxTimeString);
@@ -539,20 +539,20 @@ public class CoreWriteActivity extends AppCompatActivity {
 
         this.mediaPlayer.start();
         // Create a thread to update position of SeekBar.
-        UpdateSeekBarThread updateSeekBarThread= new UpdateSeekBarThread();
-        threadHandler.postDelayed(updateSeekBarThread,50);
+        UpdateSeekBarThread updateSeekBarThread = new UpdateSeekBarThread();
+        threadHandler.postDelayed(updateSeekBarThread, 50);
 
     }
 
     // Thread to Update position for SeekBar.
     class UpdateSeekBarThread implements Runnable {
 
-        public void run()  {
+        public void run() {
             int currentPosition = mediaPlayer.getCurrentPosition();
             String currentPositionStr = millisecondsToString(currentPosition);
             textCurrentPosition.setText(currentPositionStr);
 
-            if(CoreWriteActivity.this == null || textCurrentPosition.getText().equals(textMaxTime.getText())){
+            if (CoreWriteActivity.this == null || textCurrentPosition.getText().equals(textMaxTime.getText())) {
                 // 사운드 재생 끝
                 startAndPause.setChecked(false);  // 버튼 Stop
                 textCurrentPosition.setText("0:0");
@@ -568,29 +568,29 @@ public class CoreWriteActivity extends AppCompatActivity {
     }
 
     // When user click to "Pause".
-    public void doPause()  {
+    public void doPause() {
         this.mediaPlayer.pause();
     }
 
     // When user click to "Rewind".
-    public void doRewind(View view)  {
+    public void doRewind(View view) {
         int currentPosition = this.mediaPlayer.getCurrentPosition();
         // 5 seconds.
         int SUBTRACT_TIME = 5000;
 
-        if(currentPosition - SUBTRACT_TIME > 0 )  {
+        if (currentPosition - SUBTRACT_TIME > 0) {
             this.mediaPlayer.seekTo(currentPosition - SUBTRACT_TIME);
         }
     }
 
     // When user click to "Fast-Forward".
-    public void doFastForward(View view)  {
+    public void doFastForward(View view) {
         int currentPosition = this.mediaPlayer.getCurrentPosition();
         int duration = this.mediaPlayer.getDuration();
         // 5 seconds.
         int ADD_TIME = 5000;
 
-        if(currentPosition + ADD_TIME < duration)  {
+        if (currentPosition + ADD_TIME < duration) {
             this.mediaPlayer.seekTo(currentPosition + ADD_TIME);
         }
     }

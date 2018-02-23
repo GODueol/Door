@@ -23,43 +23,38 @@ public class otherUser_write_core extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.core_other_user_write);
 
-        btn_yes = (ToggleButton)findViewById(R.id.btn_yes);
+        btn_yes = (ToggleButton) findViewById(R.id.btn_yes);
         btn_yes.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked)
+                if (isChecked)
                     buttonView.setBackgroundColor(Color.parseColor("#28B463"));
                 else buttonView.setBackgroundColor(Color.parseColor("#BFC9CA"));
             }
         });
 
-        btn_pass = (ToggleButton)findViewById(R.id.btn_pass);
+        btn_pass = (ToggleButton) findViewById(R.id.btn_pass);
         btn_pass.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked)
+                if (isChecked)
                     buttonView.setBackgroundColor(Color.parseColor("#F4D03F"));
                 else buttonView.setBackgroundColor(Color.parseColor("#BFC9CA"));
             }
         });
 
-        btn_no = (ToggleButton)findViewById(R.id.btn_no);
+        btn_no = (ToggleButton) findViewById(R.id.btn_no);
         btn_no.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked)
+                if (isChecked)
                     buttonView.setBackgroundColor(Color.parseColor("#E74C3C"));
                 else buttonView.setBackgroundColor(Color.parseColor("#BFC9CA"));
             }
         });
 
 
-
-
-
     }
-
-
 
 
 }

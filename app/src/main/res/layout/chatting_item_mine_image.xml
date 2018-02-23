@@ -75,8 +75,8 @@
                 android:id="@+id/chatImage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
                 android:layout_gravity="end"
+                android:background="@color/white"
                 android:padding="5dp" />
 
 
@@ -86,22 +86,22 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:layout_weight="1"
+                android:visibility="gone"
                 app:cmv_arrowGravity="start"
                 app:cmv_arrowPosition="left"
                 app:cmv_backgroundColor="@color/message_color"
                 app:cmv_backgroundColorPressed="#FFFFFF"
                 app:cmv_cornerRadius="9dp"
-                app:cmv_showArrow="false"
-                android:visibility="gone">
+                app:cmv_showArrow="false">
 
                 <TextView
                     android:id="@+id/chatText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:text="@string/deleteImage"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                     android:textSize="15.5dp"
-                    android:text="@string/deleteImage"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold" />
             </com.example.kwoncheolhyeok.core.MessageActivity.util.ChatMessageView>
 
         </LinearLayout>

@@ -8,8 +8,7 @@
         android:id="@+id/toolbar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fitsSystemWindows="true"
-        >
+        android:fitsSystemWindows="true">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
@@ -28,10 +27,9 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="@string/account_setting"
-            android:textStyle="bold"
-            android:textSize="15.5dp"
             android:textColor="@color/black"
-            />
+            android:textSize="15.5dp"
+            android:textStyle="bold" />
 
         <ImageButton
             android:id="@+id/saveButton"
@@ -41,8 +39,7 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="20dp"
             android:background="@drawable/save_check"
-            android:onClick="save"
-            />
+            android:onClick="save" />
 
     </RelativeLayout>
 
@@ -52,17 +49,16 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/toolbar_layout"
         android:layout_marginTop="10dp"
-        android:paddingTop="10dp"
         android:paddingBottom="10dp"
-        >
+        android:paddingTop="10dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:text="@string/set_password"
             android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
             android:layout_marginLeft="15dp"
+            android:text="@string/set_password"
             android:textColor="@color/black"
             android:textSize="15dp"
 
@@ -77,9 +73,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/layout1"
         android:layout_marginLeft="30dp"
-        android:paddingTop="10dp"
         android:paddingBottom="10dp"
-        >
+        android:paddingTop="10dp">
 
         <TextView
             android:id="@+id/cur"
@@ -95,33 +90,31 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/cur"
-            android:textSize="13dp"
             android:layout_marginRight="5dp"
             android:textColor="@color/black"
-            android:theme="@style/EditTxtUnderBarBlack"
-            />
+            android:textSize="13dp"
+            android:theme="@style/EditTxtUnderBarBlack" />
 
         <TextView
             android:id="@+id/new_p"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/cur_pw"
-            android:text="@string/new_password"
             android:layout_marginTop="5dp"
-            android:textColor="@color/black"
-            />
+            android:text="@string/new_password"
+            android:textColor="@color/black" />
 
         <EditText
             android:id="@+id/new_pw"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/new_p"
-            android:textSize="13dp"
             android:layout_marginRight="5dp"
-            android:textColor="@color/black"
-            android:theme="@style/EditTxtUnderBarBlack"
             android:ems="10"
             android:inputType="textPassword"
+            android:textColor="@color/black"
+            android:textSize="13dp"
+            android:theme="@style/EditTxtUnderBarBlack"
 
             />
 
@@ -130,35 +123,32 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/new_pw"
-            android:text="@string/re_password"
             android:layout_marginTop="5dp"
-            android:textColor="@color/black"
-            />
+            android:text="@string/re_password"
+            android:textColor="@color/black" />
 
         <EditText
             android:id="@+id/re_pw"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/re_p"
-            android:textSize="13dp"
             android:layout_marginRight="5dp"
-            android:textColor="@color/black"
-            android:theme="@style/EditTxtUnderBarBlack"
             android:ems="10"
             android:inputType="textPassword"
-            />
+            android:textColor="@color/black"
+            android:textSize="13dp"
+            android:theme="@style/EditTxtUnderBarBlack" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/re_pw"
             android:layout_alignParentRight="true"
-            android:layout_marginTop="15dp"
+            android:layout_below="@+id/re_pw"
             android:layout_marginRight="5dp"
+            android:layout_marginTop="15dp"
             android:gravity="right"
             android:text="@string/find_password"
-            android:textColor="@color/black"
-            />
+            android:textColor="@color/black" />
 
     </RelativeLayout>
 
@@ -168,23 +158,21 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/layout2"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
         android:layout_marginTop="10dp"
-        >
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:text="@string/del_account"
             android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
             android:layout_marginLeft="15dp"
+            android:text="@string/del_account"
             android:textColor="@color/black"
-            android:textSize="15dp"
-            />
+            android:textSize="15dp" />
 
 
     </RelativeLayout>
 
-   </RelativeLayout>
+</RelativeLayout>

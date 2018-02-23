@@ -1,18 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    >
+    android:background="@color/white">
 
     <!-- The toolbar -->
     <RelativeLayout
         android:id="@+id/toolbar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fitsSystemWindows="true"
-        >
+        android:fitsSystemWindows="true">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
@@ -34,39 +31,34 @@
             android:scaleType="centerCrop" />
 
         <!--<TextView-->
-            <!--android:id="@+id/ex_header"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_alignParentRight="true"-->
-            <!--android:layout_centerVertical="true"-->
-            <!--android:layout_marginRight="20dp"-->
-            <!--android:gravity="right"-->
-            <!--android:text="헤더 확인"-->
-            <!--android:textColor="@color/skyblue"-->
-            <!--android:textSize="18sp"-->
-            <!--android:textStyle="bold" />-->
+        <!--android:id="@+id/ex_header"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:layout_centerVertical="true"-->
+        <!--android:layout_marginRight="20dp"-->
+        <!--android:gravity="right"-->
+        <!--android:text="헤더 확인"-->
+        <!--android:textColor="@color/skyblue"-->
+        <!--android:textSize="18sp"-->
+        <!--android:textStyle="bold" />-->
 
     </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/toolbar_layout"
-        >
+        android:layout_below="@id/toolbar_layout">
 
 
-    <ListView
-        android:id="@+id/setting_list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:divider="@null"
-        android:dividerHeight="5dp"
-        >
-    </ListView>
+        <ListView
+            android:id="@+id/setting_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:divider="@null"
+            android:dividerHeight="5dp"></ListView>
 
     </RelativeLayout>
-
-
 
 
 </RelativeLayout>

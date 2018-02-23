@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.example.kwoncheolhyeok.core.CorePage.CustomDialog;
 import com.example.kwoncheolhyeok.core.R;
@@ -16,10 +15,12 @@ import com.example.kwoncheolhyeok.core.R;
 
 public class BlockReportSelectDialog extends CustomDialog {
 
-    interface BlockReportSelectDialogListener{
+    interface BlockReportSelectDialogListener {
         void block();
+
         void report();
     }
+
     private BlockReportSelectDialogListener blockReportSelectDialogListener;
 
     BlockReportSelectDialog(@NonNull Context context, BlockReportSelectDialogListener blockReportSelectDialogListener) {

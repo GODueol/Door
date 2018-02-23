@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <LinearLayout
@@ -66,8 +66,7 @@
                 android:id="@+id/chatImage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="5dp"
-                />
+                android:padding="5dp" />
 
             <com.example.kwoncheolhyeok.core.MessageActivity.util.ChatMessageView
                 android:id="@+id/chatMessageView"
@@ -75,22 +74,22 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:layout_weight="1"
+                android:visibility="gone"
                 app:cmv_arrowGravity="start"
                 app:cmv_arrowPosition="left"
                 app:cmv_backgroundColor="#FFE0BE"
                 app:cmv_backgroundColorPressed="#FFFFFF"
                 app:cmv_cornerRadius="9dp"
-                app:cmv_showArrow="false"
-                android:visibility="gone">
+                app:cmv_showArrow="false">
 
                 <TextView
                     android:id="@+id/chatText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:text="@string/deleteImage"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                     android:textSize="15.5dp"
-                    android:text="@string/deleteImage"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold" />
             </com.example.kwoncheolhyeok.core.MessageActivity.util.ChatMessageView>
 
 
@@ -98,8 +97,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|start"
-                android:padding="3dp"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="3dp">
 
                 <TextView
                     android:id="@+id/check"

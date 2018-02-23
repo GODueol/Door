@@ -1,15 +1,13 @@
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/layout_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/transparent"
-    >
+    android:background="@color/transparent">
+
     <ProgressBar
         android:layout_width="45dp"
         android:layout_height="45dp"
-        android:indeterminateDrawable="@drawable/progress_dialog_icon_drawable_animation"
         android:layout_centerInParent="true"
-        />
+        android:indeterminateDrawable="@drawable/progress_dialog_icon_drawable_animation" />
 
 </RelativeLayout>
