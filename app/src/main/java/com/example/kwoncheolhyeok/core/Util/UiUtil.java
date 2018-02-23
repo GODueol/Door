@@ -52,7 +52,7 @@ public class UiUtil {
     }
 
     public void stopProgressDialog(){
-        if(progressDialog != null) progressDialog.dismiss();
+        if(progressDialog != null && progressDialog.isShowing()) progressDialog.dismiss();
     }
 
     public void showDialog(Context context, String title, String message, DialogInterface.OnClickListener okListener, DialogInterface.OnClickListener cancelListener){

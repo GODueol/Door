@@ -385,6 +385,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         BusProvider.getInstance().unregister(this);
+        UiUtil.getInstance().stopProgressDialog();
         super.onDestroy();
     }
 
