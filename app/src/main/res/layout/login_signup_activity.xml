@@ -81,7 +81,7 @@
                 android:inputType="textPersonName"
                 android:maxLength="10"
                 android:maxLines="1"
-                android:hint="NickName" />
+                android:hint="닉네임" />
         </android.support.design.widget.TextInputLayout>
 
 
@@ -97,7 +97,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="number"
-                android:hint="AGE" />
+                android:hint="나이" />
         </android.support.design.widget.TextInputLayout>
 
         <!-- height -->
@@ -112,7 +112,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="number"
-                android:hint="Height" />
+                android:hint="키" />
         </android.support.design.widget.TextInputLayout>
 
         <!-- weight -->
@@ -127,7 +127,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="number"
-                android:hint="Weight" />
+                android:hint="몸무게" />
         </android.support.design.widget.TextInputLayout>
 
     </LinearLayout>
@@ -153,7 +153,7 @@
                     android:id="@+id/input_bodytype"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Bodytype"
+                    android:hint="체형"
                     android:inputType="none"
                     />
             </android.support.design.widget.TextInputLayout>
@@ -173,7 +173,7 @@
             android:layout_marginBottom="24dp"
             android:padding="12dp"
             android:background="@android:color/transparent"
-            android:text="Create Account"/>
+            android:text="회원가입 완료"/>
 
         <TextView
             android:id="@+id/link_login"
@@ -181,7 +181,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
-            android:text="Already a member? Login"
+            android:text="이미 가입하셨나요?"
             android:gravity="center"
             android:textSize="16dip"/>
 
