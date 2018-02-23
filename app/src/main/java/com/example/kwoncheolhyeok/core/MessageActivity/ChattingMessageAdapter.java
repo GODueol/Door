@@ -305,24 +305,24 @@ public class ChattingMessageAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     }
 
 
-    public void setProfileImage(ImageView imageView, String uri) {
+    public void setProfileImage(ImageView imageView, String url) {
         int width = imageView.getWidth();
         int height = imageView.getHeight();
 
         GlideApp.with(imageView.getContext())
-                .load(uri)
+                .load(url)
                 .override(width, height)
                 .centerCrop()
                 .placeholder(R.drawable.a)
                 .into(imageView);
     }
 
-    public void setImageMessage(final ImageView imageView, final String uri, final String parent, final int position) {
+    public void setImageMessage(final ImageView imageView, final String url, final String parent, final int position) {
         GlideApp.with(imageView.getContext())
                 .asBitmap()
                 .placeholder(R.drawable.picture_load)
                 .centerCrop()
-                .load(uri)
+                .load(url)
                 .override(600, 600)
                 .fitCenter()
                 .listener(requestListener)
@@ -332,7 +332,7 @@ public class ChattingMessageAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             @Override
             public void onClick(View view) {
                 Intent p = new Intent(context.getApplicationContext(), ChattingFullImage.class);
-                p.putExtra("imageUri", uri);
+                p.putExtra("imageUrl", url);
                 p.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 context.getApplicationContext().startActivity(p);
             }

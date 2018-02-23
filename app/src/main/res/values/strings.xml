@@ -108,5 +108,7 @@
     <string name="scrollDown">아래로 내려가기</string>
 
     <string name="deleteImage">삭제된 이미지 입니다.</string>
+
+    <string name="alertChat">쪽지가 도착하였습니다.</string>
 </resources>
 

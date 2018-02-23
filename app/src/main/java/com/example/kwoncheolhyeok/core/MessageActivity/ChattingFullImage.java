@@ -22,11 +22,11 @@ public class ChattingFullImage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chatting_fullimage_activity);
         Intent p = getIntent();
-        String uri = (String) p.getSerializableExtra("imageUri");
+        String url = (String) p.getSerializableExtra("imageUrl");
         imageView = (PhotoView) findViewById(R.id.pictureImage);
 
         GlideApp.with(imageView.getContext())
-                .load(uri)
+                .load(url)
                 .fitCenter()
                 .into(imageView);
 

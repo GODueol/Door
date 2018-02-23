@@ -1,9 +1,7 @@
 package com.example.kwoncheolhyeok.core.MessageActivity;
 
 import android.graphics.Color;
-import android.provider.ContactsContract;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,13 +10,11 @@ import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.kwoncheolhyeok.core.MessageActivity.util.DateUtil;
 import com.example.kwoncheolhyeok.core.MessageActivity.util.RoomVO;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.GlideApp;
-import com.example.kwoncheolhyeok.core.Util.UiUtil;
 
 import java.util.List;
 
@@ -72,7 +68,7 @@ public class messageRecyclerAdapter extends  RecyclerView.Adapter<messageRecycle
         int height = holder.img.getHeight();
 
         GlideApp.with(holder.img.getContext())
-                .load(room.getTargetUri())
+                .load(room.getTargetUrl())
                 .override(width,height)
                 .placeholder(R.drawable.a)
                 .centerCrop()
@@ -87,7 +83,7 @@ public class messageRecyclerAdapter extends  RecyclerView.Adapter<messageRecycle
                     public boolean onMenuItemClick(MenuItem menuItem) {
                         int i = menuItem.getItemId();
                         if (i == R.id.remove) {
-                            onRemoveChattingListCallback.onRemove(room.getUserUuid());
+                            onRemoveChattingListCallback.onRemove(room.getTargetUuid());
                         }
                         return true;
                     }

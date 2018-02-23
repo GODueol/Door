@@ -8,36 +8,35 @@ public class RoomVO {
 
 
 
-    private String userUuid;
+    private String targetUuid;
     private String chatRoomid;
     private String targetNickName;
     private String targetProfile;
+    private String targetUrl;
     private String lastChat;
     private long lastChatTime;
 
 
     private long lastViewTime;
-    private String targetUri;
 
 
     public RoomVO(){
     }
 
-    public RoomVO(String chatRoomid, String lastChat, String userUuid, long lastChatTime, String targetUri){
+    public RoomVO(String chatRoomid, String lastChat, String targetUuid, long lastChatTime){
 
         this.chatRoomid = chatRoomid;
         this.lastChat = lastChat;
-        this.userUuid = userUuid;
+        this.targetUuid = targetUuid;
         this.lastChatTime = lastChatTime;
-        this.targetUri = targetUri;
     }
 
-    public String getUserUuid() {
-        return userUuid;
+    public String getTargetUuid() {
+        return targetUuid;
     }
 
-    public void setUserUuid(String userUuid) {
-        this.userUuid = userUuid;
+    public void setTargetUuid(String targetUuid) {
+        this.targetUuid = targetUuid;
     }
 
 
@@ -57,12 +56,12 @@ public class RoomVO {
         this.lastChatTime = lastChatTime;
     }
 
-    public String getTargetUri() {
-        return targetUri;
+    public String getTargetUrl() {
+        return targetUrl;
     }
 
-    public void setTargetUri(String targetUri) {
-        this.targetUri = targetUri;
+    public void setTargetUrl(String targetUrl) {
+        this.targetUrl = targetUrl;
     }
 
 

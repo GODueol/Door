@@ -15,7 +15,6 @@ import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.MessageActivity.messageRecyclerAdapter.OnRemoveChattingListCallback;
 import com.example.kwoncheolhyeok.core.MessageActivity.util.RoomVO;
 import com.example.kwoncheolhyeok.core.R;
-import com.example.kwoncheolhyeok.core.SettingActivity.BlockActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -62,13 +61,13 @@ public class MessageActivity extends AppCompatActivity {
             @Override
             public void onClick(View view, int position) {
                 final RoomVO item = messageRecyclerAdapter.getItemRoomVO(position);
-                FirebaseDatabase.getInstance().getReference("users").child(item.getUserUuid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                FirebaseDatabase.getInstance().getReference("users").child(item.getTargetUuid()).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         User user = dataSnapshot.getValue(User.class);
                         Intent intent = new Intent(getApplicationContext(), ChattingActivity.class);
                         intent.putExtra("user", user);
-                        intent.putExtra("userUuid", item.getUserUuid());
+                        intent.putExtra("userUuid", item.getTargetUuid());
                         startActivity(intent);
                     }
 
@@ -104,9 +103,9 @@ public class MessageActivity extends AppCompatActivity {
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 final RoomVO roomList = dataSnapshot.getValue(RoomVO.class);
                 if (roomList.getLastChat() != null) {
-                    uuidList.add(roomList.getUserUuid());
+                    uuidList.add(roomList.getTargetUuid());
                     listrowItem.add(roomList);
-                    FirebaseDatabase.getInstance().getReference("users").child(roomList.getUserUuid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    FirebaseDatabase.getInstance().getReference("users").child(roomList.getTargetUuid()).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             refreshChatRoomList(dataSnapshot.getValue(User.class), roomList);
@@ -123,13 +122,13 @@ public class MessageActivity extends AppCompatActivity {
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 final RoomVO roomList = dataSnapshot.getValue(RoomVO.class);
                 if(roomList.getLastChat()!=null) {
-                    FirebaseDatabase.getInstance().getReference("users").child(roomList.getUserUuid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    FirebaseDatabase.getInstance().getReference("users").child(roomList.getTargetUuid()).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             try {
                                 refreshChatRoomList(dataSnapshot.getValue(User.class), roomList, true);
                             } catch (Exception e) {
-                                uuidList.add(roomList.getUserUuid());
+                                uuidList.add(roomList.getTargetUuid());
                                 listrowItem.add(roomList);
                                 refreshChatRoomList(dataSnapshot.getValue(User.class), roomList);
                             }
@@ -141,7 +140,7 @@ public class MessageActivity extends AppCompatActivity {
                     });
                 }else if(roomList.getLastChat()==null){
                     try {
-                        int key = uuidList.indexOf(roomList.getUserUuid());
+                        int key = uuidList.indexOf(roomList.getTargetUuid());
                         listrowItem.remove(key);
                         uuidList.remove(key);
                         messageRecyclerAdapter.notifyDataSetChanged();
@@ -155,7 +154,7 @@ public class MessageActivity extends AppCompatActivity {
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 RoomVO roomList = dataSnapshot.getValue(RoomVO.class);
                 try {
-                    int key = uuidList.indexOf(roomList.getUserUuid());
+                    int key = uuidList.indexOf(roomList.getTargetUuid());
                     listrowItem.remove(key);
                     uuidList.remove(key);
                 } catch (Exception e) {
@@ -195,13 +194,27 @@ public class MessageActivity extends AppCompatActivity {
 
     public void refreshChatRoomList(User target, RoomVO roomList) {
         Log.d("test", target.getId());
-        roomList.setTargetNickName(target.getId());
-        roomList.setTargetProfile(target.getTotalProfile());
+
+        if(target.getId()!=null &&!target.getId().equals(roomList.getTargetNickName())) {
+            roomList.setTargetNickName(target.getId());
+            chatRoomListRef.child(userId).child(roomList.getTargetUuid()).child("targetNickName").setValue(target.getId());
+        }
+
+        if(target.getTotalProfile()!=null && !target.getTotalProfile().equals(roomList.getTargetProfile())) {
+            roomList.setTargetProfile(target.getTotalProfile());
+            chatRoomListRef.child(userId).child(roomList.getTargetUuid()).child("targetProfile").setValue(target.getTotalProfile());
+        }
+
+        if(target.getPicUrls()!=null && target.getPicUrls().getThumbNail_picUrl1()!=null && !target.getPicUrls().getThumbNail_picUrl1().equals(roomList.getTargetUrl())) {
+            roomList.setTargetUrl(target.getPicUrls().getThumbNail_picUrl1());
+            chatRoomListRef.child(userId).child(roomList.getTargetUuid()).child("targetUrl").setValue(target.getPicUrls().getThumbNail_picUrl1());
+        }
+
         messageRecyclerAdapter.notifyDataSetChanged();
     }
 
     public void refreshChatRoomList(User target, RoomVO roomList, boolean changeFlag) {
-        int key = uuidList.indexOf(roomList.getUserUuid());
+        int key = uuidList.indexOf(roomList.getTargetUuid());
         Long startTime = listrowItem.get(key).getLastChatTime();
         Long endTime = roomList.getLastChatTime();
         listrowItem.remove(key);
@@ -212,7 +225,7 @@ public class MessageActivity extends AppCompatActivity {
             refreshChatRoomList(target,roomList);
         } else {      // 맨위로 올림
             uuidList.remove(key);
-            uuidList.add(roomList.getUserUuid());
+            uuidList.add(roomList.getTargetUuid());
             listrowItem.add(roomList);
             refreshChatRoomList(target, roomList);
         }

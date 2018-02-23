@@ -19,6 +19,7 @@ import com.example.kwoncheolhyeok.core.MessageActivity.util.CryptoImeageName;
 import com.example.kwoncheolhyeok.core.MessageActivity.util.MessageVO;
 import com.example.kwoncheolhyeok.core.MessageActivity.util.RoomVO;
 import com.example.kwoncheolhyeok.core.PeopleFragment.GridItem;
+import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
 import com.example.kwoncheolhyeok.core.Util.FirebaseSendPushMsg;
 import com.example.kwoncheolhyeok.core.Util.GPSInfo;
@@ -59,7 +60,7 @@ public class ChatFirebaseUtil {
     private Context context;
     private String userUuid, targetUuid;
     private User currentUser, targetUser;
-    private String userPickuri, targetPicuri;
+    private String userPickurl, targetPicurl;
     private String roomName;
     private String childChatKey;
     private String lastMessage;
@@ -91,8 +92,8 @@ public class ChatFirebaseUtil {
         this.targetUuid = targetUuid;
         this.hideText = hideText;
         this.overlay = overlay;
-        userPickuri = currentUser.getPicUrls().getThumbNail_picUrl1();
-        targetPicuri = targetUser.getPicUrls().getThumbNail_picUrl1();
+        userPickurl = currentUser.getPicUrls().getThumbNail_picUrl1();
+        targetPicurl = targetUser.getPicUrls().getThumbNail_picUrl1();
     }
 
     public void setLastChatView() {
@@ -139,7 +140,8 @@ public class ChatFirebaseUtil {
             childUpdates.put("/" + chatRoomList + "/" + userUuid + "/" + targetUuid + "/" + "lastChat", "사진");
         }
         databaseRef.updateChildren(childUpdates);
-        FirebaseSendPushMsg.sendPostToFCM(targetUuid,"쪽지가 도착하였습니다.");
+        // 상대방에게 내정보를 담아서 메세지를 보냄
+        FirebaseSendPushMsg.sendPostToFCM(userUuid, "asdasd");
     }
 
     public void sendImageMessage(Uri outputFileUri) {
@@ -197,15 +199,15 @@ public class ChatFirebaseUtil {
                 } else {
                     roomName = FirebaseDatabase.getInstance().getReference(chat).push().getKey();
                     Map<String, Object> childUpdates = new HashMap<>();
-                    RoomVO roomVO = new RoomVO(roomName, null, userUuid, currentTime, userPickuri);
+                    RoomVO roomVO = new RoomVO(roomName, null, userUuid, currentTime);
                     childUpdates.put("/" + chatRoomList + "/" + targetUuid + "/" + userUuid, roomVO);
-                    roomVO = new RoomVO(roomName, null, targetUuid, currentTime, targetPicuri);
+                    roomVO = new RoomVO(roomName, null, targetUuid, currentTime);
                     childUpdates.put("/" + chatRoomList + "/" + userUuid + "/" + targetUuid, roomVO);
                     databaseRef.updateChildren(childUpdates);
                     chatRoomRef.child(userUuid).child(targetUuid).child("lastViewTime").setValue(currentTime);
                 }
 
-                item = new GridItem(0, targetUuid, targetUser.getSummaryUser(), targetPicuri);
+                item = new GridItem(0, targetUuid, targetUser.getSummaryUser(), targetPicurl);
                 // 상대방과의 거리 셋팅
                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference(FireBaseUtil.currentLocationPath);
                 GeoFire geoFire = new GeoFire(ref);
@@ -273,7 +275,7 @@ public class ChatFirebaseUtil {
         @Override
         public void onChildChanged(DataSnapshot dataSnapshot, String previousChildName) {
             MessageVO messageVO = dataSnapshot.getValue(MessageVO.class);
-            if(messageVO.getImage()!=null && messageVO.getImage().equals(strDelete)&&!messageVO.getWriter().equals(userUuid) ){
+            if (messageVO.getImage() != null && messageVO.getImage().equals(strDelete) && !messageVO.getWriter().equals(userUuid)) {
                 try {
                     String key = dataSnapshot.getKey();
                     int position = chatMessageKeyList.indexOf(key);
@@ -283,7 +285,7 @@ public class ChatFirebaseUtil {
                 } catch (Exception e) {
 
                 }
-            }else {
+            } else {
                 checkRefreshChatLog();
             }
         }
@@ -376,13 +378,13 @@ public class ChatFirebaseUtil {
         int visiblieCompLastPosition = ((LinearLayoutManager) chattingRecyclerview.getLayoutManager()).findLastVisibleItemPosition();
         if (pos <= visiblieCompLastPosition || key.equals(lastMessage)) {
             chattingRecyclerview.scrollToPosition(chattingMessageAdapter.getItemCount() - 1);
-        } else if(!chatMessage.isMine()&&!chatMessage.isImage()){
+        } else if (!chatMessage.isMine() && !chatMessage.isImage()) {
             hideText.setText(message.getContent());
             overlay.setVisibility(View.VISIBLE);
-        }else if(!chatMessage.isMine()){
+        } else if (!chatMessage.isMine()) {
             hideText.setText("사진");
             overlay.setVisibility(View.VISIBLE);
-        } else{
+        } else {
             chattingRecyclerview.scrollToPosition(chattingMessageAdapter.getItemCount() - 1);
         }
     }
@@ -484,7 +486,7 @@ public class ChatFirebaseUtil {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(context,"이미지 삭제에 실패했습니다.",Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "이미지 삭제에 실패했습니다.", Toast.LENGTH_SHORT).show();
             }
         });
 
