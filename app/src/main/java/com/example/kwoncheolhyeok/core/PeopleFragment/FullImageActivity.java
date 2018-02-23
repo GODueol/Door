@@ -226,7 +226,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
 
         // 로그인 시간
         if (oUser.getLoginDate() != 0) {
-            DataContainer.getInstance().convertBeforeFormat(oUser.getLoginDate());
+            loginTime.setText(DataContainer.getInstance().convertBeforeFormat(oUser.getLoginDate()));
         }
 
         // 사진 출력
