@@ -28,7 +28,6 @@ import com.bumptech.glide.Glide;
 import com.example.kwoncheolhyeok.core.Entity.IntBoundary;
 import com.example.kwoncheolhyeok.core.Entity.StringBoundary;
 import com.example.kwoncheolhyeok.core.Entity.User;
-import com.example.kwoncheolhyeok.core.Exception.GifException;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
@@ -866,11 +865,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
                                 }
                             }
                         });
-                    } catch (GifException e) {
-                        e.printStackTrace();
-                        Toast.makeText(ProfileModifyActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                        return;
-                    } catch (FileNotFoundException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                         Toast.makeText(ProfileModifyActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                         return;

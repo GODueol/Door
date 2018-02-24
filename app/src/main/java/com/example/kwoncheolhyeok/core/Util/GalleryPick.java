@@ -278,19 +278,19 @@ public class GalleryPick {
         }
     }
 
-    public UploadTask upload(StorageReference ref) throws GifException {
+    public UploadTask upload(StorageReference ref) throws GifException, IOException {
         // Check Gif
         return getUploadTask(ref, uri);
     }
 
-    public UploadTask upload(StorageReference ref, Uri uri) throws GifException, FileNotFoundException {
+    public UploadTask upload(StorageReference ref, Uri uri) throws GifException, IOException {
         // Check Gif
         getImgPath(uri);
         return getUploadTask(ref, uri);
     }
 
     @NonNull
-    private UploadTask getUploadTask(StorageReference ref, Uri uri) throws GifException {
+    private UploadTask getUploadTask(StorageReference ref, Uri uri) throws GifException, IOException {
         if (isGif()) {
             if (getFileSizeInMB() > 5) {
                 throw new GifException("5MB가 넘는 GIF는 업로드 할 수 없습니다");
@@ -303,9 +303,9 @@ public class GalleryPick {
     }
 
 
-    private long getFileSizeInMB() {
+    private long getFileSizeInMB() throws IOException {
         long fileSizeInMB;// 크기 확인 : 5MB
-        File file = new File(imgPath);
+        File file = bitMapToFile();
 
         // Get length of file in bytes
         long fileSizeInBytes = file.length();

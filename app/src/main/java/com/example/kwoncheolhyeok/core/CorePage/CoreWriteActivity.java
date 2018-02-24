@@ -326,10 +326,9 @@ public class CoreWriteActivity extends AppCompatActivity {
         } else if (editImageUri != null) {
             try {
                 uploadPicture();
-            } catch (GifException e) {
+            } catch (Exception e){
                 e.printStackTrace();
                 Toast.makeText(CoreWriteActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                return;
             }
         }
 
@@ -466,7 +465,7 @@ public class CoreWriteActivity extends AppCompatActivity {
 
     }
 
-    private void uploadPicture() throws GifException {
+    private void uploadPicture() throws GifException, IOException {
         final StorageReference spaceRef = storageRef.child("posts").child(cUuid).child(postKey).child("picture");
         UploadTask uploadTask = galleryPick.upload(spaceRef);
         tasks.put(uploadTask, new OnSuccessListener<UploadTask.TaskSnapshot>() {
