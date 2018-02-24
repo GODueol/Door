@@ -354,6 +354,29 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         lock3Toggle.setChecked(user.getIsLockPics().getIsLockPic3());
         lock4Toggle.setChecked(user.getIsLockPics().getIsLockPic4());
 
+        /* lock change event */
+        CompoundButton.OnCheckedChangeListener listener = new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                int pictureNum = 1;
+                if(compoundButton ==lock2Toggle) pictureNum = 2;
+                else if(compoundButton == lock3Toggle) pictureNum = 3;
+                else if(compoundButton == lock4Toggle) pictureNum = 4;
+
+                String msg;
+                if(b){  // True 잠금
+                    msg = pictureNum + "번 사진이 잠깁니다";
+                } else {
+                    msg = pictureNum + "번 사진이 풀립니다";
+                }
+                Toast.makeText(ProfileModifyActivity.this, msg, Toast.LENGTH_SHORT).show();
+            }
+        };
+        lock2Toggle.setOnCheckedChangeListener(listener);
+        lock3Toggle.setOnCheckedChangeListener(listener);
+        lock4Toggle.setOnCheckedChangeListener(listener);
+
+
         /* onClick del btn */
         setOnDelPicBtnClickListener(delete2Image, profilePic2);
         setOnDelPicBtnClickListener(delete3Image, profilePic3);
