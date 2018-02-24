@@ -420,6 +420,11 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 
     private void doStart(CorePostHolder holder, String url) {
 
+        // 예외처리
+        if(holder == null){
+            return;
+        }
+
         // 다른 아이템의 플레이어를 중단
         if (currentSeekBarPosition != holder.getAdapterPosition() && currentHolder.startAndPause.isChecked())
             currentHolder.startAndPause.performClick();
