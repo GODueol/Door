@@ -445,6 +445,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 
         final Dialog d = new Dialog(ProfileModifyActivity.this);
         d.setContentView(R.layout.profile_modify_numpick_layout);
+        d.setCanceledOnTouchOutside(false);
 
         // Dialog 사이즈 조절 하기
         ViewGroup.LayoutParams params = d.getWindow().getAttributes();
