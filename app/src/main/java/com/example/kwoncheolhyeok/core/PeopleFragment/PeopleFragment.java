@@ -41,7 +41,6 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
     GridView gridView = null;
     ImageAdapter imageAdapter;
     private User mUser;
-    private LatLng latLng;
     Bus bus;
     private ValueEventListener userListener;
     private DatabaseReference userRef;
@@ -56,11 +55,7 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
         imageAdapter = new ImageAdapter(getContext());
         gridView.setAdapter(imageAdapter);
 
-        try {
-            latLng = getArguments().getParcelable("latlng");
-        } catch (Exception e) {
-            Log.d("people", "익셉션");
-        }
+
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -80,7 +75,7 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
             public void onRefresh() {
                 // 위치 새로고침
                 imageAdapter.clear();
-                refreshGrid(null);
+                refreshGrid(null, GPSInfo.getmInstance(getActivity()).getGPSLocation());
 
                 mSwipeRefreshLayout.setRefreshing(false);
             }
@@ -118,7 +113,7 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
     }
 
     @Subscribe
-    public void refreshGrid(RefreshLocationEvent pushEvent) {
+    public void refreshGrid(RefreshLocationEvent pushEvent, final Location location) {
 
         // 현재 자신의 위치를 가져옴
         saveMyGPS();
@@ -126,7 +121,7 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
         // 현재 자신의 위치에 가까운 리스트 가져옴
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(FireBaseUtil.currentLocationPath);
         GeoFire geoFire = new GeoFire(ref);
-        final Location location = GPSInfo.getmInstance(getActivity()).getGPSLocation();
+//        final Location location = GPSInfo.getmInstance(getActivity()).getGPSLocation();
         geoQuery = geoFire.queryAtLocation(new GeoLocation(location.getLatitude(), location.getLongitude()), 300);
 
         // 쿼리받은 값을 처리
@@ -256,8 +251,18 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        try {
+            LatLng latLng = getArguments().getParcelable("latlng");
 
-        refreshGrid(null);
+            Location location = new Location("");
+            assert latLng != null;
+            location.setLatitude(latLng.latitude);
+            location.setLongitude(latLng.longitude);
+            refreshGrid(null, location);
+        } catch (Exception e) {
+            Log.d("people", "익셉션");
+            refreshGrid(null, GPSInfo.getmInstance(getActivity()).getGPSLocation());
+        }
     }
 
     @Override
