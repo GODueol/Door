@@ -5,9 +5,12 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.example.kwoncheolhyeok.core.R;
@@ -29,18 +32,22 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapsActivity extends FragmentActivity implements GoogleApiClient.OnConnectionFailedListener, OnMapReadyCallback, GoogleMap.OnMapClickListener, GoogleMap.OnInfoWindowClickListener {
 
+
     private GoogleMap mGoogleMap;
     private LatLng mLatLng;
     private GPSInfo mGPSInfo;
-    public EditText addrText;
-    public ImageView search;
+    public SearchView addrText;
+    public ImageButton search;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.google_map_activity);
-        addrText = (EditText) findViewById(R.id.addrText);
-        search = (ImageView) findViewById(R.id.search_map);
+
+
+
+        addrText = (SearchView) findViewById(R.id.addrText);
+        search = (ImageButton) findViewById(R.id.search_map);
         mGPSInfo = new GPSInfo(getApplicationContext());
 
         MapFragment mapFragment = (MapFragment) getFragmentManager()
@@ -143,7 +150,7 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.On
     View.OnClickListener search_addr = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            String str = addrText.getText().toString();
+            String str = addrText.getQuery().toString();
             float zlevel = mGoogleMap.getCameraPosition().zoom;
             Location loc = addrConvertor.findGeoPoint(getApplicationContext(), str);
             LatLng latLng = new LatLng(loc.getLatitude(), loc.getLongitude());

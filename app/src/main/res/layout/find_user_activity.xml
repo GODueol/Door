@@ -28,7 +28,19 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="45dp"
-            android:queryHint="@string/find_nickname_hint" />
+            android:queryHint="@string/find_nickname_hint"
+            android:layout_toLeftOf="@+id/save"
+            android:layout_marginRight="10dp"
+            />
+
+        <ImageButton
+            android:id="@+id/save"
+            android:layout_width="25dp"
+            android:layout_height="19dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/save_check" />
 
     </RelativeLayout>
 
