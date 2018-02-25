@@ -14,7 +14,6 @@ import com.github.chrisbanes.photoview.PhotoView;
 
 public class PagerPage extends android.support.v4.app.Fragment {
 
-    ScrollView scrollView;
     PhotoView imageView;
 
     @Override
@@ -29,7 +28,6 @@ public class PagerPage extends android.support.v4.app.Fragment {
 
         if (getArguments() != null) {
             String picPath = getArguments().getString("picPath");
-            scrollView = view.findViewById(R.id.scrollView);
             imageView = view.findViewById(R.id.pictureImage);
 
             Glide.with(imageView.getContext() /* context */)

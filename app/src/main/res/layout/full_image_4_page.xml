@@ -5,19 +5,12 @@
     android:layout_height="match_parent"
     android:background="@color/text_white">
 
-    <ScrollView
-        android:id="@+id/scrollView"
+    <com.github.chrisbanes.photoview.PhotoView
+        android:id="@+id/pictureImage"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <com.github.chrisbanes.photoview.PhotoView
-            android:id="@+id/pictureImage"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:adjustViewBounds="true" />
-
-    </ScrollView>
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:adjustViewBounds="true" />
 
 
 </RelativeLayout>
