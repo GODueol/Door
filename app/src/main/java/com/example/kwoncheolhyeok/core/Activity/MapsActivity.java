@@ -6,15 +6,12 @@ import android.graphics.Typeface;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -151,10 +148,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleApiClient.O
 
         mGoogleMap.clear();
         mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mLatLng, zlevel));
-        mGoogleMap.addMarker(new MarkerOptions()
-                .position(mLatLng)
-                .title(address)
-        ).showInfoWindow();
+        setMarkerCustom();
+        setMarker(latLng,address);
         mGoogleMap.setOnInfoWindowClickListener(this);
     }
 
@@ -165,10 +160,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleApiClient.O
 
         mGoogleMap.clear();
         mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, zlevel));
-        mGoogleMap.addMarker(new MarkerOptions()
-                .position(latLng)
-                .title(address)
-        ).showInfoWindow();
+        setMarker(latLng,address);
     }
 
     @Override
@@ -177,6 +169,48 @@ public class MapsActivity extends AppCompatActivity implements GoogleApiClient.O
         Intent p = new Intent(getApplicationContext(), MainActivity.class);
         p.putExtra("latLng", latLng);
         startActivity(p);
+    }
+
+    public void setMarker(LatLng latLng, String address){
+        mGoogleMap.addMarker(new MarkerOptions()
+                .position(latLng)
+                .title(address)
+                .snippet(getString(R.string.mapSpiner))
+        ).showInfoWindow();
+    }
+    public void setMarkerCustom() {
+        mGoogleMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+
+            @Override
+            public View getInfoWindow(Marker arg0) {
+                return null;
+            }
+
+            @Override
+            public View getInfoContents(Marker marker) {
+
+                LinearLayout info = new LinearLayout(getApplicationContext());
+                info.setOrientation(LinearLayout.VERTICAL);
+
+                // 위쪽 주소 텍스트 자바로만 수정가능
+                TextView title = new TextView(getApplicationContext());
+                title.setTextColor(Color.BLACK);
+                title.setGravity(Gravity.CENTER);
+                title.setText(marker.getTitle());
+
+                // 아래쪽 이주변회원 검색 텍스트 자바로만 수정가능
+                TextView snippet = new TextView(getApplicationContext());
+                snippet.setTextColor(getResources().getColor(R.color.skyblue));
+                snippet.setGravity(Gravity.CENTER);
+                snippet.setTypeface(null, Typeface.BOLD);
+                snippet.setText(marker.getSnippet());
+
+                info.addView(title);
+                info.addView(snippet);
+
+                return info;
+            }
+        });
     }
 
     View.OnClickListener search_addr = new View.OnClickListener() {
@@ -189,15 +223,11 @@ public class MapsActivity extends AppCompatActivity implements GoogleApiClient.O
             if (latLng.longitude == 0 && latLng.latitude == 0) {
                 Toast.makeText(getApplicationContext(), "검색 실패", Toast.LENGTH_SHORT).show();
             } else {
-                String adress = addrConvertor.getAddress(getApplicationContext(), latLng);
+                String address = addrConvertor.getAddress(getApplicationContext(), latLng);
                 mGoogleMap.clear();
                 mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, zlevel));
 
-                mGoogleMap.addMarker(new MarkerOptions()
-                        .position(latLng)
-                        .title(adress)
-                        .snippet("이 주변 검색")
-                ).showInfoWindow();
+                setMarker(latLng,address);
             }
         }
     };
