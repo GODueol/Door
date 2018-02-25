@@ -1,4 +1,4 @@
-package com.example.kwoncheolhyeok.core;
+package com.example.kwoncheolhyeok.core.WaterMark;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -18,8 +18,8 @@ import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.util.TypedValue;
 
+import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.BitmapUtil;
-import com.example.kwoncheolhyeok.core.WaterMark.ScreenShotContentObserver;
 
 import java.io.File;
 import java.io.FileOutputStream;

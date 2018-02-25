@@ -11,8 +11,6 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Log;
 
-import com.example.kwoncheolhyeok.core.ScreenShotSetUtil;
-
 /**
  * Created by soochun on 2017-01-04.
  */
