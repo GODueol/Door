@@ -252,9 +252,6 @@ public class ChattingActivity extends AppCompatActivity {
                     }
                 });
                 break;
-            case R.id.report:
-                Toast.makeText(this, "report", Toast.LENGTH_SHORT).show();
-                break;
             case android.R.id.home:
                 // NavUtils.navigateUpFromSameTask(this);
                 finish();
@@ -270,7 +267,6 @@ public class ChattingActivity extends AppCompatActivity {
         ArrayList<String> menulist = new ArrayList<String>();
         menulist.add("profile");
         menulist.add("block");
-        menulist.add("report");
 
         int positionOfMenuItem = 0;
         for (String name : menulist) {
