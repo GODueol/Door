@@ -196,7 +196,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleApiClient.O
                 mGoogleMap.addMarker(new MarkerOptions()
                         .position(latLng)
                         .title(adress)
-                        .snippet("이 주변 검색")
+                        .snippet("이 주변 회원 검색")
+
                 ).showInfoWindow();
             }
         }

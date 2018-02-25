@@ -56,7 +56,7 @@
             android:layout_alignEnd="@+id/item_menu_btn"
             android:layout_alignRight="@+id/item_menu_btn"
             android:layout_alignTop="@+id/profile_image"
-            android:text="2016_12_02_18:56"
+            android:text="시간"
             android:textColor="#000000"
             android:textSize="10dp" />
 
