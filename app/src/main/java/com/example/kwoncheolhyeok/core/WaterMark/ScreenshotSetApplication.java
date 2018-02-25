@@ -1,4 +1,4 @@
-package com.example.kwoncheolhyeok.core;
+package com.example.kwoncheolhyeok.core.WaterMark;
 
 import android.app.Application;
 import android.content.ComponentName;
@@ -9,7 +9,7 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
 
-import com.example.kwoncheolhyeok.core.WaterMark.ASS;
+import com.example.kwoncheolhyeok.core.MyAidl;
 
 /**
  * Created by soochun on 2017-01-16.

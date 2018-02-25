@@ -5,112 +5,175 @@
 
     <LinearLayout
         android:id="@+id/min_max_layout"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="18dp"
-        android:orientation="horizontal">
+        android:layout_marginTop="25dp"
+        android:orientation="horizontal"
+        android:weightSum="4"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        >
 
-        <TextView
-            android:id="@+id/age_nouse"
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/section_line3"
-            android:layout_centerInParent="true"
-            android:layout_marginLeft="5dp"
-            android:layout_marginTop="10dp"
-            android:text="Age / Height / Weight / BodyType"
+            android:layout_weight="1"
+            android:gravity="center"
+            >
+
+        <TextView
+            android:id="@+id/txt_age"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="나이"
             android:textColor="@color/black"
             android:textSize="15dp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:layout_centerHorizontal="true"
+            />
+
+            <NumberPicker
+                android:id="@+id/numberPicker1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txt_age"
+                android:theme="@style/NumberPickerText"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="30dp"
+                />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            >
+
+            <TextView
+                android:id="@+id/txt_height"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="키"
+                android:textColor="@color/black"
+                android:textSize="15dp"
+                android:textStyle="bold"
+                android:layout_centerHorizontal="true"
+                />
+
+            <NumberPicker
+                android:id="@+id/numberPicker2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txt_height"
+                android:theme="@style/NumberPickerText"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="30dp"
+                />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            >
+
+            <TextView
+                android:id="@+id/txt_weight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="몸무게"
+                android:textColor="@color/black"
+                android:textSize="15dp"
+                android:textStyle="bold"
+                android:layout_centerHorizontal="true"
+                />
+
+            <NumberPicker
+                android:id="@+id/numberPicker3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txt_weight"
+                android:theme="@style/NumberPickerText"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="30dp"
+                />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            >
+
+            <TextView
+                android:id="@+id/txt_bt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="체형"
+                android:textColor="@color/black"
+                android:textSize="15dp"
+                android:textStyle="bold"
+                android:layout_centerHorizontal="true"
+                />
+
+            <NumberPicker
+                android:id="@+id/numberPicker4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txt_bt"
+                android:theme="@style/NumberPickerText"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="30dp"
+                />
+
+        </RelativeLayout>
+
 
     </LinearLayout>
 
 
     <LinearLayout
-        android:id="@+id/numberPicker_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/min_max_layout"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:orientation="horizontal">
-
-
-        <NumberPicker
-            android:id="@+id/numberPicker1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginRight="5dp"
-            android:theme="@style/NumberPickerText" />
-
-        <NumberPicker
-            android:id="@+id/numberPicker2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginRight="5dp"
-            android:theme="@style/NumberPickerText"
-
-            />
-
-        <NumberPicker
-            android:id="@+id/numberPicker3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginRight="5dp"
-            android:theme="@style/NumberPickerText"
-
-            />
-
-        <NumberPicker
-            android:id="@+id/numberPicker4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:theme="@style/NumberPickerText"
-            android:weightSum="1" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/numberPicker_layout"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="40dp"
+        android:layout_marginBottom="25dp"
         android:layout_marginTop="20dp"
         android:orientation="horizontal"
         android:weightSum="3">
 
-        <TextView
-            android:id="@+id/button1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
-            android:layout_weight="0.5"
-            android:text="Set"
-            android:textSize="15dp" />
 
         <TextView
             android:id="@+id/button2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
             android:layout_weight="0.5"
-            android:text="Cancel"
+            android:text="취소"
+            android:textStyle="bold"
             android:textSize="15dp"
-
+            android:padding="15dp"
 
             />
 
+        <TextView
+            android:id="@+id/button1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="108dp"
+            android:layout_weight="0.5"
+            android:textColor="@color/skyblue"
+            android:text="저장"
+            android:textStyle="bold"
+            android:textSize="15dp"
+            android:padding="15dp"
+            />
     </LinearLayout>
-
 
 </RelativeLayout>

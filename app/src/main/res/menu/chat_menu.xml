@@ -5,19 +5,13 @@
     <item
         android:id="@+id/profile"
         android:orderInCategory="100"
-        android:title="profile"
+        android:title="프로필 보기"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/block"
         android:orderInCategory="100"
-        android:title="block"
-        app:showAsAction="never" />
-
-    <item
-        android:id="@+id/report"
-        android:orderInCategory="100"
-        android:title="report"
+        android:title="차단하기"
         app:showAsAction="never" />
 
 </menu>

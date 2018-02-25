@@ -364,9 +364,9 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 
                 String msg;
                 if(b){  // True 잠금
-                    msg = pictureNum + "번 사진이 잠깁니다";
+                    msg = "이 사진을 비공개 합니다.";
                 } else {
-                    msg = pictureNum + "번 사진이 풀립니다";
+                    msg = "이 사진을 전체공개 합니다";
                 }
                 Toast.makeText(ProfileModifyActivity.this, msg, Toast.LENGTH_SHORT).show();
             }
@@ -520,6 +520,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 
         final Dialog d = new Dialog(ProfileModifyActivity.this);
         d.setContentView(R.layout.profile_modify_filter_dialog);
+        d.setCanceledOnTouchOutside(false);
 
         // Dialog 사이즈 조절 하기
         ViewGroup.LayoutParams params = d.getWindow().getAttributes();
@@ -598,7 +599,8 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
     public void showBodyType() {
 
         final Dialog d = new Dialog(ProfileModifyActivity.this);
-        d.setContentView(R.layout.profile_modify_filter_bt_dialog);
+        d.setContentView(R.layout.profile_modify_filter_dialog);
+        d.setCanceledOnTouchOutside(false);
 
         // Dialog 사이즈 조절 하기
         ViewGroup.LayoutParams params = d.getWindow().getAttributes();
