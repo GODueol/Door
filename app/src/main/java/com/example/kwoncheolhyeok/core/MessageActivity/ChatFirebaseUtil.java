@@ -291,7 +291,7 @@ public class ChatFirebaseUtil {
                 } catch (Exception e) {
 
                 }
-            } else {
+            } else if(messageVO.getCheck()==0){
                 checkRefreshChatLog();
             }
         }

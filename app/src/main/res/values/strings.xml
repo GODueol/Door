@@ -78,6 +78,7 @@
 
     <string name="anonymityProhibition">익명 포스트 받지 않기</string>
     <string name="find_nickname_hint">닉네임을 검색하세요</string>
+    <string name="find_map_hint">원하는 위치를 검색하세요</string>
 
     <string name="cp_1">다른 회원을 더 자세히 알아보고 싶으신가요?</string>
     <string name="cp_2">CORE PLUS는 여러분께 다양한 혜택을 드립니다!</string>
@@ -109,6 +110,10 @@
 
     <string name="deleteImage">삭제된 이미지 입니다.</string>
 
-    <string name="alertChat">쪽지가 도착하였습니다.</string>
+    <string name="alertChat">새로운 메세지를 확인해보세요!</string>
+    <string name="alertFolow">누군가가 당신을 팔로우 했어요!</string>
+    <string name="alertFriend">새로운 친구가 생겼어요!</string>
+    <string name="alertPost">누군가 내 코어에 질문을 남겼어요!</string>
+    <string name="alertLike">누군가 내가 올린 포스트를 좋아하네요!</string>
 </resources>
 

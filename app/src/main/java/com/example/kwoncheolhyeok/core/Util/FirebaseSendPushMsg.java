@@ -35,7 +35,7 @@ public class FirebaseSendPushMsg {
                             JSONObject root = new JSONObject();
                             JSONObject notification = new JSONObject();
                             notification.put("body", message);
-                            notification.put("title", currentUserNick+"님 으로부터");
+                            notification.put("title", currentUserNick);
                             root.put("notification", notification);
                             root.put("to", user.getToken());
                             // FMC 메시지 생성 end

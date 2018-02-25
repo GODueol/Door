@@ -1,16 +1,23 @@
 package com.example.kwoncheolhyeok.core.Activity;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.kwoncheolhyeok.core.R;
@@ -30,7 +37,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
  * Created by KwonCheolHyeok on 2016-11-25.
  */
 
-public class MapsActivity extends FragmentActivity implements GoogleApiClient.OnConnectionFailedListener, OnMapReadyCallback, GoogleMap.OnMapClickListener, GoogleMap.OnInfoWindowClickListener {
+public class MapsActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, OnMapReadyCallback, GoogleMap.OnMapClickListener, GoogleMap.OnInfoWindowClickListener {
 
 
     private GoogleMap mGoogleMap;
@@ -38,12 +45,21 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.On
     private GPSInfo mGPSInfo;
     public SearchView addrText;
     public ImageButton search;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.google_map_activity);
 
+        toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        // 툴바 뒤로가기 버튼
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true); //액션바 아이콘을 업 네비게이션 형태로 표시합니다.
+        getSupportActionBar().setDisplayShowHomeEnabled(true); //홈 아이콘을 숨김처리합니다.
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
 
 
         addrText = (SearchView) findViewById(R.id.addrText);
@@ -83,6 +99,19 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.On
         });
 
        */
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            default:
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -160,9 +189,11 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.On
                 String adress = addrConvertor.getAddress(getApplicationContext(), latLng);
                 mGoogleMap.clear();
                 mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, zlevel));
+
                 mGoogleMap.addMarker(new MarkerOptions()
                         .position(latLng)
                         .title(adress)
+                        .snippet("이 주변 검색")
                 ).showInfoWindow();
             }
         }

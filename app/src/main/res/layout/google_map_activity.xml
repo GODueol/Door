@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="45dp"
-            android:queryHint="@string/find_nickname_hint"
+            android:queryHint="@string/find_map_hint"
             android:layout_toLeftOf="@+id/search_map"
             android:layout_marginRight="10dp"
             />

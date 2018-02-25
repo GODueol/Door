@@ -16,6 +16,8 @@ import com.example.kwoncheolhyeok.core.R;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import static android.support.v4.app.NotificationCompat.PRIORITY_MAX;
+
 /**
  * Created by godueol on 2018. 2. 24..
  */
@@ -90,7 +92,8 @@ public class FirebaseRcevPushMsg extends FirebaseMessagingService {
                         .setContentText(messageBody)
                         .setAutoCancel(true)
                         .setSound(defaultSoundUri)
-                        .setContentIntent(pendingIntent);
+                        .setContentIntent(pendingIntent)
+                        .setPriority(PRIORITY_MAX);
 
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
