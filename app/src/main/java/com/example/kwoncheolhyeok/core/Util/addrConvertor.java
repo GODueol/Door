@@ -35,7 +35,7 @@ public class addrConvertor {
                 if (address.get(0).getAdminArea() != null) {
                     nowAddress += address.get(0).getAdminArea() + " ";
                 }
-                if (address.get(0).getLocality() != null) {
+                if (address.get(0).getLocality() != null && !address.get(0).getLocality().equals(address.get(0).getAdminArea())) {
                     nowAddress += address.get(0).getLocality() + " ";
                 }
                 if (address.get(0).getThoroughfare() != null) {
