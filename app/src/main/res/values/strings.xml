@@ -29,7 +29,7 @@
     <string name="people">People</string>
 
 
-    <string name="friends">Friends</string>
+    <string name="friends">친구</string>
     <string name="viewed_me">나를 본 회원</string>
     <string name="block">블럭</string>
     <string name="follower">팔로워</string>
@@ -46,9 +46,9 @@
     <string name="block_list">블럭</string>
     <string name="app_info">앱 정보</string>
     <string name="log_out">로그 아웃</string>
-    <string name="core">CORE</string>
-    <string name="follow">Follow</string>
-    <string name="unblock">Unblock</string>
+    <string name="core">코어</string>
+    <string name="follow">팔로우</string>
+    <string name="unblock">블럭 해제</string>
     <string name="oldOrder">오래된 순</string>
     <string name="newOrder">최신 순</string>
     <string name="unknown">Unknown</string>
@@ -61,7 +61,7 @@
     <string name="set_new_message">새 메세지를 받았을 때</string>
     <string name="set_new_follower">새 팔로워가 추가됐을 때</string>
     <string name="set_new_friends">새 친구가 생겼을 때</string>
-    <string name="set_new_post">내 코어에 새 익명 글이 올라왔을 때</string>
+    <string name="set_new_post">내 코어에 새 익명글이 올라왔을 때</string>
     <string name="set_new_heart">내 코어 포스트에 하트가 추가되었을 때</string>
 
     <string name="set_password">비밀번호 변경</string>
