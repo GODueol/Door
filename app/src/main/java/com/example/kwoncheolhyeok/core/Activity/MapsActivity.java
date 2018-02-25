@@ -63,6 +63,9 @@ public class MapsActivity extends AppCompatActivity implements GoogleApiClient.O
 
 
         addrText = (SearchView) findViewById(R.id.addrText);
+        addrText.onActionViewExpanded();
+
+
         search = (ImageButton) findViewById(R.id.search_map);
         mGPSInfo = new GPSInfo(getApplicationContext());
 

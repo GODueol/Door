@@ -265,8 +265,8 @@ public class ChattingActivity extends AppCompatActivity {
         menu.clear();
         getMenuInflater().inflate(R.menu.chat_menu, menu);
         ArrayList<String> menulist = new ArrayList<String>();
-        menulist.add("profile");
-        menulist.add("block");
+        menulist.add("프로필");
+        menulist.add("블럭");
 
         int positionOfMenuItem = 0;
         for (String name : menulist) {
