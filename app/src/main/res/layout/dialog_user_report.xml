@@ -64,6 +64,7 @@
             android:layout_marginRight="80dp"
             android:layout_weight="0.5"
             android:text="@string/cancle"
+            android:textStyle="bold"
             android:textSize="15dp" />
 
         <TextView
@@ -73,6 +74,8 @@
             android:layout_marginLeft="10dp"
             android:layout_weight="0.5"
             android:text="@string/ok"
+            android:textColor="@color/skyblue"
+            android:textStyle="bold"
             android:textSize="15dp"
 
             />
