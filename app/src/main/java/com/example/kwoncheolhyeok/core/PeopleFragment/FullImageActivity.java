@@ -440,11 +440,21 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         });
     }
 
+    private boolean isHaveLockPic(){
+        for(boolean b : mUser.getIsLockPics().toArray()){
+            if(b) return true;
+        }
+        return false;
+    }
+
     private void setPicLock(final GridItem item) {
         final String myUuid = DataContainer.getInstance().getUid();
         if (mUser == null) {
             UiUtil.getInstance().restartApp(this);
         }
+
+        // 잠근사진이 없으면 리턴
+        if(!isHaveLockPic()) return;
 
         // 아이콘 크기 설정
         picOpen.getLayoutParams().width = (int) getResources().getDimension(R.dimen.image_lock_height);
