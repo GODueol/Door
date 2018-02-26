@@ -122,7 +122,7 @@
 
     <string name="alertUnlockPic">누군가 당신에게 비공개 사진을 열었어요!</string>
     <string name="msgUnlockPic">비공개 사진을 확인해보세요!</string>
-
+//
     <string name="mapSpiner">이 주변 회원 검색</string>
 </resources>
 
