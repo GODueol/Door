@@ -111,11 +111,18 @@
     <string name="deleteImage">삭제된 이미지 입니다.</string>
 
     <string name="alertChat">새로운 메세지를 확인해보세요!</string>
+
     <string name="alertFolow">누군가가 당신을 팔로우 했어요!</string>
+
     <string name="alertFriend">새로운 친구가 생겼어요!</string>
+
     <string name="alertPost">누군가 내 코어에 질문을 남겼어요!</string>
+
     <string name="alertLike">누군가 내가 올린 포스트를 좋아하네요!</string>
+
     <string name="alertUnlockPic">누군가 당신에게 비공개 사진을 열었어요!</string>
+    <string name="msgUnlockPic">비공개 사진을 확인해보세요!</string>
+
     <string name="mapSpiner">이 주변 회원 검색</string>
 </resources>
 
