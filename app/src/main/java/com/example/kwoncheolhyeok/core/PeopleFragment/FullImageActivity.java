@@ -3,7 +3,6 @@ package com.example.kwoncheolhyeok.core.PeopleFragment;
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -94,6 +93,16 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
 
     @Bind(R.id.core_counts)
     TextView corePostCount;
+
+    @Bind(R.id.image2lock)
+    ImageView image2lock;
+
+    @Bind(R.id.image3lock)
+    ImageView image3lock;
+
+    @Bind(R.id.image4lock)
+    ImageView image4lock;
+
     private User oUser;
     private ValueEventListener listener;
     private DatabaseReference oUserRef;
@@ -238,6 +247,18 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         for (int i = 0; i < picUrlList.size(); i++) {
             String url = picUrlList.get(i);
             if (url == null) continue;
+
+            // Lock인 사진 표현
+            if(url.equals(oUser.getPicUrls().getThumbNail_picUrl4())) {
+                if(oUser.getIsLockPics().getIsLockPic2()) image2lock.setVisibility(View.VISIBLE);
+                else image2lock.setVisibility(View.INVISIBLE);
+            } else if(url.equals(oUser.getPicUrls().getThumbNail_picUrl4())) {
+                if(oUser.getIsLockPics().getIsLockPic3()) image3lock.setVisibility(View.VISIBLE);
+                else image3lock.setVisibility(View.INVISIBLE);
+            } else if(url.equals(oUser.getPicUrls().getThumbNail_picUrl4())) {
+                if(oUser.getIsLockPics().getIsLockPic4()) image4lock.setVisibility(View.VISIBLE);
+                else image4lock.setVisibility(View.INVISIBLE);
+            }
 
             GlideApp.with(getBaseContext())
                     .load(url)
