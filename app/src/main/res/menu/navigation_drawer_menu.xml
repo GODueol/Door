@@ -10,24 +10,28 @@
             android:id="@+id/nav_People"
             android:icon="@drawable/people"
             android:title="People"
+            app:actionViewClass="android.widget.TextView"
             app:theme="@style/NavigationViewStyle"
             />
         <item
             android:id="@+id/nav_mycore"
             android:icon="@drawable/core"
             android:title="My Core"
+            app:actionViewClass="android.widget.TextView"
             app:theme="@style/NavigationViewStyle"
             />
         <item
             android:id="@+id/nav_message"
             android:icon="@drawable/message"
             android:title="Message"
+            app:actionViewClass="android.widget.TextView"
             app:theme="@style/NavigationViewStyle"
             />
         <item
             android:id="@+id/nav_friends"
             android:icon="@drawable/nav_friends"
             android:title="Friends"
+            app:actionViewClass="android.widget.TextView"
             app:theme="@style/NavigationViewStyle"
             />
 
@@ -43,15 +47,14 @@
             android:id="@+id/nav_setting"
             android:icon="@drawable/setting"
             android:title="Setting"
+            app:actionViewClass="android.widget.TextView"
             app:theme="@style/NavigationViewStyle"
             />
 
     <!--</group>-->
 
-
-
         <item
-            android:icon="@drawable/coreplus_nav"
+            android:icon="@drawable/nav_coreplus"
             android:id="@+id/nav_coreplus"
             android:title="@string/core_plus"
             app:theme="@style/NavigationViewStyle"

@@ -2,12 +2,15 @@ package com.example.kwoncheolhyeok.core.FriendsActivity;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.internal.BottomNavigationMenuView;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.R;
@@ -19,6 +22,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
 import java.util.ArrayList;
+
+import q.rorbin.badgeview.QBadgeView;
 
 public class FriendsActivity extends UserListBaseActivity {
 
@@ -37,8 +42,12 @@ public class FriendsActivity extends UserListBaseActivity {
         navigation.enableAnimation(false);
         navigation.enableShiftingMode(false);
         navigation.enableItemShiftingMode(false);
-        navigation.setIconVisibility(false);
+        navigation.setIconVisibility(true);
         navigation.setTextSize(15);
+        navigation.setItemHeight(100);
+
+        BottomNavigationMenuView bottomNavigationMenuView = (BottomNavigationMenuView) navigation.getChildAt(0);
+        navigationViewinitBadge(bottomNavigationMenuView);
 
         BottomNavigationView.OnNavigationItemSelectedListener selectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -98,8 +107,27 @@ public class FriendsActivity extends UserListBaseActivity {
 
             }
         });
+    }
 
+    private void navigationViewinitBadge(BottomNavigationMenuView bottomNavigationMenuView) {
+        //Gravity property aligns the text
 
+        int count = bottomNavigationMenuView.getChildCount();
+        for (int i = 0; i < count; i++) {
+            View view = bottomNavigationMenuView.getChildAt(i);
+            setQbadge(view);
+        }
+    }
+
+    private void setQbadge(View view) {
+        new QBadgeView(this).bindTarget(view)
+                .setBadgeTextColor(getResources().getColor(R.color.black))
+                .setBadgeGravity(Gravity.END | Gravity.TOP)
+                .setGravityOffset(18, -6, true)
+                .setExactMode(true)
+                .setBadgeNumber(999)
+                .setShowShadow(false)
+                .setBadgeBackgroundColor(getResources().getColor(R.color.transparent));
     }
 
     // 뒤로가기 버튼 기능
