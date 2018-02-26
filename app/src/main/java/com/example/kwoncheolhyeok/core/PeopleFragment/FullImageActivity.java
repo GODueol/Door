@@ -243,21 +243,22 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
 
         // 사진 출력
         ImageView profilePics[] = {page1, page2, page3, page4};
+        ImageView lockPics[] = {null, image2lock, image3lock, image4lock};
         picUrlList = oUser.getPicUrls().toNotNullArrayThumbNail(oUser.getIsLockPics(), oUser.getUnLockUsers(), item.getUuid());
         for (int i = 0; i < picUrlList.size(); i++) {
             String url = picUrlList.get(i);
             if (url == null) continue;
 
             // Lock인 사진 표현
-            if(url.equals(oUser.getPicUrls().getThumbNail_picUrl4())) {
-                if(oUser.getIsLockPics().getIsLockPic2()) image2lock.setVisibility(View.VISIBLE);
-                else image2lock.setVisibility(View.INVISIBLE);
+            if(url.equals(oUser.getPicUrls().getThumbNail_picUrl2())) {
+                if(oUser.getIsLockPics().getIsLockPic2()) lockPics[i].setVisibility(View.VISIBLE);
+                else lockPics[i].setVisibility(View.INVISIBLE);
+            } else if(url.equals(oUser.getPicUrls().getThumbNail_picUrl3())) {
+                if(oUser.getIsLockPics().getIsLockPic3()) lockPics[i].setVisibility(View.VISIBLE);
+                else lockPics[i].setVisibility(View.INVISIBLE);
             } else if(url.equals(oUser.getPicUrls().getThumbNail_picUrl4())) {
-                if(oUser.getIsLockPics().getIsLockPic3()) image3lock.setVisibility(View.VISIBLE);
-                else image3lock.setVisibility(View.INVISIBLE);
-            } else if(url.equals(oUser.getPicUrls().getThumbNail_picUrl4())) {
-                if(oUser.getIsLockPics().getIsLockPic4()) image4lock.setVisibility(View.VISIBLE);
-                else image4lock.setVisibility(View.INVISIBLE);
+                if(oUser.getIsLockPics().getIsLockPic4()) lockPics[i].setVisibility(View.VISIBLE);
+                else lockPics[i].setVisibility(View.INVISIBLE);
             }
 
             GlideApp.with(getBaseContext())
