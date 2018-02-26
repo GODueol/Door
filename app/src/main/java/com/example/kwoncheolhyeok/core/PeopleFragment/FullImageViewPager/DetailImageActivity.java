@@ -52,4 +52,5 @@ public class DetailImageActivity extends AppCompatActivity {
         super.onPause();
 //        ScreenshotSetApplication.getInstance().unregisterScreenshotObserver();
     }
+
 }

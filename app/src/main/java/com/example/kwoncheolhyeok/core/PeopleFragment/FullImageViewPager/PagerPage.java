@@ -22,9 +22,11 @@ public class PagerPage extends android.support.v4.app.Fragment {
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.full_image_4_page, container, false);
+
 
         if (getArguments() != null) {
             String picPath = getArguments().getString("picPath");

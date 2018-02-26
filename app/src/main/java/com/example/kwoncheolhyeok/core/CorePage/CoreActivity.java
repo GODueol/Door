@@ -67,7 +67,7 @@ public class CoreActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 if (isBlocked) {
-                    Toast.makeText(CoreActivity.this, "당신은 글을 쓸 수 없습니다", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CoreActivity.this, "포스트를 작성할 수 없습니다.", Toast.LENGTH_SHORT).show();
                     finish();
                     return;
                 }

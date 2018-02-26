@@ -50,7 +50,6 @@ public class MapsActivity extends AppCompatActivity implements GoogleApiClient.O
         setContentView(R.layout.google_map_activity);
 
         toolbar = findViewById(R.id.toolbar);
-        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         // 툴바 뒤로가기 버튼
