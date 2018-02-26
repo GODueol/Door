@@ -518,5 +518,66 @@ public class ChatFirebaseUtil {
     }
 
 
+    public static void sendEventMessage(final String mUuid,final String nickName, final String oUuid, final String message){
+        final DatabaseReference chatRoomRef = FirebaseDatabase.getInstance().getReference(chatRoomList);
+        final String[] RoomName = new String[1];
+        chatRoomRef.child(mUuid).child(oUuid).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                final RoomVO checkRoomVO = dataSnapshot.getValue(RoomVO.class);
+                long currentTime = System.currentTimeMillis();
+
+                if (dataSnapshot.exists()) {
+                    RoomName[0] = checkRoomVO.getChatRoomid();
+                } else {
+                    DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
+                    RoomName[0] = FirebaseDatabase.getInstance().getReference(chat).push().getKey();
+                    Map<String, Object> childUpdates = new HashMap<>();
+                    RoomVO roomVO = new RoomVO(RoomName[0], null, mUuid, currentTime);
+                    childUpdates.put("/" + chatRoomList + "/" + oUuid + "/" + mUuid, roomVO);
+                    roomVO = new RoomVO(RoomName[0], null, oUuid, currentTime);
+                    childUpdates.put("/" + chatRoomList + "/" + mUuid + "/" + oUuid, roomVO);
+                    databaseRef.updateChildren(childUpdates);
+                    chatRoomRef.child(mUuid).child(oUuid).child("lastViewTime").setValue(currentTime);
+                }
+
+                sendMessage(RoomName[0],mUuid,nickName,oUuid,message);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private static void sendMessage(String room,final String mUuid, String nickName, final String oUuid, final String message) {
+        Long currentTime = System.currentTimeMillis();
+        MessageVO messageVO = new MessageVO(null, mUuid, nickName, message, currentTime, 1);
+        DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
+        String key = databaseRef.child(chat).child(room).push().getKey();
+        Map<String, Object> childUpdates = new HashMap<>();
+
+
+        if (messageVO.getImage() == null) {        // 메세지일 경우
+            childUpdates.put("/" + chat + "/" + room + "/" + key, messageVO);
+
+            childUpdates.put("/" + chatRoomList + "/" + oUuid + "/" + mUuid + "/" + "lastChatTime", currentTime);
+            childUpdates.put("/" + chatRoomList + "/" + oUuid + "/" + mUuid + "/" + "lastChat", messageVO.getContent());
+
+            childUpdates.put("/" + chatRoomList + "/" + mUuid + "/" + oUuid + "/" + "lastViewTime", currentTime);
+            childUpdates.put("/" + chatRoomList + "/" + mUuid + "/" + oUuid + "/" + "lastChat", messageVO.getContent());
+        } else if (messageVO.getContent() == null) {          // 이미지일 경우
+
+            childUpdates.put("/" + chat + "/" + room + "/" + key, messageVO);
+
+            childUpdates.put("/" + chatRoomList + "/" + oUuid + "/" + mUuid + "/" + "lastChatTime", currentTime);
+            childUpdates.put("/" + chatRoomList + "/" + oUuid + "/" + mUuid + "/" + "lastChat", "사진");
+            childUpdates.put("/" + chatRoomList + "/" + mUuid + "/" + oUuid + "/" + "lastViewTime", currentTime);
+            childUpdates.put("/" + chatRoomList + "/" + mUuid + "/" + oUuid + "/" + "lastChat", "사진");
+        }
+        databaseRef.updateChildren(childUpdates);
+    }
 }
 

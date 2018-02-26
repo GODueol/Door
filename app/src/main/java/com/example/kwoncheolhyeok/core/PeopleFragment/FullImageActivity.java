@@ -23,6 +23,7 @@ import com.example.kwoncheolhyeok.core.PeopleFragment.FullImageViewPager.DetailI
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
+import com.example.kwoncheolhyeok.core.Util.FirebaseSendPushMsg;
 import com.example.kwoncheolhyeok.core.Util.GPSInfo;
 import com.example.kwoncheolhyeok.core.Util.GlideApp;
 import com.example.kwoncheolhyeok.core.Util.UiUtil;
@@ -48,6 +49,8 @@ import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+
+import static com.example.kwoncheolhyeok.core.MessageActivity.ChatFirebaseUtil.sendEventMessage;
 
 
 public class FullImageActivity extends AppCompatActivity implements View.OnClickListener {
@@ -473,10 +476,10 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
                         UiUtil.getInstance().startProgressDialog(FullImageActivity.this);
                         if (isLock) {
                             mUser.getUnLockUsers().put(item.getUuid(), System.currentTimeMillis()); // 해제
-                            Toast.makeText(FullImageActivity.this, "잠긴 사진을 열었습니다.", Toast.LENGTH_SHORT).show();
+
                         } else {
                             mUser.getUnLockUsers().remove(item.getUuid());  // 잠금
-                            Toast.makeText(FullImageActivity.this, "사진을 비공개 합니다.", Toast.LENGTH_SHORT).show();
+
 
                         }
                         DataContainer.getInstance().getUsersRef().child(myUuid).setValue(mUser)
@@ -485,8 +488,12 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
                                     public void onSuccess(Void aVoid) {
                                         if (isLock) {
                                             picOpen.setImageResource(R.drawable.picture_lock);    // 해제하기 (현재 사진이 잠겼다는 것을 암시함)
+                                            Toast.makeText(FullImageActivity.this, "잠긴 사진을 열었습니다.", Toast.LENGTH_SHORT).show();
+                                            sendEventMessage(myUuid,mUser.getId(),item.getUuid(),getString(R.string.alertUnlockPic));
+                                            FirebaseSendPushMsg.sendPostToFCM(item.getUuid(),mUser.getId(),getString(R.string.alertUnlockPic));
                                         } else {
                                             picOpen.setImageResource(R.drawable.picture_unlock);  // 잠금 (현재 사진이 해제되어 있다는 암시함)
+                                            Toast.makeText(FullImageActivity.this, "사진을 비공개 합니다.", Toast.LENGTH_SHORT).show();
                                         }
                                     }
                                 }).addOnCompleteListener(new OnCompleteListener<Void>() {
