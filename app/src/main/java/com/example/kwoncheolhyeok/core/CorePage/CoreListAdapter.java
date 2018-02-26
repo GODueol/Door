@@ -114,6 +114,14 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
         holder.core_contents.setText(corePost.getText());
 
         holder.core_heart_count.setText(Integer.toString(corePost.getLikeUsers().size()));
+        holder.core_heart_count.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(context,CoreHeartCountActivity.class);
+                context.startActivity(i);
+            }
+        });
+
         holder.core_heart_btn.setLiked(corePost.getLikeUsers().containsKey(mUuid));
 
         holder.core_heart_btn.setOnLikeListener(new OnLikeListener() {
