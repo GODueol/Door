@@ -3,6 +3,7 @@ package com.example.kwoncheolhyeok.core.PeopleFragment;
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -479,7 +480,6 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
 
                         } else {
                             mUser.getUnLockUsers().remove(item.getUuid());  // 잠금
-
 
                         }
                         DataContainer.getInstance().getUsersRef().child(myUuid).setValue(mUser)
