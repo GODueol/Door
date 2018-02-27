@@ -42,9 +42,12 @@ public class FriendsActivity extends UserListBaseActivity {
         navigation.enableAnimation(false);
         navigation.enableShiftingMode(false);
         navigation.enableItemShiftingMode(false);
-        navigation.setIconVisibility(true);
         navigation.setTextSize(15);
-        navigation.setItemHeight(100);
+        navigation.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+        navigation.getMeasuredWidth();
+        navigation.getMeasuredHeight();
+        navigation.setIconVisibility(false);
+        navigation.setItemHeight(navigation.getMeasuredHeight());
 
         BottomNavigationMenuView bottomNavigationMenuView = (BottomNavigationMenuView) navigation.getChildAt(0);
         navigationViewinitBadge(bottomNavigationMenuView);
@@ -123,7 +126,7 @@ public class FriendsActivity extends UserListBaseActivity {
         new QBadgeView(this).bindTarget(view)
                 .setBadgeTextColor(getResources().getColor(R.color.black))
                 .setBadgeGravity(Gravity.END | Gravity.TOP)
-                .setGravityOffset(18, -6, true)
+                .setGravityOffset((float) 9.5, (float) -7.5, true)
                 .setExactMode(true)
                 .setBadgeNumber(999)
                 .setShowShadow(false)
