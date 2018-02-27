@@ -114,21 +114,26 @@ public class FriendsActivity extends UserListBaseActivity {
 
     private void navigationViewinitBadge(BottomNavigationMenuView bottomNavigationMenuView) {
         //Gravity property aligns the text
+        View friend = bottomNavigationMenuView.getChildAt(0);
+        setQbadge(friend,999,(float)9.5,(float)-7.5);
 
-        int count = bottomNavigationMenuView.getChildCount();
-        for (int i = 0; i < count; i++) {
-            View view = bottomNavigationMenuView.getChildAt(i);
-            setQbadge(view);
-        }
+        View follower = bottomNavigationMenuView.getChildAt(1);
+        setQbadge(follower,999,(float)9.5,(float)-7.5);
+
+        View following = bottomNavigationMenuView.getChildAt(2);
+        setQbadge(following,999,(float)9.5,(float)-7.5);
+
+        View viewed = bottomNavigationMenuView.getChildAt(3);
+        setQbadge(viewed,999,(float)9.5,(float)-7.5);
     }
 
-    private void setQbadge(View view) {
+    private void setQbadge(View view,int num,float x, float y) {
         new QBadgeView(this).bindTarget(view)
                 .setBadgeTextColor(getResources().getColor(R.color.black))
                 .setBadgeGravity(Gravity.END | Gravity.TOP)
-                .setGravityOffset((float) 9.5, (float) -7.5, true)
+                .setGravityOffset(x, y, true)
                 .setExactMode(true)
-                .setBadgeNumber(999)
+                .setBadgeNumber(num)
                 .setShowShadow(false)
                 .setBadgeBackgroundColor(getResources().getColor(R.color.transparent));
     }
