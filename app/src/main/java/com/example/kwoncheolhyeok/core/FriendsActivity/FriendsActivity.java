@@ -44,7 +44,7 @@ public class FriendsActivity extends UserListBaseActivity {
         navigation.enableItemShiftingMode(false);
         navigation.setTextSize(15);
         navigation.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-        navigation.getMeasuredWidth();
+//        navigation.getMeasuredWidth();
         navigation.getMeasuredHeight();
         navigation.setIconVisibility(false);
         navigation.setItemHeight(navigation.getMeasuredHeight());
@@ -115,7 +115,7 @@ public class FriendsActivity extends UserListBaseActivity {
     private void navigationViewinitBadge(BottomNavigationMenuView bottomNavigationMenuView) {
         //Gravity property aligns the text
         View friend = bottomNavigationMenuView.getChildAt(0);
-        setQbadge(friend,999,(float)9.5,(float)-7.5);
+        setQbadge(friend,999,(float)15.5,(float)-7.5);
 
         View follower = bottomNavigationMenuView.getChildAt(1);
         setQbadge(follower,999,(float)9.5,(float)-7.5);
@@ -124,7 +124,7 @@ public class FriendsActivity extends UserListBaseActivity {
         setQbadge(following,999,(float)9.5,(float)-7.5);
 
         View viewed = bottomNavigationMenuView.getChildAt(3);
-        setQbadge(viewed,999,(float)9.5,(float)-7.5);
+        setQbadge(viewed,999, (float) 7.5,(float)-7.5);
     }
 
     private void setQbadge(View view,int num,float x, float y) {
