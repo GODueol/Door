@@ -5,7 +5,6 @@
     android:layout_height="match_parent"
     android:background="@color/text_white">
 
-
     <!-- The toolbar -->
     <RelativeLayout
         android:id="@+id/toolbar_layout"
