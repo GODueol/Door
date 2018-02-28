@@ -90,6 +90,7 @@ public class MainActivity extends AppCompatActivity
 
         setSupportActionBar(toolbar);
 
+
         ToggleIconSet();
         toggle = new ActionBarDrawerToggle(
                 this,
@@ -101,6 +102,7 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
         toggle.setDrawerIndicatorEnabled(false);
         toggle.setHomeAsUpIndicator(icon_open);
+
         toggle.setToolbarNavigationClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -301,7 +303,7 @@ public class MainActivity extends AppCompatActivity
 
                 final User user = DataContainer.getInstance().getUser();
                 if (user.getUnLockUsers().size() == 0) {
-                    Toast.makeText(getBaseContext(), "이미 모든 유저에게 사진 잠금이 설정되어있습니다", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getBaseContext(), "이미 모든 유저에게 사진을 비공개 하였습니다", Toast.LENGTH_SHORT).show();
                     return true;
                 }
 
@@ -395,21 +397,23 @@ public class MainActivity extends AppCompatActivity
 
 
     public void ToggleIconSet() {
-        Drawable drawable = ResourcesCompat.getDrawable(getResources(), R.drawable.icon, getTheme());
+        Drawable drawable = ResourcesCompat.getDrawable(getResources(), R.drawable.icon_badge, getTheme());
         Drawable drawable2 = ResourcesCompat.getDrawable(getResources(), R.drawable.icon2, getTheme());
+
         Bitmap bitmap = null;
+        Bitmap bitmap2 = null;
+
         if (drawable != null) {
             bitmap = ((BitmapDrawable) drawable).getBitmap();
         }
-        Bitmap bitmap2 = null;
         if (drawable2 != null) {
             bitmap2 = ((BitmapDrawable) drawable2).getBitmap();
         }
         if (bitmap != null) {
-            icon_open = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 85, 85, true));
+            icon_open = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 100, 100, true));
         }
         if (bitmap2 != null) {
-            icon_close = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap2, 85, 85, true));
+            icon_close = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap2, 100, 100, true));
         }
     }
 

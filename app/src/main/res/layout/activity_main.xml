@@ -29,10 +29,11 @@
                 android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
                 <ImageButton
-                    android:layout_width="80dp"
-                    android:layout_height="23dp"
-                    android:layout_gravity="center"
-                    android:background="@drawable/title" />
+                android:layout_width="80dp"
+                android:layout_height="23dp"
+                android:layout_gravity="center"
+                android:background="@drawable/title" />
+
 
             </android.support.v7.widget.Toolbar>
 
