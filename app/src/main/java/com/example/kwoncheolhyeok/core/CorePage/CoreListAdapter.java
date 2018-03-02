@@ -407,6 +407,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
             btn_yes = itemView.findViewById(R.id.btn_yes);
             btn_pass = itemView.findViewById(R.id.btn_pass);
             btn_no = itemView.findViewById(R.id.btn_no);
+
             core_media = itemView.findViewById(R.id.media_player_layout);
             startAndPause = itemView.findViewById(R.id.button_start_pause);
             rewind = itemView.findViewById(R.id.button_rewind);
