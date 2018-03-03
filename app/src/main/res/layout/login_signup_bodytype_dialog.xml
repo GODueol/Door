@@ -9,7 +9,8 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
-        android:text="Bodytype" />
+        android:text="체형"
+        android:textStyle="bold"/>
 
 
     <NumberPicker
@@ -20,34 +21,44 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="25dp" />
 
-
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/numberPicker1"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="40dp"
+        android:layout_marginBottom="25dp"
         android:layout_marginTop="20dp"
         android:orientation="horizontal"
         android:weightSum="3">
 
-        <TextView
-            android:id="@+id/button1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
-            android:layout_weight="0.5"
-            android:text="Set" />
 
         <TextView
             android:id="@+id/button2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
             android:layout_weight="0.5"
-            android:text="Cancel" />
+            android:text="취소"
+            android:textStyle="bold"
+            android:textSize="15dp"
+            android:padding="15dp"
 
+            />
+
+        <TextView
+            android:id="@+id/button1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="108dp"
+            android:layout_weight="0.5"
+            android:textColor="@color/skyblue"
+            android:text="저장"
+            android:textStyle="bold"
+            android:textSize="15dp"
+            android:padding="15dp"
+            />
     </LinearLayout>
+
+
 
 
 </RelativeLayout>
