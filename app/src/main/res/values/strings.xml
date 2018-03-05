@@ -63,6 +63,8 @@
     <string name="set_new_friends">새 친구가 생겼을 때</string>
     <string name="set_new_post">내 코어에 새 익명글이 올라왔을 때</string>
     <string name="set_new_heart">내 코어 포스트에 하트가 추가되었을 때</string>
+    <string name="set_opn_lockpic">누가 비공개 사진을 열었을 때</string>
+
 
     <string name="set_password">비밀번호 변경</string>
     <string name="cur_password">현재 비밀번호</string>
