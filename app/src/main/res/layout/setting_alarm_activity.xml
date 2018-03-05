@@ -151,7 +151,7 @@
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:layout_marginLeft="15dp"
-            android:text="@string/set_new_post"
+            android:text="@string/set_opn_lockpic"
             android:textColor="@color/black"
             android:textSize="15dp" />
 
@@ -182,7 +182,7 @@
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:layout_marginLeft="15dp"
-            android:text="@string/set_new_heart"
+            android:text="@string/set_new_post"
             android:textColor="@color/black"
             android:textSize="15dp" />
 
@@ -197,5 +197,37 @@
             android:theme="@style/ColorSwitchStyle" />
 
     </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout6"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout5"
+        android:layout_marginTop="10dp"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="15dp"
+            android:text="@string/set_new_heart"
+            android:textColor="@color/black"
+            android:textSize="15dp" />
+
+        <Switch
+            android:id="@+id/switch6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="15dp"
+            android:checked="true"
+            android:theme="@style/ColorSwitchStyle" />
+
+    </RelativeLayout>
+
 
 </RelativeLayout>

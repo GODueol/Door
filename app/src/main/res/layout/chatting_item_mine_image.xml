@@ -13,26 +13,27 @@
 
         <View
             android:layout_width="wrap_content"
-            android:layout_height="1dp"
+            android:layout_height="0.5dp"
             android:layout_gravity="center"
             android:layout_margin="10dp"
             android:layout_weight="1"
-            android:background="@color/tr_gray35" />
+            android:background="@color/gray40" />
 
         <TextView
             android:id="@+id/dateText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="날짜선" />
+            />
 
         <View
             android:layout_width="wrap_content"
-            android:layout_height="1dp"
+            android:layout_height="0.5dp"
             android:layout_gravity="center"
             android:layout_margin="10dp"
             android:layout_weight="1"
-            android:background="@color/tr_gray35" />
+            android:background="@color/gray40" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -47,7 +48,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="3dp">
+            >
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -60,14 +61,18 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
-                    android:text="" />
+                    android:text="1"
+                    android:textSize="13dp"
+                    />
 
                 <TextView
                     android:id="@+id/time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="end"
-                    android:text="12:36 AM" />
+                    android:text="00:00 AM"
+                    android:textSize="13dp"
+                    />
 
             </LinearLayout>
 
@@ -77,21 +82,19 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:background="@color/white"
-                android:padding="5dp" />
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                />
 
 
             <com.example.kwoncheolhyeok.core.MessageActivity.util.ChatMessageView
                 android:id="@+id/chatMessageView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:layout_weight="1"
                 android:visibility="gone"
-                app:cmv_arrowGravity="start"
-                app:cmv_arrowPosition="left"
                 app:cmv_backgroundColor="@color/message_color"
-                app:cmv_backgroundColorPressed="#FFFFFF"
-                app:cmv_cornerRadius="9dp"
+                app:cmv_backgroundColorPressed="@color/white"
+                app:cmv_cornerRadius="5dp"
                 app:cmv_showArrow="false">
 
                 <TextView

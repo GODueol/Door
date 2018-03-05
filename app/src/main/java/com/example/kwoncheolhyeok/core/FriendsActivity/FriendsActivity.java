@@ -2,12 +2,15 @@ package com.example.kwoncheolhyeok.core.FriendsActivity;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.internal.BottomNavigationMenuView;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.R;
@@ -19,6 +22,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
 import java.util.ArrayList;
+
+import q.rorbin.badgeview.QBadgeView;
 
 public class FriendsActivity extends UserListBaseActivity {
 
@@ -37,8 +42,15 @@ public class FriendsActivity extends UserListBaseActivity {
         navigation.enableAnimation(false);
         navigation.enableShiftingMode(false);
         navigation.enableItemShiftingMode(false);
-        navigation.setIconVisibility(false);
         navigation.setTextSize(15);
+        navigation.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+//        navigation.getMeasuredWidth();
+        navigation.getMeasuredHeight();
+        navigation.setIconVisibility(false);
+        navigation.setItemHeight(navigation.getMeasuredHeight());
+
+        BottomNavigationMenuView bottomNavigationMenuView = (BottomNavigationMenuView) navigation.getChildAt(0);
+        navigationViewinitBadge(bottomNavigationMenuView);
 
         BottomNavigationView.OnNavigationItemSelectedListener selectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -98,8 +110,32 @@ public class FriendsActivity extends UserListBaseActivity {
 
             }
         });
+    }
 
+    private void navigationViewinitBadge(BottomNavigationMenuView bottomNavigationMenuView) {
+        //Gravity property aligns the text
+        View friend = bottomNavigationMenuView.getChildAt(0);
+        setQbadge(friend,999,(float)15.5,(float)-7.5);
 
+        View follower = bottomNavigationMenuView.getChildAt(1);
+        setQbadge(follower,999,(float)9.5,(float)-7.5);
+
+        View following = bottomNavigationMenuView.getChildAt(2);
+        setQbadge(following,999,(float)9.5,(float)-7.5);
+
+        View viewed = bottomNavigationMenuView.getChildAt(3);
+        setQbadge(viewed,999, (float) 7.5,(float)-7.5);
+    }
+
+    private void setQbadge(View view,int num,float x, float y) {
+        new QBadgeView(this).bindTarget(view)
+                .setBadgeTextColor(getResources().getColor(R.color.black))
+                .setBadgeGravity(Gravity.END | Gravity.TOP)
+                .setGravityOffset(x, y, true)
+                .setExactMode(true)
+                .setBadgeNumber(num)
+                .setShowShadow(false)
+                .setBadgeBackgroundColor(getResources().getColor(R.color.transparent));
     }
 
     // 뒤로가기 버튼 기능

@@ -24,10 +24,10 @@
             android:gravity="center"
             android:numColumns="4"
             android:padding="0dp"
-
             android:scrollbars="none"
             android:stretchMode="columnWidth"
             android:verticalSpacing="0dp" />
+
     </android.support.v4.widget.SwipeRefreshLayout>
 
 

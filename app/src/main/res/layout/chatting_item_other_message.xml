@@ -15,26 +15,26 @@
 
         <View
             android:layout_width="wrap_content"
-            android:layout_height="1dp"
+            android:layout_height="0.5dp"
             android:layout_gravity="center"
             android:layout_margin="10dp"
             android:layout_weight="1"
-            android:background="@color/tr_gray35" />
+            android:background="@color/gray40" />
 
         <TextView
             android:id="@+id/dateText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="날짜선" />
+            />
 
         <View
             android:layout_width="wrap_content"
-            android:layout_height="1dp"
+            android:layout_height="0.5dp"
             android:layout_gravity="center"
             android:layout_margin="10dp"
             android:layout_weight="1"
-            android:background="@color/tr_gray35" />
+            android:background="@color/gray40" />
     </LinearLayout>
 
     <LinearLayout
@@ -45,7 +45,9 @@
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="5dp">
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="5dp"
+            >
 
             <ImageView
                 android:id="@+id/profile_image"
@@ -62,11 +64,10 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:layout_weight="1"
-            app:cmv_arrowGravity="start"
-            app:cmv_arrowPosition="left"
+            android:layout_marginLeft="-6dp"
             app:cmv_backgroundColor="#FFE0BE"
-            app:cmv_backgroundColorPressed="#FFFFFF"
-            app:cmv_cornerRadius="9dp"
+            app:cmv_backgroundColorPressed="@color/white"
+            app:cmv_cornerRadius="5dp"
             app:cmv_showArrow="false">
 
             <TextView
@@ -82,19 +83,27 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|start"
             android:orientation="vertical"
-            android:padding="3dp">
+            android:padding="3dp"
+            android:layout_marginLeft="1dp"
+            >
 
             <TextView
                 android:id="@+id/check"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="" />
+                android:layout_gravity="end"
+                android:text="1"
+                android:textSize="13dp"
+                />
 
             <TextView
                 android:id="@+id/time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="13:00" />
+                android:gravity="end"
+                android:text="00:00 AM"
+                android:textSize="13dp"
+                />
         </LinearLayout>
     </LinearLayout>
 

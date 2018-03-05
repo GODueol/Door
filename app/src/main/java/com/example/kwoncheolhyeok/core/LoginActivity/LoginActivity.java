@@ -86,8 +86,8 @@ public class LoginActivity extends AppCompatActivity {
                 String email = _emailText.getText().toString();
                 // TODO : Test를 위한 코드
                 if (email.equals("")) {
-                    _emailText.setText("kbj2@naver.com");
-                    _passwordText.setText("1q2w3e4r5t");
+                    _emailText.setText("core@core.com");
+                    _passwordText.setText("0000000");
                 }
 
                 if (cb_save_id.isChecked()) {

@@ -256,6 +256,7 @@
         android:padding="5dp"
         android:weightSum="3">
 
+
         <ToggleButton
             android:id="@+id/btn_no"
             android:layout_width="match_parent"
@@ -264,8 +265,9 @@
             android:layout_marginRight="3dp"
             android:layout_weight="1"
             android:background="@drawable/btn_no_selector"
-            android:textOff="no"
-            android:textOn="no" />
+            android:textOff="NO"
+            android:textColor="@color/white"
+            android:textOn="NO" />
 
         <ToggleButton
             android:id="@+id/btn_pass"
@@ -275,8 +277,9 @@
             android:layout_marginRight="3dp"
             android:layout_weight="1"
             android:background="@drawable/btn_pass_selector"
-            android:textOff="pass"
-            android:textOn="pass" />
+            android:textOff="PASS"
+            android:textColor="@color/white"
+            android:textOn="PASS" />
 
         <ToggleButton
             android:id="@+id/btn_yes"
@@ -286,8 +289,10 @@
             android:layout_marginRight="3dp"
             android:layout_weight="1"
             android:background="@drawable/btn_yes_selector"
-            android:textOff="yes"
-            android:textOn="yes" />
+            android:textColor="@color/white"
+            android:textOff="YES"
+            android:textOn="YES" />
+
     </LinearLayout>
 
 

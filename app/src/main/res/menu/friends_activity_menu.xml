@@ -3,22 +3,18 @@
 
     <item
         android:id="@+id/navigation_friends"
-        android:icon="@drawable/btm_nav_icon"
         android:title="@string/friends" />
 
     <item
         android:id="@+id/navigation_receive"
-        android:icon="@drawable/btm_nav_icon"
         android:title="@string/follower" />
 
     <item
         android:id="@+id/navigation_send"
-        android:icon="@drawable/btm_nav_icon"
         android:title="@string/following" />
 
     <item
         android:id="@+id/navigation_recent"
-        android:icon="@drawable/btm_nav_icon"
         android:title="@string/viewed_me" />
 
 </menu>

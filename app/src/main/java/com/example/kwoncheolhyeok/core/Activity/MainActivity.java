@@ -4,10 +4,13 @@ import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.NavigationView;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.GravityCompat;
@@ -19,6 +22,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.style.TextAppearanceSpan;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -70,6 +74,7 @@ public class MainActivity extends AppCompatActivity
 
     private CloseActivityHandler closeActivityHandler;
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -85,6 +90,7 @@ public class MainActivity extends AppCompatActivity
 
         setSupportActionBar(toolbar);
 
+
         ToggleIconSet();
         toggle = new ActionBarDrawerToggle(
                 this,
@@ -96,13 +102,13 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
         toggle.setDrawerIndicatorEnabled(false);
         toggle.setHomeAsUpIndicator(icon_open);
+
         toggle.setToolbarNavigationClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 changeToggleIcon();
             }
         });
-
 
         //Navigation view
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -113,6 +119,9 @@ public class MainActivity extends AppCompatActivity
         SpannableString s = new SpannableString(tools.getTitle());
         s.setSpan(new TextAppearanceSpan(this, R.style.CorePlusColor), 0, s.length(), 0);
         tools.setTitle(s);
+
+        // 네비게이션 아이템 벳지
+        navigationViewinitBadge(menu);
 
         //네비게이션 안의 아이콘 색을 오리지널로 표현
         navigationView.setItemIconTintList(null);
@@ -210,6 +219,45 @@ public class MainActivity extends AppCompatActivity
                 });
     }
 
+    private void navigationViewinitBadge(Menu menu) {
+        //Gravity property aligns the text
+
+        MenuItem people = menu.findItem(R.id.nav_People);
+        TextView peopleBadge = (TextView) people.getActionView();
+        badgeRoundStyle(peopleBadge);
+
+        MenuItem core = menu.findItem(R.id.nav_mycore);
+        TextView coreBadge = (TextView) core.getActionView();
+        badgeStyle(coreBadge);
+
+        MenuItem message = menu.findItem(R.id.nav_message);
+        TextView messageBadge = (TextView) message.getActionView();
+        badgeStyle(messageBadge);
+
+        MenuItem friends = menu.findItem(R.id.nav_friends);
+        TextView friendBadge = (TextView) friends.getActionView();
+        badgeStyle(friendBadge);
+
+        MenuItem setting = menu.findItem(R.id.nav_setting);
+        TextView settingBadge = (TextView) setting.getActionView();
+        badgeRoundStyle(settingBadge);
+    }
+
+    private void badgeStyle(TextView badge) {
+        badge.setGravity(Gravity.CENTER_VERTICAL);
+        badge.setTextColor(getResources().getColor(R.color.black));
+        badge.setText("1");
+    }
+
+    private void badgeRoundStyle(TextView badge) {
+
+        badge.setGravity(Gravity.CENTER_VERTICAL);
+        badge.setTypeface(null, Typeface.BOLD);
+        badge.setTextColor(getResources().getColor(R.color.colorAccent));
+        badge.setTextSize(8);
+        badge.setText("●");
+    }
+
     private void setProfilePic(final ImageView profileImage) {
         DataContainer.getInstance().getMyUserRef().child("picUrls/thumbNail_picUrl1").addValueEventListener(new ValueEventListener() {
             @Override
@@ -255,7 +303,7 @@ public class MainActivity extends AppCompatActivity
 
                 final User user = DataContainer.getInstance().getUser();
                 if (user.getUnLockUsers().size() == 0) {
-                    Toast.makeText(getBaseContext(), "이미 모든 유저에게 사진 잠금이 설정되어있습니다", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getBaseContext(), "이미 모든 유저에게 사진을 비공개 하였습니다", Toast.LENGTH_SHORT).show();
                     return true;
                 }
 
@@ -349,21 +397,23 @@ public class MainActivity extends AppCompatActivity
 
 
     public void ToggleIconSet() {
-        Drawable drawable = ResourcesCompat.getDrawable(getResources(), R.drawable.icon, getTheme());
+        Drawable drawable = ResourcesCompat.getDrawable(getResources(), R.drawable.icon_badge, getTheme());
         Drawable drawable2 = ResourcesCompat.getDrawable(getResources(), R.drawable.icon2, getTheme());
+
         Bitmap bitmap = null;
+        Bitmap bitmap2 = null;
+
         if (drawable != null) {
             bitmap = ((BitmapDrawable) drawable).getBitmap();
         }
-        Bitmap bitmap2 = null;
         if (drawable2 != null) {
             bitmap2 = ((BitmapDrawable) drawable2).getBitmap();
         }
         if (bitmap != null) {
-            icon_open = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 85, 85, true));
+            icon_open = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 100, 100, true));
         }
         if (bitmap2 != null) {
-            icon_close = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap2, 85, 85, true));
+            icon_close = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap2, 100, 100, true));
         }
     }
 
