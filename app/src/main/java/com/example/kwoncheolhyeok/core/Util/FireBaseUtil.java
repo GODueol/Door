@@ -94,6 +94,9 @@ public class FireBaseUtil {
                 oUser.getFriendUsers().put(myUuid, now);
                 childUpdates.put("/" + oUuid + "/friendUsers/" + myUuid, now);
 
+                FirebaseSendPushMsg.sendPostToFCM("friend", oUuid, mUser.getId(), "새로운 친구가 생겼어요!");
+            } else {
+                FirebaseSendPushMsg.sendPostToFCM("follow", oUuid, mUser.getId(), "누군가가 당신을 팔로우 했어요!");
             }
         }
         // 데이터 한꺼번에 업데이트
