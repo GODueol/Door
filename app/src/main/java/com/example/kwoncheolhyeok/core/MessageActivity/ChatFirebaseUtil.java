@@ -145,7 +145,7 @@ public class ChatFirebaseUtil {
             @Override
             public void onSuccess(Void aVoid) {
                 // 상대방에게 내정보를 담아서 메세지를 보냄
-                FirebaseSendPushMsg.sendPostToFCM(targetUuid,currentUser.getId(),context.getString(R.string.alertChat));
+                FirebaseSendPushMsg.sendPostToFCM(chat,targetUuid,currentUser.getId(),context.getString(R.string.alertChat));
             }
         });
     }

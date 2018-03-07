@@ -3,6 +3,7 @@ package com.example.kwoncheolhyeok.core.Activity;
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
@@ -60,19 +61,27 @@ import com.google.firebase.database.ValueEventListener;
  * drawer / viewpager drag duplication issue
  */
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final int SETTING = 4;
+    private SharedPreferences sharedPref;
+    private SharedPreferences.Editor editor;
     DrawerLayout drawer = null;
     ActionBarDrawerToggle toggle = null;
     Toolbar toolbar = null;
     //View people, board, club;
 
     ViewPager viewPager = null;
-    Drawable icon_open, icon_close;
+    Drawable icon_open, icon_close,icon_open_badge;
     ImageView profileImage;
 
     private CloseActivityHandler closeActivityHandler;
+
+    TextView peopleBadge;
+    TextView coreBadge;
+    TextView messageBadge;
+    TextView friendBadge;
+    TextView settingBadge;
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
@@ -81,7 +90,6 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-
 //        ScreenshotSetApplication.getInstance().allowUserSaveScreenshot(true);
 
         // (Main View)네비게이션바 관련
@@ -89,7 +97,6 @@ public class MainActivity extends AppCompatActivity
         toolbar = findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
-
 
         ToggleIconSet();
         toggle = new ActionBarDrawerToggle(
@@ -101,11 +108,11 @@ public class MainActivity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
         toggle.setDrawerIndicatorEnabled(false);
-        toggle.setHomeAsUpIndicator(icon_open);
 
         toggle.setToolbarNavigationClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                editor.putBoolean("isAlarm",false).apply();
                 changeToggleIcon();
             }
         });
@@ -119,9 +126,6 @@ public class MainActivity extends AppCompatActivity
         SpannableString s = new SpannableString(tools.getTitle());
         s.setSpan(new TextAppearanceSpan(this, R.style.CorePlusColor), 0, s.length(), 0);
         tools.setTitle(s);
-
-        // 네비게이션 아이템 벳지
-        navigationViewinitBadge(menu);
 
         //네비게이션 안의 아이콘 색을 오리지널로 표현
         navigationView.setItemIconTintList(null);
@@ -193,6 +197,7 @@ public class MainActivity extends AppCompatActivity
             logout();
             return;
         }
+
         FirebaseIDService fids = new FirebaseIDService();
         fids.onTokenRefresh();
         mUser.setLoginDate(System.currentTimeMillis());
@@ -217,45 +222,69 @@ public class MainActivity extends AppCompatActivity
                         UiUtil.getInstance().stopProgressDialog();
                     }
                 });
+        sharedPref = getApplicationContext().getSharedPreferences("Alarm",MODE_PRIVATE);
+        editor = sharedPref.edit();
+        sharedPref.registerOnSharedPreferenceChangeListener(this);
+
+        boolean check = sharedPref.getBoolean("isAlarm",false);
+        if(!check) {
+            toggle.setHomeAsUpIndicator(icon_open);
+        }else{
+            toggle.setHomeAsUpIndicator(icon_open_badge);
+        }
+
+
+        // 네비게이션 아이템 벳지
+        navigationViewinitBadge(menu);
     }
 
     private void navigationViewinitBadge(Menu menu) {
         //Gravity property aligns the text
-
         MenuItem people = menu.findItem(R.id.nav_People);
-        TextView peopleBadge = (TextView) people.getActionView();
-        badgeRoundStyle(peopleBadge);
+        peopleBadge = (TextView) people.getActionView();
+        badgeRoundStyle(peopleBadge,false);
 
         MenuItem core = menu.findItem(R.id.nav_mycore);
-        TextView coreBadge = (TextView) core.getActionView();
-        badgeStyle(coreBadge);
+        coreBadge = (TextView) core.getActionView();
+        badgeStyle(coreBadge, 0);
 
         MenuItem message = menu.findItem(R.id.nav_message);
-        TextView messageBadge = (TextView) message.getActionView();
-        badgeStyle(messageBadge);
+        messageBadge = (TextView) message.getActionView();
+        int badgeChat = sharedPref.getInt("badgeChat",0);
+        badgeStyle(messageBadge, badgeChat);
 
         MenuItem friends = menu.findItem(R.id.nav_friends);
-        TextView friendBadge = (TextView) friends.getActionView();
-        badgeStyle(friendBadge);
+        friendBadge = (TextView) friends.getActionView();
+        badgeStyle(friendBadge, 0);
 
         MenuItem setting = menu.findItem(R.id.nav_setting);
-        TextView settingBadge = (TextView) setting.getActionView();
-        badgeRoundStyle(settingBadge);
+        settingBadge = (TextView) setting.getActionView();
+        badgeRoundStyle(settingBadge,false);
     }
 
-    private void badgeStyle(TextView badge) {
+    private void badgeStyle(TextView badge, int i) {
         badge.setGravity(Gravity.CENTER_VERTICAL);
         badge.setTextColor(getResources().getColor(R.color.black));
-        badge.setText("1");
+        String str;
+        if(i!=0){
+            str = Integer.toString(i);
+        }else{
+            str = "";
+        }
+        badge.setText(str);
     }
 
-    private void badgeRoundStyle(TextView badge) {
+    private void badgeRoundStyle(TextView badge,boolean c) {
 
         badge.setGravity(Gravity.CENTER_VERTICAL);
         badge.setTypeface(null, Typeface.BOLD);
         badge.setTextColor(getResources().getColor(R.color.colorAccent));
         badge.setTextSize(8);
-        badge.setText("●");
+        if(c) {
+            badge.setText("●");
+        }else{
+            badge.setText("");
+        }
     }
 
     private void setProfilePic(final ImageView profileImage) {
@@ -397,23 +426,30 @@ public class MainActivity extends AppCompatActivity
 
 
     public void ToggleIconSet() {
-        Drawable drawable = ResourcesCompat.getDrawable(getResources(), R.drawable.icon_badge, getTheme());
-        Drawable drawable2 = ResourcesCompat.getDrawable(getResources(), R.drawable.icon2, getTheme());
+        Drawable drawable = ResourcesCompat.getDrawable(getResources(), R.drawable.icon, getTheme());
+        Drawable drawable2 = ResourcesCompat.getDrawable(getResources(), R.drawable.icon_badge, getTheme());
+        Drawable drawable3 = ResourcesCompat.getDrawable(getResources(), R.drawable.icon2, getTheme());
 
         Bitmap bitmap = null;
         Bitmap bitmap2 = null;
-
+        Bitmap bitmap3 = null;
         if (drawable != null) {
             bitmap = ((BitmapDrawable) drawable).getBitmap();
         }
         if (drawable2 != null) {
             bitmap2 = ((BitmapDrawable) drawable2).getBitmap();
         }
+        if (drawable3 != null) {
+            bitmap3 = ((BitmapDrawable) drawable3).getBitmap();
+        }
         if (bitmap != null) {
             icon_open = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 100, 100, true));
         }
         if (bitmap2 != null) {
-            icon_close = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap2, 100, 100, true));
+            icon_open_badge = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap2, 100, 100, true));
+        }
+        if (bitmap3 != null) {
+            icon_close = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap3, 100, 100, true));
         }
     }
 
@@ -459,6 +495,16 @@ public class MainActivity extends AppCompatActivity
             if (resultCode == SettingActivity.LOGOUT) {
                 logout();
             }
+        }
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equals("badgeChat")) {
+            int badgeChat = sharedPreferences.getInt(key, 0);
+            badgeStyle(messageBadge, badgeChat);
+            editor.putBoolean("isAlarm",true).apply();
+            toggle.setHomeAsUpIndicator(icon_open_badge);
         }
     }
 }

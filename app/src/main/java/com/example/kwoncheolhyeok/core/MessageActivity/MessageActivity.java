@@ -1,6 +1,7 @@
 package com.example.kwoncheolhyeok.core.MessageActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -53,6 +54,10 @@ public class MessageActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true); //홈 아이콘을 숨김처리합니다.
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
 
+        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(getString(R.string.alarm), MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.remove("badgeChat").apply();
+
         mAuth = FirebaseAuth.getInstance();
         userId = mAuth.getUid();
         listrowItem = new ArrayList<RoomVO>();
@@ -89,7 +94,6 @@ public class MessageActivity extends AppCompatActivity {
         messageList.addItemDecoration(new DividerItemDecoration(MessageActivity.this, DividerItemDecoration.VERTICAL)); //리사이클뷰 구분선
         messageList.setItemAnimator(new DefaultItemAnimator());
         setMessageData();
-
 
         /*****************************************************************/
     }
