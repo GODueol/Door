@@ -367,7 +367,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
                         // 내 following 추가, 유저 follower c추가
                         Task<Void> task;
                         try {
-                            task = FireBaseUtil.getInstance().follow(oUser, item.getUuid(), isFollow);
+                            task = FireBaseUtil.getInstance().follow(FullImageActivity.this, oUser, item.getUuid(), isFollow);
                         } catch (ChildSizeMaxException e) {
                             Toast.makeText(FullImageActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                             UiUtil.getInstance().stopProgressDialog();

@@ -1,5 +1,6 @@
 package com.example.kwoncheolhyeok.core.Util;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.example.kwoncheolhyeok.core.Entity.CoreListItem;
@@ -7,6 +8,7 @@ import com.example.kwoncheolhyeok.core.Entity.CorePost;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.Exception.ChildSizeMaxException;
 import com.example.kwoncheolhyeok.core.MessageActivity.util.RoomVO;
+import com.example.kwoncheolhyeok.core.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -46,7 +48,7 @@ public class FireBaseUtil {
     }
 
 
-    public Task<Void> follow(final User oUser, String oUuid, boolean isFollowed) throws ChildSizeMaxException {
+    public Task<Void> follow(Context context, final User oUser, String oUuid, boolean isFollowed) throws ChildSizeMaxException {
         String myUuid = DataContainer.getInstance().getUid();
         final User mUser = DataContainer.getInstance().getUser();
         if (mUser.getFollowingUsers().size() >= DataContainer.ChildrenMax) {
@@ -94,13 +96,13 @@ public class FireBaseUtil {
                 oUser.getFriendUsers().put(myUuid, now);
                 childUpdates.put("/" + oUuid + "/friendUsers/" + myUuid, now);
                 // 상대방에게
-                FirebaseSendPushMsg.sendPostToFCM("follow", oUuid, mUser.getId(), "누군가가 당신을 팔로우 했어요!");
-                FirebaseSendPushMsg.sendPostToFCM("friend", oUuid, mUser.getId(), "새로운 친구가 생겼어요!");
+                FirebaseSendPushMsg.sendPostToFCM("follow", oUuid, mUser.getId(), context.getString(R.string.alertFolow));
+                FirebaseSendPushMsg.sendPostToFCM("friend", oUuid, mUser.getId(), context.getString(R.string.alertFriend));
                 // 나한테
-                FirebaseSendPushMsg.sendPostToFCM("friend", myUuid, oUser.getId(), "새로운 친구가 생겼어요!");
+                FirebaseSendPushMsg.sendPostToFCM("friend", myUuid, oUser.getId(), context.getString(R.string.alertFriend));
             } else {
                 // 상대방에게
-                FirebaseSendPushMsg.sendPostToFCM("follow", oUuid, mUser.getId(), "누군가가 당신을 팔로우 했어요!");
+                FirebaseSendPushMsg.sendPostToFCM("follow", oUuid, mUser.getId(), context.getString(R.string.alertFolow));
             }
         }
         // 데이터 한꺼번에 업데이트

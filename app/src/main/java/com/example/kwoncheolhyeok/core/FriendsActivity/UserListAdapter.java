@@ -193,7 +193,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
                                 UiUtil.getInstance().startProgressDialog((Activity) context);
                                 Task<Void> task;
                                 try {
-                                    task = FireBaseUtil.getInstance().follow(user, item.getUuid(), true);
+                                    task = FireBaseUtil.getInstance().follow(context, user, item.getUuid(), true);
                                 } catch (ChildSizeMaxException e) {
                                     Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
                                     UiUtil.getInstance().stopProgressDialog();
@@ -226,7 +226,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
                                 UiUtil.getInstance().startProgressDialog((Activity) context);
                                 Task<Void> task;
                                 try {
-                                    task = FireBaseUtil.getInstance().follow(user, item.getUuid(), false);
+                                    task = FireBaseUtil.getInstance().follow(context, user, item.getUuid(), false);
                                 } catch (ChildSizeMaxException e) {
                                     Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
                                     UiUtil.getInstance().stopProgressDialog();
