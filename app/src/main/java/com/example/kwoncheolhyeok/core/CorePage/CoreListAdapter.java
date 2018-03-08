@@ -88,7 +88,6 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 
         final CoreListItem coreListItem = coreListItems.get(i);
         final CorePost corePost = coreListItem.getCorePost();
-        final User mUser = DataContainer.getInstance().getUser();
         final String mUuid = DataContainer.getInstance().getUid();
 
         User user = coreListItem.getUser();
@@ -133,7 +132,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                         .child("likeUsers").child(mUuid).setValue(System.currentTimeMillis()).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        FirebaseSendPushMsg.sendPostToFCM("Like",cUuid,mUser.getId(),context.getString(R.string.alertLike));
+                        FirebaseSendPushMsg.sendPostToFCM("Like",cUuid,DataContainer.getInstance().getUser().getId(),context.getString(R.string.alertLike));
                     }
                 });
             }
