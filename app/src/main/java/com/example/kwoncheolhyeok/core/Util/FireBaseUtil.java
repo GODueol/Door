@@ -93,9 +93,13 @@ public class FireBaseUtil {
 
                 oUser.getFriendUsers().put(myUuid, now);
                 childUpdates.put("/" + oUuid + "/friendUsers/" + myUuid, now);
-
+                // 상대방에게
+                FirebaseSendPushMsg.sendPostToFCM("follow", oUuid, mUser.getId(), "누군가가 당신을 팔로우 했어요!");
                 FirebaseSendPushMsg.sendPostToFCM("friend", oUuid, mUser.getId(), "새로운 친구가 생겼어요!");
+                // 나한테
+                FirebaseSendPushMsg.sendPostToFCM("friend", myUuid, oUser.getId(), "새로운 친구가 생겼어요!");
             } else {
+                // 상대방에게
                 FirebaseSendPushMsg.sendPostToFCM("follow", oUuid, mUser.getId(), "누군가가 당신을 팔로우 했어요!");
             }
         }

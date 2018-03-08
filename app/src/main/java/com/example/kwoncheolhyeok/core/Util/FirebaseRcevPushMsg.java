@@ -17,8 +17,6 @@ import com.example.kwoncheolhyeok.core.R;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
-import static android.support.v4.app.NotificationCompat.PRIORITY_MAX;
-
 /**
  * Created by godueol on 2018. 2. 24..
  */
@@ -38,12 +36,9 @@ public class FirebaseRcevPushMsg extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
 
-        sharedPref = getApplicationContext().getSharedPreferences(getString(R.string.alarm),MODE_PRIVATE);
+        sharedPref = getApplicationContext().getSharedPreferences(getString(R.string.alarm), MODE_PRIVATE);
         editor = sharedPref.edit();
 
-        isCheck = sharedPref.getBoolean(getString(R.string.alertChat),true);
-        isCheck = sharedPref.getBoolean(getString(R.string.alertFolow), true);
-        isCheck = sharedPref.getBoolean(getString(R.string.alertFriend), true);
         isCheck = sharedPref.getBoolean(getString(R.string.alertUnlockPic), true);
         isCheck = sharedPref.getBoolean(getString(R.string.alertPost), true);
         isCheck = sharedPref.getBoolean(getString(R.string.alertLike), true);
@@ -51,18 +46,31 @@ public class FirebaseRcevPushMsg extends FirebaseMessagingService {
 
         // Check if message contains a data payload.
 
-        if (remoteMessage.getData().size() > 0 ) {
+        if (remoteMessage.getData().size() > 0) {
 
             switch (remoteMessage.getData().get("type")) {
                 case "chat":
-                    isCheck = sharedPref.getBoolean(getString(R.string.alertChat),true);
+                    isCheck = sharedPref.getBoolean(getString(R.string.alertChat), true);
                     // 트랜젝션 문제 없는지?
-                    int i = sharedPref.getInt("badgeChat",0);
-                    editor.putInt("badgeChat",++i).apply();
-                    if(isCheck) {
+                    int i = sharedPref.getInt("badgeChat", 0);
+                    editor.putInt("badgeChat", ++i).apply();
+                    if (isCheck) {
                         sendNotification(remoteMessage.getData().get("nick"), remoteMessage.getData().get("message"));
                     }
-                break;
+                    break;
+                case "follow":
+                    isCheck = sharedPref.getBoolean(getString(R.string.alertFolow), true);
+                    if (isCheck) {
+                        sendNotification(remoteMessage.getData().get("nick"), remoteMessage.getData().get("message"));
+                    }
+                    break;
+                case "friend":
+                    isCheck = sharedPref.getBoolean(getString(R.string.alertFriend), true);
+                    if (isCheck) {
+                        sendNotification(remoteMessage.getData().get("nick"), remoteMessage.getData().get("message"));
+                    }
+                    break;
+
             }
 
         }
@@ -76,16 +84,17 @@ public class FirebaseRcevPushMsg extends FirebaseMessagingService {
 
     /**
      * Create and show a simple notification containing the received FCM message.
+     *
      * @param messageBody FCM message body received.
      */
-    private void sendNotification(String title,String messageBody) {
+    private void sendNotification(String title, String messageBody) {
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);
 
         String channelId = "notification";
-        Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(this, channelId)
                         .setSmallIcon(R.drawable.icon)

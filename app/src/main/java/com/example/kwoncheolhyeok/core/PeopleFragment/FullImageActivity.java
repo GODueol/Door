@@ -523,7 +523,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
                                             picOpen.setImageResource(R.drawable.picture_lock);    // 해제하기 (현재 사진이 잠겼다는 것을 암시함)
                                             Toast.makeText(FullImageActivity.this, "잠긴 사진을 열었습니다.", Toast.LENGTH_SHORT).show();
                                             sendEventMessage(myUuid,mUser.getId(),item.getUuid(),getString(R.string.alertUnlockPic));
-                                            FirebaseSendPushMsg.sendPostToFCM(item.getUuid(),"message",mUser.getId(),getString(R.string.alertUnlockPic));
+                                            FirebaseSendPushMsg.sendPostToFCM("chat",item.getUuid(),mUser.getId(),getString(R.string.alertUnlockPic));
                                         } else {
                                             picOpen.setImageResource(R.drawable.picture_unlock);  // 잠금 (현재 사진이 해제되어 있다는 암시함)
                                             Toast.makeText(FullImageActivity.this, "사진을 비공개 합니다.", Toast.LENGTH_SHORT).show();
