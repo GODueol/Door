@@ -9,6 +9,7 @@ import android.widget.Switch;
 import android.widget.Toast;
 
 import com.example.kwoncheolhyeok.core.R;
+import com.example.kwoncheolhyeok.core.Util.SharedPreferencesUtil;
 
 import butterknife.Bind;
 
@@ -20,7 +21,7 @@ public class AlarmActivity extends AppCompatActivity implements CompoundButton.O
 
 
     Toolbar toolbar = null;
-    private SharedPreferences.Editor editor;
+    private SharedPreferencesUtil SPUtil;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,8 +35,8 @@ public class AlarmActivity extends AppCompatActivity implements CompoundButton.O
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //액션바 아이콘을 업 네비게이션 형태로 표시합니다.
         getSupportActionBar().setDisplayShowHomeEnabled(true); //홈 아이콘을 숨김처리합니다.
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
-        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(getString(R.string.alarm), MODE_PRIVATE);
-        editor = sharedPref.edit();
+
+        SPUtil = new SharedPreferencesUtil(getApplicationContext());
 
         Switch switch_chat = (Switch) findViewById(R.id.switch1);
         Switch switch_follow = (Switch) findViewById(R.id.switch2);
@@ -44,17 +45,17 @@ public class AlarmActivity extends AppCompatActivity implements CompoundButton.O
         Switch switch_post = (Switch) findViewById(R.id.switch5);
         Switch switch_like = (Switch) findViewById(R.id.switch6);
 
-        boolean isCheck = sharedPref.getBoolean(getString(R.string.alertChat), true);
+        boolean isCheck = SPUtil.getSwitchState(getString(R.string.alertChat));
         switch_chat.setChecked(isCheck);
-        isCheck = sharedPref.getBoolean(getString(R.string.alertFolow), true);
+        isCheck = SPUtil.getSwitchState(getString(R.string.alertFolow));
         switch_follow.setChecked(isCheck);
-        isCheck = sharedPref.getBoolean(getString(R.string.alertFriend), true);
+        isCheck = SPUtil.getSwitchState(getString(R.string.alertFriend));
         switch_friend.setChecked(isCheck);
-        isCheck = sharedPref.getBoolean(getString(R.string.alertUnlockPic), true);
+        isCheck = SPUtil.getSwitchState(getString(R.string.alertUnlockPic));
         switch_privPic.setChecked(isCheck);
-        isCheck = sharedPref.getBoolean(getString(R.string.alertPost), true);
+        isCheck = SPUtil.getSwitchState(getString(R.string.alertPost));
         switch_post.setChecked(isCheck);
-        isCheck = sharedPref.getBoolean(getString(R.string.alertLike), true);
+        isCheck = SPUtil.getSwitchState(getString(R.string.alertLike));
         switch_like.setChecked(isCheck);
 
         switch_chat.setOnCheckedChangeListener(this);
@@ -89,7 +90,7 @@ public class AlarmActivity extends AppCompatActivity implements CompoundButton.O
                 switch_name = getString(R.string.alertLike);
                 break;
         }
-        editor.putBoolean(switch_name, isCheck).apply();
+        SPUtil.setSwitchState(switch_name,isCheck);
     }
 
     // 뒤로가기 버튼 기능

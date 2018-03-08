@@ -1,5 +1,6 @@
 package com.example.kwoncheolhyeok.core.FriendsActivity;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.internal.BottomNavigationMenuView;
@@ -16,6 +17,7 @@ import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.BaseActivity.UserListBaseActivity;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
+import com.example.kwoncheolhyeok.core.Util.SharedPreferencesUtil;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
@@ -25,12 +27,12 @@ import java.util.ArrayList;
 
 import q.rorbin.badgeview.QBadgeView;
 
-public class FriendsActivity extends UserListBaseActivity {
+public class FriendsActivity extends UserListBaseActivity implements SharedPreferences.OnSharedPreferenceChangeListener{
 
     Toolbar toolbar = null;
     private ArrayList<UserListAdapter.Item> items;
     private UserListAdapter adapter;
-
+    private SharedPreferencesUtil SPUtil;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,7 +52,6 @@ public class FriendsActivity extends UserListBaseActivity {
         navigation.setItemHeight(navigation.getMeasuredHeight());
 
         BottomNavigationMenuView bottomNavigationMenuView = (BottomNavigationMenuView) navigation.getChildAt(0);
-        navigationViewinitBadge(bottomNavigationMenuView);
 
         BottomNavigationView.OnNavigationItemSelectedListener selectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -110,21 +111,29 @@ public class FriendsActivity extends UserListBaseActivity {
 
             }
         });
+
+        SPUtil = new SharedPreferencesUtil(getApplicationContext());
+        SPUtil.getBadgePreferences().registerOnSharedPreferenceChangeListener(this);
+        navigationViewinitBadge(bottomNavigationMenuView);
     }
 
     private void navigationViewinitBadge(BottomNavigationMenuView bottomNavigationMenuView) {
         //Gravity property aligns the text
+        int badge;
         View friend = bottomNavigationMenuView.getChildAt(0);
-        setQbadge(friend,999,(float)15.5,(float)-7.5);
+        badge = SPUtil.getBadgeCount(getString(R.string.badgeFriend));
+        setQbadge(friend,badge,(float)15.5,(float)-7.5);
 
         View follower = bottomNavigationMenuView.getChildAt(1);
-        setQbadge(follower,999,(float)9.5,(float)-7.5);
+        badge = SPUtil.getBadgeCount(getString(R.string.badgeFollow));
+        setQbadge(follower,badge,(float)9.5,(float)-7.5);
 
         View following = bottomNavigationMenuView.getChildAt(2);
-        setQbadge(following,999,(float)9.5,(float)-7.5);
+        badge = SPUtil.getBadgeCount(getString(R.string.badgeFollowing));
+        setQbadge(following,badge,(float)9.5,(float)-7.5);
 
         View viewed = bottomNavigationMenuView.getChildAt(3);
-        setQbadge(viewed,999, (float) 7.5,(float)-7.5);
+        setQbadge(viewed,0, (float) 7.5,(float)-7.5);
     }
 
     private void setQbadge(View view,int num,float x, float y) {
@@ -147,5 +156,10 @@ public class FriendsActivity extends UserListBaseActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
+
     }
 }

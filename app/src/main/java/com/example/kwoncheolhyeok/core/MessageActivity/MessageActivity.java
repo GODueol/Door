@@ -11,11 +11,13 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.MessageActivity.messageRecyclerAdapter.OnRemoveChattingListCallback;
 import com.example.kwoncheolhyeok.core.MessageActivity.util.RoomVO;
 import com.example.kwoncheolhyeok.core.R;
+import com.example.kwoncheolhyeok.core.Util.SharedPreferencesUtil;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -40,6 +42,7 @@ public class MessageActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private String userId;
 
+    private SharedPreferencesUtil SPUtil;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,9 +57,7 @@ public class MessageActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true); //홈 아이콘을 숨김처리합니다.
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
 
-        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(getString(R.string.alarm), MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.remove("badgeChat").apply();
+        SPUtil = new SharedPreferencesUtil(getApplicationContext());
 
         mAuth = FirebaseAuth.getInstance();
         userId = mAuth.getUid();
@@ -73,6 +74,7 @@ public class MessageActivity extends AppCompatActivity {
                         Intent intent = new Intent(getApplicationContext(), ChattingActivity.class);
                         intent.putExtra("user", user);
                         intent.putExtra("userUuid", item.getTargetUuid());
+                        SPUtil.removeChatRoomBadge(item.getChatRoomid());
                         startActivity(intent);
                     }
 
@@ -106,6 +108,11 @@ public class MessageActivity extends AppCompatActivity {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 final RoomVO roomList = dataSnapshot.getValue(RoomVO.class);
+                try {
+                    roomList.setBadgeCount(SPUtil.getChatRoomBadge(roomList.getChatRoomid()));
+                }catch (Exception e){
+                    roomList.setBadgeCount(0);
+                }
                 if (roomList.getLastChat() != null) {
                     uuidList.add(roomList.getTargetUuid());
                     listrowItem.add(roomList);
@@ -125,11 +132,17 @@ public class MessageActivity extends AppCompatActivity {
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 final RoomVO roomList = dataSnapshot.getValue(RoomVO.class);
+                try {
+                    roomList.setBadgeCount(SPUtil.getChatRoomBadge(roomList.getChatRoomid()));
+                }catch (Exception e){
+                    roomList.setBadgeCount(0);
+                }
                 if (roomList.getLastChat() != null) {
                     FirebaseDatabase.getInstance().getReference("users").child(roomList.getTargetUuid()).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             try {
+                                roomList.setBadgeCount(SPUtil.getChatRoomBadge(roomList.getChatRoomid()));
                                 refreshChatRoomList(dataSnapshot.getValue(User.class), roomList, true);
                             } catch (Exception e) {
                                 uuidList.add(roomList.getTargetUuid());

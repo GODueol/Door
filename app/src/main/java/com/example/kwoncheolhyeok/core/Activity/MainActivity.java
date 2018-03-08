@@ -45,6 +45,7 @@ import com.example.kwoncheolhyeok.core.Util.BusProvider;
 import com.example.kwoncheolhyeok.core.Util.CloseActivityHandler;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.FirebaseIDService;
+import com.example.kwoncheolhyeok.core.Util.SharedPreferencesUtil;
 import com.example.kwoncheolhyeok.core.Util.UiUtil;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -64,8 +65,7 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final int SETTING = 4;
-    private SharedPreferences sharedPref;
-    private SharedPreferences.Editor editor;
+    private SharedPreferencesUtil SPUtil;
     DrawerLayout drawer = null;
     ActionBarDrawerToggle toggle = null;
     Toolbar toolbar = null;
@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity
         toggle.setToolbarNavigationClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                editor.putBoolean("isAlarm",false).apply();
+                SPUtil.setMainIcon(getString(R.string.mainAlarm),false);
                 changeToggleIcon();
             }
         });
@@ -222,17 +222,15 @@ public class MainActivity extends AppCompatActivity
                         UiUtil.getInstance().stopProgressDialog();
                     }
                 });
-        sharedPref = getApplicationContext().getSharedPreferences("Alarm",MODE_PRIVATE);
-        editor = sharedPref.edit();
-        sharedPref.registerOnSharedPreferenceChangeListener(this);
+        SPUtil = new SharedPreferencesUtil(getApplicationContext());
+        SPUtil.getBadgePreferences().registerOnSharedPreferenceChangeListener(this);
 
-        boolean check = sharedPref.getBoolean("isAlarm",false);
+        boolean check =  SPUtil.getMainIcon(getString(R.string.mainAlarm));
         if(!check) {
             toggle.setHomeAsUpIndicator(icon_open);
         }else{
             toggle.setHomeAsUpIndicator(icon_open_badge);
         }
-
 
         // 네비게이션 아이템 벳지
         navigationViewinitBadge(menu);
@@ -250,12 +248,13 @@ public class MainActivity extends AppCompatActivity
 
         MenuItem message = menu.findItem(R.id.nav_message);
         messageBadge = (TextView) message.getActionView();
-        int badgeChat = sharedPref.getInt("badgeChat",0);
+        int badgeChat = SPUtil.getBadgeCount(getString(R.string.badgeChat));
         badgeStyle(messageBadge, badgeChat);
 
         MenuItem friends = menu.findItem(R.id.nav_friends);
         friendBadge = (TextView) friends.getActionView();
-        badgeStyle(friendBadge, 0);
+        int badgeFriends = SPUtil.getBadgeCount(getString(R.string.badgeChat));
+        badgeStyle(friendBadge, badgeFriends);
 
         MenuItem setting = menu.findItem(R.id.nav_setting);
         settingBadge = (TextView) setting.getActionView();
@@ -503,7 +502,7 @@ public class MainActivity extends AppCompatActivity
         if (key.equals("badgeChat")) {
             int badgeChat = sharedPreferences.getInt(key, 0);
             badgeStyle(messageBadge, badgeChat);
-            editor.putBoolean("isAlarm",true).apply();
+            SPUtil.setMainIcon(getString(R.string.mainAlarm),true);
             toggle.setHomeAsUpIndicator(icon_open_badge);
         }
     }
