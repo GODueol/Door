@@ -72,7 +72,12 @@ public class FirebaseRcevPushMsg extends FirebaseMessagingService {
                         sendNotification(remoteMessage.getData().get("nick"), remoteMessage.getData().get("message"));
                     }
                     break;
-
+                case "Like":
+                    isCheck = SPUtil.getSwitchState(getString(R.string.alertLike));
+                    if (isCheck) {
+                        sendNotification(remoteMessage.getData().get("nick"), remoteMessage.getData().get("message"));
+                    }
+                    break;
             }
 
         }
