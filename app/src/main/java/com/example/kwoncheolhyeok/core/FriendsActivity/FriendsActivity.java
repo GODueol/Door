@@ -55,6 +55,10 @@ public class FriendsActivity extends UserListBaseActivity {
         BottomNavigationView.OnNavigationItemSelectedListener selectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                if(items.size() != 0 && navigation.getMenu().findItem(navigation.getSelectedItemId()).equals(item)){
+                    return true;
+                }
+
                 switch (item.getItemId()) {
                     case R.id.navigation_friends:
                         setRecyclerView(items, adapter, "friendUsers", R.menu.friend_menu);
