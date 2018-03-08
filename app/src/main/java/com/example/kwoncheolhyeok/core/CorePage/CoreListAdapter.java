@@ -33,6 +33,7 @@ import com.example.kwoncheolhyeok.core.Exception.ChildSizeMaxException;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
+import com.example.kwoncheolhyeok.core.Util.FirebaseSendPushMsg;
 import com.example.kwoncheolhyeok.core.Util.GlideApp;
 import com.example.kwoncheolhyeok.core.Util.UiUtil;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -66,7 +67,6 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 
     private String currentPlayUrl = "";
 
-
     CoreListAdapter(List<CoreListItem> coreListItems, Context context, String cUuid) {
         this.coreListItems = coreListItems;
         this.context = context;
@@ -88,6 +88,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 
         final CoreListItem coreListItem = coreListItems.get(i);
         final CorePost corePost = coreListItem.getCorePost();
+        final User mUser = DataContainer.getInstance().getUser();
         final String mUuid = DataContainer.getInstance().getUid();
 
         User user = coreListItem.getUser();
@@ -129,7 +130,12 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
             public void liked(LikeButton likeButton) {
                 postsRef.child(cUuid)
                         .child(coreListItem.getPostKey())
-                        .child("likeUsers").child(mUuid).setValue(System.currentTimeMillis());
+                        .child("likeUsers").child(mUuid).setValue(System.currentTimeMillis()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        FirebaseSendPushMsg.sendPostToFCM("Like",cUuid,mUser.getId(),context.getString(R.string.alertLike));
+                    }
+                });
             }
 
             @Override
