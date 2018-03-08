@@ -1,8 +1,9 @@
 package com.example.kwoncheolhyeok.core.Util;
 
 import android.annotation.SuppressLint;
-import android.content.SharedPreferences;
 import android.content.Context;
+import android.content.SharedPreferences;
+
 import com.example.kwoncheolhyeok.core.R;
 
 /**
@@ -23,7 +24,7 @@ public class SharedPreferencesUtil {
     private SharedPreferences.Editor editor_chatListBadge;
 
     @SuppressLint("CommitPrefEdits")
-    public SharedPreferencesUtil(Context context){
+    public SharedPreferencesUtil(Context context) {
         this.context = context;
         sharedPref = context.getSharedPreferences(context.getString(R.string.alarm), Context.MODE_PRIVATE);
         sharedPref_badge = context.getSharedPreferences(context.getString(R.string.badge), Context.MODE_PRIVATE);
@@ -36,78 +37,97 @@ public class SharedPreferencesUtil {
         editor_chatListBadge = sharedPref_chatListBadge.edit();
     }
 
-    public SharedPreferences getPreferences(){
+    public SharedPreferences getPreferences() {
         return sharedPref;
     }
 
-    public SharedPreferences getBadgePreferences(){
+    public SharedPreferences getBadgePreferences() {
         return sharedPref_badge;
     }
 
-    public SharedPreferences getfriendsPreferences(){
+    public SharedPreferences getfriendsPreferences() {
         return sharedPref_friends;
     }
 
     // 메인 토글버튼
-    public void setMainIcon(String str,boolean b){
-        editor.putBoolean(str,b).apply();
+    public void setMainIcon(String str, boolean b) {
+        editor_badge.putBoolean(str, b).apply();
     }
+
     // 메인 토글 버튼
-    public boolean getMainIcon(String str){
-        return sharedPref.getBoolean(str,false);
+    public boolean getMainIcon(String str) {
+        return sharedPref_badge.getBoolean(str, false);
     }
 
     // 알림 스위치 버튼
-    public void setSwitchState(String str,boolean isCheck){
+    public void setSwitchState(String str, boolean isCheck) {
         editor.putBoolean(str, isCheck).apply();
     }
+
     // 알림 스위치 버튼
-    public boolean getSwitchState(String str){
+    public boolean getSwitchState(String str) {
         return sharedPref.getBoolean(str, true);
     }
 
     // 뱃지
-    public int getBadgeCount(String str){
-        return sharedPref_badge.getInt(str,0);
+    public int getBadgeCount(String str) {
+        return sharedPref_badge.getInt(str, 0);
     }
+
     // 뱃지 ++
-    public void increaseCount(String str){
+    public void increaseBadgeCount(String str) {
         // 트렌젝션 문제는 없는지?
-        int badgeCount = sharedPref_badge.getInt(str,0);
+        int badgeCount = sharedPref_badge.getInt(str, 0);
         editor_badge.putInt(str, ++badgeCount).apply();
+        editor_badge.putBoolean("mainAlarm",true).apply();
+        // 프렌즈 관련 뱃지인경우 프랜즈뱃지도 업데이트
+        if (str.equals("badgeFriend") || str.equals("badgeFollow") || str.equals("badgeFollowing") || str.equals("badgeView")) {
+            int badgeFriends = getBadgeCount("badgeFriend") + getBadgeCount("badgeFollow") + getBadgeCount("badgeFollowing") + getBadgeCount("badgeView");
+            editor_badge.putInt("badgeFriends",badgeFriends).apply();
+        }
     }
+
     // 뱃지 삭제
-    public void removeBadge(String str){
+    public void removeBadge(String str) {
         editor_badge.remove(str).apply();
     }
-
-    public int getChatRoomBadge(String str){
-        return sharedPref_chatListBadge.getInt(str,0);
+    public void removeFriendsBadge(String str) {
+        String badge = context.getString(R.string.badgeFriends);
+        int badgeCount = getBadgeCount(badge);
+        badgeCount -= sharedPref_badge.getInt(str,0);
+        editor_badge.remove(str).apply();
+        editor_badge.putInt(badge,badgeCount).apply();
+    }
+    public int getChatRoomBadge(String str) {
+        return sharedPref_chatListBadge.getInt(str, 0);
     }
 
-    public void increaseChatRoomBadge(String str){
-        int badgeCount = sharedPref_chatListBadge.getInt(str,0);
-        editor_chatListBadge.putInt(str,++badgeCount).apply();
-        increaseCount(context.getString(R.string.badgeChat));
+    public void increaseChatRoomBadge(String str) {
+        int badgeCount = sharedPref_chatListBadge.getInt(str, 0);
+        editor_chatListBadge.putInt(str, ++badgeCount).apply();
+        increaseBadgeCount(context.getString(R.string.badgeChat));
     }
-    public void removeChatRoomBadge(String str){
+
+    public void removeChatRoomBadge(String str) {
         String badge = context.getString(R.string.badgeChat);
         int badgeCount = getBadgeCount(badge);
-        badgeCount -= sharedPref_chatListBadge.getInt(str,0);
+        badgeCount -= sharedPref_chatListBadge.getInt(str, 0);
         editor_chatListBadge.remove(str).apply();
-        editor_badge.putInt(badge,badgeCount).apply();
+        editor_badge.putInt(badge, badgeCount).apply();
     }
 
     // 현재 접속한 채팅방
-    public String getCurrentChat(){
-        return sharedPref.getString(context.getString(R.string.currentRoom),"");
+    public String getCurrentChat() {
+        return sharedPref.getString(context.getString(R.string.currentRoom), "");
     }
+
     // 현재 접속한 채팅방 설정
-    public void setCurrentChat(String str,String room){
-        editor.putString(str,room).apply();
+    public void setCurrentChat(String str, String room) {
+        editor.putString(str, room).apply();
     }
+
     // 현재 접속한 채팅방 제거
-    public void removeCurrentChat(String str){
+    public void removeCurrentChat(String str) {
         editor.remove(str).apply();
     }
 }

@@ -29,6 +29,7 @@ import java.util.Map;
 public class FireBaseUtil {
     public static final String currentLocationPath = "location/users";
     private static final FireBaseUtil ourInstance = new FireBaseUtil();
+    private SharedPreferencesUtil SPUtil;
 
     public static FireBaseUtil getInstance() {
         return ourInstance;
@@ -50,6 +51,7 @@ public class FireBaseUtil {
 
     public Task<Void> follow(Context context, final User oUser, String oUuid, boolean isFollowed) throws ChildSizeMaxException {
         String myUuid = DataContainer.getInstance().getUid();
+        SPUtil = new SharedPreferencesUtil(context.getApplicationContext());
         final User mUser = DataContainer.getInstance().getUser();
         if (mUser.getFollowingUsers().size() >= DataContainer.ChildrenMax) {
             throw new ChildSizeMaxException("Follow가 " + DataContainer.ChildrenMax + "명 이상이므로 Follow 불가능합니다");
@@ -95,6 +97,7 @@ public class FireBaseUtil {
 
                 oUser.getFriendUsers().put(myUuid, now);
                 childUpdates.put("/" + oUuid + "/friendUsers/" + myUuid, now);
+                SPUtil.increaseBadgeCount(context.getString(R.string.badgeFollowing));
                 // 상대방에게
                 FirebaseSendPushMsg.sendPostToFCM("follow", oUuid, mUser.getId(), context.getString(R.string.alertFolow));
                 FirebaseSendPushMsg.sendPostToFCM("friend", oUuid, mUser.getId(), context.getString(R.string.alertFriend));
@@ -102,6 +105,7 @@ public class FireBaseUtil {
                 FirebaseSendPushMsg.sendPostToFCM("friend", myUuid, oUser.getId(), context.getString(R.string.alertFriend));
             } else {
                 // 상대방에게
+                SPUtil.increaseBadgeCount(context.getString(R.string.badgeFollowing));
                 FirebaseSendPushMsg.sendPostToFCM("follow", oUuid, mUser.getId(), context.getString(R.string.alertFolow));
             }
         }

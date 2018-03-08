@@ -41,6 +41,7 @@
     <string name="badgeFollow">badgeFollow</string>
     <string name="badgeFollowing">badgeFollowing</string>
     <string name="badgeView">badgeView</string>
+    <string name="badgePost">badgePost</string>
 
     <string name="friends">친구</string>
     <string name="viewed_me">나를 본 회원</string>

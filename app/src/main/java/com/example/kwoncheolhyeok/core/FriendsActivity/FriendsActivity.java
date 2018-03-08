@@ -24,15 +24,20 @@ import com.google.firebase.database.ValueEventListener;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import q.rorbin.badgeview.Badge;
 import q.rorbin.badgeview.QBadgeView;
 
-public class FriendsActivity extends UserListBaseActivity implements SharedPreferences.OnSharedPreferenceChangeListener{
+public class FriendsActivity extends UserListBaseActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     Toolbar toolbar = null;
     private ArrayList<UserListAdapter.Item> items;
     private UserListAdapter adapter;
     private SharedPreferencesUtil SPUtil;
+
+    private View friend, follower, following, viewed;
+    private List<Badge> badges;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,26 +61,31 @@ public class FriendsActivity extends UserListBaseActivity implements SharedPrefe
         BottomNavigationView.OnNavigationItemSelectedListener selectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                if(items.size() != 0 && navigation.getMenu().findItem(navigation.getSelectedItemId()).equals(item)){
+                if (items.size() != 0 && navigation.getMenu().findItem(navigation.getSelectedItemId()).equals(item)) {
                     return true;
                 }
 
                 switch (item.getItemId()) {
                     case R.id.navigation_friends:
+                        SPUtil.removeFriendsBadge(getString(R.string.badgeFriend));
+                        badges.get(0).setBadgeNumber(0);
                         setRecyclerView(items, adapter, "friendUsers", R.menu.friend_menu);
                         return true;
                     case R.id.navigation_receive:
+                        SPUtil.removeFriendsBadge(getString(R.string.badgeFollow));
+                        badges.get(1).setBadgeNumber(0);
                         setRecyclerView(items, adapter, "followerUsers", R.menu.follower_menu);
                         return true;
                     case R.id.navigation_send:
+                        SPUtil.removeFriendsBadge(getString(R.string.badgeFollowing));
+                        badges.get(2).setBadgeNumber(0);
                         setRecyclerView(items, adapter, "followingUsers", R.menu.following_menu);
                         return true;
                     case R.id.navigation_recent:
+                        SPUtil.removeFriendsBadge(getString(R.string.badgeView));
+                        badges.get(3).setBadgeNumber(0);
                         setRecyclerView(items, adapter, "viewedMeUsers", R.menu.follower_menu);
                         return true;
-                    /*case R.id.navigation_block:
-                        setRecyclerView(items, adapter, "blockUsers", R.menu.follower_menu);
-                        return true;*/
                 }
                 return false;
             }
@@ -118,37 +128,42 @@ public class FriendsActivity extends UserListBaseActivity implements SharedPrefe
 
         SPUtil = new SharedPreferencesUtil(getApplicationContext());
         SPUtil.getBadgePreferences().registerOnSharedPreferenceChangeListener(this);
+        badges = new ArrayList<>();
         navigationViewinitBadge(bottomNavigationMenuView);
     }
 
     private void navigationViewinitBadge(BottomNavigationMenuView bottomNavigationMenuView) {
         //Gravity property aligns the text
         int badge;
-        View friend = bottomNavigationMenuView.getChildAt(0);
+        friend = bottomNavigationMenuView.getChildAt(0);
         badge = SPUtil.getBadgeCount(getString(R.string.badgeFriend));
-        setQbadge(friend,badge,(float)15.5,(float)-7.5);
+        setQbadge(friend, badge, (float) 15.5, (float) -7.5);
 
-        View follower = bottomNavigationMenuView.getChildAt(1);
+        follower = bottomNavigationMenuView.getChildAt(1);
         badge = SPUtil.getBadgeCount(getString(R.string.badgeFollow));
-        setQbadge(follower,badge,(float)9.5,(float)-7.5);
+        setQbadge(follower, badge, (float) 9.5, (float) -7.5);
 
-        View following = bottomNavigationMenuView.getChildAt(2);
+        following = bottomNavigationMenuView.getChildAt(2);
         badge = SPUtil.getBadgeCount(getString(R.string.badgeFollowing));
-        setQbadge(following,badge,(float)9.5,(float)-7.5);
+        setQbadge(following, badge, (float) 9.5, (float) -7.5);
 
-        View viewed = bottomNavigationMenuView.getChildAt(3);
-        setQbadge(viewed,0, (float) 7.5,(float)-7.5);
+        viewed = bottomNavigationMenuView.getChildAt(3);
+        badge = SPUtil.getBadgeCount(getString(R.string.badgeView));
+        setQbadge(viewed, badge, (float) 7.5, (float) -7.5);
     }
 
-    private void setQbadge(View view,int num,float x, float y) {
-        new QBadgeView(this).bindTarget(view)
+    private void setQbadge(View view, int num, float x, float y) {
+        boolean b;
+
+        badges.add(new QBadgeView(this).bindTarget(view)
                 .setBadgeTextColor(getResources().getColor(R.color.black))
                 .setBadgeGravity(Gravity.END | Gravity.TOP)
                 .setGravityOffset(x, y, true)
                 .setExactMode(true)
                 .setBadgeNumber(num)
                 .setShowShadow(false)
-                .setBadgeBackgroundColor(getResources().getColor(R.color.transparent));
+                .setBadgeBackgroundColor(getResources().getColor(R.color.transparent))
+        );
     }
 
     // 뒤로가기 버튼 기능
@@ -163,7 +178,24 @@ public class FriendsActivity extends UserListBaseActivity implements SharedPrefe
     }
 
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
-
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        switch (key) {
+            case "badgeFriend":
+                int badgeFriend = SPUtil.getBadgeCount(key);
+                badges.get(0).setBadgeNumber(badgeFriend);
+                break;
+            case "badgeFollow":
+                int badgeFollow = SPUtil.getBadgeCount(key);
+                badges.get(1).setBadgeNumber(badgeFollow);
+                break;
+            case "badgeFollowing":
+                int badgeFollowing = SPUtil.getBadgeCount(key);
+                badges.get(2).setBadgeNumber(badgeFollowing);
+                break;
+            case "badgeView":
+                int badgeView = SPUtil.getBadgeCount(key);
+                badges.get(3).setBadgeNumber(badgeView);
+                break;
+        }
     }
 }

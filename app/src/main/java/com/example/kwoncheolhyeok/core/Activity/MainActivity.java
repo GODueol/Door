@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity
     //View people, board, club;
 
     ViewPager viewPager = null;
-    Drawable icon_open, icon_close,icon_open_badge;
+    Drawable icon_open, icon_close, icon_open_badge;
     ImageView profileImage;
 
     private CloseActivityHandler closeActivityHandler;
@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity
         toggle.setToolbarNavigationClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SPUtil.setMainIcon(getString(R.string.mainAlarm),false);
+                SPUtil.setMainIcon(getString(R.string.mainAlarm), false);
                 changeToggleIcon();
             }
         });
@@ -225,10 +225,10 @@ public class MainActivity extends AppCompatActivity
         SPUtil = new SharedPreferencesUtil(getApplicationContext());
         SPUtil.getBadgePreferences().registerOnSharedPreferenceChangeListener(this);
 
-        boolean check =  SPUtil.getMainIcon(getString(R.string.mainAlarm));
-        if(!check) {
+        boolean check = SPUtil.getMainIcon(getString(R.string.mainAlarm));
+        if (!check) {
             toggle.setHomeAsUpIndicator(icon_open);
-        }else{
+        } else {
             toggle.setHomeAsUpIndicator(icon_open_badge);
         }
 
@@ -240,11 +240,12 @@ public class MainActivity extends AppCompatActivity
         //Gravity property aligns the text
         MenuItem people = menu.findItem(R.id.nav_People);
         peopleBadge = (TextView) people.getActionView();
-        badgeRoundStyle(peopleBadge,false);
+        badgeRoundStyle(peopleBadge, false);
 
         MenuItem core = menu.findItem(R.id.nav_mycore);
         coreBadge = (TextView) core.getActionView();
-        badgeStyle(coreBadge, 0);
+        int badgePost = SPUtil.getBadgeCount(getString(R.string.badgePost));
+        badgeStyle(coreBadge, badgePost);
 
         MenuItem message = menu.findItem(R.id.nav_message);
         messageBadge = (TextView) message.getActionView();
@@ -253,35 +254,35 @@ public class MainActivity extends AppCompatActivity
 
         MenuItem friends = menu.findItem(R.id.nav_friends);
         friendBadge = (TextView) friends.getActionView();
-        int badgeFriends = SPUtil.getBadgeCount(getString(R.string.badgeChat));
+        int badgeFriends = SPUtil.getBadgeCount(getString(R.string.badgeFriends));
         badgeStyle(friendBadge, badgeFriends);
 
         MenuItem setting = menu.findItem(R.id.nav_setting);
         settingBadge = (TextView) setting.getActionView();
-        badgeRoundStyle(settingBadge,false);
+        badgeRoundStyle(settingBadge, false);
     }
 
     private void badgeStyle(TextView badge, int i) {
         badge.setGravity(Gravity.CENTER_VERTICAL);
         badge.setTextColor(getResources().getColor(R.color.black));
         String str;
-        if(i!=0){
+        if (i != 0) {
             str = Integer.toString(i);
-        }else{
+        } else {
             str = "";
         }
         badge.setText(str);
     }
 
-    private void badgeRoundStyle(TextView badge,boolean c) {
+    private void badgeRoundStyle(TextView badge, boolean c) {
 
         badge.setGravity(Gravity.CENTER_VERTICAL);
         badge.setTypeface(null, Typeface.BOLD);
         badge.setTextColor(getResources().getColor(R.color.colorAccent));
         badge.setTextSize(8);
-        if(c) {
+        if (c) {
             badge.setText("●");
-        }else{
+        } else {
             badge.setText("");
         }
     }
@@ -499,11 +500,29 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key.equals("badgeChat")) {
-            int badgeChat = sharedPreferences.getInt(key, 0);
-            badgeStyle(messageBadge, badgeChat);
-            SPUtil.setMainIcon(getString(R.string.mainAlarm),true);
-            toggle.setHomeAsUpIndicator(icon_open_badge);
+
+        if(key.equals("mainAlarm")){
+           boolean b = SPUtil.getMainIcon(key);
+            if(b){
+                toggle.setHomeAsUpIndicator(icon_open_badge);
+            }else {
+                toggle.setHomeAsUpIndicator(icon_open);
+            }
+        }
+
+        switch (key) {
+            case "badgeChat":
+                int badgeChat = sharedPreferences.getInt(key, 0);
+                badgeStyle(messageBadge, badgeChat);
+                break;
+            case "badgePost":
+                int badgePost = sharedPreferences.getInt(key, 0);
+                badgeStyle(coreBadge, badgePost);
+                break;
+            case "badgeFriends":
+                int badgeFriends = sharedPreferences.getInt(key, 0);
+                badgeStyle(friendBadge, badgeFriends);
+                break;
         }
     }
 }

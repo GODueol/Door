@@ -30,6 +30,7 @@ import com.example.kwoncheolhyeok.core.Exception.GifException;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
+import com.example.kwoncheolhyeok.core.Util.FirebaseSendPushMsg;
 import com.example.kwoncheolhyeok.core.Util.GalleryPick;
 import com.example.kwoncheolhyeok.core.Util.UiUtil;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -348,6 +349,10 @@ public class CoreWriteActivity extends AppCompatActivity {
                 public void onComplete(@NonNull Task taskRtn) {
                     for (Task task : tasks.keySet()) {
                         if (!task.isComplete()) return;
+                    }
+                    if(!cUuid.equals(mUuid)){
+                       // 익명게시글이면
+                        FirebaseSendPushMsg.sendPostToFCM("Post",cUuid,"UnKnown",getString(R.string.alertPost));
                     }
                     setResult(Activity.RESULT_OK);
                     finish();

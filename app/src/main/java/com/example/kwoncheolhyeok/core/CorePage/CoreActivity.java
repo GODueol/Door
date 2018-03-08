@@ -19,6 +19,7 @@ import com.example.kwoncheolhyeok.core.Entity.CorePost;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
+import com.example.kwoncheolhyeok.core.Util.SharedPreferencesUtil;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -42,6 +43,8 @@ public class CoreActivity extends AppCompatActivity {
     private String cUuid;
     private FloatingActionButton fab;
     private boolean isBlocked = false;
+
+    private SharedPreferencesUtil SPUtil;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -114,6 +117,8 @@ public class CoreActivity extends AppCompatActivity {
             public void onCancelled(DatabaseError databaseError) {
             }
         });
+        SPUtil = new SharedPreferencesUtil(getApplicationContext());
+        SPUtil.removeBadge(getString(R.string.badgePost));
     }
 
     private void addPostToList(final String cUuid, final ArrayList<CoreListItem> list, final User cUser) {

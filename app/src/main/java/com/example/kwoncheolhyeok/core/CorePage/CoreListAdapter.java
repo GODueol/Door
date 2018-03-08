@@ -117,7 +117,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
         holder.core_heart_count.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(context,CoreHeartCountActivity.class);
+                Intent i = new Intent(context, CoreHeartCountActivity.class);
                 context.startActivity(i);
             }
         });
@@ -132,7 +132,9 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                         .child("likeUsers").child(mUuid).setValue(System.currentTimeMillis()).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        FirebaseSendPushMsg.sendPostToFCM("Like",cUuid,DataContainer.getInstance().getUser().getId(),context.getString(R.string.alertLike));
+                        if (!cUuid.equals(mUuid)) {
+                            FirebaseSendPushMsg.sendPostToFCM("Like", cUuid, DataContainer.getInstance().getUser().getId(), context.getString(R.string.alertLike));
+                        }
                     }
                 });
             }
@@ -435,7 +437,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
     private void doStart(CorePostHolder holder, String url) {
 
         // 예외처리
-        if(holder == null){
+        if (holder == null) {
             return;
         }
 
