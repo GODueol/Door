@@ -5,7 +5,6 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
@@ -23,9 +22,7 @@ import com.google.firebase.messaging.RemoteMessage;
 
 public class FirebaseRcevPushMsg extends FirebaseMessagingService {
     private static final String TAG = "MyFirebaseMsgService";
-    private SharedPreferences sharedPref;
-    private SharedPreferences.Editor editor;
-    private boolean isCheck;
+    private SharedPreferencesUtil SPUtil;
 
     /**
      * Called when message is received.
@@ -35,13 +32,11 @@ public class FirebaseRcevPushMsg extends FirebaseMessagingService {
     // [START receive_message]
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
+        SPUtil = new SharedPreferencesUtil(getApplicationContext());
 
-        sharedPref = getApplicationContext().getSharedPreferences(getString(R.string.alarm), MODE_PRIVATE);
-        editor = sharedPref.edit();
-
-        isCheck = sharedPref.getBoolean(getString(R.string.alertUnlockPic), true);
-        isCheck = sharedPref.getBoolean(getString(R.string.alertPost), true);
-        isCheck = sharedPref.getBoolean(getString(R.string.alertLike), true);
+        boolean isCheck = SPUtil.getSwitchState(getString(R.string.alertUnlockPic));
+        isCheck = SPUtil.getSwitchState(getString(R.string.alertPost));
+        isCheck = SPUtil.getSwitchState(getString(R.string.alertLike));
 
 
         // Check if message contains a data payload.
@@ -50,22 +45,29 @@ public class FirebaseRcevPushMsg extends FirebaseMessagingService {
 
             switch (remoteMessage.getData().get("type")) {
                 case "chat":
-                    isCheck = sharedPref.getBoolean(getString(R.string.alertChat), true);
-                    // 트랜젝션 문제 없는지?
-                    int i = sharedPref.getInt("badgeChat", 0);
-                    editor.putInt("badgeChat", ++i).apply();
-                    if (isCheck) {
-                        sendNotification(remoteMessage.getData().get("nick"), remoteMessage.getData().get("message"));
+                    String cRoom = SPUtil.getCurrentChat();
+                    String room = remoteMessage.getData().get("room");
+                    if (!cRoom.equals(remoteMessage.getData().get("room"))) {
+                        isCheck = SPUtil.getSwitchState(getString(R.string.alertChat));
+                        SPUtil.increaseChatRoomBadge(room);
+
+                        if (isCheck) {
+                            sendNotification(remoteMessage.getData().get("nick"), remoteMessage.getData().get("message"));
+                        }
                     }
                     break;
                 case "follow":
-                    isCheck = sharedPref.getBoolean(getString(R.string.alertFolow), true);
+                    isCheck = SPUtil.getSwitchState(getString(R.string.alertFolow));
+                    SPUtil.increaseCount(getString(R.string.badgeFollow));
+
                     if (isCheck) {
                         sendNotification(remoteMessage.getData().get("nick"), remoteMessage.getData().get("message"));
                     }
                     break;
                 case "friend":
-                    isCheck = sharedPref.getBoolean(getString(R.string.alertFriend), true);
+                    isCheck = SPUtil.getSwitchState(getString(R.string.alertFriend));
+                    SPUtil.increaseCount(getString(R.string.badgeFriend));
+
                     if (isCheck) {
                         sendNotification(remoteMessage.getData().get("nick"), remoteMessage.getData().get("message"));
                     }

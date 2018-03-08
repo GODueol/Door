@@ -52,7 +52,7 @@ public class messageRecyclerAdapter extends RecyclerView.Adapter<messageRecycler
         holder.content.setText(room.getLastChat());
         holder.nickname.setText(room.getTargetNickName());
         holder.profile.setText(room.getTargetProfile());
-
+        holder.badge.setText(Integer.toString(room.getBadgeCount()));
         Long lastChatTime = room.getLastChatTime();
         Long lastViewTime = room.getLastViewTime();
         if (lastViewTime >= lastChatTime) {
@@ -114,6 +114,7 @@ public class messageRecyclerAdapter extends RecyclerView.Adapter<messageRecycler
         public TextView profile;
         public TextView date;
         public ImageView edit_message;
+        public TextView badge;
         private RecyclerViewClickListener mListener;
 
 
@@ -127,6 +128,7 @@ public class messageRecyclerAdapter extends RecyclerView.Adapter<messageRecycler
             img = (ImageView) itemView.findViewById(R.id.profile_image);
             layout = (RelativeLayout) itemView.findViewById(R.id.layout);
             edit_message = (ImageView) itemView.findViewById(R.id.edit_message);
+            badge = (TextView) itemView.findViewById(R.id.badge_chat_row);
             mListener = listener;
             itemView.setOnClickListener(this);
         }

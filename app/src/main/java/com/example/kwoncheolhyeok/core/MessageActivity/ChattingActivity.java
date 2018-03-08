@@ -39,6 +39,7 @@ import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
 import com.example.kwoncheolhyeok.core.Util.GalleryPick;
+import com.example.kwoncheolhyeok.core.Util.SharedPreferencesUtil;
 import com.example.kwoncheolhyeok.core.Util.UiUtil;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -71,6 +72,8 @@ public class ChattingActivity extends AppCompatActivity {
     private User targetUser;
     private String targetUuid;
     private GalleryPick galleryPick;
+
+    private SharedPreferencesUtil SPUtil;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,6 +138,7 @@ public class ChattingActivity extends AppCompatActivity {
         user = DataContainer.getInstance().getUser();
         userUuid = mAuth.getUid();
 
+        SPUtil = new SharedPreferencesUtil(getApplicationContext());
         chatFirebaseUtil = new ChatFirebaseUtil(this, user, targetUser, userUuid, targetUuid, overlay, hideText);
         chatFirebaseUtil.setchatRoom(chattingRecyclerview, chatListItem);
         chattingRecyclerview.addOnScrollListener(dateToastListener);
@@ -197,6 +201,7 @@ public class ChattingActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        SPUtil.removeCurrentChat(getString(R.string.currentRoom));
         chatFirebaseUtil.deleteFirebaseRef();
         chatFirebaseUtil.setLastChatView();
     }

@@ -1,5 +1,7 @@
 package com.example.kwoncheolhyeok.core.MessageActivity.util;
 
+import android.support.annotation.NonNull;
+
 /**
  * Created by godueol on 2017. 12. 23..
  */
@@ -14,6 +16,7 @@ public class RoomVO {
     private String targetProfile;
     private String targetUrl;
     private String lastChat;
+    private int badgeCount=0;
     private long lastChatTime;
 
 
@@ -24,7 +27,6 @@ public class RoomVO {
     }
 
     public RoomVO(String chatRoomid, String lastChat, String targetUuid, long lastChatTime){
-
         this.chatRoomid = chatRoomid;
         this.lastChat = lastChat;
         this.targetUuid = targetUuid;
@@ -90,6 +92,13 @@ public class RoomVO {
     }
 
 
+    public int getBadgeCount() {
+        return badgeCount;
+    }
+
+    public void setBadgeCount(int badgeCount) {
+        this.badgeCount = badgeCount;
+    }
 
     public long getLastViewTime() {
         return lastViewTime;

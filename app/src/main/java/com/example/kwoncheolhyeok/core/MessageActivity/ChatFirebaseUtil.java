@@ -23,6 +23,7 @@ import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
 import com.example.kwoncheolhyeok.core.Util.FirebaseSendPushMsg;
 import com.example.kwoncheolhyeok.core.Util.GPSInfo;
+import com.example.kwoncheolhyeok.core.Util.SharedPreferencesUtil;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.LocationCallback;
@@ -79,6 +80,8 @@ public class ChatFirebaseUtil {
     private List<ChatMessage> chatMessageList;
     private List<ChatMessage> uncheckMessageList;
 
+    private SharedPreferencesUtil SPUtil;
+
     public ChatFirebaseUtil(Context context, User currentUser, User targetUser, String userUuid, String targetUuid, LinearLayout overlay, TextView hideText) {
         databaseRef = FirebaseDatabase.getInstance().getReference();
         storage = FirebaseStorage.getInstance();
@@ -94,6 +97,7 @@ public class ChatFirebaseUtil {
         this.overlay = overlay;
         userPickurl = currentUser.getPicUrls().getThumbNail_picUrl1();
         targetPicurl = targetUser.getPicUrls().getThumbNail_picUrl1();
+        SPUtil = new SharedPreferencesUtil(context);
     }
 
     public void setLastChatView() {
@@ -145,7 +149,7 @@ public class ChatFirebaseUtil {
             @Override
             public void onSuccess(Void aVoid) {
                 // 상대방에게 내정보를 담아서 메세지를 보냄
-                FirebaseSendPushMsg.sendPostToFCM(chat,targetUuid,currentUser.getId(),context.getString(R.string.alertChat));
+                FirebaseSendPushMsg.sendPostToFCM(chat,targetUuid,currentUser.getId(),context.getString(R.string.alertChat),roomName);
             }
         });
     }
@@ -213,6 +217,7 @@ public class ChatFirebaseUtil {
                     chatRoomRef.child(userUuid).child(targetUuid).child("lastViewTime").setValue(currentTime);
                 }
 
+                SPUtil.setCurrentChat(context.getString(R.string.currentRoom),roomName);
                 item = new GridItem(0, targetUuid, targetUser.getSummaryUser(), targetPicurl);
                 // 상대방과의 거리 셋팅
                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference(FireBaseUtil.currentLocationPath);

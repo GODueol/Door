@@ -29,6 +29,19 @@
     <string name="people">People</string>
 
     <string name="alarm">Alarm</string>
+    <string name="badge">badge</string>
+
+    <string name="mainAlarm">mainAlarm</string>
+    <string name="currentRoom">currentRoom</string>
+    <string name="badgeChat">badgeChat</string>
+    <string name="badgeFriends">badgeFriends</string>
+    <string name="chatListBadge">chatListBadge</string>
+
+    <string name="badgeFriend">badgeFriend</string>
+    <string name="badgeFollow">badgeFollow</string>
+    <string name="badgeFollowing">badgeFollowing</string>
+    <string name="badgeView">badgeView</string>
+
     <string name="friends">친구</string>
     <string name="viewed_me">나를 본 회원</string>
     <string name="block">블럭</string>
