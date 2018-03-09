@@ -80,6 +80,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="-8dp"
+                android:layout_weight="1"
                 android:visibility="gone"
                 app:cmv_backgroundColor="#FFE0BE"
                 app:cmv_backgroundColorPressed="@color/white"

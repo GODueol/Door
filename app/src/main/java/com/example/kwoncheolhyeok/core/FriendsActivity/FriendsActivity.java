@@ -82,8 +82,8 @@ public class FriendsActivity extends UserListBaseActivity implements SharedPrefe
                         setRecyclerView(items, adapter, "followingUsers", R.menu.following_menu);
                         return true;
                     case R.id.navigation_recent:
-                        SPUtil.removeFriendsBadge(getString(R.string.badgeView));
-                        badges.get(3).setBadgeNumber(0);
+                        SPUtil.removeBadge(getString(R.string.badgeView));
+                        badges.get(3).setBadgeText("");
                         setRecyclerView(items, adapter, "viewedMeUsers", R.menu.follower_menu);
                         return true;
                 }
@@ -148,8 +148,8 @@ public class FriendsActivity extends UserListBaseActivity implements SharedPrefe
         setQbadge(following, badge, (float) 9.5, (float) -7.5);
 
         viewed = bottomNavigationMenuView.getChildAt(3);
-        badge = SPUtil.getBadgeCount(getString(R.string.badgeView));
-        setQbadge(viewed, badge, (float) 7.5, (float) -7.5);
+        boolean state = SPUtil.getBadgeState(getString(R.string.badgeView));
+        setQbadge(viewed, state, (float) 7.5, (float) -7.5);
     }
 
     private void setQbadge(View view, int num, float x, float y) {
@@ -166,6 +166,24 @@ public class FriendsActivity extends UserListBaseActivity implements SharedPrefe
         );
     }
 
+    private void setQbadge(View view, boolean b, float x, float y) {
+        String str;
+        if(b){
+            str = "●";
+        }else{
+            str = "";
+        }
+        badges.add(new QBadgeView(this).bindTarget(view)
+                .setBadgeTextColor(getResources().getColor(R.color.skyblue))
+                .setBadgeGravity(Gravity.END | Gravity.TOP)
+                .setGravityOffset(x, y, true)
+                .setExactMode(true)
+                .setBadgeText(str)
+                .setBadgeTextSize((float)6,true)
+                .setShowShadow(false)
+                .setBadgeBackgroundColor(getResources().getColor(R.color.transparent))
+        );
+    }
     // 뒤로가기 버튼 기능
     public boolean onOptionsItemSelected(android.view.MenuItem item) {
         switch (item.getItemId()) {
@@ -193,8 +211,14 @@ public class FriendsActivity extends UserListBaseActivity implements SharedPrefe
                 badges.get(2).setBadgeNumber(badgeFollowing);
                 break;
             case "badgeView":
-                int badgeView = SPUtil.getBadgeCount(key);
-                badges.get(3).setBadgeNumber(badgeView);
+                boolean badgeState = SPUtil.getBadgeState(key);
+                String str;
+                if(badgeState){
+                    str = "●";
+                }else{
+                    str = "";
+                }
+                badges.get(3).setBadgeText(str);
                 break;
         }
     }

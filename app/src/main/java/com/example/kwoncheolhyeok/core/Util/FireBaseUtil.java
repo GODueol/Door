@@ -7,6 +7,7 @@ import com.example.kwoncheolhyeok.core.Entity.CoreListItem;
 import com.example.kwoncheolhyeok.core.Entity.CorePost;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.Exception.ChildSizeMaxException;
+import com.example.kwoncheolhyeok.core.MessageActivity.util.MessageVO;
 import com.example.kwoncheolhyeok.core.MessageActivity.util.RoomVO;
 import com.example.kwoncheolhyeok.core.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -157,8 +158,23 @@ public class FireBaseUtil {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 try {
-                    String roomId = dataSnapshot.getValue(RoomVO.class).getChatRoomid();
-                    FirebaseDatabase.getInstance().getReference("chat").child(roomId).removeValue();
+                    final String roomId = dataSnapshot.getValue(RoomVO.class).getChatRoomid();
+                    // 채팅방 이미지 젼체 삭제
+                    FirebaseDatabase.getInstance().getReference("chat").child(roomId).orderByChild("isImage").equalTo(1).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            for (DataSnapshot ds : dataSnapshot.getChildren()) {//마찬가지로 중복 유무 확인
+                                MessageVO message = ds.getValue(MessageVO.class);
+                                FirebaseStorage.getInstance().getReferenceFromUrl(message.getImage()).delete();
+                            }
+                            FirebaseDatabase.getInstance().getReference("chat").child(roomId).removeValue();
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
                     FirebaseDatabase.getInstance().getReference("chatRoomList").child(mUuid).child(oUuid).removeValue();
                     FirebaseDatabase.getInstance().getReference("chatRoomList").child(oUuid).child(mUuid).removeValue();
                 } catch (Exception e) {

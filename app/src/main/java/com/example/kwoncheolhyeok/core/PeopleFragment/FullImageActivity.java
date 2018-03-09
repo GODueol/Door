@@ -318,7 +318,8 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
                         mutableData.setValue(map);
                     }
                 }
-
+                // Viewed me
+                FirebaseSendPushMsg.sendPostToFCM("View",item.getUuid(), mUser.getId(),"");
                 // 데이터 추가
                 map.put(mUuid, System.currentTimeMillis());
                 mutableData.setValue(map);

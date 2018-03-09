@@ -86,6 +86,9 @@ public class FirebaseRcevPushMsg extends FirebaseMessagingService {
                         sendNotification(remoteMessage.getData().get("nick"), remoteMessage.getData().get("message"));
                     }
                     break;
+                case "View":
+                    SPUtil.switchBadgeState(getString(R.string.badgeView),true);
+                    break;
             }
 
         }

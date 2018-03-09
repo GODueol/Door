@@ -74,6 +74,9 @@ public class SharedPreferencesUtil {
         return sharedPref_badge.getInt(str, 0);
     }
 
+    public boolean getBadgeState(String str){
+        return sharedPref_badge.getBoolean(str,false);
+    }
     // 뱃지 ++
     public void increaseBadgeCount(String str) {
         // 트렌젝션 문제는 없는지?
@@ -81,10 +84,15 @@ public class SharedPreferencesUtil {
         editor_badge.putInt(str, ++badgeCount).apply();
         editor_badge.putBoolean("mainAlarm",true).apply();
         // 프렌즈 관련 뱃지인경우 프랜즈뱃지도 업데이트
-        if (str.equals("badgeFriend") || str.equals("badgeFollow") || str.equals("badgeFollowing") || str.equals("badgeView")) {
-            int badgeFriends = getBadgeCount("badgeFriend") + getBadgeCount("badgeFollow") + getBadgeCount("badgeFollowing") + getBadgeCount("badgeView");
+        if (str.equals("badgeFriend") || str.equals("badgeFollow") || str.equals("badgeFollowing")) {
+            int badgeFriends = getBadgeCount("badgeFriend") + getBadgeCount("badgeFollow") + getBadgeCount("badgeFollowing");
             editor_badge.putInt("badgeFriends",badgeFriends).apply();
         }
+    }
+
+    public void switchBadgeState(String str,boolean b){
+        editor_badge.putBoolean(str,b).apply();
+        editor_badge.putBoolean("mainAlarm",true).apply();
     }
 
     // 뱃지 삭제

@@ -14,6 +14,8 @@ public class MessageVO {
     private int check;
     private long time;
 
+    private int isImage;
+
     public MessageVO(){
     }
 
@@ -26,6 +28,16 @@ public class MessageVO {
         this.time = time;
         this.check = check;
     }
+    public MessageVO(String image, String writer, String nickname, String content, Long time, int check,int isImage){
+        this.image = image;
+        this.writer = writer;
+        this.nickname = nickname;
+        this.content = content;
+        this.time = time;
+        this.check = check;
+        this.isImage = isImage;
+    }
+
 
     public void setDate(String date) {
         this.date = date;
@@ -49,6 +61,13 @@ public class MessageVO {
         this.nickname = nickname;
     }
 
+    public int getIsImage() {
+        return isImage;
+    }
+
+    public void setIsImage(int isImage) {
+        this.isImage = isImage;
+    }
 
     public String getImage() {
         return image;

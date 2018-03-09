@@ -119,7 +119,6 @@ public class MainActivity extends AppCompatActivity
 
         //Navigation view
         NavigationView navigationView = findViewById(R.id.nav_view);
-
         //네비게이션 드로워 안의 COREPLUS 텍스트 색 변경
         Menu menu = navigationView.getMenu();
         MenuItem tools = menu.findItem(R.id.nav_coreplus);
@@ -264,6 +263,7 @@ public class MainActivity extends AppCompatActivity
 
     private void badgeStyle(TextView badge, int i) {
         badge.setGravity(Gravity.CENTER_VERTICAL);
+        badge.setTextSize(11);
         badge.setTextColor(getResources().getColor(R.color.black));
         String str;
         if (i != 0) {
@@ -520,8 +520,19 @@ public class MainActivity extends AppCompatActivity
                 badgeStyle(coreBadge, badgePost);
                 break;
             case "badgeFriends":
+                boolean badgeState = sharedPreferences.getBoolean("badgeView",false);
                 int badgeFriends = sharedPreferences.getInt(key, 0);
                 badgeStyle(friendBadge, badgeFriends);
+                if(badgeFriends==0 && badgeState){
+                    badgeRoundStyle(friendBadge,badgeState);
+                }
+                break;
+            case "badgeView":
+                boolean badgeStat = sharedPreferences.getBoolean(key,false);
+                int count = SPUtil.getBadgeCount("badgeFriends");
+                if(count==0 && badgeStat){
+                    badgeRoundStyle(friendBadge,badgeStat);
+                }
                 break;
         }
     }

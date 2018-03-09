@@ -92,6 +92,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
+                android:layout_weight="1"
                 app:cmv_backgroundColor="@color/message_color"
                 app:cmv_backgroundColorPressed="@color/white"
                 app:cmv_cornerRadius="5dp"
