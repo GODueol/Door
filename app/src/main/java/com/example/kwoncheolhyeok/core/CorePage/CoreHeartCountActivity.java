@@ -21,9 +21,6 @@ public class CoreHeartCountActivity extends UserListBaseActivity {
 
     Toolbar toolbar = null;
 
-    private UserListAdapter adapter;
-    private ArrayList<UserListAdapter.Item> items;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,9 +40,9 @@ public class CoreHeartCountActivity extends UserListBaseActivity {
         final RecyclerView recyclerView = findViewById(R.id.recyclerView);
 
         // 리사이클뷰
-        items = new ArrayList<>();
+        ArrayList<UserListAdapter.Item> items = new ArrayList<>();
         //items.add(new UserListAdapter.Item(true));
-        adapter = new UserListAdapter(CoreHeartCountActivity.this, items);
+        UserListAdapter adapter = new UserListAdapter(CoreHeartCountActivity.this, items);
         LinearLayoutManager layoutManager = new LinearLayoutManager(CoreHeartCountActivity.this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
