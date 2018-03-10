@@ -41,10 +41,6 @@ public class CoreActivity extends AppCompatActivity {
     private ChildEventListener listner;
     private DataContainer dc;
     private String cUuid;
-    private FloatingActionButton fab;
-    private boolean isBlocked = false;
-
-    private SharedPreferencesUtil SPUtil;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -63,24 +59,38 @@ public class CoreActivity extends AppCompatActivity {
                 R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        fab = findViewById(R.id.fab);
-        fab.setVisibility(View.INVISIBLE);
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                if (isBlocked) {
-                    Toast.makeText(CoreActivity.this, "포스트를 작성할 수 없습니다.", Toast.LENGTH_SHORT).show();
-                    finish();
-                    return;
-                }
+                DataContainer.getInstance().getUserRef(cUuid).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        User cUser = dataSnapshot.getValue(User.class);
+                        if(cUser.getBlockUsers().containsKey(dc.getUid())){
+                            Toast.makeText(CoreActivity.this, "포스트를 작성할 수 없습니다.", Toast.LENGTH_SHORT).show();
+                            finish();
+                            return;
+                        } else if (!cUuid.equals(dc.getUid()) && cUser.isAnonymityProhibition()) {
+                            Toast.makeText(CoreActivity.this, "포스트를 작성할 수 없습니다.", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
 
-                // 자신, 타인 액티비티 구별
-                Intent i;
-                i = new Intent(CoreActivity.this, CoreWriteActivity.class);
-                i.putExtra("cUuid", cUuid);
+                        // 자신, 타인 액티비티 구별
+                        Intent i;
+                        i = new Intent(CoreActivity.this, CoreWriteActivity.class);
+                        i.putExtra("cUuid", cUuid);
 
-                startActivityForResult(i, WRITE_SUCC);
+                        startActivityForResult(i, WRITE_SUCC);
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
             }
         });
 
@@ -101,23 +111,18 @@ public class CoreActivity extends AppCompatActivity {
         ((SimpleItemAnimator) recyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
 
         // 코어 주인의 User Get
-
         dc.getUserRef(cUuid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User cUser = dataSnapshot.getValue(User.class);
                 addPostToList(cUuid, list, cUser);
-
-                isBlocked = !cUuid.equals(dc.getUid()) && cUser.isAnonymityProhibition();
-
-                fab.setVisibility(View.VISIBLE);
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }
         });
-        SPUtil = new SharedPreferencesUtil(getApplicationContext());
+        SharedPreferencesUtil SPUtil = new SharedPreferencesUtil(getApplicationContext());
         SPUtil.removeBadge(getString(R.string.badgePost));
     }
 
