@@ -62,7 +62,7 @@ public class BlockActivity extends UserListBaseActivity {
 
                 // 리사이클뷰
                 items = new ArrayList<>();
-                items.add(new UserListAdapter.Item(true));
+                //items.add(new UserListAdapter.Item(true));
                 adapter = new UserListAdapter(BlockActivity.this, items);
                 LinearLayoutManager layoutManager = new LinearLayoutManager(BlockActivity.this);
                 recyclerView.setLayoutManager(layoutManager);

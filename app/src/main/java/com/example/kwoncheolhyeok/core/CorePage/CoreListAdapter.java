@@ -118,6 +118,8 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(context, CoreHeartCountActivity.class);
+                i.putExtra("cUuid", cUuid);
+                i.putExtra("postKey", coreListItem.getPostKey());
                 context.startActivity(i);
             }
         });

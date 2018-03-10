@@ -140,5 +140,6 @@
     <string name="msgUnlockPic">비공개 사진을 확인해보세요!</string>
 //
     <string name="mapSpiner">이 주변 회원 검색</string>
+    <string name="heartCountUser">하트 누른 유저들</string>
 </resources>
 
