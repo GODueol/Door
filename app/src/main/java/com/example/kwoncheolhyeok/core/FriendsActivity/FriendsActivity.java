@@ -9,6 +9,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,12 +39,14 @@ public class FriendsActivity extends UserListBaseActivity implements SharedPrefe
 
     private View friend, follower, following, viewed;
     private List<Badge> badges;
+
+    boolean firstView;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Get the view from new_activity.xml
         setContentView(R.layout.friends_activity);
-
+        firstView = true;
         // bottomTab
         final BottomNavigationViewEx navigation = findViewById(R.id.navigation);
         navigation.enableAnimation(false);
@@ -62,28 +65,43 @@ public class FriendsActivity extends UserListBaseActivity implements SharedPrefe
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 if (items.size() != 0 && navigation.getMenu().findItem(navigation.getSelectedItemId()).equals(item)) {
+                    switch (item.getItemId()) {
+                        case R.id.navigation_friends:
+                            SPUtil.removeFriendsBadge(getString(R.string.badgeFriend));
+                            return true;
+                        case R.id.navigation_receive:
+                            SPUtil.removeFriendsBadge(getString(R.string.badgeFollow));
+                            return true;
+                        case R.id.navigation_send:
+                            SPUtil.removeFriendsBadge(getString(R.string.badgeFollowing));
+                            return true;
+                        case R.id.navigation_recent:
+                            SPUtil.removeBadge(getString(R.string.badgeView));
+                            return true;
+                    }
+
                     return true;
                 }
-
+                Log.d("test","처음");
                 switch (item.getItemId()) {
                     case R.id.navigation_friends:
-                        SPUtil.removeFriendsBadge(getString(R.string.badgeFriend));
-                        badges.get(0).setBadgeNumber(0);
+                        if (!firstView) {
+                            SPUtil.removeFriendsBadge(getString(R.string.badgeFriend));
+                        }else {
+                            firstView = false;
+                        }
                         setRecyclerView(items, adapter, "friendUsers", R.menu.friend_menu);
                         return true;
                     case R.id.navigation_receive:
                         SPUtil.removeFriendsBadge(getString(R.string.badgeFollow));
-                        badges.get(1).setBadgeNumber(0);
                         setRecyclerView(items, adapter, "followerUsers", R.menu.follower_menu);
                         return true;
                     case R.id.navigation_send:
                         SPUtil.removeFriendsBadge(getString(R.string.badgeFollowing));
-                        badges.get(2).setBadgeNumber(0);
                         setRecyclerView(items, adapter, "followingUsers", R.menu.following_menu);
                         return true;
                     case R.id.navigation_recent:
                         SPUtil.removeBadge(getString(R.string.badgeView));
-                        badges.get(3).setBadgeText("");
                         setRecyclerView(items, adapter, "viewedMeUsers", R.menu.follower_menu);
                         return true;
                 }
@@ -91,7 +109,6 @@ public class FriendsActivity extends UserListBaseActivity implements SharedPrefe
             }
         };
         navigation.setOnNavigationItemSelectedListener(selectedListener);
-
 
         toolbar = findViewById(R.id.toolbar);
         final RecyclerView recyclerView = findViewById(R.id.friendsRecyclerView);
