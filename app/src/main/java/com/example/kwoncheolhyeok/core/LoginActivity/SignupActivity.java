@@ -239,7 +239,8 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
         Toast.makeText(getBaseContext(), "Join Success", Toast.LENGTH_LONG).show();
         _signupButton.setEnabled(true);
         Intent i = new Intent(this, MainActivity.class);
-        startActivityForResult(i, 0);
+        startActivity(i);
+        finish();
     }
 
     public void onSignupFailed(Exception e) {
