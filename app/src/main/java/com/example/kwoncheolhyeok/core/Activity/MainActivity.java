@@ -288,19 +288,24 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void setProfilePic(final ImageView profileImage) {
-        DataContainer.getInstance().getMyUserRef().child("picUrls/thumbNail_picUrl1").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String picUrl1 = (String) dataSnapshot.getValue();
-                if (picUrl1 == null) return;
-                Glide.with(getBaseContext()).load(picUrl1).into(profileImage);
-            }
+        try {
+            DataContainer.getInstance().getMyUserRef().child("picUrls/thumbNail_picUrl1").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    String picUrl1 = (String) dataSnapshot.getValue();
+                    if (picUrl1 == null) return;
+                    Glide.with(getBaseContext()).load(picUrl1).into(profileImage);
+                }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-            }
-        });
+                }
+            });
+        } catch(Exception e){
+            e.printStackTrace();
+            UiUtil.getInstance().restartApp(MainActivity.this);
+        }
     }
 
 
