@@ -477,6 +477,11 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
             UiUtil.getInstance().restartApp(this);
         }
 
+        if (item.getUuid().equals(myUuid)) {  // 본인
+            picOpen.setVisibility(View.INVISIBLE);  // 가림
+            return;
+        }
+
         // 잠근사진이 없으면 리턴
         if(!isHaveLockPic()) return;
 
@@ -484,10 +489,6 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         picOpen.getLayoutParams().width = (int) getResources().getDimension(R.dimen.image_lock_height);
         picOpen.getLayoutParams().height = (int) getResources().getDimension(R.dimen.image_lock_width);
 
-        if (item.getUuid().equals(myUuid)) {  // 본인
-            picOpen.setVisibility(View.INVISIBLE);  // 가림
-            return;
-        }
         if (!mUser.getUnLockUsers().containsKey(item.getUuid())) {
             picOpen.setImageResource(R.drawable.picture_unlock); // "이 아이콘을 클릭하면 사진을 해제하겠다"
         } else {
