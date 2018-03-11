@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.provider.OpenableColumns;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.widget.ImageView;
@@ -305,10 +306,13 @@ public class GalleryPick {
 
     private long getFileSizeInMB() throws IOException {
         long fileSizeInMB;// 크기 확인 : 5MB
-        File file = bitMapToFile();
 
-        // Get length of file in bytes
-        long fileSizeInBytes = file.length();
+        @SuppressLint("Recycle") Cursor returnCursor =
+                activity.getContentResolver().query(uri, null, null, null, null);
+        int sizeIndex = returnCursor.getColumnIndex(OpenableColumns.SIZE);
+        returnCursor.moveToFirst();
+        long fileSizeInBytes = returnCursor.getLong(sizeIndex);
+
         // Convert the bytes to Kilobytes (1 KB = 1024 Bytes)
         long fileSizeInKB = fileSizeInBytes / 1024;
         // Convert the KB to MegaBytes (1 MB = 1024 KBytes)
@@ -318,20 +322,23 @@ public class GalleryPick {
     }
 
     private boolean isGif() {
-        return getMimeType(uri).contains("gif");
+        String rst = getMimeType(uri);
+        return rst.contains("gif");
     }
 
 
     public void setImage(ImageView editImage) throws Exception {
         // Gif 파일인 경우
         if (isGif()) {
-            if (getFileSizeInMB() >= 5) throw new Exception("GIF 파일이 5MB를 넘어서 불가능합니다");
+            if (getFileSizeInMB() >= 5) throw new Exception("파일이 5MB를 넘어서 불가능합니다");
             //Uri
             GlideApp.with(editImage.getContext())
                     .load(uri)
                     .placeholder(R.drawable.a)
                     .into(editImage);
         } else {
+            //if (getFileSizeInMB() >= 5) throw new Exception("파일이 5MB를 넘어서 불가능합니다");
+            // 5메가가 넘는건 해상도 줄임
             Bitmap originalBitmap = this.getBitmap();
             editImage.setImageBitmap(originalBitmap);
         }
