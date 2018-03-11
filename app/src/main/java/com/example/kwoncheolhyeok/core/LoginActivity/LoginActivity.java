@@ -211,10 +211,13 @@ public class LoginActivity extends AppCompatActivity {
     public void onLoginSuccess() {
         _loginButton.setEnabled(true);
         Intent i = new Intent(LoginActivity.this, MainActivity.class);
-        startActivityForResult(i, 0);
 
         // 프로그레스 바 종료
         UiUtil.getInstance().stopProgressDialog();
+
+        startActivity(i);
+        finish();
+
     }
 
     public void onLoginFailed(Exception e) {

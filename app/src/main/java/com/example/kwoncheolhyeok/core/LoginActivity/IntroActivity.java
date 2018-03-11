@@ -173,7 +173,8 @@ public class IntroActivity extends Activity {
 
     public void onLoginSuccess() {
         Intent i = new Intent(this, MainActivity.class);
-        startActivityForResult(i, 0);
+        startActivity(i);
+        finish();
     }
 
     @Override

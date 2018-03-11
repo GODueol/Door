@@ -58,7 +58,7 @@ public class FirebaseRcevPushMsg extends FirebaseMessagingService {
                     break;
                 case "follow":
                     isCheck = SPUtil.getSwitchState(getString(R.string.alertFolow));
-                    SPUtil.increaseCount(getString(R.string.badgeFollow));
+                    SPUtil.increaseBadgeCount(getString(R.string.badgeFollow));
 
                     if (isCheck) {
                         sendNotification(remoteMessage.getData().get("nick"), remoteMessage.getData().get("message"));
@@ -66,7 +66,7 @@ public class FirebaseRcevPushMsg extends FirebaseMessagingService {
                     break;
                 case "friend":
                     isCheck = SPUtil.getSwitchState(getString(R.string.alertFriend));
-                    SPUtil.increaseCount(getString(R.string.badgeFriend));
+                    SPUtil.increaseBadgeCount(getString(R.string.badgeFriend));
 
                     if (isCheck) {
                         sendNotification(remoteMessage.getData().get("nick"), remoteMessage.getData().get("message"));
@@ -77,6 +77,17 @@ public class FirebaseRcevPushMsg extends FirebaseMessagingService {
                     if (isCheck) {
                         sendNotification(remoteMessage.getData().get("nick"), remoteMessage.getData().get("message"));
                     }
+                    break;
+                case "Post":
+                    isCheck = SPUtil.getSwitchState(getString(R.string.alertPost));
+                    SPUtil.increaseBadgeCount(getString(R.string.badgePost));
+
+                    if (isCheck) {
+                        sendNotification(remoteMessage.getData().get("nick"), remoteMessage.getData().get("message"));
+                    }
+                    break;
+                case "View":
+                    SPUtil.switchBadgeState(getString(R.string.badgeView),true);
                     break;
             }
 

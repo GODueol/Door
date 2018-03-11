@@ -41,6 +41,7 @@
     <string name="badgeFollow">badgeFollow</string>
     <string name="badgeFollowing">badgeFollowing</string>
     <string name="badgeView">badgeView</string>
+    <string name="badgePost">badgePost</string>
 
     <string name="friends">친구</string>
     <string name="viewed_me">나를 본 회원</string>
@@ -75,9 +76,9 @@
     <string name="set_new_follower">새 팔로워가 추가됐을 때</string>
     <string name="set_new_friends">새 친구가 생겼을 때</string>
     <string name="set_new_post">내 코어에 새 익명글이 올라왔을 때</string>
-    <string name="set_new_heart">내 코어 포스트에 하트가 추가되었을 때</string>
+    <string name="set_new_heart">내 코어 포스트에 하트가 추가됐을 때</string>
     <string name="set_opn_lockpic">누가 비공개 사진을 열었을 때</string>
-
+<!---->
 
     <string name="set_password">비밀번호 변경</string>
     <string name="cur_password">현재 비밀번호</string>
@@ -139,5 +140,6 @@
     <string name="msgUnlockPic">비공개 사진을 확인해보세요!</string>
 //
     <string name="mapSpiner">이 주변 회원 검색</string>
+    <string name="heartCountUser">하트 누른 유저들</string>
 </resources>
 

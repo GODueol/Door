@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity
     //View people, board, club;
 
     ViewPager viewPager = null;
-    Drawable icon_open, icon_close,icon_open_badge;
+    Drawable icon_open, icon_close, icon_open_badge;
     ImageView profileImage;
 
     private CloseActivityHandler closeActivityHandler;
@@ -112,14 +112,13 @@ public class MainActivity extends AppCompatActivity
         toggle.setToolbarNavigationClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SPUtil.setMainIcon(getString(R.string.mainAlarm),false);
+                SPUtil.setMainIcon(getString(R.string.mainAlarm), false);
                 changeToggleIcon();
             }
         });
 
         //Navigation view
         NavigationView navigationView = findViewById(R.id.nav_view);
-
         //네비게이션 드로워 안의 COREPLUS 텍스트 색 변경
         Menu menu = navigationView.getMenu();
         MenuItem tools = menu.findItem(R.id.nav_coreplus);
@@ -225,10 +224,10 @@ public class MainActivity extends AppCompatActivity
         SPUtil = new SharedPreferencesUtil(getApplicationContext());
         SPUtil.getBadgePreferences().registerOnSharedPreferenceChangeListener(this);
 
-        boolean check =  SPUtil.getMainIcon(getString(R.string.mainAlarm));
-        if(!check) {
+        boolean check = SPUtil.getMainIcon(getString(R.string.mainAlarm));
+        if (!check) {
             toggle.setHomeAsUpIndicator(icon_open);
-        }else{
+        } else {
             toggle.setHomeAsUpIndicator(icon_open_badge);
         }
 
@@ -240,11 +239,12 @@ public class MainActivity extends AppCompatActivity
         //Gravity property aligns the text
         MenuItem people = menu.findItem(R.id.nav_People);
         peopleBadge = (TextView) people.getActionView();
-        badgeRoundStyle(peopleBadge,false);
+        badgeRoundStyle(peopleBadge, false);
 
         MenuItem core = menu.findItem(R.id.nav_mycore);
         coreBadge = (TextView) core.getActionView();
-        badgeStyle(coreBadge, 0);
+        int badgePost = SPUtil.getBadgeCount(getString(R.string.badgePost));
+        badgeStyle(coreBadge, badgePost);
 
         MenuItem message = menu.findItem(R.id.nav_message);
         messageBadge = (TextView) message.getActionView();
@@ -253,53 +253,59 @@ public class MainActivity extends AppCompatActivity
 
         MenuItem friends = menu.findItem(R.id.nav_friends);
         friendBadge = (TextView) friends.getActionView();
-        int badgeFriends = SPUtil.getBadgeCount(getString(R.string.badgeChat));
+        int badgeFriends = SPUtil.getBadgeCount(getString(R.string.badgeFriends));
         badgeStyle(friendBadge, badgeFriends);
 
         MenuItem setting = menu.findItem(R.id.nav_setting);
         settingBadge = (TextView) setting.getActionView();
-        badgeRoundStyle(settingBadge,false);
+        badgeRoundStyle(settingBadge, false);
     }
 
     private void badgeStyle(TextView badge, int i) {
         badge.setGravity(Gravity.CENTER_VERTICAL);
+        badge.setTextSize(11);
         badge.setTextColor(getResources().getColor(R.color.black));
         String str;
-        if(i!=0){
+        if (i != 0) {
             str = Integer.toString(i);
-        }else{
+        } else {
             str = "";
         }
         badge.setText(str);
     }
 
-    private void badgeRoundStyle(TextView badge,boolean c) {
+    private void badgeRoundStyle(TextView badge, boolean c) {
 
         badge.setGravity(Gravity.CENTER_VERTICAL);
         badge.setTypeface(null, Typeface.BOLD);
         badge.setTextColor(getResources().getColor(R.color.colorAccent));
         badge.setTextSize(8);
-        if(c) {
+        if (c) {
             badge.setText("●");
-        }else{
+        } else {
             badge.setText("");
         }
     }
 
     private void setProfilePic(final ImageView profileImage) {
-        DataContainer.getInstance().getMyUserRef().child("picUrls/thumbNail_picUrl1").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String picUrl1 = (String) dataSnapshot.getValue();
-                if (picUrl1 == null) return;
-                Glide.with(getBaseContext()).load(picUrl1).into(profileImage);
-            }
+        try {
+            DataContainer.getInstance().getMyUserRef().child("picUrls/thumbNail_picUrl1").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    String picUrl1 = (String) dataSnapshot.getValue();
+                    if (picUrl1 == null) return;
+                    Glide.with(getBaseContext()).load(picUrl1).into(profileImage);
+                }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-            }
-        });
+                }
+            });
+        } catch(Exception e){
+            e.printStackTrace();
+            UiUtil.getInstance().restartApp(MainActivity.this);
+        }
     }
 
 
@@ -499,11 +505,40 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key.equals("badgeChat")) {
-            int badgeChat = sharedPreferences.getInt(key, 0);
-            badgeStyle(messageBadge, badgeChat);
-            SPUtil.setMainIcon(getString(R.string.mainAlarm),true);
-            toggle.setHomeAsUpIndicator(icon_open_badge);
+
+        if(key.equals("mainAlarm")){
+           boolean b = SPUtil.getMainIcon(key);
+            if(b){
+                toggle.setHomeAsUpIndicator(icon_open_badge);
+            }else {
+                toggle.setHomeAsUpIndicator(icon_open);
+            }
+        }
+
+        switch (key) {
+            case "badgeChat":
+                int badgeChat = sharedPreferences.getInt(key, 0);
+                badgeStyle(messageBadge, badgeChat);
+                break;
+            case "badgePost":
+                int badgePost = sharedPreferences.getInt(key, 0);
+                badgeStyle(coreBadge, badgePost);
+                break;
+            case "badgeFriends":
+                boolean badgeState = sharedPreferences.getBoolean("badgeView",false);
+                int badgeFriends = sharedPreferences.getInt(key, 0);
+                badgeStyle(friendBadge, badgeFriends);
+                if(badgeFriends==0 && badgeState){
+                    badgeRoundStyle(friendBadge,badgeState);
+                }
+                break;
+            case "badgeView":
+                boolean badgeStat = sharedPreferences.getBoolean(key,false);
+                int count = SPUtil.getBadgeCount("badgeFriends");
+                if(count==0 && badgeStat){
+                    badgeRoundStyle(friendBadge,badgeStat);
+                }
+                break;
         }
     }
 }

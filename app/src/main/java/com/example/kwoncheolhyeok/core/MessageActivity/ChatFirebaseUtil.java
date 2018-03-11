@@ -149,7 +149,7 @@ public class ChatFirebaseUtil {
             @Override
             public void onSuccess(Void aVoid) {
                 // 상대방에게 내정보를 담아서 메세지를 보냄
-                FirebaseSendPushMsg.sendPostToFCM(chat,targetUuid,currentUser.getId(),context.getString(R.string.alertChat),roomName);
+                FirebaseSendPushMsg.sendPostToFCM(chat, targetUuid, currentUser.getId(), context.getString(R.string.alertChat), roomName);
             }
         });
     }
@@ -175,7 +175,7 @@ public class ChatFirebaseUtil {
                     @Override
                     public void onSuccess(Uri uri) {
                         long currentTime = getTime();
-                        MessageVO message = new MessageVO(uri.toString(), userUuid, currentUser.getId(), null, currentTime, 1);
+                        MessageVO message = new MessageVO(uri.toString(), userUuid, currentUser.getId(), null, currentTime, 1, 1);
                         sendMessage(message);
                     }
                 }).addOnFailureListener(new OnFailureListener() {
@@ -217,7 +217,7 @@ public class ChatFirebaseUtil {
                     chatRoomRef.child(userUuid).child(targetUuid).child("lastViewTime").setValue(currentTime);
                 }
 
-                SPUtil.setCurrentChat(context.getString(R.string.currentRoom),roomName);
+                SPUtil.setCurrentChat(context.getString(R.string.currentRoom), roomName);
                 item = new GridItem(0, targetUuid, targetUser.getSummaryUser(), targetPicurl);
                 // 상대방과의 거리 셋팅
                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference(FireBaseUtil.currentLocationPath);
@@ -248,9 +248,7 @@ public class ChatFirebaseUtil {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
 
-                        Iterator<DataSnapshot> child = dataSnapshot.getChildren().iterator();
-                        while (child.hasNext()) {//마찬가지로 중복 유무 확인
-                            DataSnapshot ds = child.next();
+                        for (DataSnapshot ds : dataSnapshot.getChildren()) {//마찬가지로 중복 유무 확인
                             lastMessage = ds.getKey();
                         }
                     }
@@ -296,7 +294,7 @@ public class ChatFirebaseUtil {
                 } catch (Exception e) {
 
                 }
-            } else if(messageVO.getCheck()==0){
+            } else if (messageVO.getCheck() == 0) {
                 checkRefreshChatLog();
             }
         }
@@ -490,6 +488,7 @@ public class ChatFirebaseUtil {
             @Override
             public void onSuccess(Void aVoid) {
                 FirebaseDatabase.getInstance().getReference("chat").child(roomName).child(parent).child("image").setValue(strDelete);
+                FirebaseDatabase.getInstance().getReference("chat").child(roomName).child(parent).child("isImage").setValue(0);
                 chatMessageList.get(position).setImage(strDelete);
                 chattingRecyclerview.getRecycledViewPool().clear();
                 chattingMessageAdapter.notifyDataSetChanged();
@@ -523,7 +522,7 @@ public class ChatFirebaseUtil {
     }
 
 
-    public static void sendEventMessage(final String mUuid,final String nickName, final String oUuid, final String message){
+    public static void sendEventMessage(final String mUuid, final String nickName, final String oUuid, final String message) {
         final DatabaseReference chatRoomRef = FirebaseDatabase.getInstance().getReference(chatRoomList);
         final String[] RoomName = new String[1];
         chatRoomRef.child(mUuid).child(oUuid).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -547,7 +546,7 @@ public class ChatFirebaseUtil {
                     chatRoomRef.child(mUuid).child(oUuid).child("lastViewTime").setValue(currentTime);
                 }
 
-                sendMessage(RoomName[0],mUuid,nickName,oUuid,message);
+                sendMessage(RoomName[0], mUuid, nickName, oUuid, message);
             }
 
             @Override
@@ -557,7 +556,7 @@ public class ChatFirebaseUtil {
         });
     }
 
-    private static void sendMessage(String room,final String mUuid, String nickName, final String oUuid, final String message) {
+    private static void sendMessage(String room, final String mUuid, String nickName, final String oUuid, final String message) {
         Long currentTime = System.currentTimeMillis();
         MessageVO messageVO = new MessageVO(null, mUuid, nickName, message, currentTime, 1);
         DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();

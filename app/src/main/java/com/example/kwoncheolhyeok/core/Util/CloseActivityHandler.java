@@ -15,7 +15,6 @@ public class CloseActivityHandler {
     private long backKeyPressedTime = 0;
     private Toast toast;
     private Activity activity;
-    private final int time = 2000;  // 기다리는 시간
 
     public CloseActivityHandler(Activity context) {
         this.activity = context;
@@ -23,6 +22,7 @@ public class CloseActivityHandler {
 
     public void onBackPressed() {
 
+        int time = 2000;
         if (System.currentTimeMillis() <= backKeyPressedTime + time) {
             toast.cancel();
             ActivityCompat.finishAffinity(activity);

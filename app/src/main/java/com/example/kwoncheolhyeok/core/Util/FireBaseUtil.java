@@ -7,6 +7,7 @@ import com.example.kwoncheolhyeok.core.Entity.CoreListItem;
 import com.example.kwoncheolhyeok.core.Entity.CorePost;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.Exception.ChildSizeMaxException;
+import com.example.kwoncheolhyeok.core.MessageActivity.util.MessageVO;
 import com.example.kwoncheolhyeok.core.MessageActivity.util.RoomVO;
 import com.example.kwoncheolhyeok.core.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -29,6 +30,7 @@ import java.util.Map;
 public class FireBaseUtil {
     public static final String currentLocationPath = "location/users";
     private static final FireBaseUtil ourInstance = new FireBaseUtil();
+    private SharedPreferencesUtil SPUtil;
 
     public static FireBaseUtil getInstance() {
         return ourInstance;
@@ -50,6 +52,7 @@ public class FireBaseUtil {
 
     public Task<Void> follow(Context context, final User oUser, String oUuid, boolean isFollowed) throws ChildSizeMaxException {
         String myUuid = DataContainer.getInstance().getUid();
+        SPUtil = new SharedPreferencesUtil(context.getApplicationContext());
         final User mUser = DataContainer.getInstance().getUser();
         if (mUser.getFollowingUsers().size() >= DataContainer.ChildrenMax) {
             throw new ChildSizeMaxException("Follow가 " + DataContainer.ChildrenMax + "명 이상이므로 Follow 불가능합니다");
@@ -95,6 +98,7 @@ public class FireBaseUtil {
 
                 oUser.getFriendUsers().put(myUuid, now);
                 childUpdates.put("/" + oUuid + "/friendUsers/" + myUuid, now);
+                SPUtil.increaseBadgeCount(context.getString(R.string.badgeFollowing));
                 // 상대방에게
                 FirebaseSendPushMsg.sendPostToFCM("follow", oUuid, mUser.getId(), context.getString(R.string.alertFolow));
                 FirebaseSendPushMsg.sendPostToFCM("friend", oUuid, mUser.getId(), context.getString(R.string.alertFriend));
@@ -102,6 +106,7 @@ public class FireBaseUtil {
                 FirebaseSendPushMsg.sendPostToFCM("friend", myUuid, oUser.getId(), context.getString(R.string.alertFriend));
             } else {
                 // 상대방에게
+                SPUtil.increaseBadgeCount(context.getString(R.string.badgeFollowing));
                 FirebaseSendPushMsg.sendPostToFCM("follow", oUuid, mUser.getId(), context.getString(R.string.alertFolow));
             }
         }
@@ -153,8 +158,23 @@ public class FireBaseUtil {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 try {
-                    String roomId = dataSnapshot.getValue(RoomVO.class).getChatRoomid();
-                    FirebaseDatabase.getInstance().getReference("chat").child(roomId).removeValue();
+                    final String roomId = dataSnapshot.getValue(RoomVO.class).getChatRoomid();
+                    // 채팅방 이미지 젼체 삭제
+                    FirebaseDatabase.getInstance().getReference("chat").child(roomId).orderByChild("isImage").equalTo(1).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            for (DataSnapshot ds : dataSnapshot.getChildren()) {//마찬가지로 중복 유무 확인
+                                MessageVO message = ds.getValue(MessageVO.class);
+                                FirebaseStorage.getInstance().getReferenceFromUrl(message.getImage()).delete();
+                            }
+                            FirebaseDatabase.getInstance().getReference("chat").child(roomId).removeValue();
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
                     FirebaseDatabase.getInstance().getReference("chatRoomList").child(mUuid).child(oUuid).removeValue();
                     FirebaseDatabase.getInstance().getReference("chatRoomList").child(oUuid).child(mUuid).removeValue();
                 } catch (Exception e) {

@@ -53,7 +53,7 @@ public class UiUtil {
 
     public void stopProgressDialog() {
         try {
-            if (progressDialog.getContext() != null && progressDialog != null && progressDialog.isShowing())
+            if (progressDialog != null && progressDialog.isShowing() && progressDialog.getContext() != null)
                 progressDialog.dismiss();
         } catch (Exception e){
             e.printStackTrace();
