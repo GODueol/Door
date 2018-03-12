@@ -259,7 +259,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
                 else imagelocks[i].setVisibility(View.INVISIBLE);
             }
             else if(url.equals(oUser.getPicUrls().getThumbNail_picUrl4())) {
-                if(oUser.getIsLockPics().getIsLockPic4()) image4lock.setVisibility(View.VISIBLE);
+                if(oUser.getIsLockPics().getIsLockPic4()) imagelocks[i].setVisibility(View.VISIBLE);
                 else imagelocks[i].setVisibility(View.INVISIBLE);
             }
 
