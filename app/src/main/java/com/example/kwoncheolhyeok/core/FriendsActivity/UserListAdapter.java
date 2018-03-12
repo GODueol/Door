@@ -106,156 +106,162 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
                 }
             });
         }
-        userHolder.itemMenuBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                final PopupMenu popup = new PopupMenu(view.getContext(), view);
-                popup.getMenuInflater().inflate(itemMenu, popup.getMenu());
-                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    public boolean onMenuItemClick(MenuItem menuItem) {
-                        int i = menuItem.getItemId();
-                        if (i == R.id.follow) {
-                            follow();
-                            return true;
-                        } else if (i == R.id.followCancel) {
-                            unFollow();
-                            return true;
-                        } else if (i == R.id.block) {
-                            block();
-                            return true;
-                        } else if (i == R.id.core) {
-                            // Go to Core
-                            UiUtil.getInstance().goToCoreActivity(context, item.getUuid());
-                            return true;
-                        } else if (i == R.id.unblock) {
-                            unblock();
-                            return true;
-                        } else {
-                            return true;
+
+        if(field.equals("Core Heart Count")){
+            userHolder.itemMenuBtn.setVisibility(View.INVISIBLE);
+        } else {
+            userHolder.itemMenuBtn.setVisibility(View.VISIBLE);
+            userHolder.itemMenuBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    final PopupMenu popup = new PopupMenu(view.getContext(), view);
+                    popup.getMenuInflater().inflate(itemMenu, popup.getMenu());
+                    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        public boolean onMenuItemClick(MenuItem menuItem) {
+                            int i = menuItem.getItemId();
+                            if (i == R.id.follow) {
+                                follow();
+                                return true;
+                            } else if (i == R.id.followCancel) {
+                                unFollow();
+                                return true;
+                            } else if (i == R.id.block) {
+                                block();
+                                return true;
+                            } else if (i == R.id.core) {
+                                // Go to Core
+                                UiUtil.getInstance().goToCoreActivity(context, item.getUuid());
+                                return true;
+                            } else if (i == R.id.unblock) {
+                                unblock();
+                                return true;
+                            } else {
+                                return true;
+                            }
                         }
-                    }
 
-                    private void block() {
-                        UiUtil.getInstance().showDialog(context, "유저 차단", "해당 유저를 차단하시겠습니까?", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                final User mUser = DataContainer.getInstance().getUser();
-                                if (mUser.getBlockUsers().size() >= DataContainer.ChildrenMax) {
-                                    Toast.makeText(context, DataContainer.ChildrenMax + "명을 초과할 수 없습니다", Toast.LENGTH_SHORT).show();
-                                    return;
+                        private void block() {
+                            UiUtil.getInstance().showDialog(context, "유저 차단", "해당 유저를 차단하시겠습니까?", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    final User mUser = DataContainer.getInstance().getUser();
+                                    if (mUser.getBlockUsers().size() >= DataContainer.ChildrenMax) {
+                                        Toast.makeText(context, DataContainer.ChildrenMax + "명을 초과할 수 없습니다", Toast.LENGTH_SHORT).show();
+                                        return;
+                                    }
+
+                                    UiUtil.getInstance().startProgressDialog((Activity) context);
+                                    try {
+                                        FireBaseUtil.getInstance().block(item.getUuid()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                UiUtil.getInstance().stopProgressDialog();
+                                            }
+                                        });
+                                    } catch (ChildSizeMaxException e) {
+                                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                        UiUtil.getInstance().stopProgressDialog();
+                                    }
                                 }
+                            }, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
 
-                                UiUtil.getInstance().startProgressDialog((Activity) context);
-                                try {
-                                    FireBaseUtil.getInstance().block(item.getUuid()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                }
+                            });
+                        }
+
+                        private void unblock() {
+                            UiUtil.getInstance().showDialog(context, "유저 차단해제", "해당 유저를 차단해제하시겠습니까?", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    UiUtil.getInstance().startProgressDialog((Activity) context);
+                                    FireBaseUtil.getInstance().unblock(item.getUuid()).addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             UiUtil.getInstance().stopProgressDialog();
                                         }
                                     });
-                                } catch (ChildSizeMaxException e) {
-                                    Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-                                    UiUtil.getInstance().stopProgressDialog();
                                 }
-                            }
-                        }, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
+                            }, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
 
-                            }
-                        });
-                    }
+                                }
+                            });
+                        }
 
-                    private void unblock() {
-                        UiUtil.getInstance().showDialog(context, "유저 차단해제", "해당 유저를 차단해제하시겠습니까?", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                UiUtil.getInstance().startProgressDialog((Activity) context);
-                                FireBaseUtil.getInstance().unblock(item.getUuid()).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
+                        private void unFollow() {
+                            UiUtil.getInstance().showDialog(context, "팔로우 취소", "해당 유저 팔로우 취소하시겠습니까?", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    UiUtil.getInstance().startProgressDialog((Activity) context);
+                                    Task<Void> task;
+                                    try {
+                                        task = FireBaseUtil.getInstance().follow(context, user, item.getUuid(), true);
+                                    } catch (ChildSizeMaxException e) {
+                                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
                                         UiUtil.getInstance().stopProgressDialog();
+                                        return;
                                     }
-                                });
-                            }
-                        }, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-
-                            }
-                        });
-                    }
-
-                    private void unFollow() {
-                        UiUtil.getInstance().showDialog(context, "팔로우 취소", "해당 유저 팔로우 취소하시겠습니까?", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                UiUtil.getInstance().startProgressDialog((Activity) context);
-                                Task<Void> task;
-                                try {
-                                    task = FireBaseUtil.getInstance().follow(context, user, item.getUuid(), true);
-                                } catch (ChildSizeMaxException e) {
-                                    Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-                                    UiUtil.getInstance().stopProgressDialog();
-                                    return;
-                                }
-                                if (task == null) {
-                                    Toast.makeText(context, "팔로우 취소 상태입니다", Toast.LENGTH_SHORT).show();
-                                    UiUtil.getInstance().stopProgressDialog();
-                                    return;
-                                }
-                                task.addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
+                                    if (task == null) {
+                                        Toast.makeText(context, "팔로우 취소 상태입니다", Toast.LENGTH_SHORT).show();
                                         UiUtil.getInstance().stopProgressDialog();
+                                        return;
                                     }
-                                });
-                            }
-                        }, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-
-                            }
-                        });
-                    }
-
-                    private void follow() {
-                        UiUtil.getInstance().showDialog(context, "팔로우 신청", "해당 유저 팔로우 신청하시겠습니까?", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                UiUtil.getInstance().startProgressDialog((Activity) context);
-                                Task<Void> task;
-                                try {
-                                    task = FireBaseUtil.getInstance().follow(context, user, item.getUuid(), false);
-                                } catch (ChildSizeMaxException e) {
-                                    Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-                                    UiUtil.getInstance().stopProgressDialog();
-                                    return;
+                                    task.addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            UiUtil.getInstance().stopProgressDialog();
+                                        }
+                                    });
                                 }
-                                if (task == null) {
-                                    Toast.makeText(context, "팔로우 신청 되어있습니다", Toast.LENGTH_SHORT).show();
-                                    UiUtil.getInstance().stopProgressDialog();
-                                    return;
+                            }, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+
                                 }
-                                task.addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
+                            });
+                        }
+
+                        private void follow() {
+                            UiUtil.getInstance().showDialog(context, "팔로우 신청", "해당 유저 팔로우 신청하시겠습니까?", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    UiUtil.getInstance().startProgressDialog((Activity) context);
+                                    Task<Void> task;
+                                    try {
+                                        task = FireBaseUtil.getInstance().follow(context, user, item.getUuid(), false);
+                                    } catch (ChildSizeMaxException e) {
+                                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
                                         UiUtil.getInstance().stopProgressDialog();
+                                        return;
                                     }
-                                });
-                            }
-                        }, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
+                                    if (task == null) {
+                                        Toast.makeText(context, "팔로우 신청 되어있습니다", Toast.LENGTH_SHORT).show();
+                                        UiUtil.getInstance().stopProgressDialog();
+                                        return;
+                                    }
+                                    task.addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            UiUtil.getInstance().stopProgressDialog();
+                                        }
+                                    });
+                                }
+                            }, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
 
-                            }
-                        });
-                    }
-                });
+                                }
+                            });
+                        }
+                    });
 
-                popup.show();
-            }
-        });
+                    popup.show();
+                }
+            });
+        }
     }
 
     @SuppressLint("SetTextI18n")
