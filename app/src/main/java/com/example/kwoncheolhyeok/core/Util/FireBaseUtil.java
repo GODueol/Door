@@ -30,7 +30,6 @@ import java.util.Map;
 public class FireBaseUtil {
     public static final String currentLocationPath = "location/users";
     private static final FireBaseUtil ourInstance = new FireBaseUtil();
-    private SharedPreferencesUtil SPUtil;
 
     public static FireBaseUtil getInstance() {
         return ourInstance;
@@ -52,7 +51,7 @@ public class FireBaseUtil {
 
     public Task<Void> follow(Context context, final User oUser, String oUuid, boolean isFollowed) throws ChildSizeMaxException {
         String myUuid = DataContainer.getInstance().getUid();
-        SPUtil = new SharedPreferencesUtil(context.getApplicationContext());
+        SharedPreferencesUtil SPUtil = new SharedPreferencesUtil(context.getApplicationContext());
         final User mUser = DataContainer.getInstance().getUser();
         if (mUser.getFollowingUsers().size() >= DataContainer.ChildrenMax) {
             throw new ChildSizeMaxException("Follow가 " + DataContainer.ChildrenMax + "명 이상이므로 Follow 불가능합니다");
@@ -298,5 +297,24 @@ public class FireBaseUtil {
 
             }
         });
+    }
+
+    public void queryBlockWithMe(final String uuid, final BlockListener blockListener){
+        DataContainer.getInstance().getMyUserRef().addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User mUser = dataSnapshot.getValue(User.class);
+                blockListener.isBlockCallback(mUser.getBlockMeUsers().containsKey(uuid) || mUser.getBlockUsers().containsKey(uuid));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public interface BlockListener {
+        void isBlockCallback(boolean isBlockWithMe);
     }
 }
