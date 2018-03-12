@@ -35,6 +35,7 @@ import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 import java.util.Arrays;
+import java.util.Map;
 
 public class PeopleFragment extends android.support.v4.app.Fragment {
 
@@ -61,9 +62,12 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                GridItem item = imageAdapter.getItem(position);
+                // block 유저한테는 못들어가게함
+                if(mUser.getBlockMeUsers().containsKey(item.getUuid()) || mUser.getBlockUsers().containsKey(item.getUuid())) return;
                 Intent p = new Intent(getActivity().getApplicationContext(), FullImageActivity.class);
                 p.putExtra("id", position);
-                p.putExtra("item", imageAdapter.getItem(position));
+                p.putExtra("item", item);
                 startActivity(p);
             }
         });
@@ -87,7 +91,17 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
         userListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+
                 mUser = dataSnapshot.getValue(User.class);
+
+                User compUser = DataContainer.getInstance().getUser();
+
+                // blockedMe 확인
+                boolean b = isEqualMap(mUser.getBlockMeUsers(), compUser.getBlockMeUsers());
+                if(!b){
+                    refreshGrid(null, GPSInfo.getmInstance(getActivity()).getGPSLocation());
+                }
+
                 DataContainer.getInstance().setUser(mUser);
             }
 
@@ -110,6 +124,10 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
         }
 
         return view;
+    }
+
+    private boolean isEqualMap(Map<String, Long> map1, Map<String, Long> map2) {
+        return map1.size() == map2.size();
     }
 
     @Subscribe
