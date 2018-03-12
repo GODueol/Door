@@ -36,6 +36,7 @@ public class UiUtil {
     }
 
     public String setSubProfile(User user) {
+        if(user.getAge() == 0 && user.getBodyType() == null) return "";
         return TextUtils.join("/", new String[]{Integer.toString(user.getAge()), Integer.toString(user.getHeight()),
                 Integer.toString(user.getWeight()), user.getBodyType()});
     }
