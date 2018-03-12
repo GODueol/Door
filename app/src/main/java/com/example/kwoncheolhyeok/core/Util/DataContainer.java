@@ -92,4 +92,8 @@ public class DataContainer {
         return msg;
     }
 
+    public boolean isBlockWithMe(String oUuid){
+        return user.getBlockUsers().containsKey(oUuid) || user.getBlockMeUsers().containsKey(oUuid);
+    }
+
 }

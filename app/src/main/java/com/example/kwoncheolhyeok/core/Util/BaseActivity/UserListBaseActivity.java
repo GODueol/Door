@@ -7,6 +7,7 @@ import android.util.Log;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.FriendsActivity.UserListAdapter;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
+import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
@@ -46,11 +47,19 @@ public class UserListBaseActivity extends AppCompatActivity {
                 if(field.equals("Find User")){
 
                     for(final DataSnapshot snapshot : dataSnapshot.getChildren()){
-                        String oUuid = snapshot.getKey();
-                        User oUser = snapshot.getValue(User.class);
-                        if(adapter.isReverse) items.add(new UserListAdapter.Item(oUser, oUser.getLoginDate(), oUuid));
-                        else items.add(1, new UserListAdapter.Item(oUser, oUser.getLoginDate(), oUuid));
-                        adapter.notifyDataSetChanged();
+                        final String oUuid = snapshot.getKey();
+
+                        FireBaseUtil.getInstance().syncUser(new FireBaseUtil.SyncUserListener() {
+                            @Override
+                            public void onSuccessSync(User mUser) {
+                                if(DataContainer.getInstance().isBlockWithMe(oUuid)) return;
+                                User oUser = snapshot.getValue(User.class);
+                                if(adapter.isReverse) items.add(new UserListAdapter.Item(oUser, oUser.getLoginDate(), oUuid));
+                                else items.add(1, new UserListAdapter.Item(oUser, oUser.getLoginDate(), oUuid));
+                                adapter.notifyDataSetChanged();
+                            }
+                        });
+
                     }
                 } else {
 

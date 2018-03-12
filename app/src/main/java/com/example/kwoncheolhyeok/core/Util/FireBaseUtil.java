@@ -299,17 +299,31 @@ public class FireBaseUtil {
         });
     }
 
-    public void queryBlockWithMe(final String uuid, final BlockListener blockListener){
-        DataContainer.getInstance().getMyUserRef().addListenerForSingleValueEvent(new ValueEventListener() {
+    public void syncUser(final SyncUserListener syncUserListener){
+        final DataContainer dc = DataContainer.getInstance();
+        dc.getMyUserRef().addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                User mUser = dataSnapshot.getValue(User.class);
-                blockListener.isBlockCallback(mUser.getBlockMeUsers().containsKey(uuid) || mUser.getBlockUsers().containsKey(uuid));
+                dc.setUser(dataSnapshot.getValue(User.class));
+                syncUserListener.onSuccessSync(dc.getUser());
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
+            }
+        });
+    }
+
+    public interface SyncUserListener {
+        void onSuccessSync(User user);
+    }
+
+    public void queryBlockWithMe(final String uuid, final BlockListener blockListener){
+        syncUser(new SyncUserListener() {
+            @Override
+            public void onSuccessSync(User mUser) {
+                blockListener.isBlockCallback(mUser.getBlockMeUsers().containsKey(uuid) || mUser.getBlockUsers().containsKey(uuid));
             }
         });
     }
