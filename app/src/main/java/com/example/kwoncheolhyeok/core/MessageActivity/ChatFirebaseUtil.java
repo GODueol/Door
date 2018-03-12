@@ -556,7 +556,7 @@ public class ChatFirebaseUtil {
         });
     }
 
-    private static void sendMessage(String room, final String mUuid, String nickName, final String oUuid, final String message) {
+    private static void sendMessage(final String room, final String mUuid, final String nickName, final String oUuid, final String message) {
         Long currentTime = System.currentTimeMillis();
         MessageVO messageVO = new MessageVO(null, mUuid, nickName, message, currentTime, 1);
         DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
@@ -581,7 +581,12 @@ public class ChatFirebaseUtil {
             childUpdates.put("/" + chatRoomList + "/" + mUuid + "/" + oUuid + "/" + "lastViewTime", currentTime);
             childUpdates.put("/" + chatRoomList + "/" + mUuid + "/" + oUuid + "/" + "lastChat", "사진");
         }
-        databaseRef.updateChildren(childUpdates);
+        databaseRef.updateChildren(childUpdates).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                FirebaseSendPushMsg.sendPostToFCM("chat", oUuid, nickName, "누군가 당신에게 비공개 사진을 열었어요!", room);
+            }
+        });
     }
 }
 

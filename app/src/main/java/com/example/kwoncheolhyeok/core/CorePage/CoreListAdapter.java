@@ -134,8 +134,8 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                         .child("likeUsers").child(mUuid).setValue(System.currentTimeMillis()).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        if (!cUuid.equals(mUuid)) {
-                            FirebaseSendPushMsg.sendPostToFCM("Like", cUuid, DataContainer.getInstance().getUser().getId(), context.getString(R.string.alertLike));
+                        if (!corePost.getUuid().equals(mUuid)) {
+                            FirebaseSendPushMsg.sendPostToFCM("Like", corePost.getUuid(), DataContainer.getInstance().getUser().getId(), context.getString(R.string.alertLike));
                         }
                     }
                 });
