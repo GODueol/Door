@@ -181,7 +181,7 @@ public class ChattingActivity extends AppCompatActivity {
             try {
                 galleryPick.invoke(data);
                 Uri outputFileUri = galleryPick.getUri();
-                chatFirebaseUtil.sendImageMessage(outputFileUri);
+                chatFirebaseUtil.sendImageMessage(outputFileUri, galleryPick);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
                 Toast.makeText(ChattingActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();

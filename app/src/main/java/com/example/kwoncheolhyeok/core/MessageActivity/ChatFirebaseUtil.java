@@ -23,6 +23,7 @@ import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
 import com.example.kwoncheolhyeok.core.Util.FirebaseSendPushMsg;
 import com.example.kwoncheolhyeok.core.Util.GPSInfo;
+import com.example.kwoncheolhyeok.core.Util.GalleryPick;
 import com.example.kwoncheolhyeok.core.Util.SharedPreferencesUtil;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
@@ -154,39 +155,45 @@ public class ChatFirebaseUtil {
         });
     }
 
-    public void sendImageMessage(Uri outputFileUri) {
+    public void sendImageMessage(Uri outputFileUri, GalleryPick galleryPick) {
 
         StorageReference imagesRef = storage.getReference().child(chat);
         long currentTime = System.currentTimeMillis();
         final String imageName = CryptoImeageName.md5(Long.toString(currentTime));
         final StorageReference imageMessageRef = imagesRef.child(image + "/" + roomName + "/" + userUuid + "/" + imageName);
-        UploadTask uploadTask = imageMessageRef.putFile(outputFileUri);
+//        UploadTask uploadTask = imageMessageRef.putFile(outputFileUri);
 
-        uploadTask.addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.d("chatError", e.getMessage());
-            }
-        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                Uri downloadUri = taskSnapshot.getDownloadUrl();
-                imageMessageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        long currentTime = getTime();
-                        MessageVO message = new MessageVO(uri.toString(), userUuid, currentUser.getId(), null, currentTime, 1, 1);
-                        sendMessage(message);
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception exception) {
-                        // Handle any errors
-                    }
-                });
-
-            }
-        });
+        try {
+            UploadTask uploadTask = galleryPick.upload(imageMessageRef);
+            uploadTask.addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.d("chatError", e.getMessage());
+                }
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    Uri downloadUri = taskSnapshot.getDownloadUrl();
+                    imageMessageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            long currentTime = getTime();
+                            MessageVO message = new MessageVO(uri.toString(), userUuid, currentUser.getId(), null, currentTime, 1, 1);
+                            sendMessage(message);
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            // Handle any errors
+                        }
+                    });
+    
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void setchatRoom(RecyclerView chattingRecyclerview, List<ChatMessage> chatMessageList) {
