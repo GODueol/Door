@@ -1,10 +1,14 @@
 package com.example.kwoncheolhyeok.core.SettingActivity;
 
+import android.content.ComponentName;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.widget.ImageView;
 
+import com.android.vending.billing.IInAppBillingService;
+import android.content.ServiceConnection;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.GlideApp;
 import com.example.kwoncheolhyeok.core.Util.UiUtil;
@@ -16,7 +20,7 @@ import com.example.kwoncheolhyeok.core.Util.UiUtil;
 public class CorePlusActivity extends AppCompatActivity {
 
     Toolbar toolbar = null;
-
+    IInAppBillingService mService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +49,21 @@ public class CorePlusActivity extends AppCompatActivity {
                 .fitCenter()
                 .into(img_cp_4);
 
+
+
     }
+
+    ServiceConnection mServiceConn = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName componentName, IBinder service) {
+            mService = IInAppBillingService.Stub.asInterface(service);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName componentName) {
+            mService = null;
+        }
+    };
 
     // 뒤로가기 버튼 기능
     public boolean onOptionsItemSelected(android.view.MenuItem item) {

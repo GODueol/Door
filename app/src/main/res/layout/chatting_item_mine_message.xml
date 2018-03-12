@@ -76,8 +76,6 @@
                     android:textSize="13dp"
                     />
 
-
-
             </LinearLayout>
 
 
@@ -87,6 +85,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:layout_marginRight="5dp"
+                android:layout_marginEnd="5dp"
                 android:layout_weight="1"
                 app:cmv_backgroundColor="@color/message_color"
                 app:cmv_backgroundColorPressed="@color/white"

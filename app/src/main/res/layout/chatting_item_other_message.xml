@@ -25,8 +25,7 @@
             android:id="@+id/dateText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            />
+            android:gravity="center" />
 
         <View
             android:layout_width="wrap_content"
@@ -45,9 +44,8 @@
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
             android:layout_marginLeft="5dp"
-            >
+            android:layout_marginTop="5dp">
 
             <ImageView
                 android:id="@+id/profile_image"
@@ -62,9 +60,10 @@
             android:id="@+id/chatMessageView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="-6dp"
+            android:layout_marginStart="-6dp"
             android:layout_marginTop="5dp"
             android:layout_weight="1"
-            android:layout_marginLeft="-6dp"
             app:cmv_backgroundColor="#FFE0BE"
             app:cmv_backgroundColorPressed="@color/white"
             app:cmv_cornerRadius="5dp"
@@ -82,19 +81,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|start"
-            android:orientation="vertical"
-            android:padding="3dp"
             android:layout_marginLeft="1dp"
-            >
+            android:orientation="vertical"
+            android:padding="3dp">
 
             <TextView
                 android:id="@+id/check"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end"
+                android:layout_gravity="start"
                 android:text="1"
-                android:textSize="13dp"
-                />
+                android:textSize="13dp" />
 
             <TextView
                 android:id="@+id/time"
@@ -102,8 +99,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="end"
                 android:text="00:00 AM"
-                android:textSize="13dp"
-                />
+                android:textSize="13dp" />
         </LinearLayout>
     </LinearLayout>
 

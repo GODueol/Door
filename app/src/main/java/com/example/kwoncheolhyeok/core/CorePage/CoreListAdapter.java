@@ -366,7 +366,12 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     postsRef.child(cUuid).child(coreListItem.getPostKey())
-                            .child("reply").setValue(value);
+                            .child("reply").setValue(value).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            FirebaseSendPushMsg.sendPostToFCM("Answer",coreListItem.getCorePost().getUuid(),DataContainer.getInstance().getUser().getId(),"당신이 작성한 질문글에 답이 왔네요!");
+                        }
+                    });
                 } else {
                     postsRef.child(cUuid).child(coreListItem.getPostKey())
                             .child("reply").setValue(null);

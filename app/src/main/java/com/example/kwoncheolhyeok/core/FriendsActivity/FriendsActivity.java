@@ -76,7 +76,7 @@ public class FriendsActivity extends UserListBaseActivity implements SharedPrefe
                             SPUtil.removeFriendsBadge(getString(R.string.badgeFollowing));
                             return true;
                         case R.id.navigation_recent:
-                            SPUtil.removeBadge(getString(R.string.badgeView));
+                            SPUtil.switchBadgeState(getString(R.string.badgeView),false);
                             return true;
                     }
 
@@ -101,7 +101,7 @@ public class FriendsActivity extends UserListBaseActivity implements SharedPrefe
                         setRecyclerView(items, adapter, "followingUsers", R.menu.following_menu);
                         return true;
                     case R.id.navigation_recent:
-                        SPUtil.removeBadge(getString(R.string.badgeView));
+                        SPUtil.switchBadgeState(getString(R.string.badgeView),false);
                         setRecyclerView(items, adapter, "viewedMeUsers", R.menu.follower_menu);
                         return true;
                 }

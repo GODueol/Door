@@ -89,6 +89,13 @@ public class FirebaseRcevPushMsg extends FirebaseMessagingService {
                 case "View":
                     SPUtil.switchBadgeState(getString(R.string.badgeView),true);
                     break;
+                case "Answer":
+                    isCheck = SPUtil.getSwitchState(getString(R.string.alertAnswer));
+
+                    if (isCheck) {
+                        sendNotification(remoteMessage.getData().get("nick"), remoteMessage.getData().get("message"));
+                    }
+                    break;
             }
 
         }

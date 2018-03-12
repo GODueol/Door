@@ -233,6 +233,7 @@ public class MainActivity extends AppCompatActivity
 
         // 네비게이션 아이템 벳지
         navigationViewinitBadge(menu);
+
     }
 
     private void navigationViewinitBadge(Menu menu) {
@@ -484,6 +485,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onResume() {
         super.onResume();
+        checkMainToggle();
 //        ScreenshotSetApplication.getInstance().registerScreenshotObserver();
     }
 
@@ -528,17 +530,25 @@ public class MainActivity extends AppCompatActivity
                 boolean badgeState = sharedPreferences.getBoolean("badgeView",false);
                 int badgeFriends = sharedPreferences.getInt(key, 0);
                 badgeStyle(friendBadge, badgeFriends);
-                if(badgeFriends==0 && badgeState){
+                if(badgeFriends==0){
                     badgeRoundStyle(friendBadge,badgeState);
                 }
                 break;
             case "badgeView":
                 boolean badgeStat = sharedPreferences.getBoolean(key,false);
                 int count = SPUtil.getBadgeCount("badgeFriends");
-                if(count==0 && badgeStat){
+                if(count==0){
                     badgeRoundStyle(friendBadge,badgeStat);
                 }
                 break;
+        }
+    }
+
+    // 메인토글버튼 동기화
+    private void checkMainToggle(){
+        Log.d("test","dsaad");
+        if(messageBadge.getText().equals("")&&coreBadge.getText().equals("")&&friendBadge.getText().equals("")){
+            SPUtil.setMainIcon(getString(R.string.mainAlarm),false);
         }
     }
 }

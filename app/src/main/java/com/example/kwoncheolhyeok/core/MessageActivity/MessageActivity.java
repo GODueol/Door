@@ -29,7 +29,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MessageActivity extends AppCompatActivity {
+public class MessageActivity extends AppCompatActivity implements  SharedPreferences.OnSharedPreferenceChangeListener {
 
     Toolbar toolbar = null;
 
@@ -96,7 +96,7 @@ public class MessageActivity extends AppCompatActivity {
         messageList.addItemDecoration(new DividerItemDecoration(MessageActivity.this, DividerItemDecoration.VERTICAL)); //리사이클뷰 구분선
         messageList.setItemAnimator(new DefaultItemAnimator());
         setMessageData();
-
+        SPUtil.getChatListPreferences().registerOnSharedPreferenceChangeListener(this);
         /*****************************************************************/
     }
 
@@ -245,6 +245,20 @@ public class MessageActivity extends AppCompatActivity {
             uuidList.add(roomList.getTargetUuid());
             listrowItem.add(roomList);
             refreshChatRoomList(target, roomList);
+        }
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        int num = sharedPreferences.getInt(key,0);
+        //리스트 아이템 뱃지 동기화
+        for(RoomVO r : listrowItem){
+            if(r.getChatRoomid().equals(key)){
+                int i = listrowItem.indexOf(r);
+                listrowItem.get(i).setBadgeCount(num);
+                messageRecyclerAdapter.notifyDataSetChanged();
+                break;
+            }
         }
     }
 }

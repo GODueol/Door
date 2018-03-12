@@ -148,7 +148,7 @@ public class ChattingActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String message = mEditTextMessage.getText().toString();
 
-                if (TextUtils.isEmpty(message.replace(System.getProperty("line.separator"),""))) {
+                if (TextUtils.isEmpty(message.replace(System.getProperty("line.separator"),"").replace(" ",""))) {
                     return;
                 }
                 long currentTime = System.currentTimeMillis();

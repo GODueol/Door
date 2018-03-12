@@ -23,8 +23,7 @@
             android:id="@+id/dateText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            />
+            android:gravity="center" />
 
         <View
             android:layout_width="wrap_content"
@@ -47,13 +46,13 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            >
+            android:orientation="horizontal">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|end"
+                android:layout_marginRight="-7dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -62,8 +61,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
                     android:text="1"
-                    android:textSize="13dp"
-                    />
+                    android:textSize="13dp" />
 
                 <TextView
                     android:id="@+id/time"
@@ -71,8 +69,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="end"
                     android:text="00:00 AM"
-                    android:textSize="13dp"
-                    />
+                    android:textSize="13dp" />
 
             </LinearLayout>
 
@@ -81,18 +78,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:background="@color/white"
-                android:layout_marginLeft="5dp"
+                android:layout_marginLeft="12dp"
                 android:layout_marginRight="5dp"
-                />
+                android:layout_marginTop="5dp"
+                android:background="@color/white" />
 
 
             <com.example.kwoncheolhyeok.core.MessageActivity.util.ChatMessageView
                 android:id="@+id/chatMessageView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
+                android:layout_marginEnd="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="5dp"
                 android:layout_weight="1"
+                android:visibility="gone"
                 app:cmv_backgroundColor="@color/message_color"
                 app:cmv_backgroundColorPressed="@color/white"
                 app:cmv_cornerRadius="5dp"

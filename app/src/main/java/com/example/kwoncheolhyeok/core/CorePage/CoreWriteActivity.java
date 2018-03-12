@@ -350,9 +350,9 @@ public class CoreWriteActivity extends AppCompatActivity {
                     for (Task task : tasks.keySet()) {
                         if (!task.isComplete()) return;
                     }
-                    if(!corePost.getUuid().equals(mUuid)){
+                    if(!cUuid.equals(mUuid)){
                        // 익명게시글이면
-                        FirebaseSendPushMsg.sendPostToFCM("Post",corePost.getUuid(),"UnKnown",getString(R.string.alertPost));
+                        FirebaseSendPushMsg.sendPostToFCM("Post",cUuid,"UnKnown",getString(R.string.alertPost));
                     }
                     setResult(Activity.RESULT_OK);
                     finish();

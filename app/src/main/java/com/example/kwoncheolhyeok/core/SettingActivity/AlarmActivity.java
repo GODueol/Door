@@ -1,17 +1,13 @@
 package com.example.kwoncheolhyeok.core.SettingActivity;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.widget.CompoundButton;
 import android.widget.Switch;
-import android.widget.Toast;
 
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.SharedPreferencesUtil;
-
-import butterknife.Bind;
 
 /**
  * Created by Kwon on 2018-01-04.
@@ -43,7 +39,9 @@ public class AlarmActivity extends AppCompatActivity implements CompoundButton.O
         Switch switch_friend = (Switch) findViewById(R.id.switch3);
         Switch switch_privPic = (Switch) findViewById(R.id.switch4);
         Switch switch_post = (Switch) findViewById(R.id.switch5);
-        Switch switch_like = (Switch) findViewById(R.id.switch6);
+        Switch switch_answer = (Switch) findViewById(R.id.switch6);
+        Switch switch_like = (Switch) findViewById(R.id.switch7);
+
 
         boolean isCheck = SPUtil.getSwitchState(getString(R.string.alertChat));
         switch_chat.setChecked(isCheck);
@@ -55,6 +53,8 @@ public class AlarmActivity extends AppCompatActivity implements CompoundButton.O
         switch_privPic.setChecked(isCheck);
         isCheck = SPUtil.getSwitchState(getString(R.string.alertPost));
         switch_post.setChecked(isCheck);
+        isCheck = SPUtil.getSwitchState(getString(R.string.alertAnswer));
+        switch_answer.setChecked(isCheck);
         isCheck = SPUtil.getSwitchState(getString(R.string.alertLike));
         switch_like.setChecked(isCheck);
 
@@ -63,6 +63,7 @@ public class AlarmActivity extends AppCompatActivity implements CompoundButton.O
         switch_friend.setOnCheckedChangeListener(this);
         switch_privPic.setOnCheckedChangeListener(this);
         switch_post.setOnCheckedChangeListener(this);
+        switch_answer.setOnCheckedChangeListener(this);
         switch_like.setOnCheckedChangeListener(this);
     }
 
@@ -87,10 +88,13 @@ public class AlarmActivity extends AppCompatActivity implements CompoundButton.O
                 switch_name = getString(R.string.alertPost);
                 break;
             case R.id.switch6:
+                switch_name = getString(R.string.alertAnswer);
+                break;
+            case R.id.switch7:
                 switch_name = getString(R.string.alertLike);
                 break;
         }
-        SPUtil.setSwitchState(switch_name,isCheck);
+        SPUtil.setSwitchState(switch_name, isCheck);
     }
 
     // 뒤로가기 버튼 기능

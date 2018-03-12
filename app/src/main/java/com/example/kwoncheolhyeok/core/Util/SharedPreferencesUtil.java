@@ -37,18 +37,14 @@ public class SharedPreferencesUtil {
         editor_chatListBadge = sharedPref_chatListBadge.edit();
     }
 
-    public SharedPreferences getPreferences() {
-        return sharedPref;
-    }
 
     public SharedPreferences getBadgePreferences() {
         return sharedPref_badge;
     }
 
-    public SharedPreferences getfriendsPreferences() {
-        return sharedPref_friends;
+    public SharedPreferences getChatListPreferences(){
+        return sharedPref_chatListBadge;
     }
-
     // 메인 토글버튼
     public void setMainIcon(String str, boolean b) {
         editor_badge.putBoolean(str, b).apply();
@@ -89,16 +85,21 @@ public class SharedPreferencesUtil {
             editor_badge.putInt("badgeFriends",badgeFriends).apply();
         }
     }
-
+    // 스위치 뱃지
     public void switchBadgeState(String str,boolean b){
         editor_badge.putBoolean(str,b).apply();
-        editor_badge.putBoolean("mainAlarm",true).apply();
+        // 뱃지가 ture가 되면 메인뱃지 변경
+        if(b) {
+            editor_badge.putBoolean("mainAlarm", true).apply();
+        }
     }
 
     // 뱃지 삭제
     public void removeBadge(String str) {
         editor_badge.remove(str).apply();
     }
+
+    // 프렌즈 통합뱃지
     public void removeFriendsBadge(String str) {
         String badge = context.getString(R.string.badgeFriends);
         int badgeCount = getBadgeCount(badge);
@@ -106,16 +107,20 @@ public class SharedPreferencesUtil {
         editor_badge.remove(str).apply();
         editor_badge.putInt(badge,badgeCount).apply();
     }
+
+    // 채팅방 별 뱃지 갯수
     public int getChatRoomBadge(String str) {
         return sharedPref_chatListBadge.getInt(str, 0);
     }
 
+    // 각 채팅방 별개 뱃지
     public void increaseChatRoomBadge(String str) {
         int badgeCount = sharedPref_chatListBadge.getInt(str, 0);
         editor_chatListBadge.putInt(str, ++badgeCount).apply();
         increaseBadgeCount(context.getString(R.string.badgeChat));
     }
 
+    // messagebadge 통합 뱃지
     public void removeChatRoomBadge(String str) {
         String badge = context.getString(R.string.badgeChat);
         int badgeCount = getBadgeCount(badge);

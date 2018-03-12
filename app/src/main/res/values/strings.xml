@@ -76,6 +76,7 @@
     <string name="set_new_follower">새 팔로워가 추가됐을 때</string>
     <string name="set_new_friends">새 친구가 생겼을 때</string>
     <string name="set_new_post">내 코어에 새 익명글이 올라왔을 때</string>
+    <string name="set_new_answer">내 질문에 답변이 달렸을 때</string>
     <string name="set_new_heart">내 코어 포스트에 하트가 추가됐을 때</string>
     <string name="set_opn_lockpic">누가 비공개 사진을 열었을 때</string>
 <!---->
@@ -127,16 +128,12 @@
     <string name="deleteImage">삭제된 이미지 입니다</string>
 
     <string name="alertChat">새로운 메세지를 확인해보세요!</string>
-
     <string name="alertFolow">누군가가 당신을 팔로우 했어요!</string>
-
     <string name="alertFriend">새로운 친구가 생겼어요!</string>
-
     <string name="alertPost">누군가 내 코어에 질문을 남겼어요!</string>
-
     <string name="alertLike">누군가 내가 올린 포스트를 좋아하네요!</string>
-
     <string name="alertUnlockPic">누군가 당신에게 비공개 사진을 열었어요!</string>
+    <string name="alertAnswer">당신이 작성한 질문글에 답이 왔네요!</string>
     <string name="msgUnlockPic">비공개 사진을 확인해보세요!</string>
 //
     <string name="mapSpiner">이 주변 회원 검색</string>
