@@ -76,14 +76,6 @@ public class UserListBaseActivity extends AppCompatActivity {
                                     stringItemHashMap.get(oUuid).setUser(oUser);
                                     adapter.notifyDataSetChanged();
                                 }
-/*
-                                if (adapter.isReverse)
-                                    items.add(new UserListAdapter.Item(oUser, (long) snapshot.getValue(), oUuid));
-                                else
-                                    items.add(1, new UserListAdapter.Item(oUser, (long) snapshot.getValue(), oUuid));
-
-                                adapter.notifyDataSetChanged();
-                                */
                             }
 
                             @Override
