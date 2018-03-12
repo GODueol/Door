@@ -6,6 +6,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.SearchView;
 
 import com.example.kwoncheolhyeok.core.FriendsActivity.UserListAdapter;
@@ -51,7 +53,7 @@ public class FindUserActivity extends UserListBaseActivity {
         // setRecyclerView (default)
 
 
-        SearchView search_view = findViewById(R.id.search_view);
+        final SearchView search_view = findViewById(R.id.search_view);
         search_view.onActionViewExpanded();
         search_view.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -63,6 +65,14 @@ public class FindUserActivity extends UserListBaseActivity {
             @Override
             public boolean onQueryTextChange(String s) {
                 return false;
+            }
+        });
+
+        ImageButton save = findViewById(R.id.save);
+        save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setRecyclerView(items, adapter, "Find User", R.menu.follower_menu, DataContainer.getInstance().getUsersRef().orderByChild("id").equalTo(search_view.getQuery().toString()));
             }
         });
     }
