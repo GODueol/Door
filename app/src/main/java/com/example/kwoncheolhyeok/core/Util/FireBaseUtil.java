@@ -147,8 +147,8 @@ public class FireBaseUtil {
         childUpdate.put("/" + mUuid + "/viewedMeUsers/" + oUuid, null);
 
         // 친구의 팔로우 관계 모두 삭제(DB)
-        childUpdate.put("/" + oUuid + "/blockUsers/" + mUuid, null);
         childUpdate.put("/" + oUuid + "/followerUsers/" + mUuid, null);
+        childUpdate.put("/" + oUuid + "/followingUsers/" + mUuid, null);
         childUpdate.put("/" + oUuid + "/friendUsers/" + mUuid, null);
         childUpdate.put("/" + oUuid + "/viewedMeUsers/" + mUuid, null);
 
