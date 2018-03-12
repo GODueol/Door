@@ -833,14 +833,18 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
                         @Override
                         public void onSuccess(Object o) {
                             removeUserPicUrl(targetImageView);
-                            thumbNailSpaceRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    removeUserThumbNailPicUrl(targetImageView);
-                                }
-                            });
                         }
                     });
+
+                    Task thumbNailTask = thumbNailSpaceRef.delete();
+                    thumbNailTask.addOnSuccessListener(new OnSuccessListener() {
+                        @Override
+                        public void onSuccess(Object o) {
+                            removeUserThumbNailPicUrl(targetImageView);
+                        }
+                    });
+                    tasks.add(thumbNailTask);
+
                 } else {
                     // 저장
                     UploadTask task;
