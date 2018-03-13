@@ -866,7 +866,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
                                             }
                                         });
                                     else removeUserThumbNailPicUrl(targetImageView);
-                                } catch (FileNotFoundException e) {
+                                } catch (Exception e) {
                                     e.printStackTrace();
                                 }
                             }

@@ -15,6 +15,7 @@ import android.provider.MediaStore;
 import android.provider.OpenableColumns;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.example.kwoncheolhyeok.core.Exception.GifException;
@@ -32,8 +33,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import me.echodev.resizer.Resizer;
-
 /**
  * Created by gimbyeongjin on 2018. 1. 18..
  */
@@ -43,6 +42,9 @@ public class GalleryPick {
     private Bitmap bitmap;
     public static final int REQUEST_GALLERY = 2;
     private static final int THUMB_NAIL_RATIO = 35;
+    private static final int MB_TO_BYTE = 1024*1024;
+    private static final int LIMIT_MB = 5;
+
     private String imgPath;
 
     private String getMimeType(Uri uriImage) {
@@ -86,20 +88,45 @@ public class GalleryPick {
         return f;
     }
 
-    private byte[] getResizeImageByteArray(Bitmap bitmap) {
+    // 용량 제한
+    private int getQuality() throws IOException {
+        int quality = 100;
+        long mb = getFileSizeInMB();
+        long byteSize = getFileSizeInBytes();
+        if(mb >= LIMIT_MB){
+            // 크기 줄임
+            quality = (int) (((double)(MB_TO_BYTE*LIMIT_MB)/byteSize)*100);
+        }
+        Log.d("kbj","quality : " +quality);
+
+        return quality;
+    }
+
+    // 원본
+    private byte[] getResizeImageByteArray(Bitmap bitmap) throws IOException {
+
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        getResizeBitmap(bitmap).compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        getResizeBitmap(bitmap).compress(Bitmap.CompressFormat.JPEG, getQuality(), stream);
+        byte[] rst = stream.toByteArray();
+        Log.d("kbj","ori length : " +rst.length);
+
         return stream.toByteArray();
     }
 
-    private byte[] getThumbNailImageByteArray(Bitmap bitmap) {
+    // 썸네일
+    private byte[] getThumbNailImageByteArray(Bitmap bitmap) throws IOException {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        getResizeBitmap(bitmap).compress(Bitmap.CompressFormat.JPEG, THUMB_NAIL_RATIO, stream);
+        getResizeBitmap(bitmap).compress(Bitmap.CompressFormat.JPEG, (getQuality()*THUMB_NAIL_RATIO)/100, stream);
+        byte[] rst = stream.toByteArray();
+        Log.d("kbj","thum length : " +rst.length);
         return stream.toByteArray();
     }
 
     // 용량 제한
     private Bitmap getResizeBitmap(Bitmap bitmap) {
+
+/*
+
         try {
             bitmap = new Resizer(activity)
                     .setTargetLength(1080)
@@ -108,6 +135,9 @@ public class GalleryPick {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+*/
+
         return bitmap;
     }
 
@@ -293,7 +323,7 @@ public class GalleryPick {
     @NonNull
     private UploadTask getUploadTask(StorageReference ref, Uri uri) throws GifException, IOException {
         if (isGif()) {
-            if (getFileSizeInMB() > 5) {
+            if (getFileSizeInMB() >= LIMIT_MB) {
                 throw new GifException("5MB가 넘는 GIF는 업로드 할 수 없습니다");
             } else {
                 return ref.putFile(uri);
@@ -303,15 +333,17 @@ public class GalleryPick {
         }
     }
 
-
-    private long getFileSizeInMB() throws IOException {
-        long fileSizeInMB;// 크기 확인 : 5MB
-
+    private long getFileSizeInBytes(){
         @SuppressLint("Recycle") Cursor returnCursor =
                 activity.getContentResolver().query(uri, null, null, null, null);
         int sizeIndex = returnCursor.getColumnIndex(OpenableColumns.SIZE);
         returnCursor.moveToFirst();
-        long fileSizeInBytes = returnCursor.getLong(sizeIndex);
+        return returnCursor.getLong(sizeIndex);
+    }
+    private long getFileSizeInMB() throws IOException {
+        long fileSizeInMB;// 크기 확인 : 5MB
+
+        long fileSizeInBytes = getFileSizeInBytes();
 
         // Convert the bytes to Kilobytes (1 KB = 1024 Bytes)
         long fileSizeInKB = fileSizeInBytes / 1024;
@@ -330,7 +362,7 @@ public class GalleryPick {
     public void setImage(ImageView editImage) throws Exception {
         // Gif 파일인 경우
         if (isGif()) {
-            if (getFileSizeInMB() >= 5) throw new Exception("파일이 5MB를 넘어서 불가능합니다");
+            if (getFileSizeInMB() >= LIMIT_MB) throw new Exception("파일이 5MB를 넘어서 불가능합니다");
             //Uri
             GlideApp.with(editImage.getContext())
                     .load(uri)
@@ -344,7 +376,7 @@ public class GalleryPick {
         }
     }
 
-    public UploadTask makeThumbNail(StorageReference thumbNailSpaceRef, Uri uri) throws FileNotFoundException {
+    public UploadTask makeThumbNail(StorageReference thumbNailSpaceRef, Uri uri) throws Exception {
         getImgPath(uri);
         if (isGif()) {
             return null;
