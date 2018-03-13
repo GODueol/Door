@@ -31,7 +31,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 import java.util.Arrays;
@@ -42,7 +41,6 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
     GridView gridView = null;
     ImageAdapter imageAdapter;
     private User mUser;
-    Bus bus;
     private ValueEventListener userListener;
     private DatabaseReference userRef;
     private GeoQuery geoQuery;
@@ -113,10 +111,8 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
         userRef = DataContainer.getInstance().getMyUserRef();
         userRef.addValueEventListener(userListener);
 
-        bus = BusProvider.getInstance();
-
         try {
-            bus.register(this); // Otto 등록
+            BusProvider.getInstance().register(this); // Otto 등록
         } catch (IllegalAccessError e) {
             e.printStackTrace();    // 이미 등록된경우
         } catch (Exception e) {
@@ -287,6 +283,7 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
     public void onDestroy() {
         if (geoQuery != null) geoQuery.removeAllListeners();
         if (userRef != null && userListener != null) userRef.removeEventListener(userListener);
+        BusProvider.getInstance().unregister(this);
         super.onDestroy();
     }
 }
