@@ -7,12 +7,13 @@ import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 
 import com.example.kwoncheolhyeok.core.R;
+import com.example.kwoncheolhyeok.core.Util.BaseActivity.BlockBaseActivity;
 import com.example.kwoncheolhyeok.core.Util.ViewPagerFixed;
 
 import java.util.ArrayList;
 
 
-public class DetailImageActivity extends AppCompatActivity {
+public class DetailImageActivity extends BlockBaseActivity {
 
     DetailImageViewPagerAdapter mAdapter;
     ArrayList<String> picUrlList;

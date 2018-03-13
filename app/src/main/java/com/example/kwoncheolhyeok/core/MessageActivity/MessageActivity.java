@@ -11,12 +11,13 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
 
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.MessageActivity.messageRecyclerAdapter.OnRemoveChattingListCallback;
+import com.example.kwoncheolhyeok.core.MessageActivity.util.MessageVO;
 import com.example.kwoncheolhyeok.core.MessageActivity.util.RoomVO;
 import com.example.kwoncheolhyeok.core.R;
+import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
 import com.example.kwoncheolhyeok.core.Util.SharedPreferencesUtil;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -25,11 +26,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MessageActivity extends AppCompatActivity implements  SharedPreferences.OnSharedPreferenceChangeListener {
+public class MessageActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     Toolbar toolbar = null;
 
@@ -43,6 +45,7 @@ public class MessageActivity extends AppCompatActivity implements  SharedPrefere
     private String userId;
 
     private SharedPreferencesUtil SPUtil;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,24 +68,53 @@ public class MessageActivity extends AppCompatActivity implements  SharedPrefere
         // preparing list data
         com.example.kwoncheolhyeok.core.MessageActivity.messageRecyclerAdapter.RecyclerViewClickListener listener = new messageRecyclerAdapter.RecyclerViewClickListener() {
             @Override
-            public void onClick(View view, int position) {
+            public void onClick(View view, final int position) {
                 final RoomVO item = messageRecyclerAdapter.getItemRoomVO(position);
-                FirebaseDatabase.getInstance().getReference("users").child(item.getTargetUuid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                FireBaseUtil.getInstance().queryBlockWithMe(item.getTargetUuid(), new FireBaseUtil.BlockListener() {
                     @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        User user = dataSnapshot.getValue(User.class);
-                        Intent intent = new Intent(getApplicationContext(), ChattingActivity.class);
-                        intent.putExtra("user", user);
-                        intent.putExtra("userUuid", item.getTargetUuid());
-                        SPUtil.removeChatRoomBadge(item.getChatRoomid());
-                        startActivity(intent);
-                    }
+                    public void isBlockCallback(boolean isBlockWithMe) {
+                        //블럭이 아니면
+                        if (!isBlockWithMe) {
+                            FirebaseDatabase.getInstance().getReference("users").child(item.getTargetUuid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    User user = dataSnapshot.getValue(User.class);
+                                    Intent intent = new Intent(getApplicationContext(), ChattingActivity.class);
+                                    intent.putExtra("user", user);
+                                    intent.putExtra("userUuid", item.getTargetUuid());
+                                    SPUtil.removeChatRoomBadge(item.getChatRoomid());
+                                    startActivity(intent);
+                                }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+                                }
+                            });
+                        } else {// 블럭이면
+                            chatRoomListRef.child(userId).child(item.getTargetUuid()).removeValue();
+                            messageRecyclerAdapter.notifyDataSetChanged();
+                            // 채팅방 이미지 전체 삭제 및 채팅 로그 삭제
+                            final String roomId = item.getChatRoomid();
+                            SPUtil.removeChatRoomBadge(roomId);
+                            FirebaseDatabase.getInstance().getReference("chat").child(roomId).orderByChild("isImage").equalTo(1).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    for (DataSnapshot ds : dataSnapshot.getChildren()) {//마찬가지로 중복 유무 확인
+                                        MessageVO message = ds.getValue(MessageVO.class);
+                                        FirebaseStorage.getInstance().getReferenceFromUrl(message.getImage()).delete();
+                                    }
+                                    FirebaseDatabase.getInstance().getReference("chat").child(roomId).removeValue();
+                                }
 
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
+                        }
                     }
                 });
+
 
             }
         };
@@ -110,22 +142,26 @@ public class MessageActivity extends AppCompatActivity implements  SharedPrefere
                 final RoomVO roomList = dataSnapshot.getValue(RoomVO.class);
                 try {
                     roomList.setBadgeCount(SPUtil.getChatRoomBadge(roomList.getChatRoomid()));
-                }catch (Exception e){
+                } catch (Exception e) {
                     roomList.setBadgeCount(0);
                 }
                 if (roomList.getLastChat() != null) {
-                    uuidList.add(roomList.getTargetUuid());
-                    listrowItem.add(roomList);
-                    FirebaseDatabase.getInstance().getReference("users").child(roomList.getTargetUuid()).addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            refreshChatRoomList(dataSnapshot.getValue(User.class), roomList);
-                        }
+                    if (roomList.getTargetUuid() != null) {
+                        uuidList.add(roomList.getTargetUuid());
+                        listrowItem.add(roomList);
+                        FirebaseDatabase.getInstance().getReference("users").child(roomList.getTargetUuid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                refreshChatRoomList(dataSnapshot.getValue(User.class), roomList);
+                            }
 
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                        }
-                    });
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                            }
+                        });
+                    } else {
+                        FirebaseDatabase.getInstance().getReference("chatRoomList").child(userId).child(dataSnapshot.getKey()).removeValue();
+                    }
                 }
             }
 
@@ -134,27 +170,31 @@ public class MessageActivity extends AppCompatActivity implements  SharedPrefere
                 final RoomVO roomList = dataSnapshot.getValue(RoomVO.class);
                 try {
                     roomList.setBadgeCount(SPUtil.getChatRoomBadge(roomList.getChatRoomid()));
-                }catch (Exception e){
+                } catch (Exception e) {
                     roomList.setBadgeCount(0);
                 }
                 if (roomList.getLastChat() != null) {
-                    FirebaseDatabase.getInstance().getReference("users").child(roomList.getTargetUuid()).addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            try {
-                                roomList.setBadgeCount(SPUtil.getChatRoomBadge(roomList.getChatRoomid()));
-                                refreshChatRoomList(dataSnapshot.getValue(User.class), roomList, true);
-                            } catch (Exception e) {
-                                uuidList.add(roomList.getTargetUuid());
-                                listrowItem.add(roomList);
-                                refreshChatRoomList(dataSnapshot.getValue(User.class), roomList);
+                    try {
+                        FirebaseDatabase.getInstance().getReference("users").child(roomList.getTargetUuid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                try {
+                                    roomList.setBadgeCount(SPUtil.getChatRoomBadge(roomList.getChatRoomid()));
+                                    refreshChatRoomList(dataSnapshot.getValue(User.class), roomList, true);
+                                } catch (Exception e) {
+                                    uuidList.add(roomList.getTargetUuid());
+                                    listrowItem.add(roomList);
+                                    refreshChatRoomList(dataSnapshot.getValue(User.class), roomList);
+                                }
                             }
-                        }
 
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                        }
-                    });
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                            }
+                        });
+                    } catch (Exception e) {
+                        FirebaseDatabase.getInstance().getReference("chatRoomList").child(userId).child(dataSnapshot.getKey()).removeValue();
+                    }
                 } else if (roomList.getLastChat() == null) {
                     try {
                         int key = uuidList.indexOf(roomList.getTargetUuid());
@@ -250,10 +290,10 @@ public class MessageActivity extends AppCompatActivity implements  SharedPrefere
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        int num = sharedPreferences.getInt(key,0);
+        int num = sharedPreferences.getInt(key, 0);
         //리스트 아이템 뱃지 동기화
-        for(RoomVO r : listrowItem){
-            if(r.getChatRoomid().equals(key)){
+        for (RoomVO r : listrowItem) {
+            if (r.getChatRoomid().equals(key)) {
                 int i = listrowItem.indexOf(r);
                 listrowItem.get(i).setBadgeCount(num);
                 messageRecyclerAdapter.notifyDataSetChanged();

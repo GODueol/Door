@@ -14,10 +14,13 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.kwoncheolhyeok.core.Activity.MainActivity;
 import com.example.kwoncheolhyeok.core.Entity.CoreListItem;
 import com.example.kwoncheolhyeok.core.Entity.CorePost;
 import com.example.kwoncheolhyeok.core.Entity.User;
+import com.example.kwoncheolhyeok.core.Event.SomeoneBlocksMeEvent;
 import com.example.kwoncheolhyeok.core.R;
+import com.example.kwoncheolhyeok.core.Util.BaseActivity.BlockBaseActivity;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.SharedPreferencesUtil;
 import com.google.firebase.database.ChildEventListener;
@@ -26,11 +29,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
 
 
-public class CoreActivity extends AppCompatActivity {
+public class CoreActivity extends BlockBaseActivity {
 
     private static final int WRITE_SUCC = 1;
     Toolbar toolbar = null;
@@ -41,17 +45,18 @@ public class CoreActivity extends AppCompatActivity {
     private ChildEventListener listner;
     private DataContainer dc;
     private String cUuid;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Get the view from new_activity.xml
         setContentView(R.layout.core_activity);
+
         dc = DataContainer.getInstance();
 
         Intent intent = getIntent();
         cUuid = intent.getStringExtra("uuid");
-
+        // 엑티비티 Uuid 저장
+        SPUtil.setBlockMeUserCurrentActivity(getString(R.string.currentActivity),cUuid);
         //스크린샷 방지
 //        ScreenshotSetApplication.getInstance().allowUserSaveScreenshot(false);
 

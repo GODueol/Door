@@ -13,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -36,6 +37,7 @@ import com.example.kwoncheolhyeok.core.MessageActivity.ChattingMessageAdapter.On
 import com.example.kwoncheolhyeok.core.MessageActivity.util.MessageVO;
 import com.example.kwoncheolhyeok.core.PeopleFragment.FullImageActivity;
 import com.example.kwoncheolhyeok.core.R;
+import com.example.kwoncheolhyeok.core.Util.BaseActivity.BlockBaseActivity;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
 import com.example.kwoncheolhyeok.core.Util.GalleryPick;
@@ -45,12 +47,13 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChattingActivity extends AppCompatActivity {
+public class ChattingActivity extends BlockBaseActivity {
 
     private Toolbar toolbar = null;
     private RecyclerView chattingRecyclerview;
@@ -73,13 +76,12 @@ public class ChattingActivity extends AppCompatActivity {
     private String targetUuid;
     private GalleryPick galleryPick;
 
-    private SharedPreferencesUtil SPUtil;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Window window = getWindow();
 
+
+        Window window = getWindow();
         window.setContentView(R.layout.chatting_activity);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -94,9 +96,18 @@ public class ChattingActivity extends AppCompatActivity {
         }
 
         Intent p = getIntent();
+        // 상대방 데이터 셋
+        targetUser = (User) p.getSerializableExtra("user");
+        targetUuid = (String) p.getSerializableExtra("userUuid");
+        // 엑티비티 Uuid 저장
+        SPUtil.setBlockMeUserCurrentActivity(getString(R.string.currentActivity),targetUuid);
+        // 내정보 데이터 셋
+        mAuth = FirebaseAuth.getInstance();
+        user = DataContainer.getInstance().getUser();
+        userUuid = mAuth.getUid();
+
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
-        mAuth = FirebaseAuth.getInstance();
         imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
         chattingRecyclerview = (RecyclerView) findViewById(R.id.listView);
         mButtonSend = (ImageButton) findViewById(R.id.btn_send);
@@ -131,24 +142,20 @@ public class ChattingActivity extends AppCompatActivity {
         chattingRecyclerview.setAdapter(chattingMessageAdapter);
         chattingRecyclerview.setLayoutManager(linearLayoutManager);
         chattingRecyclerview.setOnTouchListener(onTouchListener);
-        // 상대방 데이터 셋
-        targetUser = (User) p.getSerializableExtra("user");
-        targetUuid = (String) p.getSerializableExtra("userUuid");
-        // 내정보 데이터 셋
-        user = DataContainer.getInstance().getUser();
-        userUuid = mAuth.getUid();
 
-        SPUtil = new SharedPreferencesUtil(getApplicationContext());
+        // 블락이면 안들어가지게
+
         chatFirebaseUtil = new ChatFirebaseUtil(this, user, targetUser, userUuid, targetUuid, overlay, hideText);
         chatFirebaseUtil.setchatRoom(chattingRecyclerview, chatListItem);
         chattingRecyclerview.addOnScrollListener(dateToastListener);
+
         // 메세지 보내기
         mButtonSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String message = mEditTextMessage.getText().toString();
 
-                if (TextUtils.isEmpty(message.replace(System.getProperty("line.separator"),"").replace(" ",""))) {
+                if (TextUtils.isEmpty(message.replace(System.getProperty("line.separator"), "").replace(" ", ""))) {
                     return;
                 }
                 long currentTime = System.currentTimeMillis();
@@ -170,6 +177,8 @@ public class ChattingActivity extends AppCompatActivity {
                 sendImageMessage();
             }
         });
+
+
     }
 
 
@@ -203,7 +212,18 @@ public class ChattingActivity extends AppCompatActivity {
         super.onDestroy();
         SPUtil.removeCurrentChat(getString(R.string.currentRoom));
         chatFirebaseUtil.deleteFirebaseRef();
-        chatFirebaseUtil.setLastChatView();
+        FireBaseUtil.getInstance().queryBlockWithMe(targetUuid, new FireBaseUtil.BlockListener() {
+            @Override
+            public void isBlockCallback(boolean isBlockWithMe) {
+                if (isBlockWithMe) {
+                    Log.d("test", "ture");
+                    chatFirebaseUtil.clearChatLog();
+                } else {
+                    Log.d("test", "false");
+                    chatFirebaseUtil.setLastChatView();
+                }
+            }
+        });
     }
 
     private void writeMessage(String image, String userId, String nickname, String content, long currentTime, int check) {

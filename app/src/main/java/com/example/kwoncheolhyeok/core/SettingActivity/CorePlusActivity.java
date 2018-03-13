@@ -9,6 +9,9 @@ import android.widget.ImageView;
 
 import com.android.vending.billing.IInAppBillingService;
 import android.content.ServiceConnection;
+import android.content.Intent;
+import android.content.Context;
+
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.GlideApp;
 import com.example.kwoncheolhyeok.core.Util.UiUtil;
@@ -49,8 +52,21 @@ public class CorePlusActivity extends AppCompatActivity {
                 .fitCenter()
                 .into(img_cp_4);
 
+        Intent serviceIntent =
+                new Intent("com.android.vending.billing.InAppBillingService.BIND");
+        serviceIntent.setPackage("com.android.vending");
+        bindService(serviceIntent, mServiceConn, Context.BIND_AUTO_CREATE);
 
 
+
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mService != null) {
+            unbindService(mServiceConn);
+        }
     }
 
     ServiceConnection mServiceConn = new ServiceConnection() {

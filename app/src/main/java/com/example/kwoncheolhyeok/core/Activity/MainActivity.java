@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
@@ -13,12 +14,12 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.NavigationView.OnNavigationItemSelectedListener;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.style.TextAppearanceSpan;
@@ -34,6 +35,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.kwoncheolhyeok.core.Entity.User;
+import com.example.kwoncheolhyeok.core.Event.SomeoneBlocksMeEvent;
 import com.example.kwoncheolhyeok.core.FriendsActivity.FriendsActivity;
 import com.example.kwoncheolhyeok.core.LoginActivity.LoginActivity;
 import com.example.kwoncheolhyeok.core.MessageActivity.MessageActivity;
@@ -41,6 +43,7 @@ import com.example.kwoncheolhyeok.core.ProfileModifyActivity.ProfileModifyActivi
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.SettingActivity.CorePlusActivity;
 import com.example.kwoncheolhyeok.core.SettingActivity.SettingActivity;
+import com.example.kwoncheolhyeok.core.Util.BaseActivity.BlockBaseActivity;
 import com.example.kwoncheolhyeok.core.Util.BusProvider;
 import com.example.kwoncheolhyeok.core.Util.CloseActivityHandler;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
@@ -56,16 +59,16 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 /**
  * drawer / viewpager drag duplication issue
  */
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, SharedPreferences.OnSharedPreferenceChangeListener {
+public class MainActivity extends BlockBaseActivity
+        implements OnNavigationItemSelectedListener, OnSharedPreferenceChangeListener {
 
     private static final int SETTING = 4;
-    private SharedPreferencesUtil SPUtil;
     DrawerLayout drawer = null;
     ActionBarDrawerToggle toggle = null;
     Toolbar toolbar = null;
@@ -88,10 +91,9 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
 //        ScreenshotSetApplication.getInstance().allowUserSaveScreenshot(true);
-
+        // 블락 탐지 엑티비티 Uuid 초기화
         // (Main View)네비게이션바 관련
         drawer = findViewById(R.id.drawer_layout);
         toolbar = findViewById(R.id.toolbar);
@@ -184,9 +186,6 @@ public class MainActivity extends AppCompatActivity
 
         closeActivityHandler = new CloseActivityHandler(this);
 
-        // Otto 등록
-        BusProvider.getInstance().register(this);
-
         // 로그인 시간 Update
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) return;
@@ -221,7 +220,7 @@ public class MainActivity extends AppCompatActivity
                         UiUtil.getInstance().stopProgressDialog();
                     }
                 });
-        SPUtil = new SharedPreferencesUtil(getApplicationContext());
+
         SPUtil.getBadgePreferences().registerOnSharedPreferenceChangeListener(this);
 
         boolean check = SPUtil.getMainIcon(getString(R.string.mainAlarm));
@@ -234,8 +233,32 @@ public class MainActivity extends AppCompatActivity
         // 네비게이션 아이템 벳지
         navigationViewinitBadge(menu);
 
-    }
+        Log.d("test", user.getUid());
+        FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("blockMeUsers").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                SPUtil = new SharedPreferencesUtil(getApplicationContext());
+                String currentActivity = SPUtil.getBlockMeUserCurrentActivity(getString(R.string.currentActivity));
+                Log.d("test", "들어옴");
+                for (DataSnapshot blockMeUserSnapshot : dataSnapshot.getChildren()) {
+                    if (blockMeUserSnapshot.getKey() != null && blockMeUserSnapshot.getKey().equals(currentActivity)) {
+                        /*Intent intent = new Intent(getApplication(), MainActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP|Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                        startActivity(intent);
+                        Log.d("test","엑티비티 팅겨라");*/
+                        BusProvider.getInstance().post(new SomeoneBlocksMeEvent());
+                        break;
+                    }
+                }
+            }
 
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+    }
     private void navigationViewinitBadge(Menu menu) {
         //Gravity property aligns the text
         MenuItem people = menu.findItem(R.id.nav_People);
@@ -303,7 +326,7 @@ public class MainActivity extends AppCompatActivity
 
                 }
             });
-        } catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             UiUtil.getInstance().restartApp(MainActivity.this);
         }
@@ -478,13 +501,13 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        BusProvider.getInstance().unregister(this);
         UiUtil.getInstance().stopProgressDialog();
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        SPUtil.setBlockMeUserCurrentActivity(getString(R.string.currentActivity), null);
         checkMainToggle();
 //        ScreenshotSetApplication.getInstance().registerScreenshotObserver();
     }
@@ -508,11 +531,11 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 
-        if(key.equals("mainAlarm")){
-           boolean b = SPUtil.getMainIcon(key);
-            if(b){
+        if (key.equals("mainAlarm")) {
+            boolean b = SPUtil.getMainIcon(key);
+            if (b) {
                 toggle.setHomeAsUpIndicator(icon_open_badge);
-            }else {
+            } else {
                 toggle.setHomeAsUpIndicator(icon_open);
             }
         }
@@ -527,28 +550,28 @@ public class MainActivity extends AppCompatActivity
                 badgeStyle(coreBadge, badgePost);
                 break;
             case "badgeFriends":
-                boolean badgeState = sharedPreferences.getBoolean("badgeView",false);
+                boolean badgeState = sharedPreferences.getBoolean("badgeView", false);
                 int badgeFriends = sharedPreferences.getInt(key, 0);
                 badgeStyle(friendBadge, badgeFriends);
-                if(badgeFriends==0){
-                    badgeRoundStyle(friendBadge,badgeState);
+                if (badgeFriends == 0) {
+                    badgeRoundStyle(friendBadge, badgeState);
                 }
                 break;
             case "badgeView":
-                boolean badgeStat = sharedPreferences.getBoolean(key,false);
+                boolean badgeStat = sharedPreferences.getBoolean(key, false);
                 int count = SPUtil.getBadgeCount("badgeFriends");
-                if(count==0){
-                    badgeRoundStyle(friendBadge,badgeStat);
+                if (count == 0) {
+                    badgeRoundStyle(friendBadge, badgeStat);
                 }
                 break;
         }
     }
 
     // 메인토글버튼 동기화
-    private void checkMainToggle(){
-        Log.d("test","dsaad");
-        if(messageBadge.getText().equals("")&&coreBadge.getText().equals("")&&friendBadge.getText().equals("")){
-            SPUtil.setMainIcon(getString(R.string.mainAlarm),false);
+    private void checkMainToggle() {
+        Log.d("test", "dsaad");
+        if (messageBadge.getText().equals("") && coreBadge.getText().equals("") && friendBadge.getText().equals("")) {
+            SPUtil.setMainIcon(getString(R.string.mainAlarm), false);
         }
     }
 }

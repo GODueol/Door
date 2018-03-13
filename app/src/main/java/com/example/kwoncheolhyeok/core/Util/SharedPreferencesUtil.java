@@ -45,6 +45,14 @@ public class SharedPreferencesUtil {
     public SharedPreferences getChatListPreferences(){
         return sharedPref_chatListBadge;
     }
+
+    public void setBlockMeUserCurrentActivity(String str,String uuid){
+     editor.putString(str,uuid).apply();
+    }
+
+    public String getBlockMeUserCurrentActivity(String str){
+        return sharedPref.getString(str,"");
+    }
     // 메인 토글버튼
     public void setMainIcon(String str, boolean b) {
         editor_badge.putBoolean(str, b).apply();

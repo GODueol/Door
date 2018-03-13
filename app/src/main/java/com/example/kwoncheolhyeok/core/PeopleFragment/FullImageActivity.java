@@ -16,16 +16,20 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.kwoncheolhyeok.core.Activity.MainActivity;
 import com.example.kwoncheolhyeok.core.Entity.User;
+import com.example.kwoncheolhyeok.core.Event.SomeoneBlocksMeEvent;
 import com.example.kwoncheolhyeok.core.Exception.ChildSizeMaxException;
 import com.example.kwoncheolhyeok.core.MessageActivity.ChattingActivity;
 import com.example.kwoncheolhyeok.core.PeopleFragment.FullImageViewPager.DetailImageActivity;
 import com.example.kwoncheolhyeok.core.R;
+import com.example.kwoncheolhyeok.core.Util.BaseActivity.BlockBaseActivity;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
 import com.example.kwoncheolhyeok.core.Util.FirebaseSendPushMsg;
 import com.example.kwoncheolhyeok.core.Util.GPSInfo;
 import com.example.kwoncheolhyeok.core.Util.GlideApp;
+import com.example.kwoncheolhyeok.core.Util.SharedPreferencesUtil;
 import com.example.kwoncheolhyeok.core.Util.UiUtil;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
@@ -43,6 +47,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -53,7 +58,7 @@ import butterknife.ButterKnife;
 import static com.example.kwoncheolhyeok.core.MessageActivity.ChatFirebaseUtil.sendEventMessage;
 
 
-public class FullImageActivity extends AppCompatActivity implements View.OnClickListener {
+public class FullImageActivity extends BlockBaseActivity implements View.OnClickListener {
 
     Toolbar toolbar = null;
 
@@ -116,7 +121,6 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.full_image_activity_main);
-
 //        ScreenshotSetApplication.getInstance().allowUserSaveScreenshot(true);
 
         ButterKnife.bind(this);
@@ -142,7 +146,8 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
 
         Intent p = getIntent();
         item = (GridItem) p.getSerializableExtra("item");
-
+        // 엑티비티 Uuid 저장
+        SPUtil.setBlockMeUserCurrentActivity(getString(R.string.currentActivity),item.getUuid());
         DataContainer.getInstance().getMyUserRef().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -630,5 +635,13 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
     protected void onDestroy() {
         oUserRef.removeEventListener(listener);
         super.onDestroy();
+    }
+
+
+    @Subscribe
+    public void FinishActivity(SomeoneBlocksMeEvent someoneBlocksMeEvent){
+        Intent intent = new Intent(getApplication(), MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 }

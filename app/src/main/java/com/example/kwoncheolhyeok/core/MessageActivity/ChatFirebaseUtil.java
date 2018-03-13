@@ -120,6 +120,32 @@ public class ChatFirebaseUtil {
 
     }
 
+    public void clearChatLog(){
+
+        final String roomId = roomName;
+        SPUtil.removeChatRoomBadge(roomId);
+
+        // 방제거
+        FirebaseDatabase.getInstance().getReference().child("chatRoomList").child(targetUuid).child(userUuid).removeValue();
+        FirebaseDatabase.getInstance().getReference().child("chatRoomList").child(userUuid).child(targetUuid).removeValue();
+
+        // 채팅방 이미지 전체 삭제 및 채팅 로그 삭제
+        FirebaseDatabase.getInstance().getReference("chat").child(roomId).orderByChild("isImage").equalTo(1).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {//마찬가지로 중복 유무 확인
+                    MessageVO message = ds.getValue(MessageVO.class);
+                    FirebaseStorage.getInstance().getReferenceFromUrl(message.getImage()).delete();
+                }
+                FirebaseDatabase.getInstance().getReference("chat").child(roomId).removeValue();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
     public void sendMessage(MessageVO message) {
 
         String room = roomName;

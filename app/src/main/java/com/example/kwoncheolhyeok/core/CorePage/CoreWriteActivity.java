@@ -28,6 +28,7 @@ import com.bumptech.glide.Glide;
 import com.example.kwoncheolhyeok.core.Entity.CorePost;
 import com.example.kwoncheolhyeok.core.Exception.GifException;
 import com.example.kwoncheolhyeok.core.R;
+import com.example.kwoncheolhyeok.core.Util.BaseActivity.BlockBaseActivity;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
 import com.example.kwoncheolhyeok.core.Util.FirebaseSendPushMsg;
@@ -61,7 +62,7 @@ import cafe.adriel.androidaudiorecorder.model.AudioSource;
  * Created by Kwon on 2017-12-14.
  */
 
-public class CoreWriteActivity extends AppCompatActivity {
+public class CoreWriteActivity extends BlockBaseActivity {
 
     Toolbar toolbar = null;
 
@@ -107,7 +108,6 @@ public class CoreWriteActivity extends AppCompatActivity {
         setContentView(R.layout.core_write_activity);
         storageRef = FirebaseStorage.getInstance().getReference();
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-
         tasks = new HashMap<>();
 
         cUuid = getIntent().getStringExtra("cUuid");

@@ -33,6 +33,7 @@
 
     <string name="mainAlarm">mainAlarm</string>
     <string name="currentRoom">currentRoom</string>
+    <string name="currentActivity">currentActivity</string>
     <string name="badgeChat">badgeChat</string>
     <string name="badgeFriends">badgeFriends</string>
     <string name="chatListBadge">chatListBadge</string>
