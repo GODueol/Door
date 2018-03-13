@@ -191,6 +191,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
             message.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if(DataContainer.getInstance().isBlockWithMe(item.getUuid())) return;
                     Intent intent = new Intent(getApplicationContext(), ChattingActivity.class);
                     intent.putExtra("user", oUser);
                     intent.putExtra("userUuid", item.getUuid());
@@ -204,6 +205,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         core_enter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(DataContainer.getInstance().isBlockWithMe(item.getUuid())) return;
                 UiUtil.getInstance().goToCoreActivity(FullImageActivity.this, item.getUuid());
             }
         });
@@ -352,6 +354,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         addFriends.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(DataContainer.getInstance().isBlockWithMe(item.getUuid())) return;
                 String title, message;
                 final boolean isFollow = oUser.getFollowerUsers().containsKey(myUuid);  // 이미 팔로우한 유저
                 if (isFollow) {
@@ -414,6 +417,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         blockFriends.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(DataContainer.getInstance().isBlockWithMe(item.getUuid())) return;
 
                 new BlockReportSelectDialog(FullImageActivity.this, new BlockReportSelectDialog.BlockReportSelectDialogListener() {
                     @Override
@@ -498,6 +502,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         picOpen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(DataContainer.getInstance().isBlockWithMe(item.getUuid())) return;
                 String title, message;
                 final boolean isLock = !mUser.getUnLockUsers().containsKey(item.getUuid());  // 이미 해제한 유저
                 if (isLock) {
@@ -580,6 +585,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
 
     @Override
     public void onClick(View view) {
+        if(DataContainer.getInstance().isBlockWithMe(item.getUuid())) return;
         Intent myIntent = new Intent(getApplicationContext(), DetailImageActivity.class);
 
         // 큰 사진으로 넘김
