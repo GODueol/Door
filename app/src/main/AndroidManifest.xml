@@ -94,7 +94,6 @@
             tools:ignore="InnerclassSeparator" />
         <activity
             android:name=".Activity.MainActivity"
-            android:launchMode="singleInstance"
             android:excludeFromRecents="true"
             android:taskAffinity=""
             android:screenOrientation="portrait"
