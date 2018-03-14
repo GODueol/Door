@@ -376,6 +376,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                             .child("reply").setValue(value).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
+                            if(DataContainer.getInstance().isBlockWithMe(coreListItem.getCorePost().getUuid())) return;
                             FirebaseSendPushMsg.sendPostToFCM("Answer",coreListItem.getCorePost().getUuid(),DataContainer.getInstance().getUser().getId(),"당신이 작성한 질문글에 답이 왔네요!");
                         }
                     });
