@@ -1,13 +1,17 @@
 package com.example.kwoncheolhyeok.core.LoginActivity;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
+import android.widget.AutoCompleteTextView;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -52,6 +56,9 @@ public class LoginActivity extends AppCompatActivity {
     TextView _signupLink;
     @Bind(R.id.cb_save_id)
     CheckBox cb_save_id;
+    @Bind(R.id.link_find_password)
+    TextView link_find_password;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -116,6 +123,42 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         mAuth = FirebaseAuth.getInstance();
+
+        link_find_password.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final AutoCompleteTextView email = new AutoCompleteTextView(LoginActivity.this);
+                email.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+                AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+                builder.setView(email)
+                        .setTitle("이메일을 쓰세요")
+                        .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                String emailAddress = email.getText().toString();
+
+                                if(!emailAddress.equals("")){
+                                    FirebaseAuth auth = FirebaseAuth.getInstance();
+                                    auth.sendPasswordResetEmail(emailAddress)
+                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    if(task.isSuccessful()){
+                                                        Toast.makeText(LoginActivity.this, "이메일 전송 완료", Toast.LENGTH_SHORT).show();
+                                                    } else {
+                                                        Toast.makeText(LoginActivity.this, "이메일 주소가 올바르지 않습니다", Toast.LENGTH_SHORT).show();
+                                                    }
+
+                                                }
+                                            });
+                                } else {
+                                    Toast.makeText(LoginActivity.this, "이메일을 쓰세요", Toast.LENGTH_SHORT).show();
+                                }
+
+                            }
+                        }).show();
+            }
+        });
     }
 
 
