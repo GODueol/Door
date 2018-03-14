@@ -26,7 +26,6 @@ import com.google.firebase.storage.UploadTask;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
@@ -42,7 +41,6 @@ public class GalleryPick {
     private Bitmap bitmap;
     public static final int REQUEST_GALLERY = 2;
     private static final int THUMB_NAIL_RATIO = 35;
-    private static final int MB_TO_BYTE = 1024*1024;
     private static final int LIMIT_MB = 5;
 
     private String imgPath;
@@ -69,34 +67,11 @@ public class GalleryPick {
         return uri;
     }
 
-
-    private File bitMapToFile() throws IOException {
-        File f = new File(activity.getCacheDir(), "temp");
-        f.createNewFile();
-
-        //Convert bitmap to byte array
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100 /*ignored for PNG*/, bos);
-        byte[] bitmapData = bos.toByteArray();
-
-        //write the bytes in file
-        FileOutputStream fos = new FileOutputStream(f);
-        fos.write(bitmapData);
-        fos.flush();
-        fos.close();
-
-        return f;
-    }
-
     // 용량 제한
     private int getQuality() throws Exception {
         int quality = 100;
         long mb = getFileSizeInMB();
-        long byteSize = getFileSizeInBytes();
         if(mb >= LIMIT_MB){
-            // 크기 줄임
-            quality = (int) (((double)(MB_TO_BYTE*LIMIT_MB)/byteSize)*100);
-
             // 업로드 방지
             throw new Exception(activity.getString(R.string.cannotOver5Mb));
         }
@@ -127,20 +102,6 @@ public class GalleryPick {
 
     // 용량 제한
     private Bitmap getResizeBitmap(Bitmap bitmap) {
-
-/*
-
-        try {
-            bitmap = new Resizer(activity)
-                    .setTargetLength(1080)
-                    .setSourceImage(bitMapToFile())
-                    .getResizedBitmap();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-*/
-
         return bitmap;
     }
 
@@ -312,19 +273,19 @@ public class GalleryPick {
         }
     }
 
-    public UploadTask upload(StorageReference ref) throws GifException, Exception {
+    public UploadTask upload(StorageReference ref) throws Exception {
         // Check Gif
         return getUploadTask(ref, uri);
     }
 
-    public UploadTask upload(StorageReference ref, Uri uri) throws GifException, Exception {
+    public UploadTask upload(StorageReference ref, Uri uri) throws Exception {
         // Check Gif
         getImgPath(uri);
         return getUploadTask(ref, uri);
     }
 
     @NonNull
-    private UploadTask getUploadTask(StorageReference ref, Uri uri) throws GifException, Exception {
+    private UploadTask getUploadTask(StorageReference ref, Uri uri) throws Exception {
         if (getFileSizeInMB() >= LIMIT_MB) {
             throw new GifException(activity.getString(R.string.cannotOver5Mb));
         }
