@@ -20,6 +20,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.style.TextAppearanceSpan;
@@ -65,7 +66,7 @@ import com.google.firebase.database.ValueEventListener;
 /**
  * drawer / viewpager drag duplication issue
  */
-public class MainActivity extends BlockBaseActivity
+public class MainActivity extends AppCompatActivity
         implements OnNavigationItemSelectedListener, OnSharedPreferenceChangeListener {
 
     private static final int SETTING = 4;
@@ -86,12 +87,14 @@ public class MainActivity extends BlockBaseActivity
     TextView friendBadge;
     TextView settingBadge;
 
+    private SharedPreferencesUtil SPUtil;
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        SPUtil = new SharedPreferencesUtil(getApplicationContext());
 //        ScreenshotSetApplication.getInstance().allowUserSaveScreenshot(true);
         // 블락 탐지 엑티비티 Uuid 초기화
         // (Main View)네비게이션바 관련

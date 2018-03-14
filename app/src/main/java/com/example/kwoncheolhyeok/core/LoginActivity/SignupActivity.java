@@ -1,9 +1,12 @@
 package com.example.kwoncheolhyeok.core.LoginActivity;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.SystemClock;
+import android.provider.Settings.Secure;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -27,7 +30,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -74,8 +81,10 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
     TextView _loginLink;
 
     private EditText bodytype;
+    private String deviceIdentifier;
     final String[] values = {"Underweight", "Skinny", "Standard", "Muscular", "Overweight"};
 
+    @SuppressLint("HardwareIds")
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,6 +92,7 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
         ButterKnife.bind(this);
 
 
+        deviceIdentifier = Secure.getString(getApplicationContext().getContentResolver(), Secure.ANDROID_ID);
         bodytype = findViewById(R.id.input_bodytype);
         bodytype.setFocusable(false);
         bodytype.setClickable(false);
@@ -206,24 +216,47 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
         UiUtil.getInstance().startProgressDialog(this);
 
         final String email = _emailText.getText().toString();
-        String password = _passwordText.getText().toString();
+        final String password = _passwordText.getText().toString();
         final String id = _IDText.getText().toString();
         final int age = Integer.parseInt(_ageText.getText().toString());
         final int height = Integer.parseInt(_heightText.getText().toString());
         final int weight = Integer.parseInt(_weightText.getText().toString());
         final String bodyType = _bodyType.getText().toString();
         mUser = new User(email, id, age, height, weight, bodyType);
+        FirebaseDatabase.getInstance().getReference("identifier").child(deviceIdentifier).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    // 이미 회원가입한 디바이스
+                    FirebaseDatabase.getInstance().getReference("identifier").child(deviceIdentifier).removeEventListener(this);
+                    Toast.makeText(getApplicationContext(),"이미 회원가입한 디바이스입니다.",Toast.LENGTH_SHORT).show();
+                    UiUtil.getInstance().stopProgressDialog();
+                } else {
+                    // 회원가입 하지 않은 디바이스
+                    FirebaseDatabase.getInstance().getReference("identifier").child(deviceIdentifier).removeEventListener(this);
+                    FirebaseDatabase.getInstance().getReference().child("identifier").child(deviceIdentifier).setValue(System.currentTimeMillis())
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    onSucccessIdentify(email,password);
+                                }
+                            });
+                }
+            }
 
-        // firebase 회원가입
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+    public void onSucccessIdentify(String email,String password){
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
-
-                        // If sign in fails, display a message to the user. If sign in succeeds
-                        // the auth state listener will be notified and logic to handle the
-                        // signed in user can be handled in the listener.
 
                         if (task.isSuccessful()) {
                             FirebaseUser user = mAuth.getCurrentUser();
@@ -249,6 +282,10 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
         UiUtil.getInstance().stopProgressDialog();
     }
 
+    public void focusEditText(EditText editText){
+        editText.setText("");
+        editText.requestFocus();
+    }
     @SuppressLint("SetTextI18n")
     public void validate() throws Exception {
 
@@ -262,20 +299,30 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
         String Bodytype = _bodyType.getText().toString();
 
         if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            focusEditText(_emailText);
             throw new Exception("올바른 이메일 양식으로 작성해주세요.");
         } else if (password.isEmpty() || password.length() < 6 || password.length() > 12) {
+            focusEditText(_passwordText);
+            focusEditText(_reEnterPasswordText);
             throw new Exception("비밀번호는 6자리 이상 12자리 이하로 설정해주세요.");
         } else if (reEnterPassword.isEmpty() || reEnterPassword.length() < 6 || reEnterPassword.length() > 12 || !(reEnterPassword.equals(password))) {
+            focusEditText(_passwordText);
+            focusEditText(_reEnterPasswordText);
             throw new Exception("패스워드가 일치하지 않습니다.");
         } else if (ID.isEmpty() || ID.length() < 2 || ID.length() > 10) {
+            focusEditText(_IDText);
             throw new Exception("두 자리 이상의 아이디로 작성해주세요.");
         } else if (Age.isEmpty() || Age.length() != 2 || Integer.parseInt(Age) > 100) {
+            focusEditText(_ageText);
             throw new Exception("올바른 나이를 작성해주세요.");
         } else if (Integer.parseInt(Age) < 20) {
+            focusEditText(_ageText);
             throw new Exception("미성년자는 가입할 수 없습니다.");
         } else if (Height.isEmpty() || Height.length() != 3 || Integer.parseInt(Height) < 100 || Integer.parseInt(Height) > 220) {
+            focusEditText(_heightText);
             throw new Exception("올바른 키를 작성해 주세요.");
         } else if (Weight.isEmpty() || Weight.length() < 2 || Weight.length() > 3 || Integer.parseInt(Weight) < 40 || Integer.parseInt(Weight) > 140) {
+            focusEditText(_weightText);
             throw new Exception("올바른 몸무게로 작성해주세요.");
         } else if (Bodytype.isEmpty()) {
             _bodyType.setText("Standard");
