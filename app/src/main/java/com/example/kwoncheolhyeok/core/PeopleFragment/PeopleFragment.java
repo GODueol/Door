@@ -77,7 +77,7 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
             public void onRefresh() {
                 // 위치 새로고침
                 imageAdapter.clear();
-                refreshGrid(null, GPSInfo.getmInstance(getActivity()).getGPSLocation());
+                refreshGrid(null);
 
                 mSwipeRefreshLayout.setRefreshing(false);
             }
@@ -108,6 +108,7 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
 
             }
         };
+
         userRef = DataContainer.getInstance().getMyUserRef();
         userRef.addValueEventListener(userListener);
 
@@ -282,7 +283,7 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
             refreshGrid(null, location);
         } catch (Exception e) {
             Log.d("people", "익셉션");
-            refreshGrid(null, GPSInfo.getmInstance(getActivity()).getGPSLocation());
+            refreshGrid(null);
         }
     }
 

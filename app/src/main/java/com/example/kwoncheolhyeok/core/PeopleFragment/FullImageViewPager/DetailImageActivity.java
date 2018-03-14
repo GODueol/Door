@@ -4,11 +4,12 @@ package com.example.kwoncheolhyeok.core.PeopleFragment.FullImageViewPager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
-import android.support.v7.app.AppCompatActivity;
 
+import com.example.kwoncheolhyeok.core.Event.SomeoneBlocksMeEvent;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.BaseActivity.BlockBaseActivity;
 import com.example.kwoncheolhyeok.core.Util.ViewPagerFixed;
+import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
 
@@ -52,6 +53,11 @@ public class DetailImageActivity extends BlockBaseActivity {
     public void onPause() {
         super.onPause();
 //        ScreenshotSetApplication.getInstance().unregisterScreenshotObserver();
+    }
+
+    @Subscribe
+    public void FinishActivity(SomeoneBlocksMeEvent someoneBlocksMeEvent){
+        finish();
     }
 
 }

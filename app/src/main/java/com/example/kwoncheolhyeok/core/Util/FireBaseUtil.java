@@ -301,7 +301,7 @@ public class FireBaseUtil {
 
     public void syncUser(final SyncUserListener syncUserListener){
         final DataContainer dc = DataContainer.getInstance();
-        dc.getMyUserRef().addValueEventListener(new ValueEventListener() {
+        dc.getMyUserRef().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 dc.setUser(dataSnapshot.getValue(User.class));

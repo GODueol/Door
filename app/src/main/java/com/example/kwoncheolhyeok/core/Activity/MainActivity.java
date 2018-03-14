@@ -44,7 +44,6 @@ import com.example.kwoncheolhyeok.core.ProfileModifyActivity.ProfileModifyActivi
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.SettingActivity.CorePlusActivity;
 import com.example.kwoncheolhyeok.core.SettingActivity.SettingActivity;
-import com.example.kwoncheolhyeok.core.Util.BaseActivity.BlockBaseActivity;
 import com.example.kwoncheolhyeok.core.Util.BusProvider;
 import com.example.kwoncheolhyeok.core.Util.CloseActivityHandler;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;

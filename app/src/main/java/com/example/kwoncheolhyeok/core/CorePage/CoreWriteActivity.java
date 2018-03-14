@@ -25,6 +25,7 @@ import android.widget.ToggleButton;
 
 import com.bumptech.glide.Glide;
 import com.example.kwoncheolhyeok.core.Entity.CorePost;
+import com.example.kwoncheolhyeok.core.Event.SomeoneBlocksMeEvent;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.BaseActivity.BlockBaseActivity;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
@@ -43,6 +44,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.otto.Subscribe;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -601,5 +603,10 @@ public class CoreWriteActivity extends BlockBaseActivity {
     protected void onPause() {
         super.onPause();
         startAndPause.setChecked(false);
+    }
+
+    @Subscribe
+    public void FinishActivity(SomeoneBlocksMeEvent someoneBlocksMeEvent){
+        finish();
     }
 }

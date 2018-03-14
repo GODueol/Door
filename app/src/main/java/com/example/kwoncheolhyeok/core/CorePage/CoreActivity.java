@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
@@ -14,7 +13,6 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.Toast;
 
-import com.example.kwoncheolhyeok.core.Activity.MainActivity;
 import com.example.kwoncheolhyeok.core.Entity.CoreListItem;
 import com.example.kwoncheolhyeok.core.Entity.CorePost;
 import com.example.kwoncheolhyeok.core.Entity.User;
@@ -253,5 +251,10 @@ public class CoreActivity extends BlockBaseActivity {
     protected void onDestroy() {
         if (postQuery != null && listner != null) postQuery.removeEventListener(listner);
         super.onDestroy();
+    }
+
+    @Subscribe
+    public void FinishActivity(SomeoneBlocksMeEvent someoneBlocksMeEvent){
+        finish();
     }
 }
