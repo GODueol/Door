@@ -11,7 +11,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -26,7 +25,6 @@ import android.widget.ToggleButton;
 
 import com.bumptech.glide.Glide;
 import com.example.kwoncheolhyeok.core.Entity.CorePost;
-import com.example.kwoncheolhyeok.core.Exception.GifException;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.BaseActivity.BlockBaseActivity;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
@@ -470,7 +468,7 @@ public class CoreWriteActivity extends BlockBaseActivity {
 
     }
 
-    private void uploadPicture() throws GifException, IOException {
+    private void uploadPicture() throws Exception {
         final StorageReference spaceRef = storageRef.child("posts").child(cUuid).child(postKey).child("picture");
         UploadTask uploadTask = galleryPick.upload(spaceRef);
         tasks.put(uploadTask, new OnSuccessListener<UploadTask.TaskSnapshot>() {

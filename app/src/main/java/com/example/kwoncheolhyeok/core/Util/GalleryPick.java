@@ -89,13 +89,16 @@ public class GalleryPick {
     }
 
     // 용량 제한
-    private int getQuality() throws IOException {
+    private int getQuality() throws Exception {
         int quality = 100;
         long mb = getFileSizeInMB();
         long byteSize = getFileSizeInBytes();
         if(mb >= LIMIT_MB){
             // 크기 줄임
             quality = (int) (((double)(MB_TO_BYTE*LIMIT_MB)/byteSize)*100);
+
+            // 업로드 방지
+            throw new Exception(activity.getString(R.string.cannotOver5Mb));
         }
         Log.d("kbj","quality : " +quality);
 
@@ -103,7 +106,7 @@ public class GalleryPick {
     }
 
     // 원본
-    private byte[] getResizeImageByteArray(Bitmap bitmap) throws IOException {
+    private byte[] getResizeImageByteArray(Bitmap bitmap) throws Exception {
 
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         getResizeBitmap(bitmap).compress(Bitmap.CompressFormat.JPEG, getQuality(), stream);
@@ -114,7 +117,7 @@ public class GalleryPick {
     }
 
     // 썸네일
-    private byte[] getThumbNailImageByteArray(Bitmap bitmap) throws IOException {
+    private byte[] getThumbNailImageByteArray(Bitmap bitmap) throws Exception {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         getResizeBitmap(bitmap).compress(Bitmap.CompressFormat.JPEG, (getQuality()*THUMB_NAIL_RATIO)/100, stream);
         byte[] rst = stream.toByteArray();
@@ -309,25 +312,24 @@ public class GalleryPick {
         }
     }
 
-    public UploadTask upload(StorageReference ref) throws GifException, IOException {
+    public UploadTask upload(StorageReference ref) throws GifException, Exception {
         // Check Gif
         return getUploadTask(ref, uri);
     }
 
-    public UploadTask upload(StorageReference ref, Uri uri) throws GifException, IOException {
+    public UploadTask upload(StorageReference ref, Uri uri) throws GifException, Exception {
         // Check Gif
         getImgPath(uri);
         return getUploadTask(ref, uri);
     }
 
     @NonNull
-    private UploadTask getUploadTask(StorageReference ref, Uri uri) throws GifException, IOException {
+    private UploadTask getUploadTask(StorageReference ref, Uri uri) throws GifException, Exception {
+        if (getFileSizeInMB() >= LIMIT_MB) {
+            throw new GifException(activity.getString(R.string.cannotOver5Mb));
+        }
         if (isGif()) {
-            if (getFileSizeInMB() >= LIMIT_MB) {
-                throw new GifException("5MB가 넘는 GIF는 업로드 할 수 없습니다");
-            } else {
-                return ref.putFile(uri);
-            }
+            return ref.putFile(uri);
         } else {
             return ref.putBytes(this.getResizeImageByteArray(bitmap));
         }
@@ -360,9 +362,9 @@ public class GalleryPick {
 
 
     public void setImage(ImageView editImage) throws Exception {
+        if (getFileSizeInMB() >= LIMIT_MB) throw new Exception("파일이 5MB를 넘어서 불가능합니다");
         // Gif 파일인 경우
         if (isGif()) {
-            if (getFileSizeInMB() >= LIMIT_MB) throw new Exception("파일이 5MB를 넘어서 불가능합니다");
             //Uri
             GlideApp.with(editImage.getContext())
                     .load(uri)
