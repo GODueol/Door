@@ -214,9 +214,9 @@ public class LoginActivity extends AppCompatActivity {
 
         // 프로그레스 바 종료
         UiUtil.getInstance().stopProgressDialog();
-
-        startActivity(i);
         finish();
+        startActivity(i);
+
 
     }
 

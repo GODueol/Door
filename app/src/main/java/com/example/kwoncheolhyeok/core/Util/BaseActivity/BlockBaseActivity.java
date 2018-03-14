@@ -36,6 +36,6 @@ public abstract class BlockBaseActivity extends AppCompatActivity{
 
     @Subscribe
     public void FinishActivity(SomeoneBlocksMeEvent someoneBlocksMeEvent){
-        finish();
+
     }
 }
