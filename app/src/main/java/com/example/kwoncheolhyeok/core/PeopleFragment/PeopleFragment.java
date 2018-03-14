@@ -62,7 +62,7 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 GridItem item = imageAdapter.getItem(position);
                 // block 유저한테는 못들어가게함
-                if(mUser.getBlockMeUsers().containsKey(item.getUuid()) || mUser.getBlockUsers().containsKey(item.getUuid())) return;
+                if(DataContainer.getInstance().isBlockWithMe(item.getUuid())) return;
                 Intent p = new Intent(getActivity().getApplicationContext(), FullImageActivity.class);
                 p.putExtra("id", position);
                 p.putExtra("item", item);
@@ -127,9 +127,6 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
     }
 
     public void refreshGrid(RefreshLocationEvent pushEvent, final Location location) {
-
-        // 현재 자신의 위치를 가져옴
-        saveMyGPS();
 
         // 현재 자신의 위치에 가까운 리스트 가져옴
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(FireBaseUtil.currentLocationPath);
@@ -228,93 +225,9 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
         saveMyGPS();
 
         // 현재 자신의 위치에 가까운 리스트 가져옴
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(FireBaseUtil.currentLocationPath);
-        GeoFire geoFire = new GeoFire(ref);
         final Location location = GPSInfo.getmInstance(getActivity()).getGPSLocation();
-        geoQuery = geoFire.queryAtLocation(new GeoLocation(location.getLatitude(), location.getLongitude()), 300);
+        refreshGrid(pushEvent, location);
 
-        // 쿼리받은 값을 처리
-        geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
-            @SuppressLint("DefaultLocale")
-            @Override
-            public void onKeyEntered(final String oUuid, final GeoLocation geoLocation) {
-
-                DataContainer.getInstance().getUserRef(oUuid).child("summaryUser").addListenerForSingleValueEvent(new ValueEventListener() {
-
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        SummaryUser oSummary = dataSnapshot.getValue(SummaryUser.class);
-                        if (isInBlock(oUuid) || !isInFilter(oSummary)) {
-                            onKeyExited(oUuid);
-                            return;
-                        }
-
-                        Log.d(getClass().toString(), String.format("Key %s entered the search area at [%f,%f]", oUuid, geoLocation.latitude, geoLocation.longitude));
-                        addItemToGrid(oUuid, geoLocation, oSummary);
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        databaseError.toException().printStackTrace();
-                    }
-                });
-            }
-
-            private void addItemToGrid(final String key, GeoLocation geoLocation, final SummaryUser summary) {
-
-                // key로 프사url, 거리 가져옴
-                Location targetLocation = new Location("");//provider name is unnecessary
-                targetLocation.setLatitude(geoLocation.latitude);//your coords of course
-                targetLocation.setLongitude(geoLocation.longitude);
-
-                final float distance = location.distanceTo(targetLocation);
-
-                // grid에 사진, distance추가
-
-                if (imageAdapter != null) {
-                    imageAdapter.addItem(new GridItem(distance, key, summary, summary.getPictureUrl()));
-                    imageAdapter.notifyDataSetChanged();
-//                    gridView.invalidateViews();
-                    Log.d(getTag(), "addItemToGrid : " + key);
-                } else {
-                    Log.d(getTag(), "imageAdapter is null");
-                }
-            }
-
-            @Override
-            public void onKeyExited(String key) {
-                System.out.println(String.format("Key %s is no longer in the search area", key));
-                // 아이템 삭제
-                imageAdapter.remove(key);
-                imageAdapter.notifyDataSetChanged();
-            }
-
-            @SuppressLint("DefaultLocale")
-            @Override
-            public void onKeyMoved(String key, GeoLocation geoLocation) {
-                System.out.println(String.format("Key %s moved within the search area to [%f,%f]", key, geoLocation.latitude, geoLocation.longitude));
-                // 아이템 갱신
-                Location targetLocation = new Location("");//provider name is unnecessary
-                targetLocation.setLatitude(geoLocation.latitude);//your coords of course
-                targetLocation.setLongitude(geoLocation.longitude);
-                GridItem item = imageAdapter.getItem(key);
-                if (item == null) return;
-                imageAdapter.remove(key);
-                item.setDistance(location.distanceTo(targetLocation));
-                imageAdapter.addItem(item);
-                imageAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onGeoQueryReady() {
-                System.out.println("All initial data has been loaded and events have been fired!");
-            }
-
-            @Override
-            public void onGeoQueryError(DatabaseError error) {
-                System.err.println("There was an error with this query: " + error);
-            }
-        });
     }
     private boolean isInBlock(String oUuid) {
         return mUser.getBlockUsers().containsKey(oUuid) || mUser.getBlockMeUsers().containsKey(oUuid);
