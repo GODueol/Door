@@ -151,7 +151,7 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
                 mUser = dataSnapshot.getValue(User.class);
 
                 // 차단된 경우
-                if (mUser.getBlockMeUsers().containsKey(item.getUuid())) {
+                if (mUser != null && mUser.getBlockMeUsers().containsKey(item.getUuid())) {
                     Toast.makeText(FullImageActivity.this, "당신은 차단되었습니다", Toast.LENGTH_SHORT).show();
                     finish();
                 }
@@ -164,6 +164,7 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
 
                         // viewedMeUser
                         oUser = dataSnapshot.getValue(User.class);
+                        assert oUser != null;
                         item.setSummaryUser(oUser.getSummaryUser());
                         setView(item);
 
@@ -253,7 +254,13 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
             String url = picUrlList.get(i);
             if (url == null) continue;
 
+            GlideApp.with(getBaseContext())
+                    .load(url)
+                    .placeholder(R.drawable.a)
+                    .into(profilePics[i]);
+
             // Lock인 사진 표현
+            if(i==0) break;
             if(url.equals(oUser.getPicUrls().getThumbNail_picUrl2())) {
                 if(oUser.getIsLockPics().getIsLockPic2()) imagelocks[i].setVisibility(View.VISIBLE);
                 else imagelocks[i].setVisibility(View.INVISIBLE);
@@ -267,10 +274,7 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
                 else imagelocks[i].setVisibility(View.INVISIBLE);
             }
 
-            GlideApp.with(getBaseContext())
-                    .load(url)
-                    .placeholder(R.drawable.a)
-                    .into(profilePics[i]);
+
         }
 
         // 큰사진
@@ -319,6 +323,7 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
                             }
                         }
 
+                        assert min != null;
                         map.remove(min.getKey());
                         mutableData.setValue(map);
                     }
