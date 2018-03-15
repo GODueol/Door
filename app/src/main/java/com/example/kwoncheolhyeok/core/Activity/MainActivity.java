@@ -35,6 +35,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.kwoncheolhyeok.core.NewAlarmActivity.NewAlarmActivity;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.Event.SomeoneBlocksMeEvent;
 import com.example.kwoncheolhyeok.core.FriendsActivity.FriendsActivity;
@@ -87,6 +88,7 @@ public class MainActivity extends AppCompatActivity
     TextView settingBadge;
 
     private SharedPreferencesUtil SPUtil;
+
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -261,6 +263,7 @@ public class MainActivity extends AppCompatActivity
         });
 
     }
+
     private void navigationViewinitBadge(Menu menu) {
         //Gravity property aligns the text
         MenuItem people = menu.findItem(R.id.nav_People);
@@ -430,6 +433,11 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_friends) {
 
             Intent i = new Intent(MainActivity.this, FriendsActivity.class);
+            startActivity(i);
+
+        } else if (id == R.id.nav_alarm) {
+
+            Intent i = new Intent(MainActivity.this, NewAlarmActivity.class);
             startActivity(i);
 
         } else if (id == R.id.nav_setting) {

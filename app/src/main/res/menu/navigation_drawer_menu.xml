@@ -34,6 +34,13 @@
             app:actionViewClass="android.widget.TextView"
             app:theme="@style/NavigationViewStyle"
             />
+        <item
+            android:id="@+id/nav_alarm"
+            android:icon="@drawable/nav_alarm"
+            android:title="Alarm"
+            app:actionViewClass="android.widget.TextView"
+            app:theme="@style/NavigationViewStyle"
+            />
 
     </group>
 
