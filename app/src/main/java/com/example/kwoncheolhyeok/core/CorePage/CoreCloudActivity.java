@@ -1,4 +1,4 @@
-package com.example.kwoncheolhyeok.core.NewAlarmActivity;
+package com.example.kwoncheolhyeok.core.CorePage;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -7,10 +7,10 @@ import android.support.v7.widget.Toolbar;
 import com.example.kwoncheolhyeok.core.R;
 
 /**
- * Created by Kwon on 2018-03-15.
+ * Created by Kwon on 2018-03-16.
  */
 
-public class NewAlarmActivity extends AppCompatActivity {
+public class CoreCloudActivity extends AppCompatActivity {
 
     Toolbar toolbar = null;
 
@@ -18,7 +18,7 @@ public class NewAlarmActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.new_alarm_activity_main);
+        setContentView(R.layout.core_cloud_activity_main);
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

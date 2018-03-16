@@ -5,9 +5,9 @@
 
     <RelativeLayout
         android:id="@+id/block"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="@drawable/border"
+        android:layout_width="330dp"
+        android:layout_height="50dp"
+        android:layout_centerHorizontal="true"
         >
 
         <TextView
@@ -16,17 +16,29 @@
             android:layout_centerInParent="true"
             android:text="차단"
             android:textColor="@color/black"
-            android:textSize="17dp"
             />
 
     </RelativeLayout>
 
+    <View
+        android:id="@+id/sectionline"
+        android:layout_width="330dp"
+        android:layout_height="0.5dip"
+        android:layout_below="@+id/block"
+        android:layout_marginLeft="5dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginRight="5dp"
+        android:background="@color/gray40">
+
+    </View>
+
     <RelativeLayout
         android:id="@+id/report"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_below="@+id/block"
-        android:background="@drawable/border"
+        android:layout_width="330dp"
+        android:layout_height="50dp"
+        android:layout_below="@+id/sectionline"
+        android:layout_centerHorizontal="true"
+
         >
 
         <TextView
@@ -35,7 +47,6 @@
             android:layout_centerInParent="true"
             android:text="신고"
             android:textColor="@color/black"
-            android:textSize="17dp"
             />
 
     </RelativeLayout>

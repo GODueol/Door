@@ -1,6 +1,7 @@
 package com.example.kwoncheolhyeok.core.Activity;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -30,18 +31,24 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.kwoncheolhyeok.core.NewAlarmActivity.NewAlarmActivity;
+import com.example.kwoncheolhyeok.core.CorePage.CoreCloudActivity;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.Event.SomeoneBlocksMeEvent;
 import com.example.kwoncheolhyeok.core.FriendsActivity.FriendsActivity;
 import com.example.kwoncheolhyeok.core.LoginActivity.LoginActivity;
 import com.example.kwoncheolhyeok.core.MessageActivity.MessageActivity;
+import com.example.kwoncheolhyeok.core.PeopleFragment.BlockReportSelectDialog;
+import com.example.kwoncheolhyeok.core.PeopleFragment.FullImageActivity;
+import com.example.kwoncheolhyeok.core.PeopleFragment.ReportDialog;
 import com.example.kwoncheolhyeok.core.ProfileModifyActivity.ProfileModifyActivity;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.SettingActivity.CorePlusActivity;
@@ -63,6 +70,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.Arrays;
 
 /**
  * drawer / viewpager drag duplication issue
@@ -178,12 +187,20 @@ public class MainActivity extends AppCompatActivity
                 startActivity(i2);
             }
         });
+
         nav_alarm = headerView.findViewById(R.id.nav_alarm);
         nav_alarm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(MainActivity.this, NewAlarmActivity.class);
-                startActivity(i);
+
+                new NewAlarmDialog(MainActivity.this, new NewAlarmDialog.NewAlarmDialogListener() {
+                    @Override
+                    public void show_alarm_dialog() {
+                        show_alarm_dialog();
+                    }
+                }).show();
+
+
             }
         });
 
@@ -432,8 +449,11 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_People) {
-            viewPager.setCurrentItem(0);
-        } else if (id == R.id.nav_mycore) {
+//            viewPager.setCurrentItem(0);
+            Intent i = new Intent(MainActivity.this, CoreCloudActivity.class);
+            startActivity(i);
+        } else if (id == R.id.nav_mycore)
+        {
             UiUtil.getInstance().goToCoreActivity(MainActivity.this, DataContainer.getInstance().getUid());
         } else if (id == R.id.nav_message) {
 
@@ -589,5 +609,11 @@ public class MainActivity extends AppCompatActivity
             SPUtil.setMainIcon(getString(R.string.mainAlarm), false);
         }
     }
+
+    //알람 다이얼로그
+    public void show_alarm_dialog() {
+
+    }
+
 }
 
