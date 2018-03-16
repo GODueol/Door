@@ -150,7 +150,7 @@ public class FriendsActivity extends UserListBaseActivity implements SharedPrefe
     }
 
     private void navigationViewinitBadge(BottomNavigationMenuView bottomNavigationMenuView) {
-        //Gravity property aligns the text
+        //뱃지 위치 조정 코드 : 수평축은 숫자 작아질수록 우로 / 수직축은 숫자 작아질수록 위로
         int badge;
         friend = bottomNavigationMenuView.getChildAt(0);
         badge = SPUtil.getBadgeCount(getString(R.string.badgeFriend));
@@ -166,7 +166,7 @@ public class FriendsActivity extends UserListBaseActivity implements SharedPrefe
 
         viewed = bottomNavigationMenuView.getChildAt(3);
         boolean state = SPUtil.getBadgeState(getString(R.string.badgeView));
-        setQbadge(viewed, state, (float) 7.5, (float) -7.5);
+        setQbadge(viewed, state, (float) 1.5, (float) -4.5);
     }
 
     private void setQbadge(View view, int num, float x, float y) {
