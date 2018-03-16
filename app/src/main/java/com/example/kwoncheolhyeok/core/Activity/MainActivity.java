@@ -30,6 +30,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -78,6 +79,7 @@ public class MainActivity extends AppCompatActivity
     ViewPager viewPager = null;
     Drawable icon_open, icon_close, icon_open_badge;
     ImageView profileImage;
+    ImageButton nav_alarm;
 
     private CloseActivityHandler closeActivityHandler;
 
@@ -174,6 +176,14 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View v) {
                 Intent i2 = new Intent(MainActivity.this, ProfileModifyActivity.class);
                 startActivity(i2);
+            }
+        });
+        nav_alarm = headerView.findViewById(R.id.nav_alarm);
+        nav_alarm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(MainActivity.this, NewAlarmActivity.class);
+                startActivity(i);
             }
         });
 
@@ -433,11 +443,6 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_friends) {
 
             Intent i = new Intent(MainActivity.this, FriendsActivity.class);
-            startActivity(i);
-
-        } else if (id == R.id.nav_alarm) {
-
-            Intent i = new Intent(MainActivity.this, NewAlarmActivity.class);
             startActivity(i);
 
         } else if (id == R.id.nav_setting) {

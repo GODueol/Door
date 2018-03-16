@@ -50,12 +50,23 @@
         </RelativeLayout>
 
         <ImageButton
+            android:id="@+id/core_cloud"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/setting"
+            android:layout_marginRight="30dp"
+            android:background="@drawable/nav_corecloud"
+            android:padding="5dp" />
+
+        <ImageButton
             android:id="@+id/setting"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="10dp"
+            android:padding="5dp"
             android:background="@drawable/ic_keyboard_arrow_down_black_24dp" />
 
         <View
@@ -219,7 +230,8 @@
             android:layout_centerHorizontal="true"
             app:anim_scale_factor="2.5"
             app:icon_size="15dp"
-            app:icon_type="heart" />
+            app:icon_type="heart"
+            />
 
         <!--<ImageButton-->
         <!--android:id="@+id/heart_count"-->

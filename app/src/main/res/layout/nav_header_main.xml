@@ -12,7 +12,8 @@
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true">
+        android:layout_centerInParent="true"
+        android:id="@+id/relativeLayout">
 
 
         <ImageView
@@ -44,6 +45,16 @@
             android:text="core@email.com"
             android:textSize="14.5dp" />
 
+
     </RelativeLayout>
+
+    <ImageButton
+        android:id="@+id/nav_alarm"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignTop="@+id/relativeLayout"
+        android:background="@drawable/nav_alarm_on" />
 
 </RelativeLayout>
