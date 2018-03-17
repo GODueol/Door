@@ -65,7 +65,6 @@ public class ChatFirebaseUtil {
     private String userPickurl, targetPicurl;
     private String roomName;
     private String childChatKey;
-    private String lastMessage;
     private DatabaseReference databaseRef, chatDatabaseRef;
     private FirebaseStorage storage;
 
@@ -277,20 +276,6 @@ public class ChatFirebaseUtil {
                 chatDatabaseRef.orderByChild("check").equalTo(1).addListenerForSingleValueEvent(checkChatListener);
                 chatDatabaseRef.removeEventListener(checkChatListener);
                 // 그후 메세지 통신
-                chatDatabaseRef.limitToLast(1).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-
-                        for (DataSnapshot ds : dataSnapshot.getChildren()) {//마찬가지로 중복 유무 확인
-                            lastMessage = ds.getKey();
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
                 chatDatabaseRef.limitToLast(MessageCount).addChildEventListener(chatInitListener);
 
             }
@@ -389,6 +374,7 @@ public class ChatFirebaseUtil {
         ChatMessage chatMessage;
         int check = message.getCheck();
 
+        // 체크버튼
         if (check != 0 && !message.getWriter().equals(userUuid)) {
             message.setCheck(0);
             databaseRef.child(chat).child(roomName).child(key).child("check").setValue(check - 1);
@@ -410,23 +396,33 @@ public class ChatFirebaseUtil {
             chatMessage = new ChatMessage(message, false, true, item);
 
         }
+
+        //데이터 추가
         chatMessageList.add(chatMessage);
         chatMessageKeyList.add(key);
         chattingRecyclerview.getRecycledViewPool().clear();
         chattingMessageAdapter.notifyDataSetChanged();
 
 
+        // 포지션 다루기
         int pos = chattingMessageAdapter.getItemCount() - 2;
         int visiblieCompLastPosition = ((LinearLayoutManager) chattingRecyclerview.getLayoutManager()).findLastVisibleItemPosition();
-        if (pos <= visiblieCompLastPosition || key.equals(lastMessage)) {
+
+
+        // 마
+        if (pos <= visiblieCompLastPosition) {
+            // 마지막 아이템이랑 지금들어온아이템이랑 다른때나 / 맨마지막에서 4이내에 있을경우
             chattingRecyclerview.scrollToPosition(chattingMessageAdapter.getItemCount() - 1);
         } else if (!chatMessage.isMine() && !chatMessage.isImage()) {
+            // 내것이 아니고 텍스트
             hideText.setText(message.getContent());
             overlay.setVisibility(View.VISIBLE);
         } else if (!chatMessage.isMine()) {
+            // 내것이 아니고 이미지
             hideText.setText("사진");
             overlay.setVisibility(View.VISIBLE);
-        } else {
+        } else  {
+            // 내 메세지일경우
             chattingRecyclerview.scrollToPosition(chattingMessageAdapter.getItemCount() - 1);
         }
     }

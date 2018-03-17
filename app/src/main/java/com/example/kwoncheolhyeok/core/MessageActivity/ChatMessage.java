@@ -6,6 +6,7 @@ import com.example.kwoncheolhyeok.core.PeopleFragment.GridItem;
 /**
  * Created by himanshusoni on 06/09/15.
  */
+
 public class ChatMessage {
     private static final int MY_MESSAGE = 0, OTHER_MESSAGE = 1, MY_IMAGE = 2, OTHER_IMAGE = 3;
 
