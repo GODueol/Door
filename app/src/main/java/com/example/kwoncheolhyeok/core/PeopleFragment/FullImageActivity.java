@@ -199,6 +199,7 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
                     intent.putExtra("user", oUser);
                     intent.putExtra("userUuid", item.getUuid());
                     intent.putExtra("userPicuri", item.getPicUrl());
+                    intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                     startActivity(intent);
                 }
             });

@@ -262,9 +262,7 @@ public class ChattingActivity extends BlockBaseActivity {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     UiUtil.getInstance().stopProgressDialog();
-                                    Intent p = new Intent(ChattingActivity.this, MessageActivity.class);
-                                    p.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                    ChattingActivity.this.startActivity(p);
+                                    finish();
                                 }
                             });
                         } catch (ChildSizeMaxException e) {
