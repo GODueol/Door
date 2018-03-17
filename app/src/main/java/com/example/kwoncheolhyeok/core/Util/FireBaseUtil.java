@@ -18,6 +18,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
@@ -315,6 +316,20 @@ public class FireBaseUtil {
         });
     }
 
+    public Task putCloudCore(String cUuid, CoreListItem coreListItem) {
+
+        Map<String, Object> childUpdates = new HashMap<>();
+
+        // cloudCore
+        childUpdates.put("cloudCore/" + coreListItem.getPostKey() + "/cUuid", cUuid);
+        childUpdates.put("cloudCore/" + coreListItem.getPostKey() + "/createDate", ServerValue.TIMESTAMP);
+
+        // posts >> boolean isCloud
+        childUpdates.put("posts/" + cUuid + "/" + coreListItem.getPostKey() + "/isCloud", true);
+
+        return FirebaseDatabase.getInstance().getReference().updateChildren(childUpdates);
+    }
+
     public interface SyncUserListener {
         void onSuccessSync(User user);
     }
@@ -331,4 +346,5 @@ public class FireBaseUtil {
     public interface BlockListener {
         void isBlockCallback(boolean isBlockWithMe);
     }
+
 }

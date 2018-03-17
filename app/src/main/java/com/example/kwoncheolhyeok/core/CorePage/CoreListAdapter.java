@@ -10,6 +10,7 @@ import android.media.MediaPlayer;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -39,13 +40,18 @@ import com.example.kwoncheolhyeok.core.Util.UiUtil;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
+import com.google.firebase.database.ValueEventListener;
 import com.like.LikeButton;
 import com.like.OnLikeListener;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -102,10 +108,75 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
             // 수정 삭제 가능
             setPostMenu(holder, coreListItem, R.menu.core_post_normal_menu);
 
-            // cloud
-            // TODO : cloud
-            holder.core_cloud.setVisibility(View.VISIBLE);
-//            FirebaseDatabase.getInstance().putCloudCore()
+            // 클라우드 올린 포스트는 안보이게
+            if(corePost.isCloud()) holder.core_cloud.setVisibility(View.INVISIBLE);
+            else {
+                holder.core_cloud.setVisibility(View.VISIBLE);
+                holder.core_cloud.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        // test
+                        if(true) {
+                            Map<String, String> b = ServerValue.TIMESTAMP;
+
+                            Log.d("kbj", "date : " + b);
+                            return;
+                        }
+                        
+                        // cloud
+                        // TODO : View 시, 생성된지 하루된 것도 삭제되는 로직도 추가할 것
+                        FirebaseDatabase.getInstance().getReference().child("cloudCore").orderByChild("createDate").addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                // TODO : 추가할 때 100개 이상인 경우 결제&추가 못하게
+                                // TODO : 안드 시간을 조정한 유저를 차단해야할듯...
+
+                                // 일단 서버 기준 현재 시간 가져옴
+
+                                // 모든 데이터를 가져와서
+                                // 하루 지난 클라우드를 없앰
+                                // 그다음 100개 이상이면 결재 못하게 함
+                                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+
+                                }
+
+                                // 그다음 현재 시간이랑 가장 오래
+                                putCloudDialog();
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+
+
+
+                    }
+
+                    private void putCloudDialog() {
+                        UiUtil.getInstance().showDialog(context, "Cloud Core", "코어를 클라우드에 추가합니다. 결재하시겠습니까",
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    UiUtil.getInstance().startProgressDialog((Activity)context);
+                                    FireBaseUtil.getInstance().putCloudCore(cUuid, coreListItem).addOnSuccessListener(new OnSuccessListener() {
+                                        @Override
+                                        public void onSuccess(Object o) {
+                                            Toast.makeText(context, "코어가 클라우드에 추가되었습니다", Toast.LENGTH_SHORT).show();
+                                            UiUtil.getInstance().stopProgressDialog();
+                                        }
+                                    });
+                                }
+                            }, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {}
+                            }
+                        );
+                    }
+                });
+            }
 
         } else if (cUuid.equals(mUuid)) { // Core 주인이 뷰어일 경우
             // 삭제 가능, Edit은 불가능

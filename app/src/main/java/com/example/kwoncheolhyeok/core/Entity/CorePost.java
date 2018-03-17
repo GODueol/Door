@@ -16,6 +16,15 @@ public class CorePost {
     String videoUrl;
     Map<String, Long> likeUsers = new HashMap<>();
     String reply;
+    boolean isCloud = false;
+
+    public boolean isCloud() {
+        return isCloud;
+    }
+
+    public void setCloud(boolean cloud) {
+        isCloud = cloud;
+    }
 
     public CorePost() {
     }
