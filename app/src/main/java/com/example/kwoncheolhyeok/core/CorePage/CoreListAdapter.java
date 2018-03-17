@@ -105,6 +105,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
             // cloud
             // TODO : cloud
             holder.core_cloud.setVisibility(View.VISIBLE);
+//            FirebaseDatabase.getInstance().putCloudCore()
 
         } else if (cUuid.equals(mUuid)) { // Core 주인이 뷰어일 경우
             // 삭제 가능, Edit은 불가능
@@ -377,17 +378,26 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
+                     boolean isReplyFirst = false;
+                    if(coreListItem.getCorePost().getReply() == null) {
+                        isReplyFirst = true;
+                    }
+                    final boolean finalIsReplyFirst = isReplyFirst;
                     postsRef.child(cUuid).child(coreListItem.getPostKey())
                             .child("reply").setValue(value).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
-                            if(DataContainer.getInstance().isBlockWithMe(coreListItem.getCorePost().getUuid())) return;
+
+                            if(!finalIsReplyFirst || DataContainer.getInstance().isBlockWithMe(coreListItem.getCorePost().getUuid())) return;
+
                             FirebaseSendPushMsg.sendPostToFCM("Answer",coreListItem.getCorePost().getUuid(),DataContainer.getInstance().getUser().getId(),"당신이 작성한 질문글에 답이 왔네요!");
                         }
                     });
-                } else {
-                    postsRef.child(cUuid).child(coreListItem.getPostKey())
-                            .child("reply").setValue(null);
+                }
+
+                else {
+                    //취소 못하게
+                    buttonView.setChecked(true);
                 }
             }
         };
