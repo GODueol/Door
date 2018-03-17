@@ -17,7 +17,6 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
@@ -358,11 +357,6 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         CompoundButton.OnCheckedChangeListener listener = new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                int pictureNum = 1;
-                if(compoundButton ==lock2Toggle) pictureNum = 2;
-                else if(compoundButton == lock3Toggle) pictureNum = 3;
-                else if(compoundButton == lock4Toggle) pictureNum = 4;
-
                 String msg;
                 if(b){  // True 잠금
                     msg = "이 사진을 비공개 합니다.";
@@ -856,22 +850,20 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
                             @Override
                             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                                 saveUserPicUrl(taskSnapshot.getDownloadUrl(), targetImageView);
-                                // make thumbnail
-                                try {
-                                    UploadTask thumNailTask = galleryPick.makeThumbNail(thumbNailSpaceRef, uri);
-                                    if (thumNailTask != null)
-                                        thumNailTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                            @Override
-                                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                                saveUserThumbNailPicUrl(taskSnapshot.getDownloadUrl(), targetImageView);
-                                            }
-                                        });
-                                    else removeUserThumbNailPicUrl(targetImageView);
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
                             }
                         });
+
+                        // make thumbnail
+                        UploadTask thumNailTask = galleryPick.makeThumbNail(thumbNailSpaceRef, uri);
+                        if (thumNailTask != null)
+                            thumNailTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                    saveUserThumbNailPicUrl(taskSnapshot.getDownloadUrl(), targetImageView);
+                                }
+                            });
+                        else removeUserThumbNailPicUrl(targetImageView);
+
                     } catch (Exception e) {
                         e.printStackTrace();
                         Toast.makeText(ProfileModifyActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();

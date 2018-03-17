@@ -260,7 +260,7 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
                     .into(profilePics[i]);
 
             // Lock인 사진 표현
-            if(i==0) break;
+            if(i==0) continue;
             if(url.equals(oUser.getPicUrls().getThumbNail_picUrl2())) {
                 if(oUser.getIsLockPics().getIsLockPic2()) imagelocks[i].setVisibility(View.VISIBLE);
                 else imagelocks[i].setVisibility(View.INVISIBLE);
