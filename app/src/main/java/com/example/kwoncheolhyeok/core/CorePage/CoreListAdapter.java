@@ -102,12 +102,17 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
             // 수정 삭제 가능
             setPostMenu(holder, coreListItem, R.menu.core_post_normal_menu);
 
+            // cloud
+            // TODO : cloud
+            holder.core_cloud.setVisibility(View.VISIBLE);
+
         } else if (cUuid.equals(mUuid)) { // Core 주인이 뷰어일 경우
             // 삭제 가능, Edit은 불가능
             setPostMenu(holder, coreListItem, R.menu.core_post_master_menu);
-
+            holder.core_cloud.setVisibility(View.INVISIBLE);
         } else {
             holder.core_setting.setVisibility(View.GONE);
+            holder.core_cloud.setVisibility(View.INVISIBLE);
         }
 
         holder.core_date.setText(DataContainer.getInstance().convertBeforeFormat(corePost.getWriteDate()));
@@ -407,6 +412,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
         ImageButton rewind, fastForward;
         SeekBar seekBar;
         TextView textView_maxTime, textView_currentPosion;
+        ImageButton core_cloud;
 
         CorePostHolder(View itemView) {
             super(itemView);
@@ -437,6 +443,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
             seekBar = itemView.findViewById(R.id.seekBar);
             textView_maxTime = itemView.findViewById(R.id.textView_maxTime);
             textView_currentPosion = itemView.findViewById(R.id.textView_currentPosion);
+            core_cloud = itemView.findViewById(R.id.core_cloud);
         }
     }
 
