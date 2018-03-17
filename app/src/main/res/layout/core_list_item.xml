@@ -49,13 +49,21 @@
 
         </RelativeLayout>
 
+        <TextView
+            android:id="@+id/unuse"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="58dp"
+            />
+
         <ImageButton
             android:id="@+id/core_cloud"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/setting"
-            android:layout_marginRight="30dp"
+            android:layout_toLeftOf="@+id/unuse"
             android:background="@drawable/nav_corecloud"
             android:padding="5dp" />
 
