@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -31,15 +32,6 @@
             android:textSize="15.5dp"
             android:textStyle="bold" />
 
-        <ImageButton
-            android:id="@+id/saveButton"
-            android:layout_width="25dp"
-            android:layout_height="19dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="20dp"
-            android:background="@drawable/save_check"
-            android:onClick="save" />
 
     </RelativeLayout>
 
@@ -56,13 +48,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:layout_marginLeft="15dp"
+            android:layout_marginStart="15dp"
             android:text="@string/set_password"
             android:textColor="@color/black"
-            android:textSize="15dp"
-
-            />
+            android:textSize="15dp" />
 
 
     </RelativeLayout>
@@ -90,6 +82,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/cur"
+            android:layout_marginEnd="5dp"
             android:layout_marginRight="5dp"
             android:textColor="@color/black"
             android:textSize="13dp"
@@ -109,14 +102,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/new_p"
+            android:layout_marginEnd="5dp"
             android:layout_marginRight="5dp"
             android:ems="10"
             android:inputType="textPassword"
             android:textColor="@color/black"
             android:textSize="13dp"
-            android:theme="@style/EditTxtUnderBarBlack"
 
-            />
+            android:theme="@style/EditTxtUnderBarBlack" />
 
         <TextView
             android:id="@+id/re_p"
@@ -132,6 +125,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/re_p"
+            android:layout_marginEnd="5dp"
             android:layout_marginRight="5dp"
             android:ems="10"
             android:inputType="textPassword"
@@ -140,15 +134,34 @@
             android:theme="@style/EditTxtUnderBarBlack" />
 
         <TextView
+            android:id="@+id/forgot_pw"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/re_pw"
+            android:layout_marginEnd="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="15dp"
+            android:gravity="left"
+            android:text="@string/find_password"
+            android:textColor="@color/black"
+            tools:ignore="RtlHardcoded" />
+
+        <TextView
+            android:id="@+id/change_pw"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_below="@+id/re_pw"
             android:layout_marginRight="5dp"
             android:layout_marginTop="15dp"
             android:gravity="right"
-            android:text="@string/find_password"
-            android:textColor="@color/black" />
+            android:text="@string/change_password"
+            android:textColor="@color/black"
+            android:layout_marginEnd="8dp"
+            tools:ignore="RtlHardcoded" />
 
     </RelativeLayout>
 
@@ -166,8 +179,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:layout_marginLeft="15dp"
+            android:layout_marginStart="15dp"
             android:text="@string/del_account"
             android:textColor="@color/black"
             android:textSize="15dp" />

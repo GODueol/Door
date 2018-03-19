@@ -54,6 +54,8 @@ import java.util.List;
 
 public class ChattingActivity extends BlockBaseActivity {
 
+    private static final int REQUEST_FIRST_ENTER = 1;
+
     private Toolbar toolbar = null;
     private RecyclerView chattingRecyclerview;
     private ImageButton mButtonSend, mImageView;
@@ -176,14 +178,12 @@ public class ChattingActivity extends BlockBaseActivity {
                 sendImageMessage();
             }
         });
-
-
     }
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         if (requestCode == GalleryPick.REQUEST_GALLERY && data != null && data.getData() != null) {
 
             try {
@@ -243,7 +243,6 @@ public class ChattingActivity extends BlockBaseActivity {
             case R.id.profile:
                 Intent p = new Intent(ChattingActivity.this, FullImageActivity.class);
                 p.putExtra("item", chatFirebaseUtil.getItem());
-                p.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 ChattingActivity.this.startActivity(p);
                 break;
             case R.id.block:

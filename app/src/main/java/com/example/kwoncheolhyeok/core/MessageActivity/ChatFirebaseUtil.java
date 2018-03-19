@@ -70,6 +70,7 @@ public class ChatFirebaseUtil {
 
     ///////////////////////
     private int messageWeight = 1;
+    private String lastMessage;
     private GridItem item;
     private ChattingMessageAdapter chattingMessageAdapter;
     private RecyclerView chattingRecyclerview;
@@ -81,6 +82,7 @@ public class ChatFirebaseUtil {
     private List<ChatMessage> uncheckMessageList;
 
     private SharedPreferencesUtil SPUtil;
+    private boolean first;
 
     public ChatFirebaseUtil(Context context, User currentUser, User targetUser, String userUuid, String targetUuid, LinearLayout overlay, TextView hideText) {
         databaseRef = FirebaseDatabase.getInstance().getReference();
@@ -98,6 +100,7 @@ public class ChatFirebaseUtil {
         userPickurl = currentUser.getPicUrls().getThumbNail_picUrl1();
         targetPicurl = targetUser.getPicUrls().getThumbNail_picUrl1();
         SPUtil = new SharedPreferencesUtil(context);
+        first = true;
     }
 
     public void setLastChatView() {
@@ -275,6 +278,23 @@ public class ChatFirebaseUtil {
                 // 처음 모든 메세지 읽음처리
                 chatDatabaseRef.orderByChild("check").equalTo(1).addListenerForSingleValueEvent(checkChatListener);
                 chatDatabaseRef.removeEventListener(checkChatListener);
+
+
+                chatDatabaseRef.limitToLast(1).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+
+                        for (DataSnapshot ds : dataSnapshot.getChildren()) {//마찬가지로 중복 유무 확인
+                            lastMessage = ds.getKey();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+                chatDatabaseRef.removeEventListener(this);
                 // 그후 메세지 통신
                 chatDatabaseRef.limitToLast(MessageCount).addChildEventListener(chatInitListener);
 
@@ -397,6 +417,10 @@ public class ChatFirebaseUtil {
 
         }
 
+        // 포지션 다루기
+        int pos = chattingMessageAdapter.getItemCount() - 2;
+        int visiblieCompLastPosition = ((LinearLayoutManager) chattingRecyclerview.getLayoutManager()).findLastVisibleItemPosition();
+
         //데이터 추가
         chatMessageList.add(chatMessage);
         chatMessageKeyList.add(key);
@@ -404,15 +428,9 @@ public class ChatFirebaseUtil {
         chattingMessageAdapter.notifyDataSetChanged();
 
 
-        // 포지션 다루기
-        int pos = chattingMessageAdapter.getItemCount() - 2;
-        int visiblieCompLastPosition = ((LinearLayoutManager) chattingRecyclerview.getLayoutManager()).findLastVisibleItemPosition();
-
-
-        // 마
-        if (pos <= visiblieCompLastPosition) {
-            // 마지막 아이템이랑 지금들어온아이템이랑 다른때나 / 맨마지막에서 4이내에 있을경우
-            chattingRecyclerview.scrollToPosition(chattingMessageAdapter.getItemCount() - 1);
+        if (pos <= visiblieCompLastPosition ||  first && !key.equals(lastMessage) ) {
+            //맨마지막에서 2이내에 있을경우
+            chattingRecyclerview.scrollToPosition(chattingMessageAdapter.getItemCount()-1);
         } else if (!chatMessage.isMine() && !chatMessage.isImage()) {
             // 내것이 아니고 텍스트
             hideText.setText(message.getContent());
@@ -423,7 +441,12 @@ public class ChatFirebaseUtil {
             overlay.setVisibility(View.VISIBLE);
         } else  {
             // 내 메세지일경우
-            chattingRecyclerview.scrollToPosition(chattingMessageAdapter.getItemCount() - 1);
+            chattingRecyclerview.scrollToPosition(chattingMessageAdapter.getItemCount()-1);
+        }
+
+        if(key.equals(lastMessage)){
+            chattingRecyclerview.scrollToPosition(chattingMessageAdapter.getItemCount()-1);
+            first = false;
         }
     }
 

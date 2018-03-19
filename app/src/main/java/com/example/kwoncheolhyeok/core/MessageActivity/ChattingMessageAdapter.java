@@ -332,7 +332,6 @@ public class ChattingMessageAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             public void onClick(View view) {
                 Intent p = new Intent(context.getApplicationContext(), ChattingFullImage.class);
                 p.putExtra("imageUrl", url);
-                p.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                 context.getApplicationContext().startActivity(p);
             }
         });
@@ -403,7 +402,6 @@ public class ChattingMessageAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         public void onClick(View view) {
             Intent p = new Intent(context, FullImageActivity.class);
             p.putExtra("item", item);
-            p.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             context.startActivity(p);
         }
     };

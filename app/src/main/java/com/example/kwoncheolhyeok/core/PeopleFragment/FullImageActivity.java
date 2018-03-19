@@ -130,7 +130,6 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
         getSupportActionBar().setDisplayShowHomeEnabled(true); //홈 아이콘을 숨김처리합니다.
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
 
-
         //Tab Fragment 1에서 받아온 썸네일 이미지를 이 액티비티로 받아옴
         page1 = findViewById(R.id.image1);
         page1.setOnClickListener(this);
@@ -199,7 +198,6 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
                     intent.putExtra("user", oUser);
                     intent.putExtra("userUuid", item.getUuid());
                     intent.putExtra("userPicuri", item.getPicUrl());
-                    intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                     startActivity(intent);
                 }
             });
