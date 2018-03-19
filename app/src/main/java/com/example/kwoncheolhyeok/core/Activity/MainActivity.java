@@ -57,6 +57,7 @@ import com.example.kwoncheolhyeok.core.Util.BusProvider;
 import com.example.kwoncheolhyeok.core.Util.CloseActivityHandler;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.FirebaseIDService;
+import com.example.kwoncheolhyeok.core.Util.GlideApp;
 import com.example.kwoncheolhyeok.core.Util.SharedPreferencesUtil;
 import com.example.kwoncheolhyeok.core.Util.UiUtil;
 import com.google.android.gms.maps.model.LatLng;
@@ -112,6 +113,14 @@ public class MainActivity extends AppCompatActivity
         // (Main View)네비게이션바 관련
         drawer = findViewById(R.id.drawer_layout);
         toolbar = findViewById(R.id.toolbar);
+
+        //툴바 이미지 붙이기 (코어 회원이면 drawable : tb_core / 코어플러스 회원이면 tb_coreplus)
+        ImageView coreplus = findViewById(R.id.tb_coreplus);
+        GlideApp.with(this)
+                .load(UiUtil.resourceToUri(this, R.drawable.tb_coreplus))
+                .centerCrop()
+                .into(coreplus);
+
 
         setSupportActionBar(toolbar);
 

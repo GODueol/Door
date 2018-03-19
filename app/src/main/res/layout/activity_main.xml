@@ -29,10 +29,13 @@
                 android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
                 <ImageButton
-                android:layout_width="160dp"
-                android:layout_height="23dp"
-                android:layout_gravity="center"
-                android:background="@drawable/title_coreplus" />
+                    android:id="@+id/tb_coreplus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:foregroundGravity="center"
+                    android:layout_gravity="center"
+                    android:background="@color/white"
+                    />
 
             </android.support.v7.widget.Toolbar>
 
@@ -47,8 +50,7 @@
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
         app:theme="@style/NavigationViewStyle"
-        tools:openDrawer="start"
-        >
+        tools:openDrawer="start">
 
         <include layout="@layout/app_bar_main" />
 
