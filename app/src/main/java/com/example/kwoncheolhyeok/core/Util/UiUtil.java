@@ -12,7 +12,11 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Build;
+import android.provider.Settings;
+import android.support.annotation.RequiresApi;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.example.kwoncheolhyeok.core.CorePage.CoreActivity;
 import com.example.kwoncheolhyeok.core.Entity.User;
@@ -97,6 +101,32 @@ public class UiUtil {
                 context.getResources().getResourcePackageName(resID) + '/' +
                 context.getResources().getResourceTypeName(resID) + '/' +
                 context.getResources().getResourceEntryName(resID));
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+    public boolean isAutoTimeSet(Context context){
+        try {
+
+            //값 구하기
+            int autoTime = android.provider.Settings.System.getInt(context.getContentResolver(),
+                    android.provider.Settings.System.AUTO_TIME);
+
+            //값
+            boolean autuTimeCheck = autoTime == 1; // 1:true(자동), 0:false(수동)
+
+            //확인
+            Log.d("test", "autotime check : "+autuTimeCheck );
+
+            // 반대로 설정값을 저장 할 수도있다.
+            android.provider.Settings.Global.putInt(context.getContentResolver(),
+                    android.provider.Settings.System.AUTO_TIME, 1); // set AUTO
+
+            return autuTimeCheck;
+
+        } catch (Settings.SettingNotFoundException e) {
+            return false;
+        }
+
     }
 
 }

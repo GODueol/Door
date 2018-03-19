@@ -44,14 +44,12 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.like.LikeButton;
 import com.like.OnLikeListener;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -118,9 +116,11 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 
                         // test
                         if(true) {
-                            Map<String, String> b = ServerValue.TIMESTAMP;
 
-                            Log.d("kbj", "date : " + b);
+                            Log.d("kbj", "date : " + System.currentTimeMillis());
+
+
+
                             return;
                         }
                         
