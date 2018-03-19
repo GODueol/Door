@@ -1,10 +1,14 @@
 package com.example.kwoncheolhyeok.core.SettingActivity;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.view.View;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -93,7 +97,7 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
         switch (view.getId()) {
             case R.id.change_pw:
                 final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                String email = DataContainer.getInstance().getUser().getEmail();
+                String userenail = DataContainer.getInstance().getUser().getEmail();
                 UiUtil.getInstance().startProgressDialog(this);
 
                 // 비밀번호 변경 검증
@@ -106,7 +110,7 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
                 }
 
                 AuthCredential credential = EmailAuthProvider
-                        .getCredential(email, String.valueOf(currentPw.getText()));
+                        .getCredential(userenail, String.valueOf(currentPw.getText()));
 
                 user.reauthenticate(credential)
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -141,7 +145,7 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
                 });
                 break;
             case R.id.forgot_pw:
-               /* final AutoCompleteTextView email = new AutoCompleteTextView(this);
+                final AutoCompleteTextView email = new AutoCompleteTextView(this);
                 email.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setView(email)
@@ -151,13 +155,13 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
                             public void onClick(DialogInterface dialog, int which) {
                                 String emailAddress = email.getText().toString();
 
-                                if(!emailAddress.equals("")){
+                                if (!emailAddress.equals("")) {
                                     FirebaseAuth auth = FirebaseAuth.getInstance();
                                     auth.sendPasswordResetEmail(emailAddress)
                                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> task) {
-                                                    if(task.isSuccessful()){
+                                                    if (task.isSuccessful()) {
                                                         Toast.makeText(getApplicationContext(), "이메일 전송 완료", Toast.LENGTH_SHORT).show();
                                                     } else {
                                                         Toast.makeText(getApplicationContext(), "이메일 주소가 올바르지 않습니다", Toast.LENGTH_SHORT).show();
@@ -170,7 +174,7 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
                                 }
 
                             }
-                        }).show();*/
+                        }).show();
                 break;
         }
     }
