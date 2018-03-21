@@ -31,6 +31,7 @@ import com.example.kwoncheolhyeok.core.Entity.CorePost;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.Exception.ChildSizeMaxException;
 import com.example.kwoncheolhyeok.core.R;
+import com.example.kwoncheolhyeok.core.Util.AlarmUtil;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
 import com.example.kwoncheolhyeok.core.Util.FirebaseSendPushMsg;
@@ -146,7 +147,13 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                             public void isBlockCallback(boolean isBlockWithMe) {
                                 if(isBlockWithMe) return;
                                 if (!corePost.getUuid().equals(mUuid)) {
-                                    FirebaseSendPushMsg.sendPostToFCM("Like", corePost.getUuid(), DataContainer.getInstance().getUser().getId(), context.getString(R.string.alertLike));
+                                    final String NickName = DataContainer.getInstance().getUser().getId();
+                                    AlarmUtil.getInstance().sendAlarm("Like",NickName,corePost).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            FirebaseSendPushMsg.sendPostToFCM("Like", corePost.getUuid(), NickName, context.getString(R.string.alertLike));
+                                        }
+                                    });
                                 }
                             }
                         });
@@ -390,7 +397,14 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 
                             if(!finalIsReplyFirst || DataContainer.getInstance().isBlockWithMe(coreListItem.getCorePost().getUuid())) return;
 
-                            FirebaseSendPushMsg.sendPostToFCM("Answer",coreListItem.getCorePost().getUuid(),DataContainer.getInstance().getUser().getId(),"당신이 작성한 질문글에 답이 왔네요!");
+                            final String NickName = DataContainer.getInstance().getUser().getId();
+                            AlarmUtil.getInstance().sendAlarm("Answer",NickName,coreListItem.getCorePost()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    FirebaseSendPushMsg.sendPostToFCM("Answer",coreListItem.getCorePost().getUuid(),NickName,"당신이 작성한 질문글에 답이 왔네요!");
+                                }
+                            });
+
                         }
                     });
                 }
