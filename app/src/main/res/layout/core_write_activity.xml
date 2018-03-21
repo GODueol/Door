@@ -200,6 +200,7 @@
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 android:background="@android:color/transparent"
+                android:maxLength="1000"
                 android:hint="자신을 표현해 보세요."
                 android:lineSpacingExtra="8dip"
                 android:theme="@style/EditText.Color.Black" />
