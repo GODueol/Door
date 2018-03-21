@@ -10,6 +10,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.CheckBox;
@@ -33,6 +34,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+
+import org.w3c.dom.Text;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -126,13 +129,20 @@ public class LoginActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         link_find_password.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("ResourceAsColor")
             @Override
             public void onClick(View view) {
                 final AutoCompleteTextView email = new AutoCompleteTextView(LoginActivity.this);
                 email.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
                 AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+
+                TextView title = new TextView(LoginActivity.this);
+                title.setText("가입하신 메일을 알려주세요.\n비밀번호 변경 페이지를 메일로 보내드립니다.");
+                title.setGravity(Gravity.CENTER);
+                title.setPadding(0,90,0,40);
+                title.setTextSize(15);
                 builder.setView(email)
-                        .setTitle("이메일을 쓰세요")
+                        .setCustomTitle(title)
                         .setPositiveButton("확인", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -145,15 +155,15 @@ public class LoginActivity extends AppCompatActivity {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> task) {
                                                     if(task.isSuccessful()){
-                                                        Toast.makeText(LoginActivity.this, "이메일 전송 완료", Toast.LENGTH_SHORT).show();
+                                                        Toast.makeText(LoginActivity.this, "메일 전송 완료", Toast.LENGTH_SHORT).show();
                                                     } else {
-                                                        Toast.makeText(LoginActivity.this, "이메일 주소가 올바르지 않습니다", Toast.LENGTH_SHORT).show();
+                                                        Toast.makeText(LoginActivity.this, "메일 주소가 올바르지 않습니다", Toast.LENGTH_SHORT).show();
                                                     }
 
                                                 }
                                             });
                                 } else {
-                                    Toast.makeText(LoginActivity.this, "이메일을 쓰세요", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(LoginActivity.this, "다시 시도해주세요", Toast.LENGTH_SHORT).show();
                                 }
 
                             }
