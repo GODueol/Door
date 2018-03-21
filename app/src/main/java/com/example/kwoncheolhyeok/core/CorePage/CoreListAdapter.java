@@ -10,6 +10,7 @@ import android.media.MediaPlayer;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,10 +27,12 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.bumptech.glide.Glide;
+import com.example.kwoncheolhyeok.core.Entity.CloudCore;
 import com.example.kwoncheolhyeok.core.Entity.CoreListItem;
 import com.example.kwoncheolhyeok.core.Entity.CorePost;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.Exception.ChildSizeMaxException;
+import com.example.kwoncheolhyeok.core.MessageActivity.util.DateUtil;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
@@ -39,14 +42,21 @@ import com.example.kwoncheolhyeok.core.Util.UiUtil;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.like.LikeButton;
 import com.like.OnLikeListener;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
+import static com.example.kwoncheolhyeok.core.Util.DataContainer.CloudCoreMax;
 
 /**
  * Created by KwonCheolHyeok on 2017-01-17.
@@ -102,10 +112,100 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
             // 수정 삭제 가능
             setPostMenu(holder, coreListItem, R.menu.core_post_normal_menu);
 
-            // cloud
-            // TODO : cloud
-            holder.core_cloud.setVisibility(View.VISIBLE);
-//            FirebaseDatabase.getInstance().putCloudCore()
+            // 클라우드 올린 포스트는 안보이게
+            if(corePost.isCloud()) holder.core_cloud.setVisibility(View.INVISIBLE);
+            else {
+                holder.core_cloud.setVisibility(View.VISIBLE);
+                holder.core_cloud.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        
+                        // cloud
+                        FirebaseDatabase.getInstance().getReference().runTransaction(new Transaction.Handler() {
+                            @Override
+                            public Transaction.Result doTransaction(MutableData mutableData) {
+
+                                Map<String, CloudCore> cloudCoreMap = mutableData.getValue(Map.class);
+                                if (cloudCoreMap == null) {
+                                    return Transaction.success(mutableData);
+                                }
+
+                                if(cloudCoreMap.size()<CloudCoreMax){
+                                    // 추가 가능
+                                    return Transaction.success(mutableData);
+                                }
+
+                                // 100개 이상일 시 오래된 것은 삭제
+                                for (Map.Entry<String, CloudCore> entry : cloudCoreMap.entrySet()){
+
+                                    CloudCore cloudCore = entry.getValue();
+
+                                    long diff = System.currentTimeMillis() - cloudCore.getCreateDate();
+                                    Log.d("kbj", "diff day : " + diff/(60*60*24));
+
+                                    if(diff > (60*60*24)){
+                                        // 삭제 대상
+                                        cloudCoreMap.remove(entry.getKey());
+                                    }
+
+                                }
+
+                                // Set value and report transaction success
+                                mutableData.setValue(cloudCoreMap);
+                                return Transaction.success(mutableData);
+                            }
+
+                            @Override
+                            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+
+                                // 커밋 실패
+                                if(!b){
+                                    Toast.makeText(context, databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+
+                                // Transaction completed
+                                Map<String, CloudCore> cloudCoreMap = dataSnapshot.getValue(Map.class);
+                                if(cloudCoreMap.size() < CloudCoreMax) {
+                                    // 코어클라우드 결제 가능
+                                    putCloudDialog();
+                                } else {
+                                    // 가장 오래된 메세지가져오기
+                                    long minDate = Long.MAX_VALUE;
+                                    for(CloudCore cloudCore : cloudCoreMap.values()){
+                                        if(minDate > cloudCore.getCreateDate()) minDate = cloudCore.getCreateDate();
+                                    }
+
+                                    Toast.makeText(context, "더이상 클라우드 코어를 추가할 수 없습니다.\n" + new DateUtil(minDate).getDate() + " 이후에 다시 시도하세요", Toast.LENGTH_SHORT).show();
+                                }
+
+                            }
+                        });
+
+                    }
+
+                    private void putCloudDialog() {
+                        UiUtil.getInstance().showDialog(context, "Cloud Core", "코어를 클라우드에 추가합니다. 결재하시겠습니까",
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    UiUtil.getInstance().startProgressDialog((Activity)context);
+                                    FireBaseUtil.getInstance().putCloudCore(cUuid, coreListItem).addOnSuccessListener(new OnSuccessListener() {
+                                        @Override
+                                        public void onSuccess(Object o) {
+                                            Toast.makeText(context, "코어가 클라우드에 추가되었습니다", Toast.LENGTH_SHORT).show();
+                                            UiUtil.getInstance().stopProgressDialog();
+                                        }
+                                    });
+                                }
+                            }, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {}
+                            }
+                        );
+                    }
+                });
+            }
 
         } else if (cUuid.equals(mUuid)) { // Core 주인이 뷰어일 경우
             // 삭제 가능, Edit은 불가능

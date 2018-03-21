@@ -3,6 +3,7 @@ package com.example.kwoncheolhyeok.core.Util;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.example.kwoncheolhyeok.core.Entity.CloudCore;
 import com.example.kwoncheolhyeok.core.Entity.CoreListItem;
 import com.example.kwoncheolhyeok.core.Entity.CorePost;
 import com.example.kwoncheolhyeok.core.Entity.User;
@@ -315,6 +316,19 @@ public class FireBaseUtil {
         });
     }
 
+    public Task putCloudCore(String cUuid, CoreListItem coreListItem) {
+
+        Map<String, Object> childUpdates = new HashMap<>();
+
+        // cloudCore
+        childUpdates.put("cloudCore", new CloudCore(cUuid, System.currentTimeMillis()));
+
+        // posts >> boolean isCloud
+        childUpdates.put("posts/" + cUuid + "/" + coreListItem.getPostKey() + "/isCloud", true);
+
+        return FirebaseDatabase.getInstance().getReference().updateChildren(childUpdates);
+    }
+
     public interface SyncUserListener {
         void onSuccessSync(User user);
     }
@@ -331,4 +345,5 @@ public class FireBaseUtil {
     public interface BlockListener {
         void isBlockCallback(boolean isBlockWithMe);
     }
+
 }
