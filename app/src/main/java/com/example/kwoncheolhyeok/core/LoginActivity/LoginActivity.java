@@ -15,6 +15,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -57,7 +58,7 @@ public class LoginActivity extends AppCompatActivity {
     @Bind(R.id.cb_save_id)
     CheckBox cb_save_id;
     @Bind(R.id.link_find_password)
-    TextView link_find_password;
+    ImageView link_find_password;
 
 
     @Override

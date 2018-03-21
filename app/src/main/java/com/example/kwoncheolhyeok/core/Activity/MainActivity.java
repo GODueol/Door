@@ -118,6 +118,7 @@ public class MainActivity extends AppCompatActivity
         ImageView coreplus = findViewById(R.id.tb_coreplus);
         GlideApp.with(this)
                 .load(UiUtil.resourceToUri(this, R.drawable.tb_coreplus))
+//                .override(400, 80)
                 .centerCrop()
                 .into(coreplus);
 
@@ -145,6 +146,8 @@ public class MainActivity extends AppCompatActivity
 
         //Navigation view
         NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setItemIconTintList(null); //네비게이션 안의 아이콘 색을 오리지널로 표현
+
         //네비게이션 드로워 안의 COREPLUS 텍스트 색 변경
         Menu menu = navigationView.getMenu();
         MenuItem tools = menu.findItem(R.id.nav_coreplus);
@@ -152,8 +155,6 @@ public class MainActivity extends AppCompatActivity
         s.setSpan(new TextAppearanceSpan(this, R.style.CorePlusColor), 0, s.length(), 0);
         tools.setTitle(s);
 
-        //네비게이션 안의 아이콘 색을 오리지널로 표현
-        navigationView.setItemIconTintList(null);
 
         navigationView.setNavigationItemSelectedListener(this);
         drawer.setOnTouchListener(new View.OnTouchListener() {
