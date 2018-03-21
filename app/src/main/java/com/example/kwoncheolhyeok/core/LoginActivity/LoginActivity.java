@@ -136,11 +136,13 @@ public class LoginActivity extends AppCompatActivity {
                 email.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
                 AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
 
+
                 TextView title = new TextView(LoginActivity.this);
-                title.setText("가입하신 메일을 알려주세요.\n비밀번호 변경 페이지를 메일로 보내드립니다.");
+                title.setText("[비밀번호 찾기]\n\n가입하신 메일을 알려주세요.\n비밀번호 변경 페이지를 메일로 보내드립니다.");
                 title.setGravity(Gravity.CENTER);
                 title.setPadding(0,90,0,40);
                 title.setTextSize(15);
+
                 builder.setView(email)
                         .setCustomTitle(title)
                         .setPositiveButton("확인", new DialogInterface.OnClickListener() {
