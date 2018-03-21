@@ -53,7 +53,7 @@ public class IntroActivity extends Activity {
     protected void onStart() {
         super.onStart();
         if(!UiUtil.getInstance().isAutoTimeSet(this)){
-            Toast.makeText(this, "시간 수정설정 되어있으면 앱을 사용할 수 없습니다", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "시간을 수동으로 설정한 경우 코어를 사용하실 수 없습니다.", Toast.LENGTH_LONG).show();
             finish();
             return;
         }
