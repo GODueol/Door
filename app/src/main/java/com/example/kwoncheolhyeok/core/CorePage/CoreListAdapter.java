@@ -27,10 +27,12 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.bumptech.glide.Glide;
+import com.example.kwoncheolhyeok.core.Entity.CloudCore;
 import com.example.kwoncheolhyeok.core.Entity.CoreListItem;
 import com.example.kwoncheolhyeok.core.Entity.CorePost;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.Exception.ChildSizeMaxException;
+import com.example.kwoncheolhyeok.core.MessageActivity.util.DateUtil;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
@@ -44,13 +46,17 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.like.LikeButton;
 import com.like.OnLikeListener;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
+import static com.example.kwoncheolhyeok.core.Util.DataContainer.CloudCoreMax;
 
 /**
  * Created by KwonCheolHyeok on 2017-01-17.
@@ -113,45 +119,68 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                 holder.core_cloud.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-
-                        // test
-                        if(true) {
-
-                            Log.d("kbj", "date : " + System.currentTimeMillis());
-
-
-
-                            return;
-                        }
                         
                         // cloud
-                        // TODO : View 시, 생성된지 하루된 것도 삭제되는 로직도 추가할 것
-                        FirebaseDatabase.getInstance().getReference().child("cloudCore").orderByChild("createDate").addListenerForSingleValueEvent(new ValueEventListener() {
+                        FirebaseDatabase.getInstance().getReference().runTransaction(new Transaction.Handler() {
                             @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                // TODO : 추가할 때 100개 이상인 경우 결제&추가 못하게
-                                // TODO : 안드 시간을 조정한 유저를 차단해야할듯...
+                            public Transaction.Result doTransaction(MutableData mutableData) {
 
-                                // 일단 서버 기준 현재 시간 가져옴
+                                Map<String, CloudCore> cloudCoreMap = mutableData.getValue(Map.class);
+                                if (cloudCoreMap == null) {
+                                    return Transaction.success(mutableData);
+                                }
 
-                                // 모든 데이터를 가져와서
-                                // 하루 지난 클라우드를 없앰
-                                // 그다음 100개 이상이면 결재 못하게 함
-                                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                                if(cloudCoreMap.size()<CloudCoreMax){
+                                    // 추가 가능
+                                    return Transaction.success(mutableData);
+                                }
+
+                                // 100개 이상일 시 오래된 것은 삭제
+                                for (Map.Entry<String, CloudCore> entry : cloudCoreMap.entrySet()){
+
+                                    CloudCore cloudCore = entry.getValue();
+
+                                    long diff = System.currentTimeMillis() - cloudCore.getCreateDate();
+                                    Log.d("kbj", "diff day : " + diff/(60*60*24));
+
+                                    if(diff > (60*60*24)){
+                                        // 삭제 대상
+                                        cloudCoreMap.remove(entry.getKey());
+                                    }
 
                                 }
 
-                                // 그다음 현재 시간이랑 가장 오래
-                                putCloudDialog();
+                                // Set value and report transaction success
+                                mutableData.setValue(cloudCoreMap);
+                                return Transaction.success(mutableData);
                             }
 
                             @Override
-                            public void onCancelled(DatabaseError databaseError) {
+                            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+
+                                // 커밋 실패
+                                if(!b){
+                                    Toast.makeText(context, databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+
+                                // Transaction completed
+                                Map<String, CloudCore> cloudCoreMap = dataSnapshot.getValue(Map.class);
+                                if(cloudCoreMap.size() < CloudCoreMax) {
+                                    // 코어클라우드 결제 가능
+                                    putCloudDialog();
+                                } else {
+                                    // 가장 오래된 메세지가져오기
+                                    long minDate = Long.MAX_VALUE;
+                                    for(CloudCore cloudCore : cloudCoreMap.values()){
+                                        if(minDate > cloudCore.getCreateDate()) minDate = cloudCore.getCreateDate();
+                                    }
+
+                                    Toast.makeText(context, "더이상 클라우드 코어를 추가할 수 없습니다.\n" + new DateUtil(minDate).getDate() + " 이후에 다시 시도하세요", Toast.LENGTH_SHORT).show();
+                                }
 
                             }
                         });
-
-
 
                     }
 

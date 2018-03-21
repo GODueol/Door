@@ -3,6 +3,7 @@ package com.example.kwoncheolhyeok.core.Util;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.example.kwoncheolhyeok.core.Entity.CloudCore;
 import com.example.kwoncheolhyeok.core.Entity.CoreListItem;
 import com.example.kwoncheolhyeok.core.Entity.CorePost;
 import com.example.kwoncheolhyeok.core.Entity.User;
@@ -18,7 +19,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
-import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
@@ -321,8 +321,7 @@ public class FireBaseUtil {
         Map<String, Object> childUpdates = new HashMap<>();
 
         // cloudCore
-        childUpdates.put("cloudCore/" + coreListItem.getPostKey() + "/cUuid", cUuid);
-        childUpdates.put("cloudCore/" + coreListItem.getPostKey() + "/createDate", ServerValue.TIMESTAMP);
+        childUpdates.put("cloudCore", new CloudCore(cUuid, System.currentTimeMillis()));
 
         // posts >> boolean isCloud
         childUpdates.put("posts/" + cUuid + "/" + coreListItem.getPostKey() + "/isCloud", true);

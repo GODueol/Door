@@ -1,9 +1,9 @@
-package com.example.kwoncheolhyeok.core.Util;
+package com.example.kwoncheolhyeok.core.Entity;
 
 /**
  * Created by kimbyeongin on 2018-03-17.
  */
-class CloudCore {
+public class CloudCore {
     String cUuid;
     long createDate;
 
