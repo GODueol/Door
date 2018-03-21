@@ -15,6 +15,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.NavigationView.OnNavigationItemSelectedListener;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
@@ -39,6 +40,7 @@ import com.bumptech.glide.Glide;
 import com.example.kwoncheolhyeok.core.CorePage.CoreCloudActivity;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.Event.SomeoneBlocksMeEvent;
+import com.example.kwoncheolhyeok.core.Exception.NotSetAutoTimeException;
 import com.example.kwoncheolhyeok.core.FriendsActivity.FriendsActivity;
 import com.example.kwoncheolhyeok.core.LoginActivity.LoginActivity;
 import com.example.kwoncheolhyeok.core.MessageActivity.MessageActivity;
@@ -225,7 +227,13 @@ public class MainActivity extends AppCompatActivity
 
         FirebaseIDService fids = new FirebaseIDService();
         fids.onTokenRefresh();
-        mUser.setLoginDate(System.currentTimeMillis());
+        try {
+            mUser.setLoginDate(UiUtil.getInstance().getCurrentTime(MainActivity.this));
+        } catch (NotSetAutoTimeException e) {
+            e.printStackTrace();
+            Toast.makeText(fids, e.getMessage(), Toast.LENGTH_SHORT).show();
+            ActivityCompat.finishAffinity(MainActivity.this);
+        }
         fids.setUserToken(mUser);
         DataContainer.getInstance().getUsersRef().child(user.getUid()).setValue(mUser)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {

@@ -8,6 +8,7 @@ import com.example.kwoncheolhyeok.core.Entity.CoreListItem;
 import com.example.kwoncheolhyeok.core.Entity.CorePost;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.Exception.ChildSizeMaxException;
+import com.example.kwoncheolhyeok.core.Exception.NotSetAutoTimeException;
 import com.example.kwoncheolhyeok.core.MessageActivity.util.MessageVO;
 import com.example.kwoncheolhyeok.core.MessageActivity.util.RoomVO;
 import com.example.kwoncheolhyeok.core.R;
@@ -50,7 +51,7 @@ public class FireBaseUtil {
     }
 
 
-    public Task<Void> follow(Context context, final User oUser, String oUuid, boolean isFollowed) throws ChildSizeMaxException {
+    public Task<Void> follow(Context context, final User oUser, String oUuid, boolean isFollowed) throws ChildSizeMaxException, NotSetAutoTimeException {
         String myUuid = DataContainer.getInstance().getUid();
         SharedPreferencesUtil SPUtil = new SharedPreferencesUtil(context.getApplicationContext());
         final User mUser = DataContainer.getInstance().getUser();
@@ -83,7 +84,7 @@ public class FireBaseUtil {
         } else {
             // 친구 추가
             if (mUser.getFollowingUsers().containsKey(oUuid)) return null;
-            long now = System.currentTimeMillis();
+            long now = UiUtil.getInstance().getCurrentTime(context);
 
             mUser.getFollowingUsers().put(oUuid, now);
             childUpdates.put("/" + myUuid + "/followingUsers/" + oUuid, now);
@@ -316,12 +317,12 @@ public class FireBaseUtil {
         });
     }
 
-    public Task putCloudCore(String cUuid, CoreListItem coreListItem) {
+    public Task putCloudCore(String cUuid, CoreListItem coreListItem, Context context) throws NotSetAutoTimeException {
 
         Map<String, Object> childUpdates = new HashMap<>();
 
         // cloudCore
-        childUpdates.put("cloudCore", new CloudCore(cUuid, System.currentTimeMillis()));
+        childUpdates.put("cloudCore", new CloudCore(cUuid, UiUtil.getInstance().getCurrentTime(context)));
 
         // posts >> boolean isCloud
         childUpdates.put("posts/" + cUuid + "/" + coreListItem.getPostKey() + "/isCloud", true);

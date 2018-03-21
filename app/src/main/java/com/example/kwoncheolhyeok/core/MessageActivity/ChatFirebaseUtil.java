@@ -1,11 +1,13 @@
 package com.example.kwoncheolhyeok.core.MessageActivity;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -15,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.kwoncheolhyeok.core.Entity.User;
+import com.example.kwoncheolhyeok.core.Exception.NotSetAutoTimeException;
 import com.example.kwoncheolhyeok.core.MessageActivity.util.CryptoImeageName;
 import com.example.kwoncheolhyeok.core.MessageActivity.util.MessageVO;
 import com.example.kwoncheolhyeok.core.MessageActivity.util.RoomVO;
@@ -25,6 +28,7 @@ import com.example.kwoncheolhyeok.core.Util.FirebaseSendPushMsg;
 import com.example.kwoncheolhyeok.core.Util.GPSInfo;
 import com.example.kwoncheolhyeok.core.Util.GalleryPick;
 import com.example.kwoncheolhyeok.core.Util.SharedPreferencesUtil;
+import com.example.kwoncheolhyeok.core.Util.UiUtil;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.LocationCallback;
@@ -109,7 +113,14 @@ public class ChatFirebaseUtil {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    Long currentTime = getTime();
+                    Long currentTime = null;
+                    try {
+                        currentTime = getTime();
+                    } catch (NotSetAutoTimeException e) {
+                        e.printStackTrace();
+                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                        ActivityCompat.finishAffinity((Activity)context);
+                    }
                     databaseRef.child(chatRoomList).child(userUuid).child(targetUuid).child("lastViewTime").setValue(currentTime);
                 }
             }
@@ -148,7 +159,7 @@ public class ChatFirebaseUtil {
             }
         });
     }
-    public void sendMessage(MessageVO message) {
+    public void sendMessage(MessageVO message) throws NotSetAutoTimeException {
 
         String room = roomName;
         String key = databaseRef.child(chat).child(room).push().getKey();
@@ -183,10 +194,10 @@ public class ChatFirebaseUtil {
         });
     }
 
-    public void sendImageMessage(Uri outputFileUri, GalleryPick galleryPick) {
+    public void sendImageMessage(Uri outputFileUri, GalleryPick galleryPick) throws NotSetAutoTimeException {
 
         StorageReference imagesRef = storage.getReference().child(chat);
-        long currentTime = System.currentTimeMillis();
+        long currentTime = UiUtil.getInstance().getCurrentTime(context);
         final String imageName = CryptoImeageName.md5(Long.toString(currentTime));
         final StorageReference imageMessageRef = imagesRef.child(image + "/" + roomName + "/" + userUuid + "/" + imageName);
 //        UploadTask uploadTask = imageMessageRef.putFile(outputFileUri);
@@ -205,9 +216,17 @@ public class ChatFirebaseUtil {
                     imageMessageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
-                            long currentTime = getTime();
-                            MessageVO message = new MessageVO(uri.toString(), userUuid, currentUser.getId(), null, currentTime, 1, 1);
-                            sendMessage(message);
+                            long currentTime = 0;
+                            try {
+                                currentTime = getTime();
+                                MessageVO message = new MessageVO(uri.toString(), userUuid, currentUser.getId(), null, currentTime, 1, 1);
+                                sendMessage(message);
+                            } catch (NotSetAutoTimeException e) {
+                                e.printStackTrace();
+                                Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                ActivityCompat.finishAffinity((Activity)context);
+                            }
+
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
@@ -384,8 +403,8 @@ public class ChatFirebaseUtil {
         }
     };
 
-    public Long getTime() {
-        return System.currentTimeMillis();
+    public Long getTime() throws NotSetAutoTimeException {
+        return UiUtil.getInstance().getCurrentTime(context);
     }
 
     // 채팅 초기화
@@ -574,7 +593,7 @@ public class ChatFirebaseUtil {
     }
 
 
-    public static void sendEventMessage(final String mUuid, final String nickName, final String oUuid, final String message) {
+    public static void sendEventMessage(final String mUuid, final String nickName, final String oUuid, final String message, final Context context) {
         final DatabaseReference chatRoomRef = FirebaseDatabase.getInstance().getReference(chatRoomList);
         final String[] RoomName = new String[1];
         chatRoomRef.child(mUuid).child(oUuid).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -582,7 +601,14 @@ public class ChatFirebaseUtil {
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 final RoomVO checkRoomVO = dataSnapshot.getValue(RoomVO.class);
-                long currentTime = System.currentTimeMillis();
+                long currentTime = 0;
+                try {
+                    currentTime = UiUtil.getInstance().getCurrentTime(context);
+                } catch (NotSetAutoTimeException e) {
+                    e.printStackTrace();
+                    Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    ActivityCompat.finishAffinity((Activity)context);
+                }
 
                 if (dataSnapshot.exists()) {
                     RoomName[0] = checkRoomVO.getChatRoomid();

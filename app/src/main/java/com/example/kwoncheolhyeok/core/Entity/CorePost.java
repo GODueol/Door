@@ -29,9 +29,9 @@ public class CorePost {
     public CorePost() {
     }
 
-    public CorePost(String uuid) {
+    public CorePost(String uuid, long writeDate) {
         this.uuid = uuid;
-        this.writeDate = System.currentTimeMillis();
+        this.writeDate = writeDate;
     }
 
     public CorePost(String uuid, long writeDate, String text, String pictureUrl, String soundUrl, String videoUrl, Map<String, Long> likeUsers) {

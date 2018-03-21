@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.Event.SomeoneBlocksMeEvent;
 import com.example.kwoncheolhyeok.core.Exception.ChildSizeMaxException;
+import com.example.kwoncheolhyeok.core.Exception.NotSetAutoTimeException;
 import com.example.kwoncheolhyeok.core.MessageActivity.ChattingActivity;
 import com.example.kwoncheolhyeok.core.PeopleFragment.FullImageViewPager.DetailImageActivity;
 import com.example.kwoncheolhyeok.core.R;
@@ -242,7 +244,13 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
 
         // 로그인 시간
         if (oUser.getLoginDate() != 0) {
-            loginTime.setText(DataContainer.getInstance().convertBeforeFormat(oUser.getLoginDate()));
+            try {
+                loginTime.setText(DataContainer.getInstance().convertBeforeFormat(oUser.getLoginDate(), FullImageActivity.this));
+            } catch (NotSetAutoTimeException e) {
+                e.printStackTrace();
+                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                ActivityCompat.finishAffinity(FullImageActivity.this);
+            }
         }
 
         // 사진 출력
@@ -330,7 +338,13 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
                 // Viewed me
                 FirebaseSendPushMsg.sendPostToFCM("View",item.getUuid(), mUser.getId(),"");
                 // 데이터 추가
-                map.put(mUuid, System.currentTimeMillis());
+                try {
+                    map.put(mUuid, UiUtil.getInstance().getCurrentTime(FullImageActivity.this));
+                } catch (NotSetAutoTimeException e) {
+                    e.printStackTrace();
+                    Toast.makeText(FullImageActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    ActivityCompat.finishAffinity(FullImageActivity.this);
+                }
                 mutableData.setValue(map);
                 return Transaction.success(mutableData);
             }
@@ -376,9 +390,15 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
                         UiUtil.getInstance().startProgressDialog(FullImageActivity.this);
 
                         // 내 following 추가, 유저 follower c추가
-                        Task<Void> task;
+                        Task<Void> task = null;
                         try {
-                            task = FireBaseUtil.getInstance().follow(FullImageActivity.this, oUser, item.getUuid(), isFollow);
+                            try {
+                                task = FireBaseUtil.getInstance().follow(FullImageActivity.this, oUser, item.getUuid(), isFollow);
+                            } catch (NotSetAutoTimeException e) {
+                                e.printStackTrace();
+                                Toast.makeText(FullImageActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                ActivityCompat.finishAffinity(FullImageActivity.this);
+                            }
                         } catch (ChildSizeMaxException e) {
                             Toast.makeText(FullImageActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                             UiUtil.getInstance().stopProgressDialog();
@@ -523,7 +543,13 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
                     public void onClick(DialogInterface dialog, int whichButton) {
                         UiUtil.getInstance().startProgressDialog(FullImageActivity.this);
                         if (isLock) {
-                            mUser.getUnLockUsers().put(item.getUuid(), System.currentTimeMillis()); // 해제
+                            try {
+                                mUser.getUnLockUsers().put(item.getUuid(), UiUtil.getInstance().getCurrentTime(FullImageActivity.this)); // 해제
+                            } catch (NotSetAutoTimeException e) {
+                                e.printStackTrace();
+                                Toast.makeText(FullImageActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                ActivityCompat.finishAffinity(FullImageActivity.this);
+                            }
 
                         } else {
                             mUser.getUnLockUsers().remove(item.getUuid());  // 잠금
@@ -536,7 +562,7 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
                                         if (isLock) {
                                             picOpen.setImageResource(R.drawable.picture_lock);    // 해제하기 (현재 사진이 잠겼다는 것을 암시함)
                                             Toast.makeText(FullImageActivity.this, "잠긴 사진을 열었습니다.", Toast.LENGTH_SHORT).show();
-                                            sendEventMessage(myUuid,mUser.getId(),item.getUuid(),getString(R.string.alertUnlockPic));
+                                            sendEventMessage(myUuid,mUser.getId(),item.getUuid(),getString(R.string.alertUnlockPic), FullImageActivity.this);
                                         } else {
                                             picOpen.setImageResource(R.drawable.picture_unlock);  // 잠금 (현재 사진이 해제되어 있다는 암시함)
                                             Toast.makeText(FullImageActivity.this, "사진을 비공개 합니다.", Toast.LENGTH_SHORT).show();

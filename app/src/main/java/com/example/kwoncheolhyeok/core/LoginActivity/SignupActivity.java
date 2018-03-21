@@ -1,13 +1,12 @@
 package com.example.kwoncheolhyeok.core.LoginActivity;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.provider.Settings.Secure;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -20,6 +19,7 @@ import android.widget.Toast;
 
 import com.example.kwoncheolhyeok.core.Activity.MainActivity;
 import com.example.kwoncheolhyeok.core.Entity.User;
+import com.example.kwoncheolhyeok.core.Exception.NotSetAutoTimeException;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.UiUtil;
@@ -234,13 +234,20 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
                 } else {
                     // 회원가입 하지 않은 디바이스
                     FirebaseDatabase.getInstance().getReference("identifier").child(deviceIdentifier).removeEventListener(this);
-                    FirebaseDatabase.getInstance().getReference().child("identifier").child(deviceIdentifier).setValue(System.currentTimeMillis())
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    onSucccessIdentify(email,password);
-                                }
-                            });
+                    try {
+                        FirebaseDatabase.getInstance().getReference().child("identifier").child(deviceIdentifier).setValue(UiUtil.getInstance().getCurrentTime(SignupActivity.this))
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        onSucccessIdentify(email,password);
+                                    }
+                                });
+                    } catch (NotSetAutoTimeException e) {
+                        e.printStackTrace();
+                        Toast.makeText(SignupActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                        ActivityCompat.finishAffinity(SignupActivity.this);
+
+                    }
                 }
             }
 

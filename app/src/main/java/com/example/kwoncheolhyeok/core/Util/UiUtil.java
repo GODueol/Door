@@ -17,6 +17,7 @@ import android.text.TextUtils;
 
 import com.example.kwoncheolhyeok.core.CorePage.CoreActivity;
 import com.example.kwoncheolhyeok.core.Entity.User;
+import com.example.kwoncheolhyeok.core.Exception.NotSetAutoTimeException;
 import com.example.kwoncheolhyeok.core.LoginActivity.IntroActivity;
 import com.example.kwoncheolhyeok.core.R;
 
@@ -106,6 +107,15 @@ public class UiUtil {
                     Settings.System.AUTO_TIME) == 1;
         } catch (Settings.SettingNotFoundException e) {
             return false;
+        }
+
+    }
+
+    public long getCurrentTime(Context context) throws NotSetAutoTimeException {
+        if(isAutoTimeSet(context)){
+            return System.currentTimeMillis();
+        } else {
+            throw new NotSetAutoTimeException("시간 수정설정 되어있으면 앱을 사용할 수 없습니다");
         }
 
     }

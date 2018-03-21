@@ -3,14 +3,18 @@ package com.example.kwoncheolhyeok.core.PeopleFragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.NumberPicker;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.kwoncheolhyeok.core.CorePage.CustomDialog;
+import com.example.kwoncheolhyeok.core.Exception.NotSetAutoTimeException;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
+import com.example.kwoncheolhyeok.core.Util.UiUtil;
 
 /**
  * Created by kimbyeongin on 2018-01-06.
@@ -18,7 +22,7 @@ import com.example.kwoncheolhyeok.core.Util.DataContainer;
 
 public class ReportDialog extends CustomDialog {
 
-    String oUuid;
+    private String oUuid;
 
     ReportDialog(@NonNull Context context, String oUuid) {
         super(context);
@@ -57,7 +61,13 @@ public class ReportDialog extends CustomDialog {
                 // 신고 : 아래 5개의 정보를 DB에 넣는다
                 String picStr = reportTypeList[picker.getValue()];
                 boolean isOnlyBlock = isOnlyBlockBtn.isChecked();
-                long date = System.currentTimeMillis();
+                try {
+                    long date = UiUtil.getInstance().getCurrentTime(getContext());
+                } catch (NotSetAutoTimeException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                    ActivityCompat.finishAffinity(getOwnerActivity());
+                }
                 String mUuid = DataContainer.getInstance().getUid();
                 // oUuid
 

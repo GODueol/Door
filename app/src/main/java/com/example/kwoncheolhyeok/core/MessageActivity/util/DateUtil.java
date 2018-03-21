@@ -1,5 +1,8 @@
 package com.example.kwoncheolhyeok.core.MessageActivity.util;
 
+import android.content.Context;
+
+import com.example.kwoncheolhyeok.core.Exception.NotSetAutoTimeException;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 
 import java.text.SimpleDateFormat;
@@ -42,7 +45,7 @@ public class DateUtil {
     }
 
 
-    public String getPreTime() {
-        return DataContainer.getInstance().convertBeforeFormat(date);
+    public String getPreTime(Context context) throws NotSetAutoTimeException {
+        return DataContainer.getInstance().convertBeforeFormat(date, context);
     }
 }

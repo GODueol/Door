@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.support.v4.app.ActivityCompat;
 import android.widget.Toast;
 
+import com.example.kwoncheolhyeok.core.Exception.NotSetAutoTimeException;
+
 /**
  * Created by Juyeol on 2017-06-27
  * 엑티비티 닫기 컨트롤
@@ -23,16 +25,23 @@ public class CloseActivityHandler {
     public void onBackPressed() {
 
         int time = 2000;
-        if (System.currentTimeMillis() <= backKeyPressedTime + time) {
-            toast.cancel();
-            ActivityCompat.finishAffinity(activity);
-        } else {
-            showGuide();
-            backKeyPressedTime = System.currentTimeMillis();
+        try {
+            if (UiUtil.getInstance().getCurrentTime(activity) <= backKeyPressedTime + time) {
+                toast.cancel();
+                ActivityCompat.finishAffinity(activity);
+            } else {
+                showGuide();
+                backKeyPressedTime = UiUtil.getInstance().getCurrentTime(activity);
+            }
+        } catch (NotSetAutoTimeException e) {
+            //
+            e.printStackTrace();
+            Toast.makeText(activity, e.getMessage(), Toast.LENGTH_SHORT).show();
+            activity.finish();
         }
     }
 
-    public void showGuide() {
+    private void showGuide() {
         toast = Toast.makeText(activity,
                 "한번 더 누르면 종료됩니다.", Toast.LENGTH_SHORT);
         toast.show();

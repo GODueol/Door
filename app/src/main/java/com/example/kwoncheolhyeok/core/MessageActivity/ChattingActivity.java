@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -33,6 +34,7 @@ import android.widget.Toast;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.Event.SomeoneBlocksMeEvent;
 import com.example.kwoncheolhyeok.core.Exception.ChildSizeMaxException;
+import com.example.kwoncheolhyeok.core.Exception.NotSetAutoTimeException;
 import com.example.kwoncheolhyeok.core.MessageActivity.ChattingMessageAdapter.OnImesageLoadingCallback;
 import com.example.kwoncheolhyeok.core.MessageActivity.util.MessageVO;
 import com.example.kwoncheolhyeok.core.PeopleFragment.FullImageActivity;
@@ -159,8 +161,16 @@ public class ChattingActivity extends BlockBaseActivity {
                 if (TextUtils.isEmpty(message.replace(System.getProperty("line.separator"), "").replace(" ", ""))) {
                     return;
                 }
-                long currentTime = System.currentTimeMillis();
-                writeMessage(null, userUuid, user.getId(), message, currentTime, 1);
+                long currentTime = 0;
+                try {
+                    currentTime = UiUtil.getInstance().getCurrentTime(ChattingActivity.this);
+                    writeMessage(null, userUuid, user.getId(), message, currentTime, 1);
+                } catch (NotSetAutoTimeException e) {
+                    e.printStackTrace();
+                    Toast.makeText(ChattingActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    ActivityCompat.finishAffinity(ChattingActivity.this);
+                }
+
                 mEditTextMessage.setText("");
             }
         });
@@ -225,7 +235,7 @@ public class ChattingActivity extends BlockBaseActivity {
         });
     }
 
-    private void writeMessage(String image, String userId, String nickname, String content, long currentTime, int check) {
+    private void writeMessage(String image, String userId, String nickname, String content, long currentTime, int check) throws NotSetAutoTimeException {
         MessageVO message = new MessageVO(image, userId, nickname, content, currentTime, check);
         chatFirebaseUtil.sendMessage(message);
     }

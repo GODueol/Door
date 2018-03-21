@@ -1,6 +1,9 @@
 package com.example.kwoncheolhyeok.core.MessageActivity;
 
+import android.app.Activity;
+import android.content.Context;
 import android.graphics.Color;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -10,7 +13,9 @@ import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.kwoncheolhyeok.core.Exception.NotSetAutoTimeException;
 import com.example.kwoncheolhyeok.core.MessageActivity.util.DateUtil;
 import com.example.kwoncheolhyeok.core.MessageActivity.util.RoomVO;
 import com.example.kwoncheolhyeok.core.R;
@@ -28,16 +33,18 @@ public class messageRecyclerAdapter extends RecyclerView.Adapter<messageRecycler
     private List<RoomVO> roomList;
     private int itemLayout;
     private OnRemoveChattingListCallback onRemoveChattingListCallback;
+    private Context context;
 
     public interface OnRemoveChattingListCallback {
         void onRemove(String s);
     }
 
-    public messageRecyclerAdapter(List<RoomVO> items, int itemLayout, RecyclerViewClickListener listener, OnRemoveChattingListCallback onRemoveChattingListCallback) {
+    public messageRecyclerAdapter(Context context, List<RoomVO> items, int itemLayout, RecyclerViewClickListener listener, OnRemoveChattingListCallback onRemoveChattingListCallback) {
         this.roomList = items;
         this.itemLayout = itemLayout;
         this.onRemoveChattingListCallback = onRemoveChattingListCallback;
         mListener = listener;
+        this.context = context;
     }
 
     @Override
@@ -61,7 +68,14 @@ public class messageRecyclerAdapter extends RecyclerView.Adapter<messageRecycler
             holder.layout.setBackgroundColor(Color.GRAY);
         }
         DateUtil dateUtil = new DateUtil(lastChatTime);
-        String preTime = dateUtil.getPreTime();
+        String preTime = null;
+        try {
+            preTime = dateUtil.getPreTime(context);
+        } catch (NotSetAutoTimeException e) {
+            e.printStackTrace();
+            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+            ActivityCompat.finishAffinity((Activity)context);
+        }
         holder.date.setText(preTime);
 
         int width = holder.img.getWidth();

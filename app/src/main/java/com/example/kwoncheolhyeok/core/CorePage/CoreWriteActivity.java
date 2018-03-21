@@ -11,6 +11,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -26,6 +27,7 @@ import android.widget.ToggleButton;
 import com.bumptech.glide.Glide;
 import com.example.kwoncheolhyeok.core.Entity.CorePost;
 import com.example.kwoncheolhyeok.core.Event.SomeoneBlocksMeEvent;
+import com.example.kwoncheolhyeok.core.Exception.NotSetAutoTimeException;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.BaseActivity.BlockBaseActivity;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
@@ -186,7 +188,13 @@ public class CoreWriteActivity extends BlockBaseActivity {
                     Toast.makeText(CoreWriteActivity.this, "차단되어 익명글을 쓸 수 없습니다", Toast.LENGTH_SHORT).show();
                     finish();
                 } else {
-                    saveCore();
+                    try {
+                        saveCore();
+                    } catch (NotSetAutoTimeException e) {
+                        e.printStackTrace();
+                        Toast.makeText(CoreWriteActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                        ActivityCompat.finishAffinity(CoreWriteActivity.this);
+                    }
                 }
 
             }
@@ -304,11 +312,11 @@ public class CoreWriteActivity extends BlockBaseActivity {
 
     }
 
-    private void saveCore() {
+    private void saveCore() throws NotSetAutoTimeException {
 
         UiUtil.getInstance().startProgressDialog(CoreWriteActivity.this);
 
-        if (corePost == null) corePost = new CorePost(mUuid);
+        if (corePost == null) corePost = new CorePost(mUuid, UiUtil.getInstance().getCurrentTime(CoreWriteActivity.this));
 
         corePost.setText(textContents.getText().toString());
         Task<Void> postUploadTask = postRef.setValue(corePost);

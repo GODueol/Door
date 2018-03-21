@@ -9,6 +9,7 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -32,6 +33,7 @@ import com.example.kwoncheolhyeok.core.Entity.CoreListItem;
 import com.example.kwoncheolhyeok.core.Entity.CorePost;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.Exception.ChildSizeMaxException;
+import com.example.kwoncheolhyeok.core.Exception.NotSetAutoTimeException;
 import com.example.kwoncheolhyeok.core.MessageActivity.util.DateUtil;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
@@ -140,7 +142,14 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 
                                     CloudCore cloudCore = entry.getValue();
 
-                                    long diff = System.currentTimeMillis() - cloudCore.getCreateDate();
+                                    long diff = 0;
+                                    try {
+                                        diff = UiUtil.getInstance().getCurrentTime(context) - cloudCore.getCreateDate();
+                                    } catch (NotSetAutoTimeException e) {
+                                        e.printStackTrace();
+                                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                        ActivityCompat.finishAffinity((Activity)context);
+                                    }
                                     Log.d("kbj", "diff day : " + diff/(60*60*24));
 
                                     if(diff > (60*60*24)){
@@ -190,13 +199,19 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                     UiUtil.getInstance().startProgressDialog((Activity)context);
-                                    FireBaseUtil.getInstance().putCloudCore(cUuid, coreListItem).addOnSuccessListener(new OnSuccessListener() {
-                                        @Override
-                                        public void onSuccess(Object o) {
-                                            Toast.makeText(context, "코어가 클라우드에 추가되었습니다", Toast.LENGTH_SHORT).show();
-                                            UiUtil.getInstance().stopProgressDialog();
-                                        }
-                                    });
+                                    try {
+                                        FireBaseUtil.getInstance().putCloudCore(cUuid, coreListItem, context).addOnSuccessListener(new OnSuccessListener() {
+                                            @Override
+                                            public void onSuccess(Object o) {
+                                                Toast.makeText(context, "코어가 클라우드에 추가되었습니다", Toast.LENGTH_SHORT).show();
+                                                UiUtil.getInstance().stopProgressDialog();
+                                            }
+                                        });
+                                    } catch (NotSetAutoTimeException e) {
+                                        e.printStackTrace();
+                                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                        ActivityCompat.finishAffinity(((Activity) context).getParent());
+                                    }
                                 }
                             }, new DialogInterface.OnClickListener() {
                                 @Override
@@ -216,7 +231,13 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
             holder.core_cloud.setVisibility(View.INVISIBLE);
         }
 
-        holder.core_date.setText(DataContainer.getInstance().convertBeforeFormat(corePost.getWriteDate()));
+        try {
+            holder.core_date.setText(DataContainer.getInstance().convertBeforeFormat(corePost.getWriteDate(), context));
+        } catch (NotSetAutoTimeException e) {
+            e.printStackTrace();
+            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+            ActivityCompat.finishAffinity((Activity)context);
+        }
         holder.core_contents.setText(corePost.getText());
 
         holder.core_heart_count.setText(Integer.toString(corePost.getLikeUsers().size()));
@@ -235,23 +256,29 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
         holder.core_heart_btn.setOnLikeListener(new OnLikeListener() {
             @Override
             public void liked(LikeButton likeButton) {
-                postsRef.child(cUuid)
-                        .child(coreListItem.getPostKey())
-                        .child("likeUsers").child(mUuid).setValue(System.currentTimeMillis()).addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
+                try {
+                    postsRef.child(cUuid)
+                            .child(coreListItem.getPostKey())
+                            .child("likeUsers").child(mUuid).setValue(UiUtil.getInstance().getCurrentTime(context)).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
 
-                        FireBaseUtil.getInstance().queryBlockWithMe(corePost.getUuid(), new FireBaseUtil.BlockListener() {
-                            @Override
-                            public void isBlockCallback(boolean isBlockWithMe) {
-                                if(isBlockWithMe) return;
-                                if (!corePost.getUuid().equals(mUuid)) {
-                                    FirebaseSendPushMsg.sendPostToFCM("Like", corePost.getUuid(), DataContainer.getInstance().getUser().getId(), context.getString(R.string.alertLike));
+                            FireBaseUtil.getInstance().queryBlockWithMe(corePost.getUuid(), new FireBaseUtil.BlockListener() {
+                                @Override
+                                public void isBlockCallback(boolean isBlockWithMe) {
+                                    if(isBlockWithMe) return;
+                                    if (!corePost.getUuid().equals(mUuid)) {
+                                        FirebaseSendPushMsg.sendPostToFCM("Like", corePost.getUuid(), DataContainer.getInstance().getUser().getId(), context.getString(R.string.alertLike));
+                                    }
                                 }
-                            }
-                        });
-                    }
-                });
+                            });
+                        }
+                    });
+                } catch (NotSetAutoTimeException e) {
+                    e.printStackTrace();
+                    Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    ActivityCompat.finishAffinity((Activity)context);
+                }
             }
 
             @Override

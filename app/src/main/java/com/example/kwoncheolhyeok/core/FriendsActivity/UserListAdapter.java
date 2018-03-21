@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -20,6 +21,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.Exception.ChildSizeMaxException;
+import com.example.kwoncheolhyeok.core.Exception.NotSetAutoTimeException;
 import com.example.kwoncheolhyeok.core.PeopleFragment.FullImageActivity;
 import com.example.kwoncheolhyeok.core.PeopleFragment.GridItem;
 import com.example.kwoncheolhyeok.core.R;
@@ -92,7 +94,13 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
         Glide.with(userHolder.profilePicImage.getContext()).load(user.getPicUrls().getThumbNail_picUrl1()).into(userHolder.profilePicImage);
         userHolder.idText.setText(user.getId());
         userHolder.subProfileText.setText(UiUtil.getInstance().setSubProfile(user));
-        userHolder.dateText.setText(DataContainer.getInstance().convertBeforeFormat(item.getDate()));
+        try {
+            userHolder.dateText.setText(DataContainer.getInstance().convertBeforeFormat(item.getDate(), context));
+        } catch (NotSetAutoTimeException e) {
+            e.printStackTrace();
+            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+            ActivityCompat.finishAffinity((Activity)context);
+        }
 
         if (!field.equals("blockUsers") && !field.equals("Core Heart Count")) {   // block 아닐때만 클릭 가능하도록
             userHolder.profilePicImage.setOnClickListener(new View.OnClickListener() {
@@ -196,13 +204,17 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                     UiUtil.getInstance().startProgressDialog((Activity) context);
-                                    Task<Void> task;
+                                    Task<Void> task = null;
                                     try {
                                         task = FireBaseUtil.getInstance().follow(context, user, item.getUuid(), true);
                                     } catch (ChildSizeMaxException e) {
                                         Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
                                         UiUtil.getInstance().stopProgressDialog();
                                         return;
+                                    } catch (NotSetAutoTimeException e) {
+                                        e.printStackTrace();
+                                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                        ActivityCompat.finishAffinity((Activity)context);
                                     }
                                     if (task == null) {
                                         Toast.makeText(context, "팔로우 취소 상태입니다", Toast.LENGTH_SHORT).show();
@@ -229,13 +241,17 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                     UiUtil.getInstance().startProgressDialog((Activity) context);
-                                    Task<Void> task;
+                                    Task<Void> task = null;
                                     try {
                                         task = FireBaseUtil.getInstance().follow(context, user, item.getUuid(), false);
                                     } catch (ChildSizeMaxException e) {
                                         Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
                                         UiUtil.getInstance().stopProgressDialog();
                                         return;
+                                    } catch (NotSetAutoTimeException e) {
+                                        e.printStackTrace();
+                                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                        ActivityCompat.finishAffinity((Activity)context);
                                     }
                                     if (task == null) {
                                         Toast.makeText(context, "팔로우 신청 되어있습니다", Toast.LENGTH_SHORT).show();
