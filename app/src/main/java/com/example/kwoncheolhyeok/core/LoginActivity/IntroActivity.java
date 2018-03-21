@@ -18,6 +18,7 @@ import com.example.kwoncheolhyeok.core.Activity.MainActivity;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
+import com.example.kwoncheolhyeok.core.Util.UiUtil;
 import com.example.kwoncheolhyeok.core.Util.setPermission;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -51,6 +52,12 @@ public class IntroActivity extends Activity {
     @Override
     protected void onStart() {
         super.onStart();
+        if(!UiUtil.getInstance().isAutoTimeSet(this)){
+            Toast.makeText(this, "시간 수정설정 되어있으면 앱을 사용할 수 없습니다", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
         setPermission();
     }
 

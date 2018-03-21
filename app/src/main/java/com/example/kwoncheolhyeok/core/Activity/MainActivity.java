@@ -1,7 +1,6 @@
 package com.example.kwoncheolhyeok.core.Activity;
 
 import android.annotation.SuppressLint;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -31,11 +30,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,9 +42,6 @@ import com.example.kwoncheolhyeok.core.Event.SomeoneBlocksMeEvent;
 import com.example.kwoncheolhyeok.core.FriendsActivity.FriendsActivity;
 import com.example.kwoncheolhyeok.core.LoginActivity.LoginActivity;
 import com.example.kwoncheolhyeok.core.MessageActivity.MessageActivity;
-import com.example.kwoncheolhyeok.core.PeopleFragment.BlockReportSelectDialog;
-import com.example.kwoncheolhyeok.core.PeopleFragment.FullImageActivity;
-import com.example.kwoncheolhyeok.core.PeopleFragment.ReportDialog;
 import com.example.kwoncheolhyeok.core.ProfileModifyActivity.ProfileModifyActivity;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.SettingActivity.CorePlusActivity;
@@ -71,8 +64,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import java.util.Arrays;
 
 /**
  * drawer / viewpager drag duplication issue
@@ -181,11 +172,6 @@ public class MainActivity extends AppCompatActivity
         }
         viewPager.setAdapter(tabPagerAdapter);
         viewPager.setCurrentItem(0);
-
-//        //TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
-//        tabLayout = findViewById(R.id.tab_layout);
-//        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-//        tabLayout.setupWithViewPager(viewPager);
 
         //네비게이션 뷰 내의 프로필 사진 클릭시 프로필 편집
         View headerView = navigationView.getHeaderView(0);

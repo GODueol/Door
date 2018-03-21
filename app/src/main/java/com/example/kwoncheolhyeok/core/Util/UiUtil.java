@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.provider.Settings;
 import android.text.TextUtils;
 
 import com.example.kwoncheolhyeok.core.CorePage.CoreActivity;
@@ -36,7 +37,7 @@ public class UiUtil {
     }
 
     public String setSubProfile(User user) {
-        if(user.getAge() == 0 && user.getBodyType() == null) return "";
+        if (user.getAge() == 0 && user.getBodyType() == null) return "";
         return TextUtils.join("/", new String[]{Integer.toString(user.getAge()), Integer.toString(user.getHeight()),
                 Integer.toString(user.getWeight()), user.getBodyType()});
     }
@@ -56,7 +57,7 @@ public class UiUtil {
         try {
             if (progressDialog != null && progressDialog.isShowing() && progressDialog.getContext() != null)
                 progressDialog.dismiss();
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -97,6 +98,16 @@ public class UiUtil {
                 context.getResources().getResourcePackageName(resID) + '/' +
                 context.getResources().getResourceTypeName(resID) + '/' +
                 context.getResources().getResourceEntryName(resID));
+    }
+
+    public boolean isAutoTimeSet(Context context) {
+        try {
+            return Settings.System.getInt(context.getContentResolver(),
+                    Settings.System.AUTO_TIME) == 1;
+        } catch (Settings.SettingNotFoundException e) {
+            return false;
+        }
+
     }
 
 }

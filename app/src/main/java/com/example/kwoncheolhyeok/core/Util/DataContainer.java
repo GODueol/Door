@@ -15,6 +15,7 @@ public class DataContainer {
     public final String PREFERENCE = "com.example.kwoncheolhyeok.core.samplesharepreference";
     public static final int ChildrenMax = 1000;
     public static final int ViewedMeMax = 45;
+    public static final int CloudCoreMax = 100;
 
     private static class TIME_MAXIMUM {
         static final int SEC = 60;
