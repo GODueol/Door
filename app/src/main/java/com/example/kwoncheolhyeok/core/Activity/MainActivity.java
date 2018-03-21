@@ -163,11 +163,6 @@ public class MainActivity extends AppCompatActivity
         viewPager.setAdapter(tabPagerAdapter);
         viewPager.setCurrentItem(0);
 
-//        //TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
-//        tabLayout = findViewById(R.id.tab_layout);
-//        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-//        tabLayout.setupWithViewPager(viewPager);
-
         //네비게이션 뷰 내의 프로필 사진 클릭시 프로필 편집
         View headerView = navigationView.getHeaderView(0);
         profileImage = headerView.findViewById(R.id.profile_image);
@@ -217,10 +212,6 @@ public class MainActivity extends AppCompatActivity
             logout();
             return;
         }
-
-        // Test
-        UiUtil.getInstance().isAutoTimeSet(this);
-
 
         FirebaseIDService fids = new FirebaseIDService();
         fids.onTokenRefresh();
