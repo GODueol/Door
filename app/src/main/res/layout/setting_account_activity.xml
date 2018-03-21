@@ -86,6 +86,7 @@
             android:layout_marginRight="5dp"
             android:textColor="@color/black"
             android:textSize="13dp"
+            android:singleLine="true"
             android:theme="@style/EditTxtUnderBarBlack" />
 
         <TextView
@@ -105,7 +106,7 @@
             android:layout_marginEnd="5dp"
             android:layout_marginRight="5dp"
             android:ems="10"
-            android:inputType="textPassword"
+            android:singleLine="true"
             android:textColor="@color/black"
             android:textSize="13dp"
 
@@ -128,7 +129,7 @@
             android:layout_marginEnd="5dp"
             android:layout_marginRight="5dp"
             android:ems="10"
-            android:inputType="textPassword"
+            android:singleLine="true"
             android:textColor="@color/black"
             android:textSize="13dp"
             android:theme="@style/EditTxtUnderBarBlack" />
@@ -159,7 +160,8 @@
             android:layout_marginTop="15dp"
             android:gravity="right"
             android:text="@string/change_password"
-            android:textColor="@color/black"
+            android:textColor="@color/skyblue"
+            android:textStyle="bold"
             android:layout_marginEnd="8dp"
             tools:ignore="RtlHardcoded" />
 
