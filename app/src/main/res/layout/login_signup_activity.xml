@@ -18,12 +18,25 @@
             android:paddingRight="24dp"
             android:paddingTop="15dp">
 
-            <!--<ImageView android:src="@drawable/title"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="72dp"-->
-            <!--android:layout_marginBottom="24dp"-->
-            <!--android:layout_gravity="center_horizontal"-->
-            <!--android:id="@+id/imageView" />-->
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/join_mail_1"
+                android:layout_gravity="center"
+                android:layout_marginBottom="15dp"
+
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/join_mail_2"
+                android:layout_gravity="center"
+                android:layout_marginBottom="15dp"
+
+                />
+
 
             <!--  Email Label -->
             <android.support.design.widget.TextInputLayout
@@ -140,16 +153,6 @@
                     android:inputType="number" />
             </android.support.design.widget.TextInputLayout>
 
-        </LinearLayout>
-
-        <RelativeLayout
-            android:id="@+id/sign_up_layout3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/sign_up_layout2"
-            android:paddingLeft="24dp"
-            android:paddingRight="24dp">
-
             <!-- bodytype -->
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
@@ -166,16 +169,14 @@
                     android:inputType="none" />
             </android.support.design.widget.TextInputLayout>
 
-
-        </RelativeLayout>
-
+        </LinearLayout>
 
         <!-- Signup Button -->
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/btn_signup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/sign_up_layout3"
+            android:layout_below="@+id/sign_up_layout2"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="24dp"
             android:layout_marginTop="24dp"

@@ -7,6 +7,9 @@
     <string name="find_id">회원 검색</string>
     <string name="lock_to_all_user">공개한 사진 모두 잠금</string>
 
+    <string name="join_mail_1">이메일은 비밀번호를 잃어버렸을 때 변경할 수 있는 페이지를 전송해주는 중요한 정보입니다.</string>
+    <string name="join_mail_2">코어는 기기당 한 계정만 가입할 수 있으므로 가급적 수신이 가능한 메일을 입력해주시기 바랍니다.</string>
+
     <string-array name="titles_tab">
         <!--<item>Board</item>-->
         <item>People</item>
