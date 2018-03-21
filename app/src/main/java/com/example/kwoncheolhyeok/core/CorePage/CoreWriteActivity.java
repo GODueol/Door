@@ -354,12 +354,7 @@ public class CoreWriteActivity extends BlockBaseActivity {
                     if(!cUuid.equals(mUuid)){
                        // 익명게시글이면
                         final String NickName = DataContainer.getInstance().getUser().getId();
-                        AlarmUtil.getInstance().sendAlarm("Post","UnKnown",corePost).addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                FirebaseSendPushMsg.sendPostToFCM("Post",cUuid,"UnKnown",getString(R.string.alertPost));
-                            }
-                        });
+                        AlarmUtil.getInstance().sendAlarm("Post","UnKnown",corePost,postKey,cUuid);
                     }
                     setResult(Activity.RESULT_OK);
                     finish();

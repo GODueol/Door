@@ -148,12 +148,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                                 if(isBlockWithMe) return;
                                 if (!corePost.getUuid().equals(mUuid)) {
                                     final String NickName = DataContainer.getInstance().getUser().getId();
-                                    AlarmUtil.getInstance().sendAlarm("Like",NickName,corePost).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            FirebaseSendPushMsg.sendPostToFCM("Like", corePost.getUuid(), NickName, context.getString(R.string.alertLike));
-                                        }
-                                    });
+                                    AlarmUtil.getInstance().sendAlarm("Like",NickName,corePost,coreListItem.getPostKey(),corePost.getUuid());
                                 }
                             }
                         });
@@ -398,13 +393,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                             if(!finalIsReplyFirst || DataContainer.getInstance().isBlockWithMe(coreListItem.getCorePost().getUuid())) return;
 
                             final String NickName = DataContainer.getInstance().getUser().getId();
-                            AlarmUtil.getInstance().sendAlarm("Answer",NickName,coreListItem.getCorePost()).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    FirebaseSendPushMsg.sendPostToFCM("Answer",coreListItem.getCorePost().getUuid(),NickName,"당신이 작성한 질문글에 답이 왔네요!");
-                                }
-                            });
-
+                            AlarmUtil.getInstance().sendAlarm("Answer",NickName,coreListItem.getCorePost(),coreListItem.getPostKey(),coreListItem.getCorePost().getUuid());
                         }
                     });
                 }
