@@ -187,7 +187,38 @@ public class CoreWriteActivity extends BlockBaseActivity {
                 if (DataContainer.getInstance().getUser().getBlockMeUsers().containsKey(cUuid)) {// 차단
                     Toast.makeText(CoreWriteActivity.this, "차단되어 익명글을 쓸 수 없습니다", Toast.LENGTH_SHORT).show();
                     finish();
+                    return;
+                }
+
+                // 익명글이 댓글이 달린 경우
+                if(isEdit) {
+                    FirebaseDatabase.getInstance().getReference().child("posts").child(cUuid).child(postKey).child("reply").addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.getValue() != null) {
+                                if (!cUuid.equals(mUuid)) {
+                                    Toast.makeText(CoreWriteActivity.this, "답변이 방금 달려서 수정이 불가능합니다", Toast.LENGTH_SHORT).show();
+                                    finish();
+                                    return;
+                                }
+
+                                try {
+                                    saveCore();
+                                } catch (NotSetAutoTimeException e) {
+                                    e.printStackTrace();
+                                    Toast.makeText(CoreWriteActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    ActivityCompat.finishAffinity(CoreWriteActivity.this);
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
                 } else {
+
                     try {
                         saveCore();
                     } catch (NotSetAutoTimeException e) {
@@ -195,6 +226,7 @@ public class CoreWriteActivity extends BlockBaseActivity {
                         Toast.makeText(CoreWriteActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                         ActivityCompat.finishAffinity(CoreWriteActivity.this);
                     }
+
                 }
 
             }

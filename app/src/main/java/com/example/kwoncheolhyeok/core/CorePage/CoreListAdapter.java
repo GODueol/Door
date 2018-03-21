@@ -112,7 +112,11 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 
         if (corePost.getUuid().equals(mUuid)) {   // 본인 게시물
             // 수정 삭제 가능
-            setPostMenu(holder, coreListItem, R.menu.core_post_normal_menu);
+            if(user == null && corePost.getReply() != null){    // 답변이 달린 익명글일 때
+                setPostMenu(holder, coreListItem, R.menu.core_post_only_delete_menu);
+            } else {
+                setPostMenu(holder, coreListItem, R.menu.core_post_normal_menu);
+            }
 
             // 본인 게시물이 주인일 때만 클라우드 가능
             if(user != null){
