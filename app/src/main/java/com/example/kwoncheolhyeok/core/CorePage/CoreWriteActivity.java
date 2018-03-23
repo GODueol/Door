@@ -149,7 +149,7 @@ public class CoreWriteActivity extends BlockBaseActivity {
             fab.setVisibility(View.GONE);
             editImage.setVisibility(View.GONE);
             edit_audio_layout.setVisibility(View.GONE);
-            textContents.setHint("질문해주세요 익명입니다");
+            textContents.setHint("익명으로 글을 남깁니다. 어떤 질문을 남기시겠습니까? 모욕적인 글을 남기실 경우 차단당할 수 있습니다.");
         }
 
         fab.setOnClickListener(new View.OnClickListener() {
@@ -185,7 +185,7 @@ public class CoreWriteActivity extends BlockBaseActivity {
 
                 // 차단관계인 경우 불가능
                 if (DataContainer.getInstance().getUser().getBlockMeUsers().containsKey(cUuid)) {// 차단
-                    Toast.makeText(CoreWriteActivity.this, "차단되어 익명글을 쓸 수 없습니다", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CoreWriteActivity.this, "차단으로 인해 익명 포스트를 남길 수 없습니다", Toast.LENGTH_SHORT).show();
                     finish();
                     return;
                 }
@@ -197,7 +197,7 @@ public class CoreWriteActivity extends BlockBaseActivity {
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if (dataSnapshot.getValue() != null) {
                                 if (!cUuid.equals(mUuid)) {
-                                    Toast.makeText(CoreWriteActivity.this, "답변이 방금 달려서 수정이 불가능합니다", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(CoreWriteActivity.this, "답변이 달린 경우 글 내용을 수정할 수 없습니다.", Toast.LENGTH_SHORT).show();
                                     finish();
                                     return;
                                 }
