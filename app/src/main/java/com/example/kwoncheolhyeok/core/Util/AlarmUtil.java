@@ -33,7 +33,7 @@ public class AlarmUtil {
 
         final DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference("Alarm");
         final AlarmSummary alarmSummary = new AlarmSummary(NickName,corePost.getText(),type,time);
-        FirebaseDatabase.getInstance().getReference("Alarm").child(corePost.getUuid()+"_"+PostKey).addListenerForSingleValueEvent(new ValueEventListener() {
+        mDatabase.child(corePost.getUuid()+"_"+PostKey).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -60,14 +60,14 @@ public class AlarmUtil {
                             }
                         }
                     });
+                }else{
+                    // 라이크 유저를 가져와서 중복인지 체크 (중복이면 알림을 안보냄, 중복이 아니면 알림을 보내고 유저정보 add를 해줌
                 }
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
             }
         });
-
     }
 }
