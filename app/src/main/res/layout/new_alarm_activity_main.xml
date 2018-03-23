@@ -34,7 +34,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="날짜" />
+            android:text="날짜"
+            android:textColor="@color/black"
+            />
 
         <View
             android:layout_width="wrap_content"
@@ -54,24 +56,33 @@
         android:layout_marginBottom="5dp"
         >
 
+        <ImageView
+            android:id="@+id/img_que"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="8dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/new_alarm_question"
+            />
+
         <RelativeLayout
             android:id="@+id/txt1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_marginLeft="10dp"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/img_que"
             android:layout_toLeftOf="@+id/time1"
+            android:layout_marginLeft="8dp"
             android:layout_marginRight="10dp"
             >
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
                 android:text="누군가 당신에게 글내용쌰랄라... 익명 포스트를 남겼습니다."
                 android:textStyle="bold"
-
+                android:textColor="@color/black"
                 />
         </RelativeLayout>
 
@@ -83,6 +94,7 @@
             android:layout_below="@+id/txt1"
             android:layout_alignParentRight="true"
             android:layout_marginRight="10dp"
+            android:layout_centerVertical="true"
             android:gravity="right"
             android:text="13:10" />
 
@@ -96,20 +108,34 @@
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp">
 
+        <ImageView
+            android:id="@+id/img_ans"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="8dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/new_alarm_answer"
+            />
+
         <RelativeLayout
             android:id="@+id/txt2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_marginLeft="10dp"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/img_ans"
             android:layout_toLeftOf="@+id/time2"
-            android:layout_marginRight="10dp">
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="10dp"
+            >
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
-                android:text="당신이 철혁(타인 닉네임)에게 쓴 글내용어쩌고... 익명 포스트에 답변이 달렸습니다." />
+                android:text="당신이 철혁(타인 닉네임)에게 쓴 글내용어쩌고... 익명 포스트에 답변이 달렸습니다."
+                android:textColor="@color/black"
+                />
         </RelativeLayout>
 
         <TextView
@@ -119,6 +145,7 @@
             android:layout_below="@+id/txt2"
             android:layout_alignParentRight="true"
             android:layout_marginRight="10dp"
+            android:layout_centerVertical="true"
             android:gravity="right"
             android:text="10:12" />
     </RelativeLayout>
@@ -131,18 +158,31 @@
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp">
 
+        <ImageView
+            android:id="@+id/img_heart"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="8dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/new_alarm_heart"
+            />
+
         <RelativeLayout
             android:id="@+id/txt3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_marginLeft="10dp"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/img_heart"
             android:layout_toLeftOf="@+id/time3"
-            android:layout_marginRight="10dp">
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="10dp"
+            >
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@color/black"
                 android:textStyle="bold"
                 android:text="철혁(타인의 닉네임)님이 당신의 (글 내용 있으면 표시 없으면 생략...) 코어 포스트를 좋아합니다." />
         </RelativeLayout>
@@ -154,6 +194,7 @@
             android:layout_below="@+id/txt3"
             android:layout_alignParentRight="true"
             android:layout_marginRight="10dp"
+            android:layout_centerVertical="true"
             android:gravity="right"
             android:text="08:30" />
 
