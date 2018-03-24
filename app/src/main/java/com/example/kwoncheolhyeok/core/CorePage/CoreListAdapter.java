@@ -36,6 +36,7 @@ import com.example.kwoncheolhyeok.core.Exception.ChildSizeMaxException;
 import com.example.kwoncheolhyeok.core.Exception.NotSetAutoTimeException;
 import com.example.kwoncheolhyeok.core.MessageActivity.util.DateUtil;
 import com.example.kwoncheolhyeok.core.R;
+import com.example.kwoncheolhyeok.core.Util.AlarmUtil;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
 import com.example.kwoncheolhyeok.core.Util.FirebaseSendPushMsg;
@@ -272,18 +273,18 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                         @Override
                         public void onSuccess(Void aVoid) {
 
-                            FireBaseUtil.getInstance().queryBlockWithMe(corePost.getUuid(), new FireBaseUtil.BlockListener() {
-                                @Override
-                                public void isBlockCallback(boolean isBlockWithMe) {
-                                    if(isBlockWithMe) return;
-                                    if (!corePost.getUuid().equals(mUuid)) {
-                                        FirebaseSendPushMsg.sendPostToFCM("Like", corePost.getUuid(), DataContainer.getInstance().getUser().getId(), context.getString(R.string.alertLike));
-                                    }
+                        FireBaseUtil.getInstance().queryBlockWithMe(corePost.getUuid(), new FireBaseUtil.BlockListener() {
+                            @Override
+                            public void isBlockCallback(boolean isBlockWithMe) {
+                                if(isBlockWithMe) return;
+                                if (!corePost.getUuid().equals(mUuid)) {
+                                    final String NickName = DataContainer.getInstance().getUser().getId();
+                                    AlarmUtil.getInstance().sendAlarm("Like",NickName,corePost,coreListItem.getPostKey(),corePost.getUuid());
                                 }
-                            });
-                        }
-                    });
-                } catch (NotSetAutoTimeException e) {
+                            }
+                        });
+                    }
+                });} catch (NotSetAutoTimeException e) {
                     e.printStackTrace();
                     Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
                     ActivityCompat.finishAffinity((Activity)context);
@@ -526,7 +527,8 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 
                             if(!finalIsReplyFirst || DataContainer.getInstance().isBlockWithMe(coreListItem.getCorePost().getUuid())) return;
 
-                            FirebaseSendPushMsg.sendPostToFCM("Answer",coreListItem.getCorePost().getUuid(),DataContainer.getInstance().getUser().getId(),"당신이 작성한 질문글에 답이 왔네요!");
+                            final String NickName = DataContainer.getInstance().getUser().getId();
+                            AlarmUtil.getInstance().sendAlarm("Answer",NickName,coreListItem.getCorePost(),coreListItem.getPostKey(),coreListItem.getCorePost().getUuid());
                         }
                     });
                 }

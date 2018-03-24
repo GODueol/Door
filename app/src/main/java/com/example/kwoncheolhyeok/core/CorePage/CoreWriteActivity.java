@@ -29,6 +29,7 @@ import com.example.kwoncheolhyeok.core.Entity.CorePost;
 import com.example.kwoncheolhyeok.core.Event.SomeoneBlocksMeEvent;
 import com.example.kwoncheolhyeok.core.Exception.NotSetAutoTimeException;
 import com.example.kwoncheolhyeok.core.R;
+import com.example.kwoncheolhyeok.core.Util.AlarmUtil;
 import com.example.kwoncheolhyeok.core.Util.BaseActivity.BlockBaseActivity;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
@@ -392,7 +393,8 @@ public class CoreWriteActivity extends BlockBaseActivity {
                     }
                     if(!cUuid.equals(mUuid)){
                        // 익명게시글이면
-                        FirebaseSendPushMsg.sendPostToFCM("Post",cUuid,"UnKnown",getString(R.string.alertPost));
+                        final String NickName = DataContainer.getInstance().getUser().getId();
+                        AlarmUtil.getInstance().sendAlarm("Post","UnKnown",corePost,postKey,cUuid);
                     }
                     setResult(Activity.RESULT_OK);
                     finish();
