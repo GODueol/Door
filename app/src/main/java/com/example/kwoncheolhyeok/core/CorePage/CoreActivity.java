@@ -164,8 +164,6 @@ public class CoreActivity extends BlockBaseActivity {
 
             }
 
-
-
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 final CorePost corePost = dataSnapshot.getValue(CorePost.class);

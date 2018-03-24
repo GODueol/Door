@@ -59,6 +59,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static com.example.kwoncheolhyeok.core.Util.DataContainer.CloudCoreMax;
+import static com.example.kwoncheolhyeok.core.Util.DataContainer.SecToDay;
 
 /**
  * Created by KwonCheolHyeok on 2017-01-17.
@@ -102,144 +103,12 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
         final CorePost corePost = coreListItem.getCorePost();
         final String mUuid = DataContainer.getInstance().getUid();
 
-        User user = coreListItem.getUser();
-        if (user != null) {  // 주인글
-            setMasterPost(holder, corePost, user);
-        } else {    // 타인글
-            setAnonymousPost(holder, coreListItem, corePost, mUuid);
-        }
+        // 보이는 방식 결정
+        // setPostViewDiff
+        setPostViewDiff(holder, coreListItem, corePost, mUuid);
 
 
-        if (corePost.getUuid().equals(mUuid)) {   // 본인 게시물
-            // 수정 삭제 가능
-            if(user == null && corePost.getReply() != null){    // 답변이 달린 익명글일 때
-                setPostMenu(holder, coreListItem, R.menu.core_post_only_delete_menu);
-            } else {
-                setPostMenu(holder, coreListItem, R.menu.core_post_normal_menu);
-            }
-
-            // 본인 게시물이 주인일 때만 클라우드 가능
-            if(user != null){
-                // 클라우드 올린 포스트는 안보이게
-                if(corePost.isCloud()) holder.core_cloud.setVisibility(View.INVISIBLE);
-                else {
-                    holder.core_cloud.setVisibility(View.VISIBLE);
-                    holder.core_cloud.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-
-                            // cloud
-                            FirebaseDatabase.getInstance().getReference().child("cloudCore").runTransaction(new Transaction.Handler() {
-                                @Override
-                                public Transaction.Result doTransaction(MutableData mutableData) {
-
-                                    Map<String, CloudCore> cloudCoreMap = mutableData.getValue(Map.class);
-                                    if (cloudCoreMap == null) {
-                                        return Transaction.success(mutableData);
-                                    }
-
-                                    if(cloudCoreMap.size()<CloudCoreMax){
-                                        // 추가 가능
-                                        return Transaction.success(mutableData);
-                                    }
-
-                                    // 100개 이상일 시 오래된 것은 삭제
-                                    for (Map.Entry<String, CloudCore> entry : cloudCoreMap.entrySet()){
-
-                                        CloudCore cloudCore = entry.getValue();
-
-                                        long diff = 0;
-                                        try {
-                                            diff = UiUtil.getInstance().getCurrentTime(context) - cloudCore.getCreateDate();
-                                        } catch (NotSetAutoTimeException e) {
-                                            e.printStackTrace();
-                                            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-                                            ActivityCompat.finishAffinity((Activity)context);
-                                        }
-                                        Log.d("kbj", "diff day : " + diff/(60*60*24));
-
-                                        if(diff > (60*60*24)){
-                                            // 삭제 대상
-                                            cloudCoreMap.remove(entry.getKey());
-                                        }
-
-                                    }
-
-                                    // Set value and report transaction success
-                                    mutableData.setValue(cloudCoreMap);
-                                    return Transaction.success(mutableData);
-                                }
-
-                                @Override
-                                public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
-
-                                    // 커밋 실패
-                                    if(!b){
-                                        Toast.makeText(context, databaseError.getMessage(), Toast.LENGTH_SHORT).show();
-                                        return;
-                                    }
-
-                                    // Transaction completed
-                                    Map<String, CloudCore> cloudCoreMap = dataSnapshot.getValue(Map.class);
-                                    if(cloudCoreMap == null || cloudCoreMap.size() < CloudCoreMax) {
-                                        // 코어클라우드 결제 가능
-                                        putCloudDialog();
-                                    } else {
-                                        // 가장 오래된 메세지가져오기
-                                        long minDate = Long.MAX_VALUE;
-                                        for(CloudCore cloudCore : cloudCoreMap.values()){
-                                            if(minDate > cloudCore.getCreateDate()) minDate = cloudCore.getCreateDate();
-                                        }
-
-                                        Toast.makeText(context, "더이상 클라우드 코어를 추가할 수 없습니다.\n" + new DateUtil(minDate).getDate() + " 이후에 다시 시도하세요", Toast.LENGTH_SHORT).show();
-                                    }
-
-                                }
-                            });
-
-                        }
-
-                        private void putCloudDialog() {
-                            UiUtil.getInstance().showDialog(context, "Cloud Core", "코어를 클라우드에 추가합니다. 결재하시겠습니까",
-                                    new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface, int i) {
-                                            UiUtil.getInstance().startProgressDialog((Activity)context);
-                                            try {
-                                                FireBaseUtil.getInstance().putCloudCore(cUuid, coreListItem, context).addOnSuccessListener(new OnSuccessListener() {
-                                                    @Override
-                                                    public void onSuccess(Object o) {
-                                                        Toast.makeText(context, "코어가 클라우드에 추가되었습니다", Toast.LENGTH_SHORT).show();
-                                                        UiUtil.getInstance().stopProgressDialog();
-                                                    }
-                                                });
-                                            } catch (NotSetAutoTimeException e) {
-                                                e.printStackTrace();
-                                                Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-                                                ActivityCompat.finishAffinity(((Activity) context).getParent());
-                                            }
-                                        }
-                                    }, new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface, int i) {}
-                                    }
-                            );
-                        }
-                    });
-                }
-            }
-
-
-
-        } else if (cUuid.equals(mUuid)) { // Core 주인이 뷰어일 경우
-            // 삭제 가능, Edit은 불가능
-            setPostMenu(holder, coreListItem, R.menu.core_post_master_menu);
-            holder.core_cloud.setVisibility(View.INVISIBLE);
-        } else {
-            holder.core_setting.setVisibility(View.GONE);
-            holder.core_cloud.setVisibility(View.INVISIBLE);
-        }
-
+        // common set
         try {
             holder.core_date.setText(DataContainer.getInstance().convertBeforeFormat(corePost.getWriteDate(), context));
         } catch (NotSetAutoTimeException e) {
@@ -332,6 +201,141 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 
         holder.seekBar.setClickable(false);
         holder.seekBar.setEnabled(false);
+    }
+
+    private void setPostViewDiff(CorePostHolder holder, final CoreListItem coreListItem, CorePost corePost, String mUuid) {
+        User user = coreListItem.getUser();
+        if (user != null) {  // 주인글
+            setMasterPost(holder, corePost, user);
+        } else {    // 타인글
+            setAnonymousPost(holder, coreListItem, corePost, mUuid);
+        }
+        if (corePost.getUuid().equals(mUuid)) {   // 본인 게시물
+            // 수정 삭제 가능
+            if(user == null && corePost.getReply() != null){    // 답변이 달린 익명글일 때
+                setPostMenu(holder, coreListItem, R.menu.core_post_only_delete_menu);
+            } else {
+                setPostMenu(holder, coreListItem, R.menu.core_post_normal_menu);
+            }
+
+            // 본인 게시물이 주인일 때만 클라우드 가능
+            if(user != null){
+                // 클라우드 올린 포스트는 안보이게
+                if(corePost.isCloud()) holder.core_cloud.setVisibility(View.INVISIBLE);
+                else {
+                    holder.core_cloud.setVisibility(View.VISIBLE);
+                    holder.core_cloud.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+
+                            // cloud
+                            FirebaseDatabase.getInstance().getReference().child("cloudCore").runTransaction(new Transaction.Handler() {
+                                @Override
+                                public Transaction.Result doTransaction(MutableData mutableData) {
+
+                                    Map<String, CloudCore> cloudCoreMap = mutableData.getValue(Map.class);
+                                    if (cloudCoreMap == null) {
+                                        return Transaction.success(mutableData);
+                                    }
+
+                                    if(cloudCoreMap.size()<CloudCoreMax){
+                                        // 추가 가능
+                                        return Transaction.success(mutableData);
+                                    }
+
+                                    // 100개 이상일 시 오래된 것은 삭제
+                                    for (Map.Entry<String, CloudCore> entry : cloudCoreMap.entrySet()){
+
+                                        CloudCore cloudCore = entry.getValue();
+
+                                        long diff = 0;
+                                        try {
+                                            diff = UiUtil.getInstance().getCurrentTime(context) - cloudCore.getCreateDate();
+                                        } catch (NotSetAutoTimeException e) {
+                                            e.printStackTrace();
+                                            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                            ActivityCompat.finishAffinity((Activity)context);
+                                        }
+                                        Log.d("kbj", "diff day : " + diff/(SecToDay));
+
+                                        if(diff > (SecToDay)){
+                                            // 삭제 대상
+                                            cloudCoreMap.remove(entry.getKey());
+                                        }
+
+                                    }
+
+                                    // Set value and report transaction success
+                                    mutableData.setValue(cloudCoreMap);
+                                    return Transaction.success(mutableData);
+                                }
+
+                                @Override
+                                public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+
+                                    // 커밋 실패
+                                    if(!b){
+                                        Toast.makeText(context, databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                                        return;
+                                    }
+
+                                    // Transaction completed
+                                    Map<String, CloudCore> cloudCoreMap = dataSnapshot.getValue(Map.class);
+                                    if(cloudCoreMap == null || cloudCoreMap.size() < CloudCoreMax) {
+                                        // 코어클라우드 결제 가능
+                                        putCloudDialog();
+                                    } else {
+                                        // 가장 오래된 메세지가져오기
+                                        long minDate = Long.MAX_VALUE;
+                                        for(CloudCore cloudCore : cloudCoreMap.values()){
+                                            if(minDate > cloudCore.getCreateDate()) minDate = cloudCore.getCreateDate();
+                                        }
+
+                                        Toast.makeText(context, "더이상 클라우드 코어를 추가할 수 없습니다.\n" + new DateUtil(minDate).getDate() + " 이후에 다시 시도하세요", Toast.LENGTH_SHORT).show();
+                                    }
+
+                                }
+                            });
+
+                        }
+
+                        private void putCloudDialog() {
+                            UiUtil.getInstance().showDialog(context, "Cloud Core", "코어를 클라우드에 추가합니다. 결재하시겠습니까",
+                                    new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            UiUtil.getInstance().startProgressDialog((Activity)context);
+                                            try {
+                                                FireBaseUtil.getInstance().putCloudCore(cUuid, coreListItem, context).addOnSuccessListener(new OnSuccessListener() {
+                                                    @Override
+                                                    public void onSuccess(Object o) {
+                                                        Toast.makeText(context, "코어가 클라우드에 추가되었습니다", Toast.LENGTH_SHORT).show();
+                                                        UiUtil.getInstance().stopProgressDialog();
+                                                    }
+                                                });
+                                            } catch (NotSetAutoTimeException e) {
+                                                e.printStackTrace();
+                                                Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                ActivityCompat.finishAffinity(((Activity) context).getParent());
+                                            }
+                                        }
+                                    }, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {}
+                                    }
+                            );
+                        }
+                    });
+                }
+            }
+        } else if (cUuid.equals(mUuid)) { // Core 주인이 뷰어일 경우
+            // 삭제 가능, Edit은 불가능
+            setPostMenu(holder, coreListItem, R.menu.core_post_master_menu);
+            holder.core_cloud.setVisibility(View.INVISIBLE);
+        } else {
+            holder.core_setting.setVisibility(View.GONE);
+            holder.core_cloud.setVisibility(View.INVISIBLE);
+        }
     }
 
     private void resetCurrentHolder(CorePostHolder holder) {
