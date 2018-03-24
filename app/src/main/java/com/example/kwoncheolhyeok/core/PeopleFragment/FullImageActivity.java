@@ -257,7 +257,8 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
         ImageView profilePics[] = {page1, page2, page3, page4};
         ImageView imagelocks[]  = {null,image2lock,image3lock,image4lock};
         picUrlList = oUser.getPicUrls().toNotNullArrayThumbNail(oUser.getIsLockPics(), oUser.getUnLockUsers(), item.getUuid());
-        for (int i = 0; i < picUrlList.size(); i++) {
+        int i;
+        for (i = 0; i < picUrlList.size(); i++) {
             String url = picUrlList.get(i);
             if (url == null) continue;
 
@@ -280,8 +281,10 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
                 if(oUser.getIsLockPics().getIsLockPic4()) imagelocks[i].setVisibility(View.VISIBLE);
                 else imagelocks[i].setVisibility(View.INVISIBLE);
             }
+        }
 
-
+        for(; i< profilePics.length; i++){
+            profilePics[i].setImageResource(R.drawable.a);
         }
 
         // 큰사진
