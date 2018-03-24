@@ -61,7 +61,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/chat_content"
                 android:layout_marginTop="8dp"
-                android:text="NickName"
+                android:text="nickname"
                 android:textColor="@color/black"
                 android:textSize="13.5dp" />
 
