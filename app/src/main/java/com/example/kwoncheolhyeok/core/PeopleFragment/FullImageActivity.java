@@ -285,6 +285,7 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
 
         for(; i< profilePics.length; i++){
             profilePics[i].setImageResource(R.drawable.a);
+            imagelocks[i].setVisibility(View.INVISIBLE);
         }
 
         // 큰사진
