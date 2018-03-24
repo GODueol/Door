@@ -279,7 +279,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                                 if(isBlockWithMe) return;
                                 if (!corePost.getUuid().equals(mUuid)) {
                                     final String NickName = DataContainer.getInstance().getUser().getId();
-                                    AlarmUtil.getInstance().sendAlarm("Like",NickName,corePost,coreListItem.getPostKey(),corePost.getUuid());
+                                    AlarmUtil.getInstance().sendLikeAlarm(context,"Like",NickName,corePost,coreListItem.getPostKey(),corePost.getUuid());
                                 }
                             }
                         });
@@ -528,7 +528,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                             if(!finalIsReplyFirst || DataContainer.getInstance().isBlockWithMe(coreListItem.getCorePost().getUuid())) return;
 
                             final String NickName = DataContainer.getInstance().getUser().getId();
-                            AlarmUtil.getInstance().sendAlarm("Answer",NickName,coreListItem.getCorePost(),coreListItem.getPostKey(),coreListItem.getCorePost().getUuid());
+                            AlarmUtil.getInstance().sendAlarm(context,"Answer",NickName,coreListItem.getCorePost(),coreListItem.getPostKey(),coreListItem.getCorePost().getUuid());
                         }
                     });
                 }

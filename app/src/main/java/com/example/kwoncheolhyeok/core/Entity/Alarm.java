@@ -1,16 +1,24 @@
 package com.example.kwoncheolhyeok.core.Entity;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
- * Created by godueol on 2018. 3. 24..
+ * Created by Administrator on 2018-03-21.
  */
 
-public class AlarmSummary {
+public class Alarm {
+
+    private Map<String, Long> userLog = new HashMap<>();    // uuid, 추가 시간
     private String nickname;
     private String text;
     private String type;
     private Long time;
 
-    public AlarmSummary(String nickname, String text, String type, Long time){
+
+    private AlarmSummary alarmSummary;
+
+    public Alarm(String nickname, String text, String type, Long time){
         this.nickname = nickname;
         this.text = text;
         this.type = type;
@@ -48,5 +56,19 @@ public class AlarmSummary {
     public void setTime(Long time) {
         this.time = time;
     }
+
+
+    public Map<String, Long> getUserLog() {
+        return userLog;
+    }
+
+    public void setUserLog(Map<String, Long> userLog) {
+        this.userLog = userLog;
+    }
+
+    public AlarmSummary getAlarmSummary() {
+        return new AlarmSummary(nickname, text, type, time);
+    }
+
 
 }
