@@ -42,7 +42,7 @@
             android:layout_below="@+id/profile_image"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="5dp"
-            android:text="core@email.com"
+            android:text="프로필 변경"
             android:textSize="14.5dp" />
 
 

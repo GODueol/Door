@@ -205,14 +205,6 @@ public class MainActivity extends AppCompatActivity
         // Set Profile Pic
         setProfilePic(profileImage);
 
-        // 이메일 Set
-        TextView emailText = headerView.findViewById(R.id.textView);
-        try {
-            emailText.setText(DataContainer.getInstance().getUser().getEmail());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
         closeActivityHandler = new CloseActivityHandler(this);
 
         // 로그인 시간 Update

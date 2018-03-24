@@ -17,6 +17,7 @@ public class DataContainer {
     public static final int ChildrenMax = 1000;
     public static final int ViewedMeMax = 45;
     public static final int CloudCoreMax = 100;
+    public static final int SecToDay = 60*60*24;
 
     private static class TIME_MAXIMUM {
         static final int SEC = 60;

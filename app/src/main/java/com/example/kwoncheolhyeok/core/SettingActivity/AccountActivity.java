@@ -43,11 +43,15 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
     EditText pwConfirm;
     TextView forgotPw;
     TextView changePw;
+    TextView email;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.setting_account_activity);
+
+        email = findViewById(R.id.email);
+        email.setText(DataContainer.getInstance().getUser().getEmail());
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
