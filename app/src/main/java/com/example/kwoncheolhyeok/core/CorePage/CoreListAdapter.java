@@ -129,7 +129,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                         public void onClick(View view) {
 
                             // cloud
-                            FirebaseDatabase.getInstance().getReference().runTransaction(new Transaction.Handler() {
+                            FirebaseDatabase.getInstance().getReference().child("cloudCore").runTransaction(new Transaction.Handler() {
                                 @Override
                                 public Transaction.Result doTransaction(MutableData mutableData) {
 
@@ -181,7 +181,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 
                                     // Transaction completed
                                     Map<String, CloudCore> cloudCoreMap = dataSnapshot.getValue(Map.class);
-                                    if(cloudCoreMap.size() < CloudCoreMax) {
+                                    if(cloudCoreMap == null || cloudCoreMap.size() < CloudCoreMax) {
                                         // 코어클라우드 결제 가능
                                         putCloudDialog();
                                     } else {

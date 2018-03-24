@@ -4,6 +4,7 @@ package com.example.kwoncheolhyeok.core.CorePage;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -42,7 +43,7 @@ public class CoreActivity extends BlockBaseActivity {
     private Query postQuery;
     private ChildEventListener listner;
     private DataContainer dc;
-    private String cUuid;
+    private String cUuid = null;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,9 +53,7 @@ public class CoreActivity extends BlockBaseActivity {
         dc = DataContainer.getInstance();
 
         Intent intent = getIntent();
-        cUuid = intent.getStringExtra("uuid");
-        // 엑티비티 Uuid 저장
-        SPUtil.setBlockMeUserCurrentActivity(getString(R.string.currentActivity),cUuid);
+
         //스크린샷 방지
 //        ScreenshotSetApplication.getInstance().allowUserSaveScreenshot(false);
 
@@ -62,6 +61,59 @@ public class CoreActivity extends BlockBaseActivity {
                 R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        setFab();
+
+        // 툴바 뒤로가기 버튼
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true); //액션바 아이콘을 업 네비게이션 형태로 표시합니다.
+        getSupportActionBar().setDisplayShowHomeEnabled(true); //홈 아이콘을 숨김처리합니다.
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
+
+
+        recyclerView = findViewById(R.id.core_listview);
+
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+
+        cUuid = intent.getStringExtra("uuid");
+
+        // 엑티비티 Uuid 저장
+        if(cUuid != null) SPUtil.setBlockMeUserCurrentActivity(getString(R.string.currentActivity),cUuid);
+
+        final ArrayList<CoreListItem> list = new ArrayList<>();
+        coreListAdapter = getCoreListAdapter(list);
+
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(coreListAdapter);
+
+        ((SimpleItemAnimator) recyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
+
+        addPostsToList(list);
+
+    }
+
+    private void addPostsToList(final ArrayList<CoreListItem> list) {
+        // 코어 주인의 User Get
+        dc.getUserRef(cUuid).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User cUser = dataSnapshot.getValue(User.class);
+                addCorePostsToList(cUuid, list, cUser);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+        SharedPreferencesUtil SPUtil = new SharedPreferencesUtil(getApplicationContext());
+        SPUtil.removeBadge(getString(R.string.badgePost));
+    }
+
+    @NonNull
+    private CoreListAdapter getCoreListAdapter(ArrayList<CoreListItem> list) {
+        return new CoreListAdapter(list, this, cUuid);
+    }
+
+    private void setFab() {
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,58 +148,23 @@ public class CoreActivity extends BlockBaseActivity {
                 });
             }
         });
-
-        // 툴바 뒤로가기 버튼
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true); //액션바 아이콘을 업 네비게이션 형태로 표시합니다.
-        getSupportActionBar().setDisplayShowHomeEnabled(true); //홈 아이콘을 숨김처리합니다.
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
-
-
-        recyclerView = findViewById(R.id.core_listview);
-
-        final ArrayList<CoreListItem> list = new ArrayList<>();
-        coreListAdapter = new CoreListAdapter(list, this, cUuid);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(coreListAdapter);
-
-        ((SimpleItemAnimator) recyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
-
-        // 코어 주인의 User Get
-        dc.getUserRef(cUuid).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                User cUser = dataSnapshot.getValue(User.class);
-                addPostToList(cUuid, list, cUser);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
-        SharedPreferencesUtil SPUtil = new SharedPreferencesUtil(getApplicationContext());
-        SPUtil.removeBadge(getString(R.string.badgePost));
     }
 
-    private void addPostToList(final String cUuid, final ArrayList<CoreListItem> list, final User cUser) {
-        postQuery = FirebaseDatabase.getInstance().getReference().child("posts").child(cUuid).orderByChild("writeDate");
+    private void addCorePostsToList(final String cUuid, final ArrayList<CoreListItem> list, final User cUser) {
+        postQuery = getQuery(cUuid);
         listner = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 final CorePost corePost = dataSnapshot.getValue(CorePost.class);
                 final String postKey = dataSnapshot.getKey();
                 if (corePost == null || corePost.getUuid() == null) return;
-                if (corePost.getUuid().equals(cUuid)) { // 작성자가 코어의 주인인 경우
-                    addCoreListItem(cUser, corePost, postKey);
-                } else {  // 익명
-                    addCoreListItem(null, corePost, postKey);
-                }
+
+
+                addCoreListItem(corePost, postKey, cUser, list);
+
             }
 
-            private void addCoreListItem(User user, CorePost corePost, String postKey) {
-                list.add(0, new CoreListItem(user, corePost, postKey));
-                coreListAdapter.notifyItemInserted(0);
-            }
+
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
@@ -190,6 +207,19 @@ public class CoreActivity extends BlockBaseActivity {
             }
         };
         postQuery.addChildEventListener(listner);
+    }
+
+    private void addCoreListItem(CorePost corePost, String postKey, User cUser, ArrayList<CoreListItem> list) {
+        if (corePost.getUuid().equals(cUuid)) { // 작성자가 코어의 주인인 경우
+            list.add(0, new CoreListItem(cUser, corePost, postKey));
+        } else {  // 익명
+            list.add(0, new CoreListItem(null, corePost, postKey));
+        }
+        coreListAdapter.notifyItemInserted(0);
+    }
+
+    private Query getQuery(String cUuid) {
+        return FirebaseDatabase.getInstance().getReference().child("posts").child(cUuid).orderByChild("writeDate");
     }
 
     @Override

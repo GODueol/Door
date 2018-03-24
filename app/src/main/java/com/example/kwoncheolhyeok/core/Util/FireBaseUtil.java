@@ -322,7 +322,7 @@ public class FireBaseUtil {
         Map<String, Object> childUpdates = new HashMap<>();
 
         // cloudCore
-        childUpdates.put("cloudCore", new CloudCore(cUuid, UiUtil.getInstance().getCurrentTime(context)));
+        childUpdates.put("cloudCore/" + coreListItem.getPostKey(), new CloudCore(cUuid, UiUtil.getInstance().getCurrentTime(context)));
 
         // posts >> boolean isCloud
         childUpdates.put("posts/" + cUuid + "/" + coreListItem.getPostKey() + "/isCloud", true);
