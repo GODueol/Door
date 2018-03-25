@@ -33,7 +33,6 @@ import com.example.kwoncheolhyeok.core.Util.AlarmUtil;
 import com.example.kwoncheolhyeok.core.Util.BaseActivity.BlockBaseActivity;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
-import com.example.kwoncheolhyeok.core.Util.FirebaseSendPushMsg;
 import com.example.kwoncheolhyeok.core.Util.GalleryPick;
 import com.example.kwoncheolhyeok.core.Util.UiUtil;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -146,7 +145,7 @@ public class CoreWriteActivity extends BlockBaseActivity {
         sound_x_btn = findViewById(R.id.sound_x_btn);
 
         // 본인, 타인 구분
-        if (!cUuid.equals(mUuid)) {    // 타인
+        if (isAnonymousPost()) {    // 타인
             fab.setVisibility(View.GONE);
             editImage.setVisibility(View.GONE);
             edit_audio_layout.setVisibility(View.GONE);
@@ -191,45 +190,26 @@ public class CoreWriteActivity extends BlockBaseActivity {
                     return;
                 }
 
-                // 익명글이 댓글이 달린 경우
-                if(isEdit) {
-                    FirebaseDatabase.getInstance().getReference().child("posts").child(cUuid).child(postKey).child("reply").addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            if (dataSnapshot.getValue() != null) {
-                                if (!cUuid.equals(mUuid)) {
-                                    Toast.makeText(CoreWriteActivity.this, "답변이 달린 경우 글 내용을 수정할 수 없습니다.", Toast.LENGTH_SHORT).show();
-                                    finish();
-                                    return;
-                                }
-
-                                try {
-                                    saveCore();
-                                } catch (NotSetAutoTimeException e) {
-                                    e.printStackTrace();
-                                    Toast.makeText(CoreWriteActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                                    ActivityCompat.finishAffinity(CoreWriteActivity.this);
-                                }
+                // 답변 검사
+                FirebaseDatabase.getInstance().getReference().child("posts").child(cUuid).child(postKey).child("reply").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        // 답변이 달린경우
+                        if (dataSnapshot.getValue() != null) {
+                            if (isAnonymousPost()) {
+                                Toast.makeText(CoreWriteActivity.this, "답변이 달린 경우 글 내용을 수정할 수 없습니다.", Toast.LENGTH_SHORT).show();
+                                finish();
+                                return;
                             }
                         }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
-                    });
-                } else {
-
-                    try {
                         saveCore();
-                    } catch (NotSetAutoTimeException e) {
-                        e.printStackTrace();
-                        Toast.makeText(CoreWriteActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                        ActivityCompat.finishAffinity(CoreWriteActivity.this);
                     }
 
-                }
-
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Toast.makeText(CoreWriteActivity.this, databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         });
 
@@ -345,11 +325,17 @@ public class CoreWriteActivity extends BlockBaseActivity {
 
     }
 
-    private void saveCore() throws NotSetAutoTimeException {
+    private void saveCore() {
 
         UiUtil.getInstance().startProgressDialog(CoreWriteActivity.this);
 
-        if (corePost == null) corePost = new CorePost(mUuid, UiUtil.getInstance().getCurrentTime(CoreWriteActivity.this));
+        if (corePost == null) try {
+            corePost = new CorePost(mUuid, UiUtil.getInstance().getCurrentTime(CoreWriteActivity.this));
+        } catch (NotSetAutoTimeException e) {
+            e.printStackTrace();
+            Toast.makeText(CoreWriteActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            ActivityCompat.finishAffinity(CoreWriteActivity.this);
+        }
 
         corePost.setText(textContents.getText().toString());
         Task<Void> postUploadTask = postRef.setValue(corePost);
@@ -391,7 +377,7 @@ public class CoreWriteActivity extends BlockBaseActivity {
                     for (Task task : tasks.keySet()) {
                         if (!task.isComplete()) return;
                     }
-                    if(!cUuid.equals(mUuid)){
+                    if(isAnonymousPost()){
                        // 익명게시글이면
                         final String NickName = DataContainer.getInstance().getUser().getId();
                         AlarmUtil.getInstance().sendAlarm(getApplicationContext(),"Post","UnKnown",corePost,postKey,cUuid);
@@ -401,6 +387,10 @@ public class CoreWriteActivity extends BlockBaseActivity {
                 }
             });
         }
+    }
+
+    private boolean isAnonymousPost() {
+        return !cUuid.equals(mUuid);
     }
 
     private void showFABMenu() {
