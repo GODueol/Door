@@ -1,5 +1,7 @@
 package com.example.kwoncheolhyeok.core.CorePage;
 
+import android.util.Log;
+
 import com.example.kwoncheolhyeok.core.Entity.CoreCloud;
 import com.example.kwoncheolhyeok.core.Entity.CoreListItem;
 import com.example.kwoncheolhyeok.core.Entity.CorePost;
@@ -50,9 +52,9 @@ public class CoreCloudActivity extends CoreActivity {
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 CoreListItem coreListItem = coreListItemMap.get(postKey);
                                 int position = list.lastIndexOf(coreListItem);
+                                Log.d("kbj", "setCorePost, postKey : " + postKey + ", position : " + position);
                                 coreListItem.setCorePost(dataSnapshot.getValue(CorePost.class));
-                                if(coreListItem.getUser() != null) coreListAdapter.notifyItemInserted(position);
-
+                                if(coreListItem.getUser() != null) coreListAdapter.notifyItemChanged(position);
                             }
 
                             @Override
@@ -68,8 +70,9 @@ public class CoreCloudActivity extends CoreActivity {
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 CoreListItem coreListItem = coreListItemMap.get(postKey);
                                 int position = list.lastIndexOf(coreListItem);
+                                Log.d("kbj", "setUser, postKey : " + postKey + ", position : " + position);
                                 coreListItem.setUser(dataSnapshot.getValue(User.class));
-                                if(coreListItem.getCorePost() != null) coreListAdapter.notifyItemInserted(position);
+                                if(coreListItem.getCorePost() != null) coreListAdapter.notifyItemChanged(position);
                             }
 
                             @Override
