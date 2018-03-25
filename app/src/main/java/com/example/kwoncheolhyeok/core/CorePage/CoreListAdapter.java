@@ -10,7 +10,6 @@ import android.media.MediaPlayer;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,7 +28,6 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.bumptech.glide.Glide;
-import com.example.kwoncheolhyeok.core.CorePage.CoreCloudPayDialog.DealDialogFragment;
 import com.example.kwoncheolhyeok.core.Entity.CoreCloud;
 import com.example.kwoncheolhyeok.core.Entity.CoreListItem;
 import com.example.kwoncheolhyeok.core.Entity.CorePost;
@@ -149,7 +147,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                                     if(isBlockWithMe) return;
                                     if (!corePost.getUuid().equals(mUuid)) {
                                         final String NickName = DataContainer.getInstance().getUser().getId();
-                                        AlarmUtil.getInstance().sendAlarm(context,"Like",NickName,corePost,coreListItem.getPostKey(),corePost.getUuid(),cUuid);
+                                        AlarmUtil.getInstance().sendAlarm(context,"Like",NickName,corePost,coreListItem.getPostKey(),corePost.getUuid(),coreListItem.getcUuid());
                                     }
                                 }
                             });
@@ -555,7 +553,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                             if(!finalIsReplyFirst || DataContainer.getInstance().isBlockWithMe(coreListItem.getCorePost().getUuid())) return;
 
                             final String NickName = DataContainer.getInstance().getUser().getId();
-                            AlarmUtil.getInstance().sendAlarm(context,"Answer",NickName,coreListItem.getCorePost(),coreListItem.getPostKey(),coreListItem.getCorePost().getUuid(),cUuid);
+                            AlarmUtil.getInstance().sendAlarm(context,"Answer",NickName,coreListItem.getCorePost(),coreListItem.getPostKey(),coreListItem.getCorePost().getUuid(),coreListItem.getcUuid());
                         }
                     });
                 }

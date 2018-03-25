@@ -6,8 +6,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.RelativeLayout;
 
-import com.example.kwoncheolhyeok.core.Activity.MainActivity;
-import com.example.kwoncheolhyeok.core.Activity.NewAlarmDialog;
 import com.example.kwoncheolhyeok.core.R;
 
 /**
