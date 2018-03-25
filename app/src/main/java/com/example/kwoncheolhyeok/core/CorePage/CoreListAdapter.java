@@ -39,7 +39,6 @@ import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.AlarmUtil;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
-import com.example.kwoncheolhyeok.core.Util.FirebaseSendPushMsg;
 import com.example.kwoncheolhyeok.core.Util.GlideApp;
 import com.example.kwoncheolhyeok.core.Util.UiUtil;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -147,7 +146,8 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                                 public void isBlockCallback(boolean isBlockWithMe) {
                                     if(isBlockWithMe) return;
                                     if (!corePost.getUuid().equals(mUuid)) {
-                                        FirebaseSendPushMsg.sendPostToFCM("Like", corePost.getUuid(), DataContainer.getInstance().getUser().getId(), context.getString(R.string.alertLike));
+                                        final String NickName = DataContainer.getInstance().getUser().getId();
+                                        AlarmUtil.getInstance().sendAlarm(context,"Like",NickName,corePost,coreListItem.getPostKey(),corePost.getUuid(),cUuid);
                                     }
                                 }
                             });
@@ -532,7 +532,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                             if(!finalIsReplyFirst || DataContainer.getInstance().isBlockWithMe(coreListItem.getCorePost().getUuid())) return;
 
                             final String NickName = DataContainer.getInstance().getUser().getId();
-                            AlarmUtil.getInstance().sendAlarm(context,"Answer",NickName,coreListItem.getCorePost(),coreListItem.getPostKey(),coreListItem.getCorePost().getUuid());
+                            AlarmUtil.getInstance().sendAlarm(context,"Answer",NickName,coreListItem.getCorePost(),coreListItem.getPostKey(),coreListItem.getCorePost().getUuid(),cUuid);
                         }
                     });
                 }
