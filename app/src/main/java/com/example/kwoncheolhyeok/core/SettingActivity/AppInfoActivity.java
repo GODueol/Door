@@ -3,7 +3,11 @@ package com.example.kwoncheolhyeok.core.SettingActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.RelativeLayout;
 
+import com.example.kwoncheolhyeok.core.Activity.MainActivity;
+import com.example.kwoncheolhyeok.core.Activity.NewAlarmDialog;
 import com.example.kwoncheolhyeok.core.R;
 
 /**
@@ -14,6 +18,7 @@ public class AppInfoActivity extends AppCompatActivity {
 
     Toolbar toolbar = null;
 
+    RelativeLayout SendBugReport = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +33,19 @@ public class AppInfoActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true); //홈 아이콘을 숨김처리합니다.
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
 
+        SendBugReport = findViewById(R.id.layout4);
+        SendBugReport.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
+                new SendBugReportDialog(AppInfoActivity.this, new SendBugReportDialog.SendBugReportDialogListener() {
+                    @Override
+                    public void show_sendBugReport_dialog() {
+                        show_sendBugReport_dialog();
+                    }
+                }).show();
+            }
+        });
     }
 
 
@@ -43,5 +60,9 @@ public class AppInfoActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    //알람 다이얼로그
+    public void show_sendBugReport_dialog() {
+
+    }
 
 }

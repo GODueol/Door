@@ -10,6 +10,7 @@ import android.media.MediaPlayer;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,6 +29,7 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.bumptech.glide.Glide;
+import com.example.kwoncheolhyeok.core.CorePage.CoreCloudPayDialog.DealDialogFragment;
 import com.example.kwoncheolhyeok.core.Entity.CoreCloud;
 import com.example.kwoncheolhyeok.core.Entity.CoreListItem;
 import com.example.kwoncheolhyeok.core.Entity.CorePost;
@@ -230,6 +232,11 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                 holder.core_cloud.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+
+                        //★☆★☆★☆★☆여기입니다요★☆★☆★☆★☆
+//                        DealDialogFragment dealDialogFragment = new DealDialogFragment();
+//                        dealDialogFragment.show((AppCompatActivity)context,"");
+
                         if(corePost.isCloud()){
                             Toast.makeText(context, "이미 코어 클라우드에 게시된글입니다", Toast.LENGTH_SHORT).show();
                             return;
