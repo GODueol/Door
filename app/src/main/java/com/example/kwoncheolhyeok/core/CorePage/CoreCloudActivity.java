@@ -42,6 +42,43 @@ public class CoreCloudActivity extends CoreActivity {
                 // create 순으로 List Add
                 coreListItemMap.put(postKey, new CoreListItem(null, null, postKey, coreCloud.getcUuid()));
                 list.add(0, coreListItemMap.get(postKey));
+                setData(dataSnapshot, coreCloud, postKey);
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                CoreCloud coreCloud = dataSnapshot.getValue(CoreCloud.class);
+                final String postKey = dataSnapshot.getKey();
+
+                // Set Post 데이터
+                setData(dataSnapshot, coreCloud, postKey);
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                CoreCloud coreCloud = dataSnapshot.getValue(CoreCloud.class);
+                final String postKey = dataSnapshot.getKey();
+
+                CoreListItem coreListItem = coreListItemMap.get(postKey);
+                int position = list.lastIndexOf(coreListItem);
+                list.remove(coreListItem);
+                coreListItemMap.remove(postKey);
+                coreListAdapter.notifyItemRemoved(position);
+                list.add(0, coreListItemMap.get(postKey));
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+
+            private void setData(DataSnapshot dataSnapshot, CoreCloud coreCloud, final String postKey) {
                 // Set Post 데이터
                 FirebaseDatabase.getInstance().getReference().child("posts").child(coreCloud.getcUuid()).child(dataSnapshot.getKey())
                         .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -77,25 +114,6 @@ public class CoreCloudActivity extends CoreActivity {
                         });
             }
 
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
         };
         postQuery.addChildEventListener(listener);
     }
