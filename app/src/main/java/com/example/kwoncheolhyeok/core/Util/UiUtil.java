@@ -51,7 +51,7 @@ public class UiUtil {
         progressDialog.setIndeterminateDrawable(activity.getResources().getDrawable(R.drawable.progress_dialog_icon_drawable_animation));
         progressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         progressDialog.setCancelable(false);
-        progressDialog.show();
+        if(!progressDialog.isShowing())progressDialog.show();
     }
 
     public void stopProgressDialog() {

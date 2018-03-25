@@ -640,4 +640,10 @@ public class CoreWriteActivity extends BlockBaseActivity {
     public void FinishActivity(SomeoneBlocksMeEvent someoneBlocksMeEvent){
         finish();
     }
+
+    @Override
+    protected void onDestroy() {
+        UiUtil.getInstance().stopProgressDialog();
+        super.onDestroy();
+    }
 }

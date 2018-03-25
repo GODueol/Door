@@ -273,6 +273,12 @@ public class FireBaseUtil {
             public void onSuccess(Void aVoid) {
 
                 final ArrayList<Task> deleteTasks = new ArrayList<>();
+
+                // coreCloud
+                if(coreListItem.getCorePost().isCloud()){
+                    DataContainer.getInstance().getCoreCloudRef().child(coreListItem.getPostKey()).removeValue();
+                }
+
                 // 갯수 갱신
                 FireBaseUtil.getInstance().syncCorePostCount(cUuid);
 

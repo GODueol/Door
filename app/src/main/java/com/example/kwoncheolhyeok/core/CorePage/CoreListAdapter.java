@@ -514,15 +514,15 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
     }
 
     private void deletePost(final CoreListItem coreListItem) {
-        UiUtil.getInstance().showDialog(context, "Delete", "게시물을 삭제하시겠습니까?"
+        String msg = "게시물을 삭제하시겠습니까?";
+        if(coreListItem.getCorePost().isCloud()){
+            msg = "클라우드된 게시물입니다. 정말 게시물을 삭제하시겠습니까?";
+        }
+        UiUtil.getInstance().showDialog(context, "Delete", msg
                 , new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-
-//                        UiUtil.getInstance().startProgressDialog((Activity) context);
-
                         FireBaseUtil.getInstance().deletePostExcution(coreListItem, postsRef, coreListItem.getcUuid());
-
 
                     }
                 }, new DialogInterface.OnClickListener() {
