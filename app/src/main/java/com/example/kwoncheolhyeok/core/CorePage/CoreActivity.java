@@ -22,6 +22,7 @@ import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.BaseActivity.BlockBaseActivity;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.SharedPreferencesUtil;
+import com.example.kwoncheolhyeok.core.Util.WrapContentLinearLayoutManager;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -38,21 +39,19 @@ public class CoreActivity extends BlockBaseActivity {
     private static final int WRITE_SUCC = 1;
     Toolbar toolbar = null;
 
-    private CoreListAdapter coreListAdapter;
+    public CoreListAdapter coreListAdapter;
     private RecyclerView recyclerView;
-    private Query postQuery;
-    private ChildEventListener listner;
+    public Query postQuery;
+    public ChildEventListener listener;
     private DataContainer dc;
     private String cUuid = null;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Get the view from new_activity.xml
-        setContentView(R.layout.core_activity);
+        setContentView();
 
         dc = DataContainer.getInstance();
-
-        Intent intent = getIntent();
 
         //스크린샷 방지
 //        ScreenshotSetApplication.getInstance().allowUserSaveScreenshot(false);
@@ -68,12 +67,11 @@ public class CoreActivity extends BlockBaseActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true); //홈 아이콘을 숨김처리합니다.
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
 
-
         recyclerView = findViewById(R.id.core_listview);
 
+        LinearLayoutManager layoutManager = new WrapContentLinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-
+        Intent intent = getIntent();
         cUuid = intent.getStringExtra("uuid");
 
         // 엑티비티 Uuid 저장
@@ -91,7 +89,11 @@ public class CoreActivity extends BlockBaseActivity {
 
     }
 
-    private void addPostsToList(final ArrayList<CoreListItem> list) {
+    public void setContentView() {
+        setContentView(R.layout.core_activity);
+    }
+
+    public void addPostsToList(final ArrayList<CoreListItem> list) {
         // 코어 주인의 User Get
         dc.getUserRef(cUuid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -110,10 +112,10 @@ public class CoreActivity extends BlockBaseActivity {
 
     @NonNull
     private CoreListAdapter getCoreListAdapter(ArrayList<CoreListItem> list) {
-        return new CoreListAdapter(list, this, cUuid);
+        return new CoreListAdapter(list, this);
     }
 
-    private void setFab() {
+    public void setFab() {
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -150,16 +152,14 @@ public class CoreActivity extends BlockBaseActivity {
         });
     }
 
-    private void addCorePostsToList(final String cUuid, final ArrayList<CoreListItem> list, final User cUser) {
+    public void addCorePostsToList(final String cUuid, final ArrayList<CoreListItem> list, final User cUser) {
         postQuery = getQuery(cUuid);
-        listner = new ChildEventListener() {
+        listener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 final CorePost corePost = dataSnapshot.getValue(CorePost.class);
                 final String postKey = dataSnapshot.getKey();
                 if (corePost == null || corePost.getUuid() == null) return;
-
-
                 addCoreListItem(corePost, postKey, cUser, list);
 
             }
@@ -204,14 +204,14 @@ public class CoreActivity extends BlockBaseActivity {
 
             }
         };
-        postQuery.addChildEventListener(listner);
+        postQuery.addChildEventListener(listener);
     }
 
     private void addCoreListItem(CorePost corePost, String postKey, User cUser, ArrayList<CoreListItem> list) {
         if (corePost.getUuid().equals(cUuid)) { // 작성자가 코어의 주인인 경우
-            list.add(0, new CoreListItem(cUser, corePost, postKey));
+            list.add(0, new CoreListItem(cUser, corePost, postKey, cUuid));
         } else {  // 익명
-            list.add(0, new CoreListItem(null, corePost, postKey));
+            list.add(0, new CoreListItem(null, corePost, postKey, cUuid));
         }
         coreListAdapter.notifyItemInserted(0);
     }
@@ -223,7 +223,7 @@ public class CoreActivity extends BlockBaseActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.clear();
-        if (cUuid.equals(dc.getUid())) {
+        if (cUuid != null && cUuid.equals(dc.getUid())) {
             getMenuInflater().inflate(R.menu.core_activity_menu, menu);
             menu.getItem(0).setChecked(dc.getUser().isAnonymityProhibition());
         }
@@ -277,7 +277,7 @@ public class CoreActivity extends BlockBaseActivity {
 
     @Override
     protected void onDestroy() {
-        if (postQuery != null && listner != null) postQuery.removeEventListener(listner);
+        if (postQuery != null && listener != null) postQuery.removeEventListener(listener);
         super.onDestroy();
     }
 

@@ -1,46 +1,105 @@
 package com.example.kwoncheolhyeok.core.CorePage;
 
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-
+import com.example.kwoncheolhyeok.core.Entity.CoreCloud;
+import com.example.kwoncheolhyeok.core.Entity.CoreListItem;
+import com.example.kwoncheolhyeok.core.Entity.CorePost;
+import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.R;
+import com.example.kwoncheolhyeok.core.Util.DataContainer;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by Kwon on 2018-03-16.
  */
 
-public class CoreCloudActivity extends AppCompatActivity {
+public class CoreCloudActivity extends CoreActivity {
 
-    Toolbar toolbar = null;
+    HashMap<String, CoreListItem> coreListItemMap = new HashMap<>();
 
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void setContentView() {
         setContentView(R.layout.core_cloud_activity_main);
-
-        toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        // 툴바 뒤로가기 버튼
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true); //액션바 아이콘을 업 네비게이션 형태로 표시합니다.
-        getSupportActionBar().setDisplayShowHomeEnabled(true); //홈 아이콘을 숨김처리합니다.
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
-
-
     }
 
+    public void setFab(){
+        // Fab 버튼 없음
+    }
 
-    // 뒤로가기 버튼 기능
-    public boolean onOptionsItemSelected(android.view.MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                // NavUtils.navigateUpFromSameTask(this);
-                finish();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
+    public void addPostsToList(final ArrayList<CoreListItem> list) {
+        postQuery = DataContainer.getInstance().getCoreCloudRef().orderByChild("createDate");
+
+        listener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                CoreCloud coreCloud = dataSnapshot.getValue(CoreCloud.class);
+                final String postKey = dataSnapshot.getKey();
+                // create 순으로 List Add
+                coreListItemMap.put(postKey, new CoreListItem(null, null, postKey, coreCloud.getcUuid()));
+                list.add(0, coreListItemMap.get(postKey));
+
+                // Set Post 데이터
+                FirebaseDatabase.getInstance().getReference().child("posts").child(coreCloud.getcUuid()).child(dataSnapshot.getKey())
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                CoreListItem coreListItem = coreListItemMap.get(postKey);
+                                int position = list.lastIndexOf(coreListItem);
+                                coreListItem.setCorePost(dataSnapshot.getValue(CorePost.class));
+                                if(coreListItem.getUser() != null) coreListAdapter.notifyItemInserted(position);
+
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+
+                // Set User 데이터
+                DataContainer.getInstance().getUserRef(coreCloud.getcUuid())
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                CoreListItem coreListItem = coreListItemMap.get(postKey);
+                                int position = list.lastIndexOf(coreListItem);
+                                coreListItem.setUser(dataSnapshot.getValue(User.class));
+                                if(coreListItem.getCorePost() != null) coreListAdapter.notifyItemInserted(position);
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        postQuery.addChildEventListener(listener);
     }
 
 

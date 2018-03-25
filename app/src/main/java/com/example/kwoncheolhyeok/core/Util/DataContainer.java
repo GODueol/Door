@@ -16,7 +16,7 @@ public class DataContainer {
     public final String PREFERENCE = "com.example.kwoncheolhyeok.core.samplesharepreference";
     public static final int ChildrenMax = 1000;
     public static final int ViewedMeMax = 45;
-    public static final int CloudCoreMax = 100;
+    public static final int CoreCloudMax = 100;
     public static final int SecToDay = 60*60*24;
 
     private static class TIME_MAXIMUM {
@@ -68,6 +68,10 @@ public class DataContainer {
 
     public DatabaseReference getUsersRef() {
         return FirebaseDatabase.getInstance().getReference("users");
+    }
+
+    public DatabaseReference getCoreCloudRef(){
+        return FirebaseDatabase.getInstance().getReference("coreCloud");
     }
 
     public String convertBeforeFormat(long longDate, Context context) throws NotSetAutoTimeException {

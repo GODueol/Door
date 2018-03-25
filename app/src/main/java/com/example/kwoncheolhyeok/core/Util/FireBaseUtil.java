@@ -3,7 +3,7 @@ package com.example.kwoncheolhyeok.core.Util;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.example.kwoncheolhyeok.core.Entity.CloudCore;
+import com.example.kwoncheolhyeok.core.Entity.CoreCloud;
 import com.example.kwoncheolhyeok.core.Entity.CoreListItem;
 import com.example.kwoncheolhyeok.core.Entity.CorePost;
 import com.example.kwoncheolhyeok.core.Entity.User;
@@ -317,12 +317,12 @@ public class FireBaseUtil {
         });
     }
 
-    public Task putCloudCore(String cUuid, CoreListItem coreListItem, Context context) throws NotSetAutoTimeException {
+    public Task putCoreCloud(String cUuid, CoreListItem coreListItem, Context context) throws NotSetAutoTimeException {
 
         Map<String, Object> childUpdates = new HashMap<>();
 
-        // cloudCore
-        childUpdates.put("cloudCore/" + coreListItem.getPostKey(), new CloudCore(cUuid, UiUtil.getInstance().getCurrentTime(context)));
+        // coreCloud
+        childUpdates.put("coreCloud/" + coreListItem.getPostKey(), new CoreCloud(cUuid, UiUtil.getInstance().getCurrentTime(context), UiUtil.getInstance().getCurrentTime(context)));
 
         // posts >> boolean isCloud
         childUpdates.put("posts/" + cUuid + "/" + coreListItem.getPostKey() + "/isCloud", true);

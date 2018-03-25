@@ -144,5 +144,6 @@
     <string name="mapSpiner">이 주변 회원 검색</string>
     <string name="heartCountUser">하트 누른 유저들</string>
     <string name="cannotOver5Mb">5MB가 넘는 파일은 업로드 할 수 없습니다</string>
+    <string name="detach_cloud">클라우드에서 내리기</string>
 </resources>
 

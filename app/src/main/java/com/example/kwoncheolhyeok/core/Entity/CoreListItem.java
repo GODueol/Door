@@ -7,6 +7,7 @@ public class CoreListItem {
     private User user;
     private CorePost corePost;
     private String postKey;
+    private String cUuid;
 
     public String getPostKey() {
         return postKey;
@@ -32,9 +33,18 @@ public class CoreListItem {
         this.corePost = corePost;
     }
 
-    public CoreListItem(User user, CorePost corePost, String postKey) {
+    public String getcUuid() {
+        return cUuid;
+    }
+
+    public void setcUuid(String cUuid) {
+        this.cUuid = cUuid;
+    }
+
+    public CoreListItem(User user, CorePost corePost, String postKey, String cUuid) {
         this.user = user;
         this.corePost = corePost;
         this.postKey = postKey;
+        this.cUuid = cUuid;
     }
 }
