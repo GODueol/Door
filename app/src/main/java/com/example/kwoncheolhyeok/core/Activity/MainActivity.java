@@ -186,17 +186,19 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+        // nav_alarm
         nav_alarm = headerView.findViewById(R.id.nav_alarm);
+        boolean alarmIcon = SPUtil.getAlarmIcon(getString(R.string.navAlarm));
+        if (!alarmIcon) {
+            nav_alarm.setBackgroundResource(R.drawable.nav_alarm_off);
+        } else {
+            nav_alarm.setBackgroundResource(R.drawable.nav_alarm_on);
+        }
         nav_alarm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                new NewAlarmDialog(MainActivity.this, new NewAlarmDialog.NewAlarmDialogListener() {
-                    @Override
-                    public void show_alarm_dialog() {
-                        show_alarm_dialog();
-                    }
-                }).show();
+                SPUtil.setAlarmIcon(getString(R.string.navAlarm),false);
+                new NavAlarmDialog(MainActivity.this).show();
 
 
             }
@@ -448,8 +450,7 @@ public class MainActivity extends AppCompatActivity
 //            viewPager.setCurrentItem(0);
             Intent i = new Intent(MainActivity.this, CoreCloudActivity.class);
             startActivity(i);
-        } else if (id == R.id.nav_mycore)
-        {
+        } else if (id == R.id.nav_mycore) {
             UiUtil.getInstance().goToCoreActivity(MainActivity.this, DataContainer.getInstance().getUid());
         } else if (id == R.id.nav_message) {
 
@@ -595,6 +596,14 @@ public class MainActivity extends AppCompatActivity
                     badgeRoundStyle(friendBadge, badgeStat);
                 }
                 break;
+            case "navAlarm":
+                boolean navState = sharedPreferences.getBoolean(key,false);{
+                if (!navState) {
+                    nav_alarm.setBackgroundResource(R.drawable.nav_alarm_off);
+                } else {
+                    nav_alarm.setBackgroundResource(R.drawable.nav_alarm_on);
+                }
+            }
         }
     }
 

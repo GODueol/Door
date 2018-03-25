@@ -74,6 +74,8 @@ public class FirebaseRcevPushMsg extends FirebaseMessagingService {
                     break;
                 case "Like":
                     isCheck = SPUtil.getSwitchState(getString(R.string.alertLike));
+                    SPUtil.setMainIcon(getString(R.string.mainAlarm), true);
+                    SPUtil.setAlarmIcon(getString(R.string.navAlarm), true);
                     if (isCheck) {
                         sendNotification(remoteMessage.getData().get("nick"), remoteMessage.getData().get("message"));
                     }
@@ -81,21 +83,23 @@ public class FirebaseRcevPushMsg extends FirebaseMessagingService {
                 case "Post":
                     isCheck = SPUtil.getSwitchState(getString(R.string.alertPost));
                     SPUtil.increaseBadgeCount(getString(R.string.badgePost));
-
+                    SPUtil.setAlarmIcon(getString(R.string.navAlarm), true);
+                    if (isCheck) {
+                        sendNotification(remoteMessage.getData().get("nick"), remoteMessage.getData().get("message"));
+                    }
+                    break;
+                case "Answer":
+                    isCheck = SPUtil.getSwitchState(getString(R.string.alertAnswer));
+                    SPUtil.setMainIcon(getString(R.string.mainAlarm), true);
+                    SPUtil.setAlarmIcon(getString(R.string.navAlarm), true);
                     if (isCheck) {
                         sendNotification(remoteMessage.getData().get("nick"), remoteMessage.getData().get("message"));
                     }
                     break;
                 case "View":
-                    SPUtil.switchBadgeState(getString(R.string.badgeView),true);
+                    SPUtil.switchBadgeState(getString(R.string.badgeView), true);
                     break;
-                case "Answer":
-                    isCheck = SPUtil.getSwitchState(getString(R.string.alertAnswer));
 
-                    if (isCheck) {
-                        sendNotification(remoteMessage.getData().get("nick"), remoteMessage.getData().get("message"));
-                    }
-                    break;
             }
 
         }

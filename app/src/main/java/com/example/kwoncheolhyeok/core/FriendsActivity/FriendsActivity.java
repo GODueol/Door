@@ -102,7 +102,7 @@ public class FriendsActivity extends UserListBaseActivity implements SharedPrefe
                         return true;
                     case R.id.navigation_recent:
                         SPUtil.switchBadgeState(getString(R.string.badgeView),false);
-                        setRecyclerView(items, adapter, "viewedMeUsers", R.menu.follower_menu);
+                        setRecyclerView(items, adapter, "viewedMeUsers", R.menu.viewed_me_menu);
                         return true;
                 }
                 return false;

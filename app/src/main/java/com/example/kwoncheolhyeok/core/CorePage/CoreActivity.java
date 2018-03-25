@@ -10,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Toast;
@@ -45,6 +46,8 @@ public class CoreActivity extends BlockBaseActivity {
     public ChildEventListener listener;
     private DataContainer dc;
     private String cUuid = null;
+    private String postId = null;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,9 +76,13 @@ public class CoreActivity extends BlockBaseActivity {
 
         Intent intent = getIntent();
         cUuid = intent.getStringExtra("uuid");
-
+        postId = intent.getStringExtra("postId");
+        if (postId != null) {
+            Log.d("test", postId);
+        }
         // 엑티비티 Uuid 저장
-        if(cUuid != null) SPUtil.setBlockMeUserCurrentActivity(getString(R.string.currentActivity),cUuid);
+        if (cUuid != null)
+            SPUtil.setBlockMeUserCurrentActivity(getString(R.string.currentActivity), cUuid);
 
         final ArrayList<CoreListItem> list = new ArrayList<>();
         coreListAdapter = getCoreListAdapter(list);
@@ -125,7 +132,7 @@ public class CoreActivity extends BlockBaseActivity {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         User cUser = dataSnapshot.getValue(User.class);
-                        if(cUser.getBlockUsers().containsKey(dc.getUid())){
+                        if (cUser.getBlockUsers().containsKey(dc.getUid())) {
                             Toast.makeText(CoreActivity.this, "포스트를 작성할 수 없습니다.", Toast.LENGTH_SHORT).show();
                             finish();
                             return;
@@ -282,7 +289,7 @@ public class CoreActivity extends BlockBaseActivity {
     }
 
     @Subscribe
-    public void FinishActivity(SomeoneBlocksMeEvent someoneBlocksMeEvent){
+    public void FinishActivity(SomeoneBlocksMeEvent someoneBlocksMeEvent) {
         finish();
     }
 }

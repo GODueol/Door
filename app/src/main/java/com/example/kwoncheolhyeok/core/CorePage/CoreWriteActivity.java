@@ -379,8 +379,7 @@ public class CoreWriteActivity extends BlockBaseActivity {
                     }
                     if(isAnonymousPost()){
                        // 익명게시글이면
-                        final String NickName = DataContainer.getInstance().getUser().getId();
-                        AlarmUtil.getInstance().sendAlarm(getApplicationContext(),"Post","UnKnown",corePost,postKey,cUuid);
+                        AlarmUtil.getInstance().sendAlarm(getApplicationContext(),"Post","UnKnown",corePost,postKey,cUuid,cUuid);
                     }
                     setResult(Activity.RESULT_OK);
                     finish();
