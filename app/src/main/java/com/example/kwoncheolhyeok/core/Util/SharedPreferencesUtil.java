@@ -53,6 +53,18 @@ public class SharedPreferencesUtil {
     public String getBlockMeUserCurrentActivity(String str){
         return sharedPref.getString(str,"");
     }
+
+    // 네비 알람 버튼
+    public void setAlarmIcon(String str, boolean b) {
+        editor_badge.putBoolean(str, b).apply();
+    }
+
+    // 네비 알람 버튼
+    public boolean getAlarmIcon(String str) {
+        return sharedPref_badge.getBoolean(str, false);
+    }
+
+
     // 메인 토글버튼
     public void setMainIcon(String str, boolean b) {
         editor_badge.putBoolean(str, b).apply();

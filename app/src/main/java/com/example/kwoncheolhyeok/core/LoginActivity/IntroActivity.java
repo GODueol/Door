@@ -27,6 +27,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.ProviderQueryResult;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.gun0912.tedpermission.PermissionListener;
 
@@ -163,6 +164,7 @@ public class IntroActivity extends Activity {
     }
 
     private void logout() {
+        FirebaseDatabase.getInstance().getReference("users").child(DataContainer.getInstance().getUid()).child("token").removeValue();
         FirebaseAuth.getInstance().signOut();
         goToLoginActivity();
     }

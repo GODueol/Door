@@ -33,7 +33,6 @@ import com.example.kwoncheolhyeok.core.Util.AlarmUtil;
 import com.example.kwoncheolhyeok.core.Util.BaseActivity.BlockBaseActivity;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
-import com.example.kwoncheolhyeok.core.Util.FirebaseSendPushMsg;
 import com.example.kwoncheolhyeok.core.Util.GalleryPick;
 import com.example.kwoncheolhyeok.core.Util.UiUtil;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -393,8 +392,7 @@ public class CoreWriteActivity extends BlockBaseActivity {
                     }
                     if(!cUuid.equals(mUuid)){
                        // 익명게시글이면
-                        final String NickName = DataContainer.getInstance().getUser().getId();
-                        AlarmUtil.getInstance().sendAlarm(getApplicationContext(),"Post","UnKnown",corePost,postKey,cUuid);
+                        AlarmUtil.getInstance().sendAlarm(getApplicationContext(),"Post","UnKnown",corePost,postKey,cUuid,cUuid);
                     }
                     setResult(Activity.RESULT_OK);
                     finish();

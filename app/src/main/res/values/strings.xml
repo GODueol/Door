@@ -35,6 +35,7 @@
     <string name="badge">badge</string>
 
     <string name="mainAlarm">mainAlarm</string>
+    <string name="navAlarm">navAlarm</string>
     <string name="currentRoom">currentRoom</string>
     <string name="currentActivity">currentActivity</string>
     <string name="badgeChat">badgeChat</string>
