@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="포스트 100개가 다 찬 경우에는 (1번째 포스트 게시 종료 시간) 이후에 결제할 수 있습니다."
+        android:text="안심하세요! 자신이 블럭한 회원은 클라우드에 포스트를 올려도 보지 못합니다."
         />
     <Button
         android:id="@+id/next"

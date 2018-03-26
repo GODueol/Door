@@ -5,14 +5,20 @@
     android:layout_height="match_parent">
 
 
-<TextView
-    android:gravity="center"
-    android:background="@color/colorPrimary"
-    android:textColor="@color/colorAccent"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:text="第一个fragment"
-    />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:gravity="center"
+        android:layout_weight="1"
+        android:text="이 포스트를 결제 시 24시간동안 클라우드에 게시됩니다. 성매매 글 절대 금지"
+        android:textColor="@color/colorAccent" />
+
+    <Button
+        android:id="@+id/next"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/next" />
 
 
 </LinearLayout>

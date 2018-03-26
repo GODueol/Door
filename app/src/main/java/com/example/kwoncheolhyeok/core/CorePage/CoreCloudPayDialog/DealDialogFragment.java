@@ -1,5 +1,6 @@
 package com.example.kwoncheolhyeok.core.CorePage.CoreCloudPayDialog;
 
+import android.annotation.SuppressLint;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -11,10 +12,16 @@ import com.example.kwoncheolhyeok.core.R;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressLint("ValidFragment")
 public class DealDialogFragment extends BaseDialogFragment {
 
     private List<Fragment> fragmentList = new ArrayList<>();
-    private CustomViewpagerAdapter customViewpagerAdapter;
+    CallbackListener callbackListener;
+
+    @SuppressLint("ValidFragment")
+    public DealDialogFragment(CallbackListener callbackListener){
+        this.callbackListener = callbackListener;
+    }
 
     @Override
     protected void attachView() {
@@ -30,12 +37,15 @@ public class DealDialogFragment extends BaseDialogFragment {
 
         ViewPager viewPager = dialog.findViewById(R.id.view_pager);
 
-        fragmentList.add(new CoreCloudNotice1());
-        fragmentList.add(new CoreCloudNotice2());
+        fragmentList.add(new CoreCloudNotice1(viewPager));
+        fragmentList.add(new CoreCloudNotice2(viewPager));
+        fragmentList.add(new CoreCloudNotice3(viewPager));
+        fragmentList.add(new CoreCloudNotice4(viewPager, callbackListener));
 
-        customViewpagerAdapter = new CustomViewpagerAdapter(getChildFragmentManager(),fragmentList);
+        CustomViewpagerAdapter customViewpagerAdapter = new CustomViewpagerAdapter(getChildFragmentManager(), fragmentList);
         viewPager.setAdapter(customViewpagerAdapter);
         viewPager.setCurrentItem(0);
+
 
     }
 
@@ -43,7 +53,7 @@ public class DealDialogFragment extends BaseDialogFragment {
 
         private List<Fragment> fragments;
 
-        public CustomViewpagerAdapter(FragmentManager fragmentManager, List<Fragment> fragments) {
+        CustomViewpagerAdapter(FragmentManager fragmentManager, List<Fragment> fragments) {
             super(fragmentManager);
             this.fragments = fragments;
         }
@@ -59,4 +69,7 @@ public class DealDialogFragment extends BaseDialogFragment {
         }
     }
 
+    public interface CallbackListener {
+        void callback();
+    }
 }
