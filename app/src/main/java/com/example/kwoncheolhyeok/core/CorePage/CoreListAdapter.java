@@ -140,17 +140,14 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                             .child("likeUsers").child(mUuid).setValue(UiUtil.getInstance().getCurrentTime(context)).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
+                            // cloud 반영
+                            UiUtil.getInstance().noticeModifyToCloud(corePost, coreListItem.getPostKey(),(Activity)context);
 
-                            FireBaseUtil.getInstance().queryBlockWithMe(corePost.getUuid(), new FireBaseUtil.BlockListener() {
-                                @Override
-                                public void isBlockCallback(boolean isBlockWithMe) {
-                                    if(isBlockWithMe) return;
-                                    if (!corePost.getUuid().equals(mUuid)) {
-                                        final String NickName = DataContainer.getInstance().getUser().getId();
-                                        AlarmUtil.getInstance().sendAlarm(context,"Like",NickName,corePost,coreListItem.getPostKey(),corePost.getUuid(),coreListItem.getcUuid());
-                                    }
-                                }
-                            });
+                            if (!corePost.getUuid().equals(mUuid)) {    // 자신이 자신의 포스트에 좋아요한 경우를 제외
+                                final String NickName = DataContainer.getInstance().getUser().getId();
+                                AlarmUtil.getInstance().sendAlarm(context, "Like", NickName, corePost, coreListItem.getPostKey(), corePost.getUuid(), coreListItem.getcUuid());
+                            }
+
                         }
                     });
                 } catch (NotSetAutoTimeException e) {
@@ -164,7 +161,14 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
             public void unLiked(LikeButton likeButton) {
                 postsRef.child(coreListItem.getcUuid())
                         .child(coreListItem.getPostKey())
-                        .child("likeUsers").child(mUuid).setValue(null);
+                        .child("likeUsers").child(mUuid).setValue(null).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        // cloud 반영
+                        UiUtil.getInstance().noticeModifyToCloud(corePost, coreListItem.getPostKey(),(Activity)context);
+                    }
+                });
+
             }
         });
 
@@ -514,15 +518,15 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
     }
 
     private void deletePost(final CoreListItem coreListItem) {
-        UiUtil.getInstance().showDialog(context, "Delete", "게시물을 삭제하시겠습니까?"
+        String msg = "게시물을 삭제하시겠습니까?";
+        if(coreListItem.getCorePost().isCloud()){
+            msg = "클라우드된 게시물입니다. 정말 게시물을 삭제하시겠습니까?";
+        }
+        UiUtil.getInstance().showDialog(context, "Delete", msg
                 , new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-
-//                        UiUtil.getInstance().startProgressDialog((Activity) context);
-
                         FireBaseUtil.getInstance().deletePostExcution(coreListItem, postsRef, coreListItem.getcUuid());
-
 
                     }
                 }, new DialogInterface.OnClickListener() {

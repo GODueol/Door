@@ -13,9 +13,12 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
+import android.widget.Toast;
 
 import com.example.kwoncheolhyeok.core.CorePage.CoreActivity;
+import com.example.kwoncheolhyeok.core.Entity.CorePost;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.Exception.NotSetAutoTimeException;
 import com.example.kwoncheolhyeok.core.LoginActivity.IntroActivity;
@@ -51,7 +54,7 @@ public class UiUtil {
         progressDialog.setIndeterminateDrawable(activity.getResources().getDrawable(R.drawable.progress_dialog_icon_drawable_animation));
         progressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         progressDialog.setCancelable(false);
-        progressDialog.show();
+        if(!progressDialog.isShowing())progressDialog.show();
     }
 
     public void stopProgressDialog() {
@@ -118,6 +121,18 @@ public class UiUtil {
             throw new NotSetAutoTimeException("시간 수정설정 되어있으면 앱을 사용할 수 없습니다");
         }
 
+    }
+
+    public void noticeModifyToCloud(CorePost corePost, String postKey, Activity activity) {
+        if(corePost.isCloud()){
+            try {
+                DataContainer.getInstance().getCoreCloudRef().child(postKey).child("modifyDate").setValue(UiUtil.getInstance().getCurrentTime(activity));
+            } catch (NotSetAutoTimeException e) {
+                e.printStackTrace();
+                Toast.makeText(activity, e.getMessage(), Toast.LENGTH_SHORT).show();
+                ActivityCompat.finishAffinity(activity);
+            }
+        }
     }
 
 }

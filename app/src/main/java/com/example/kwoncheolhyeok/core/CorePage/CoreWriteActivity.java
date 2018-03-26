@@ -381,12 +381,17 @@ public class CoreWriteActivity extends BlockBaseActivity {
                        // 익명게시글이면
                         AlarmUtil.getInstance().sendAlarm(getApplicationContext(),"Post","UnKnown",corePost,postKey,cUuid,cUuid);
                     }
+
+                    // 클라우드
+                    UiUtil.getInstance().noticeModifyToCloud(corePost, postKey, CoreWriteActivity.this);
+
                     setResult(Activity.RESULT_OK);
                     finish();
                 }
             });
         }
     }
+
 
     private boolean isAnonymousPost() {
         return !cUuid.equals(mUuid);
@@ -639,5 +644,11 @@ public class CoreWriteActivity extends BlockBaseActivity {
     @Subscribe
     public void FinishActivity(SomeoneBlocksMeEvent someoneBlocksMeEvent){
         finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        UiUtil.getInstance().stopProgressDialog();
+        super.onDestroy();
     }
 }
