@@ -47,6 +47,7 @@ public class CoreActivity extends BlockBaseActivity {
     private DataContainer dc;
     private String cUuid = null;
     public ArrayList<CoreListItem> list;
+    private FloatingActionButton fab;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -123,7 +124,7 @@ public class CoreActivity extends BlockBaseActivity {
     }
 
     public void setFab() {
-        FloatingActionButton fab = findViewById(R.id.fab);
+        fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -226,7 +227,19 @@ public class CoreActivity extends BlockBaseActivity {
     }
 
     private Query getQuery(String cUuid) {
-        return FirebaseDatabase.getInstance().getReference().child("posts").child(cUuid).orderByChild("writeDate");
+        // p.putExtra("uuid",item.getcUuid());
+        // p.putExtra("postId",item.getPostId());
+
+        String postId = getIntent().getStringExtra("postId");
+
+
+        if(postId != null){ // 알람을 통해서 진행할 경우
+            fab.setVisibility(View.INVISIBLE);
+            return FirebaseDatabase.getInstance().getReference().child("posts").child(cUuid).orderByKey().equalTo(postId);
+
+        } else {
+            return FirebaseDatabase.getInstance().getReference().child("posts").child(cUuid).orderByChild("writeDate");
+        }
     }
 
     @Override
