@@ -56,6 +56,7 @@ import com.like.LikeButton;
 import com.like.OnLikeListener;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -233,92 +234,97 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                     @Override
                     public void onClick(View view) {
 
-                        //★☆★☆★☆★☆여기입니다요★☆★☆★☆★☆
-                        DealDialogFragment dealDialogFragment = new DealDialogFragment(new DealDialogFragment.CallbackListener() {
+                        if(corePost.isCloud()){
+                            Toast.makeText(context, "이미 코어 클라우드에 게시된글입니다", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                        // cloud
+                        UiUtil.getInstance().startProgressDialog((Activity)context);
+                        final Map<String, Object> postIsCloudMap = new HashMap<>();
+                        DataContainer.getInstance().getCoreCloudRef().runTransaction(new Transaction.Handler() {
                             @Override
-                            public void callback() {
-                                if(corePost.isCloud()){
-                                    Toast.makeText(context, "이미 코어 클라우드에 게시된글입니다", Toast.LENGTH_SHORT).show();
+                            public Transaction.Result doTransaction(MutableData mutableData) {
+
+                                Map coreCloudMap = (Map) mutableData.getValue();
+                                if (mutableData.getValue() == null) {
+                                    return Transaction.success(mutableData);
+                                }
+
+                                // 1일 지난 클라우드 삭제
+                                for (MutableData data : mutableData.getChildren()){
+
+                                    CoreCloud coreCloud = data.getValue(CoreCloud.class);
+
+                                    long diff = 0;
+                                    try {
+                                        assert coreCloud != null;
+                                        diff = UiUtil.getInstance().getCurrentTime(context) - coreCloud.getAttachDate();
+                                    } catch (NotSetAutoTimeException e) {
+                                        e.printStackTrace();
+                                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                        ActivityCompat.finishAffinity((Activity)context);
+                                    }
+
+                                    if(diff > (SecToDay)){
+                                        // 삭제 대상
+                                        assert coreCloudMap != null;
+                                        coreCloudMap.remove(data.getKey());
+                                        postIsCloudMap.put("posts/" + coreCloud.getcUuid() + "/" + data.getKey() + "/isCloud",false);
+                                    }
+
+                                }
+
+                                // Set value and report transaction success
+                                mutableData.setValue(coreCloudMap);
+                                return Transaction.success(mutableData);
+                            }
+
+                            @Override
+                            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+
+                                UiUtil.getInstance().stopProgressDialog();
+
+                                // 커밋 실패
+                                if(!b){
+                                    Log.d("kbj", databaseError.getMessage());
+                                    Toast.makeText(context, databaseError.getMessage(), Toast.LENGTH_SHORT).show();
                                     return;
                                 }
 
-                                // cloud
-                                DataContainer.getInstance().getCoreCloudRef().runTransaction(new Transaction.Handler() {
-                                    @Override
-                                    public Transaction.Result doTransaction(MutableData mutableData) {
+                                FirebaseDatabase.getInstance().getReference().updateChildren(postIsCloudMap);
 
-                                        Map coreCloudMap = (Map) mutableData.getValue();
-                                        if (mutableData.getValue() == null) {
-                                            return Transaction.success(mutableData);
+                                // Transaction completed
+                                Map coreCloudMap = (Map) dataSnapshot.getValue();
+                                if(coreCloudMap == null || coreCloudMap.size() < CoreCloudMax) {
+                                    // 코어클라우드 결제 가능
+                                    //★☆★☆★☆★☆여기입니다요★☆★☆★☆★☆
+                                    DealDialogFragment dealDialogFragment = new DealDialogFragment(new DealDialogFragment.CallbackListener() {
+                                        @Override
+                                        public void callback() {
+                                        putCloudDialog();
                                         }
+                                    });
 
-                                        if(mutableData.getChildrenCount()< CoreCloudMax){
-                                            // 추가 가능
-                                            return Transaction.success(mutableData);
-                                        }
+                                    dealDialogFragment.show(((AppCompatActivity)context).getSupportFragmentManager(),"");
 
-                                        // 100개 이상일 시 오래된 것은 삭제
-                                        for (MutableData data : mutableData.getChildren()){
-
-                                            CoreCloud coreCloud = data.getValue(CoreCloud.class);
-
-                                            long diff = 0;
-                                            try {
-                                                assert coreCloud != null;
-                                                diff = UiUtil.getInstance().getCurrentTime(context) - coreCloud.getAttachDate();
-                                            } catch (NotSetAutoTimeException e) {
-                                                e.printStackTrace();
-                                                Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-                                                ActivityCompat.finishAffinity((Activity)context);
-                                            }
-                                            Log.d("kbj", "diff day : " + diff/(SecToDay));
-
-                                            if(diff > (SecToDay)){
-                                                // 삭제 대상
-                                                assert coreCloudMap != null;
-                                                coreCloudMap.remove(mutableData.getKey());
-                                            }
-
-                                        }
-
-                                        // Set value and report transaction success
-                                        mutableData.setValue(coreCloudMap);
-                                        return Transaction.success(mutableData);
+                                } else {
+                                    // 가장 오래된 메세지가져오기
+                                    long minDate = Long.MAX_VALUE;
+                                    for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                                        CoreCloud coreCloud = snapshot.getValue(CoreCloud.class);
+                                        assert coreCloud != null;
+                                        if(minDate > coreCloud.getAttachDate()) minDate = coreCloud.getAttachDate();
                                     }
 
-                                    @Override
-                                    public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+                                    // minDate + 1일
+                                    long possibleDate = minDate + DataContainer.SecToDay;
 
-                                        // 커밋 실패
-                                        if(!b){
-                                            Log.d("kbj", databaseError.getMessage());
-                                            Toast.makeText(context, databaseError.getMessage(), Toast.LENGTH_SHORT).show();
-                                            return;
-                                        }
+                                    Toast.makeText(context, "더이상 클라우드 코어를 추가할 수 없습니다.\n" + new DateUtil(possibleDate).getDate() + " " + new DateUtil(possibleDate).getTime() + " 이후에 다시 시도하세요", Toast.LENGTH_SHORT).show();
+                                }
 
-                                        // Transaction completed
-                                        Map coreCloudMap = (Map) dataSnapshot.getValue();
-                                        if(coreCloudMap == null || coreCloudMap.size() < CoreCloudMax) {
-                                            // 코어클라우드 결제 가능
-                                            putCloudDialog();
-                                        } else {
-                                            // 가장 오래된 메세지가져오기
-                                            long minDate = Long.MAX_VALUE;
-                                            for(DataSnapshot snapshot : dataSnapshot.getChildren()){
-                                                CoreCloud coreCloud = snapshot.getValue(CoreCloud.class);
-                                                assert coreCloud != null;
-                                                if(minDate > coreCloud.getAttachDate()) minDate = coreCloud.getAttachDate();
-                                            }
-
-                                            Toast.makeText(context, "더이상 클라우드 코어를 추가할 수 없습니다.\n" + new DateUtil(minDate).getDate() + " 이후에 다시 시도하세요", Toast.LENGTH_SHORT).show();
-                                        }
-
-                                    }
-                                });
                             }
                         });
-
-                        dealDialogFragment.show(((AppCompatActivity)context).getSupportFragmentManager(),"");
                     }
 
                     private void putCloudDialog() {
