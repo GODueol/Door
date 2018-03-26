@@ -4,8 +4,10 @@ import com.example.kwoncheolhyeok.core.Entity.CoreCloud;
 import com.example.kwoncheolhyeok.core.Entity.CoreListItem;
 import com.example.kwoncheolhyeok.core.Entity.CorePost;
 import com.example.kwoncheolhyeok.core.Entity.User;
+import com.example.kwoncheolhyeok.core.Exception.NotSetAutoTimeException;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
+import com.example.kwoncheolhyeok.core.Util.UiUtil;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -14,6 +16,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import static com.example.kwoncheolhyeok.core.Util.DataContainer.SecToDay;
 
 /**
  * Created by Kwon on 2018-03-16.
@@ -38,10 +42,23 @@ public class CoreCloudActivity extends CoreActivity {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 CoreCloud coreCloud = dataSnapshot.getValue(CoreCloud.class);
+
+                // 하루 지난 포스트는 안보임
+                long diff;
+                try {
+                    assert coreCloud != null;
+                    diff = coreCloud.getAttachDate() - UiUtil.getInstance().getCurrentTime(CoreCloudActivity.this);
+                } catch (NotSetAutoTimeException e) {
+                    e.printStackTrace();
+                    return;
+                }
+                if(diff > (SecToDay)) return;
+
+
                 final String postKey = dataSnapshot.getKey();
                 // create 순으로 List Add
                 coreListItemMap.put(postKey, new CoreListItem(null, null, postKey, coreCloud.getcUuid()));
-                list.add(0, coreListItemMap.get(postKey));
+                list.add(coreListItemMap.get(postKey));
                 setData(dataSnapshot, coreCloud, postKey);
             }
 
@@ -56,7 +73,6 @@ public class CoreCloudActivity extends CoreActivity {
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-                CoreCloud coreCloud = dataSnapshot.getValue(CoreCloud.class);
                 final String postKey = dataSnapshot.getKey();
 
                 CoreListItem coreListItem = coreListItemMap.get(postKey);
@@ -64,8 +80,6 @@ public class CoreCloudActivity extends CoreActivity {
                 list.remove(coreListItem);
                 coreListItemMap.remove(postKey);
                 coreListAdapter.notifyItemRemoved(position);
-                list.add(0, coreListItemMap.get(postKey));
-
             }
 
             @Override

@@ -8,16 +8,12 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-/**
- * Created by gimbyeongjin on 2017. 8. 14..
- */
-
 public class DataContainer {
     public final String PREFERENCE = "com.example.kwoncheolhyeok.core.samplesharepreference";
     public static final int ChildrenMax = 1000;
     public static final int ViewedMeMax = 45;
     public static final int CoreCloudMax = 100;
-    public static final int SecToDay = 60*60*24;
+    public static final int SecToDay = TIME_MAXIMUM.SEC*TIME_MAXIMUM.MIN*TIME_MAXIMUM.HOUR;
 
     private static class TIME_MAXIMUM {
         static final int SEC = 60;
