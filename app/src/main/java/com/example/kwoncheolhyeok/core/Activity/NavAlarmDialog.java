@@ -17,6 +17,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -32,7 +34,7 @@ public class NavAlarmDialog extends CustomDialog {
 
     @Bind(R.id.navAlarmList)
     RecyclerView recyclerView;
-
+    private static int MAXIUM_ALARM_COUNT = 250;
     private NavAlarmAdapter navAlarmAdapter;
     private List<AlarmSummary> items;
 
@@ -58,8 +60,6 @@ public class NavAlarmDialog extends CustomDialog {
     private void setRecyclerView(){
         items = new ArrayList<AlarmSummary>();
 
-
-
         navAlarmAdapter = new NavAlarmAdapter(getContext(),items);
         recyclerView.setAdapter(navAlarmAdapter);
 
@@ -71,22 +71,34 @@ public class NavAlarmDialog extends CustomDialog {
 
 
     private void setItems(){
-        String Uuid = DataContainer.getInstance().getUid();
+        final String Uuid = DataContainer.getInstance().getUid();
         FirebaseDatabase.getInstance().getReference("Alarm").child(Uuid).orderByChild("time").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Iterator<DataSnapshot> iterator = dataSnapshot.getChildren().iterator();
-
+                int count =0;
                 while (iterator.hasNext()){
                     DataSnapshot data = iterator.next();
                     AlarmSummary alarmSummary = data.child("alarmSummary").getValue(AlarmSummary.class);
-
+                    if(count > MAXIUM_ALARM_COUNT) {
+                        FirebaseDatabase.getInstance().getReference("Alarm").child(Uuid).child(alarmSummary.getKey()).removeValue();
+                        continue;
+                    }
                     // 포스트키를 잘라줌 (뒤에 Post,Like,Answer)
-                    String key = data.getKey();
-                    key = key.substring(0,key.lastIndexOf("_"));
-                    alarmSummary.setPostId(key);
-                    items.add(0,alarmSummary);
+                        String key = data.getKey();
+                        alarmSummary.setKey(key);
+                        key = key.substring(0, key.lastIndexOf("_"));
+                        alarmSummary.setPostId(key);
+                        items.add(0, alarmSummary);
+
+                    count++;
                 }
+                Collections.sort(items, new Comparator<AlarmSummary>() {
+                    @Override
+                    public int compare(AlarmSummary t1, AlarmSummary t2) {
+                        return t2.getTime().compareTo(t1.getTime());
+                    }
+                });
                 recyclerView.getRecycledViewPool().clear();
                 navAlarmAdapter.notifyDataSetChanged();
             }

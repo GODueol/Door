@@ -3,48 +3,75 @@
     android:id="@+id/navAlarmlayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_below="@id/dateLayout"
-    android:paddingTop="5dp"
-    android:paddingBottom="5dp">
+    android:layout_below="@id/dateLayout">
 
-    <ImageView
-        android:id="@+id/navAlarmImg"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp"
-        android:background="@drawable/new_alarm_question" />
-
-    <TextView
-        android:id="@+id/navAlarmText"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/dateLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_marginEnd="10dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginStart="8dp"
-        android:layout_toEndOf="@+id/navAlarmImg"
-        android:layout_toLeftOf="@+id/navAlarmTime"
-        android:layout_toRightOf="@+id/navAlarmImg"
-        android:layout_toStartOf="@+id/navAlarmTime"
-        android:text="누군가 당신에게 글내용쌰랄라... 익명 포스트를 남겼습니다."
-        android:textColor="@color/black"
-        android:textStyle="bold" />
+        android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/navAlarmTime"
-        android:layout_width="wrap_content"
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="0.5dp"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:layout_weight="1"
+            android:background="@color/gray40" />
+
+        <TextView
+            android:id="@+id/dateText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center" />
+
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="0.5dp"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:layout_weight="1"
+            android:background="@color/gray40" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/navAlarmItemlayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:layout_marginEnd="10dp"
-        android:layout_marginRight="10dp"
-        android:gravity="end"
-        android:text="13:10" />
+        android:layout_below="@id/dateLayout"
+        android:paddingBottom="5dp"
+        android:paddingTop="5dp">
 
+        <ImageView
+            android:id="@+id/navAlarmImg"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/new_alarm_question" />
+
+        <TextView
+            android:id="@+id/navAlarmText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginEnd="10dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:text="누군가 당신에게 글내용쌰랄라... 익명 포스트를 남겼습니다."
+            android:textColor="@color/black"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/navAlarmTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginEnd="10dp"
+            android:layout_marginRight="10dp"
+            android:gravity="end" />
+    </LinearLayout>
 </RelativeLayout>

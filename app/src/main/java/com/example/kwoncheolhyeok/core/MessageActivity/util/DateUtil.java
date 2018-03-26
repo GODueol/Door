@@ -23,25 +23,28 @@ public class DateUtil {
     public void setDate(Long date){
         this.date = date;
     }
-    public  String getTime(){
+
+    public String getTime(){
+        Date time = new Date(date);
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.KOREA);
+        return sdf.format(time);
+    }
+    public  String gethalfTime(){
         Date time = new Date(date);
         SimpleDateFormat sdf = new SimpleDateFormat("a hh:mm", Locale.KOREA);
-        String strResult = sdf.format(time);
-        return strResult;
+        return sdf.format(time);
     }
 
     public String getDate(){
         Date time = new Date(date);
         SimpleDateFormat sdf = new SimpleDateFormat( "yyyy년 MM월 dd일 E요일", Locale.KOREAN );
-        String strResult = sdf.format(time);
-        return strResult;
+        return sdf.format(time);
     }
 
     public String getDate2(){
         Date time = new Date(date);
         SimpleDateFormat  sdf = new SimpleDateFormat( "yyyy. MM. dd. E", Locale.KOREAN );
-        String strResult = sdf.format(time);
-        return strResult;
+        return sdf.format(time);
     }
 
 

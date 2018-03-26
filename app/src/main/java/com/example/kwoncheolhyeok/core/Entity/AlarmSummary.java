@@ -11,14 +11,18 @@ public class AlarmSummary implements Serializable {
     private String text;
     private String type;
     private Long time;
+    private Long viewTime;
     private String cUuid;
     private String pUuid;
 
     private String postId;
 
-    public AlarmSummary(){
+    private String key;
+
+    public AlarmSummary() {
 
     }
+
     public AlarmSummary(String cUuid, String pUuid, String nickname, String text, String type, Long time) {
         this.cUuid = cUuid;
         this.pUuid = pUuid;
@@ -87,4 +91,20 @@ public class AlarmSummary implements Serializable {
         this.postId = postId;
     }
 
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public Long getViewTime() {
+        return viewTime;
+    }
+
+    public void setViewTime(Long viewTime) {
+        this.viewTime = viewTime;
+    }
 }

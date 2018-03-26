@@ -376,7 +376,7 @@ public class ChattingMessageAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     public void setDateUtil(TextView tTextView, TextView cTextView, TextView dTextView, Long date, int check) {
         DateUtil dateUtil = new DateUtil(date);
 
-        String time = dateUtil.getTime();
+        String time = dateUtil.gethalfTime();
         String dateStr = dateUtil.getDate();
         tTextView.setText(time);
         dTextView.setText(dateStr);
