@@ -17,7 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.kwoncheolhyeok.core.Entity.User;
-import com.example.kwoncheolhyeok.core.Event.SomeoneBlocksMeEvent;
+import com.example.kwoncheolhyeok.core.Event.TargetUserBlocksMeEvent;
 import com.example.kwoncheolhyeok.core.Exception.ChildSizeMaxException;
 import com.example.kwoncheolhyeok.core.Exception.NotSetAutoTimeException;
 import com.example.kwoncheolhyeok.core.MessageActivity.ChattingActivity;
@@ -670,14 +670,14 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
 
 
 //    @Subscribe
-//    public void FinishActivity(SomeoneBlocksMeEvent someoneBlocksMeEvent){
+//    public void FinishActivity(TargetUserBlocksMeEvent someoneBlocksMeEvent){
 //        Intent intent = new Intent(getApplication(), MainActivity.class);
 //        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 //        startActivity(intent);
 //    }
 
     @Subscribe
-    public void FinishActivity(SomeoneBlocksMeEvent someoneBlocksMeEvent){
+    public void FinishActivity(TargetUserBlocksMeEvent someoneBlocksMeEvent){
         finish();
     }
 

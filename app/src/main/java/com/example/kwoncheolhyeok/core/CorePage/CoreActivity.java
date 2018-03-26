@@ -18,7 +18,7 @@ import android.widget.Toast;
 import com.example.kwoncheolhyeok.core.Entity.CoreListItem;
 import com.example.kwoncheolhyeok.core.Entity.CorePost;
 import com.example.kwoncheolhyeok.core.Entity.User;
-import com.example.kwoncheolhyeok.core.Event.SomeoneBlocksMeEvent;
+import com.example.kwoncheolhyeok.core.Event.TargetUserBlocksMeEvent;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.BaseActivity.BlockBaseActivity;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
@@ -46,7 +46,7 @@ public class CoreActivity extends BlockBaseActivity {
     public ChildEventListener listener;
     private DataContainer dc;
     private String cUuid = null;
-    private String postId = null;
+    public ArrayList<CoreListItem> list;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -76,7 +76,7 @@ public class CoreActivity extends BlockBaseActivity {
 
         Intent intent = getIntent();
         cUuid = intent.getStringExtra("uuid");
-        postId = intent.getStringExtra("postId");
+        String postId = intent.getStringExtra("postId");
         if (postId != null) {
             Log.d("test", postId);
         }
@@ -84,7 +84,7 @@ public class CoreActivity extends BlockBaseActivity {
         if (cUuid != null)
             SPUtil.setBlockMeUserCurrentActivity(getString(R.string.currentActivity), cUuid);
 
-        final ArrayList<CoreListItem> list = new ArrayList<>();
+        list = new ArrayList<>();
         coreListAdapter = getCoreListAdapter(list);
 
         recyclerView.setLayoutManager(layoutManager);
@@ -132,13 +132,15 @@ public class CoreActivity extends BlockBaseActivity {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         User cUser = dataSnapshot.getValue(User.class);
-                        if (cUser.getBlockUsers().containsKey(dc.getUid())) {
-                            Toast.makeText(CoreActivity.this, "포스트를 작성할 수 없습니다.", Toast.LENGTH_SHORT).show();
-                            finish();
-                            return;
-                        } else if (!cUuid.equals(dc.getUid()) && cUser.isAnonymityProhibition()) {
-                            Toast.makeText(CoreActivity.this, "포스트를 작성할 수 없습니다.", Toast.LENGTH_SHORT).show();
-                            return;
+                        if (cUser != null) {
+                            if (cUser.getBlockUsers().containsKey(dc.getUid())) {
+                                Toast.makeText(CoreActivity.this, "포스트를 작성할 수 없습니다.", Toast.LENGTH_SHORT).show();
+                                finish();
+                                return;
+                            } else if (!cUuid.equals(dc.getUid()) && cUser.isAnonymityProhibition()) {
+                                Toast.makeText(CoreActivity.this, "포스트를 작성할 수 없습니다.", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
                         }
 
                         // 자신, 타인 액티비티 구별
@@ -289,7 +291,7 @@ public class CoreActivity extends BlockBaseActivity {
     }
 
     @Subscribe
-    public void FinishActivity(SomeoneBlocksMeEvent someoneBlocksMeEvent) {
+    public void FinishActivity(TargetUserBlocksMeEvent someoneBlocksMeEvent) {
         finish();
     }
 }

@@ -32,7 +32,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.kwoncheolhyeok.core.Entity.User;
-import com.example.kwoncheolhyeok.core.Event.SomeoneBlocksMeEvent;
+import com.example.kwoncheolhyeok.core.Event.TargetUserBlocksMeEvent;
 import com.example.kwoncheolhyeok.core.Exception.ChildSizeMaxException;
 import com.example.kwoncheolhyeok.core.Exception.NotSetAutoTimeException;
 import com.example.kwoncheolhyeok.core.MessageActivity.ChattingMessageAdapter.OnImesageLoadingCallback;
@@ -366,7 +366,7 @@ public class ChattingActivity extends BlockBaseActivity {
     };
 
     @Subscribe
-    public void FinishActivity(SomeoneBlocksMeEvent someoneBlocksMeEvent){
+    public void FinishActivity(TargetUserBlocksMeEvent someoneBlocksMeEvent){
         finish();
     }
 

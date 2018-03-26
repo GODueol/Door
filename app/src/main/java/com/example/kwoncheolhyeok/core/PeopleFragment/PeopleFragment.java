@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.example.kwoncheolhyeok.core.Entity.SummaryUser;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.Event.RefreshLocationEvent;
+import com.example.kwoncheolhyeok.core.Event.SomeoneBlocksMeEvent;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.BusProvider;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
@@ -98,6 +99,7 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
                 boolean b = isEqualMap(mUser.getBlockMeUsers(), compUser.getBlockMeUsers());
                 if(!b){
                     refreshGrid(null, GPSInfo.getmInstance(getActivity()).getGPSLocation());
+                    BusProvider.getInstance().post(new SomeoneBlocksMeEvent());
                 }
 
                 DataContainer.getInstance().setUser(mUser);

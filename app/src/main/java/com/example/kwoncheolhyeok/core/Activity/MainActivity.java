@@ -39,7 +39,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.kwoncheolhyeok.core.CorePage.CoreCloudActivity;
 import com.example.kwoncheolhyeok.core.Entity.User;
-import com.example.kwoncheolhyeok.core.Event.SomeoneBlocksMeEvent;
+import com.example.kwoncheolhyeok.core.Event.TargetUserBlocksMeEvent;
 import com.example.kwoncheolhyeok.core.Exception.NotSetAutoTimeException;
 import com.example.kwoncheolhyeok.core.FriendsActivity.FriendsActivity;
 import com.example.kwoncheolhyeok.core.LoginActivity.LoginActivity;
@@ -275,7 +275,7 @@ public class MainActivity extends AppCompatActivity
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP|Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                         startActivity(intent);
                         Log.d("test","엑티비티 팅겨라");*/
-                        BusProvider.getInstance().post(new SomeoneBlocksMeEvent());
+                        BusProvider.getInstance().post(new TargetUserBlocksMeEvent());
                         break;
                     }
                 }
@@ -614,11 +614,5 @@ public class MainActivity extends AppCompatActivity
             SPUtil.setMainIcon(getString(R.string.mainAlarm), false);
         }
     }
-
-    //알람 다이얼로그
-    public void show_alarm_dialog() {
-
-    }
-
 }
 

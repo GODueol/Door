@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
-import com.example.kwoncheolhyeok.core.Event.SomeoneBlocksMeEvent;
+import com.example.kwoncheolhyeok.core.Event.TargetUserBlocksMeEvent;
 import com.example.kwoncheolhyeok.core.Util.BusProvider;
 import com.example.kwoncheolhyeok.core.Util.SharedPreferencesUtil;
 import com.squareup.otto.Bus;
@@ -35,6 +35,6 @@ public abstract class BlockBaseActivity extends AppCompatActivity{
         BusProvider.getInstance().unregister(this);
     }
 
-    abstract public void FinishActivity(SomeoneBlocksMeEvent someoneBlocksMeEvent);
+    abstract public void FinishActivity(TargetUserBlocksMeEvent someoneBlocksMeEvent);
 
 }

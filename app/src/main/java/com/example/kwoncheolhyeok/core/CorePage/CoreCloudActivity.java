@@ -4,6 +4,7 @@ import com.example.kwoncheolhyeok.core.Entity.CoreCloud;
 import com.example.kwoncheolhyeok.core.Entity.CoreListItem;
 import com.example.kwoncheolhyeok.core.Entity.CorePost;
 import com.example.kwoncheolhyeok.core.Entity.User;
+import com.example.kwoncheolhyeok.core.Event.SomeoneBlocksMeEvent;
 import com.example.kwoncheolhyeok.core.Exception.NotSetAutoTimeException;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
@@ -13,6 +14,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,6 +38,7 @@ public class CoreCloudActivity extends CoreActivity {
     }
 
     public void addPostsToList(final ArrayList<CoreListItem> list) {
+        list.clear();
         postQuery = DataContainer.getInstance().getCoreCloudRef().orderByChild("createDate");
 
         listener = new ChildEventListener() {
@@ -54,6 +57,10 @@ public class CoreCloudActivity extends CoreActivity {
                 }
                 if(diff > (SecToDay)) return;
 
+                // 블럭된 유저는 안보이도록
+                if(DataContainer.getInstance().isBlockWithMe(coreCloud.getcUuid())){
+                    return;
+                }
 
                 final String postKey = dataSnapshot.getKey();
                 // create 순으로 List Add
@@ -132,5 +139,9 @@ public class CoreCloudActivity extends CoreActivity {
         postQuery.addChildEventListener(listener);
     }
 
+    @Subscribe
+    public void FinishActivity(SomeoneBlocksMeEvent someoneBlocksMeEvent) {
+        addPostsToList(list);
+    }
 
 }
