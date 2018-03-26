@@ -13,11 +13,13 @@ import com.example.kwoncheolhyeok.core.R;
 public class CoreCloudNotice4 extends BaseFragment {
 
     DealDialogFragment.CallbackListener callbackListener;
+    DealDialogFragment dealDialogFragment;
 
     @SuppressLint("ValidFragment")
-    public CoreCloudNotice4(ViewPager viewPager, DealDialogFragment.CallbackListener callbackListener) {
+    public CoreCloudNotice4(ViewPager viewPager, DealDialogFragment.CallbackListener callbackListener, DealDialogFragment dealDialogFragment) {
         super(viewPager);
         this.callbackListener = callbackListener;
+        this.dealDialogFragment = dealDialogFragment;
     }
 
     @Override
@@ -34,8 +36,10 @@ public class CoreCloudNotice4 extends BaseFragment {
             @Override
             public void onClick(View view) {
                 callbackListener.callback();
+                dealDialogFragment.dismiss();
             }
         });
+
     }
 
 

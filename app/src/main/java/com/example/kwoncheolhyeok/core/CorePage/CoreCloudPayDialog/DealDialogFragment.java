@@ -40,7 +40,7 @@ public class DealDialogFragment extends BaseDialogFragment {
         fragmentList.add(new CoreCloudNotice1(viewPager));
         fragmentList.add(new CoreCloudNotice2(viewPager));
         fragmentList.add(new CoreCloudNotice3(viewPager));
-        fragmentList.add(new CoreCloudNotice4(viewPager, callbackListener));
+        fragmentList.add(new CoreCloudNotice4(viewPager, callbackListener, DealDialogFragment.this));
 
         CustomViewpagerAdapter customViewpagerAdapter = new CustomViewpagerAdapter(getChildFragmentManager(), fragmentList);
         viewPager.setAdapter(customViewpagerAdapter);
