@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.kwoncheolhyeok.core.CorePage.CoreActivity;
 import com.example.kwoncheolhyeok.core.Entity.AlarmSummary;
@@ -85,6 +86,13 @@ public class NavAlarmAdapter extends RecyclerView.Adapter<NavAlarmAdapter.ViewHo
         holder.alarmItemLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                
+                if(DataContainer.getInstance().isBlockWithMe(item.getcUuid())) {
+                    Toast.makeText(context, "유저의 포스터를 볼 수 없습니다", Toast.LENGTH_SHORT).show();
+                    // TODO : 여기서 알람 삭제
+
+                    return;
+                }
                 try {
                     Long time = UiUtil.getInstance().getCurrentTime(context);
                     item.setViewTime(time);
