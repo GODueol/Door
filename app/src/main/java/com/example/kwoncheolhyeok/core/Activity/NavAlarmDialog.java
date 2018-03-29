@@ -1,11 +1,13 @@
 package com.example.kwoncheolhyeok.core.Activity;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Window;
 
 import com.example.kwoncheolhyeok.core.CorePage.CustomDialog;
 import com.example.kwoncheolhyeok.core.Entity.AlarmSummary;
@@ -31,10 +33,9 @@ import butterknife.ButterKnife;
 
 public class NavAlarmDialog extends CustomDialog {
 
-
     @Bind(R.id.navAlarmList)
     RecyclerView recyclerView;
-    private static int MAXIUM_ALARM_COUNT = 250;
+    private static int MAXIUM_ALARM_COUNT = 150;
     private NavAlarmAdapter navAlarmAdapter;
     private List<AlarmSummary> items;
 

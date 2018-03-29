@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -47,6 +48,7 @@ public class NavAlarmAdapter extends RecyclerView.Adapter<NavAlarmAdapter.ViewHo
         View v = LayoutInflater
                 .from(parent.getContext())
                 .inflate(R.layout.nav_alarm_list_item, parent, false);
+
 
         return new ViewHolder(v);
     }
@@ -93,7 +95,7 @@ public class NavAlarmAdapter extends RecyclerView.Adapter<NavAlarmAdapter.ViewHo
             public void onClick(View view) {
                 
                 if(DataContainer.getInstance().isBlockWithMe(item.getcUuid())) {
-                    Toast.makeText(context, "유저의 포스터를 볼 수 없습니다", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "포스트를 볼 수 없습니다.", Toast.LENGTH_SHORT).show();
                     // TODO : 여기서 알람 삭제
 
                     return;

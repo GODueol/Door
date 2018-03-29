@@ -149,7 +149,7 @@ public class CoreWriteActivity extends BlockBaseActivity {
             fab.setVisibility(View.GONE);
             editImage.setVisibility(View.GONE);
             edit_audio_layout.setVisibility(View.GONE);
-            textContents.setHint("익명으로 글을 남깁니다. 어떤 질문을 남기시겠습니까? 모욕적인 글을 남기실 경우 차단당할 수 있습니다.");
+            textContents.setHint("익명으로 글을 남깁니다.");
         }
 
         fab.setOnClickListener(new View.OnClickListener() {
