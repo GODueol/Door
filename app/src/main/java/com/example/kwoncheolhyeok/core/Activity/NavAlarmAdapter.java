@@ -1,9 +1,11 @@
 package com.example.kwoncheolhyeok.core.Activity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,6 +51,7 @@ public class NavAlarmAdapter extends RecyclerView.Adapter<NavAlarmAdapter.ViewHo
         return new ViewHolder(v);
     }
 
+    @SuppressLint("ResourceAsColor")
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         final AlarmSummary item = items.get(position);
@@ -74,11 +77,13 @@ public class NavAlarmAdapter extends RecyclerView.Adapter<NavAlarmAdapter.ViewHo
             holder.linearLayout.setVisibility(View.VISIBLE);
         }
         setAlarmText(holder.alarmText, item);
+
+
         // 이미지 설정
         setAlarmImg(holder.alarmImg, item.getType());
         // 읽음 레이아웃 처리
         if (item.getViewTime()==null || item.getTime()  >= item.getViewTime()) {
-            holder.alarmItemLayout.setBackgroundColor(Color.GRAY);
+            holder.alarmItemLayout.setBackgroundColor(Color.LTGRAY);
         } else {
             holder.alarmItemLayout.setBackgroundColor(Color.WHITE);
         }
@@ -116,21 +121,22 @@ public class NavAlarmAdapter extends RecyclerView.Adapter<NavAlarmAdapter.ViewHo
         String Type = item.getType();
         String Text = item.getText();
         Text = Text.trim();
+
         if(Text.length()>10){
             Text  = Text.substring(0,10)+"...";
         }
         switch (Type) {
             case "Like":
-                str = item.getNickname() + "이 " + "\"" + Text + "\"" + " 포스트를 좋아합니다.";
-                textView.setText(str);
+                str = item.getNickname() + "이 당신의 "+ "<b>" + Text + "</b> "+" 포스트를 좋아합니다.";
+                textView.setText(Html.fromHtml(str));
                 break;
             case "Post":
-                str = "누군가 당신에게 " + "\"" + Text + "\"" + " 익명 포스트를 남겼습니다..";
-                textView.setText(str);
+                str = "누군가 당신에게 "+ "<b>" + Text + "</b> "+" 익명 질문을 남겼습니다.";
+                textView.setText(Html.fromHtml(str));
                 break;
             default:
-                str = item.getNickname() + " 님이 " + "\"" + Text + "\"" + " 포스트에 답변이 달렸습니다.";
-                textView.setText(str);
+                str = item.getNickname() + " 님이 당신의 "+ "<b>" + Text + "</b> "+ " 질문에 답변을 달았습니다.";
+                textView.setText(Html.fromHtml(str));
                 break;
         }
     }

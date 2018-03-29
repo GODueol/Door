@@ -3,13 +3,18 @@
     android:id="@+id/navAlarmlayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_below="@id/dateLayout">
+    android:layout_below="@id/dateLayout"
+    android:layout_marginTop="4dp"
+    android:layout_marginBottom="4dp"
+    >
 
     <LinearLayout
         android:id="@+id/dateLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp"
+        >
 
         <View
             android:layout_width="wrap_content"
@@ -44,12 +49,12 @@
 
         <ImageView
             android:id="@+id/navAlarmImg"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:layout_gravity="center"
             android:layout_marginLeft="8dp"
             android:layout_marginStart="8dp"
-            android:background="@drawable/new_alarm_question" />
+            />
 
         <TextView
             android:id="@+id/navAlarmText"
@@ -61,7 +66,6 @@
             android:layout_marginRight="10dp"
             android:layout_marginStart="8dp"
             android:layout_weight="1"
-            android:text="누군가 당신에게 글내용쌰랄라... 익명 포스트를 남겼습니다."
             android:textColor="@color/black"
             android:textStyle="bold" />
 
