@@ -241,14 +241,17 @@
             app:icon_type="heart"
             />
 
-        <!--<ImageButton-->
-        <!--android:id="@+id/heart_count"-->
-        <!--android:layout_width="15dp"-->
-        <!--android:layout_height="15dp"-->
-        <!--android:layout_centerVertical="true"-->
-        <!--android:layout_marginRight="8dp"-->
-        <!--android:layout_toLeftOf="@+id/heart_count_txt"-->
-        <!--android:background="@drawable/heart_on" />-->
+
+        <TextView
+            android:id="@+id/check_cloud"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:text="클라우드에 띄우는 중"
+            android:textColor="@color/black"
+            />
 
         <TextView
             android:id="@+id/heart_count_txt"
