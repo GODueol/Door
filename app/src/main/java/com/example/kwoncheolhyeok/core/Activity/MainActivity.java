@@ -111,8 +111,8 @@ public class MainActivity extends AppCompatActivity
         ImageView coreplus = findViewById(R.id.tb_coreplus);
         GlideApp.with(this)
                 .load(UiUtil.resourceToUri(this, R.drawable.tb_coreplus))
-//                .override(400, 80)
-                .centerCrop()
+//                .override(80, 23)
+//                .centerCrop()
                 .into(coreplus);
 
 
