@@ -303,7 +303,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                                     DealDialogFragment dealDialogFragment = new DealDialogFragment(new DealDialogFragment.CallbackListener() {
                                         @Override
                                         public void callback() {
-                                        putCloudDialog();
+                                            putCloudDialog();
                                         }
                                     });
 
