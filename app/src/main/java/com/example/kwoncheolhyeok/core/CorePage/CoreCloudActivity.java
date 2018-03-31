@@ -69,7 +69,7 @@ public class CoreCloudActivity extends CoreActivity {
                 list.add(0, coreListItemMap.get(postKey)); // 최신순
 //                list.add(coreListItemMap.get(postKey)); // 오래된순
 
-                setData(dataSnapshot, coreCloud, postKey);
+                if(coreCloud != null && postKey != null) setData(dataSnapshot, coreCloud, postKey);
             }
 
             @Override
@@ -103,7 +103,9 @@ public class CoreCloudActivity extends CoreActivity {
             }
 
             private void setData(DataSnapshot dataSnapshot, CoreCloud coreCloud, final String postKey) {
+
                 // Set Post 데이터
+                if(coreCloud.getcUuid() == null) return;
                 FirebaseDatabase.getInstance().getReference().child("posts").child(coreCloud.getcUuid()).child(dataSnapshot.getKey())
                         .addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
