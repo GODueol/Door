@@ -1,24 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="450dp"
+    android:background="@color/white"
+    android:layout_gravity="center"
+    >
 
+
+
+        <ImageView
+            android:id="@+id/img_cld_notice"
+            android:layout_width="match_parent"
+            android:layout_height="110dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="55dp"
+            />
 
     <TextView
-        android:layout_width="match_parent"
+        android:id="@+id/txt1"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
+        android:layout_centerHorizontal="true"
         android:gravity="center"
-        android:layout_weight="1"
-        android:text="이 포스트를 결제 시 24시간동안 클라우드에 게시됩니다. 성매매 글 절대 금지"
-        android:textColor="@color/colorAccent" />
+        android:layout_marginLeft="35dp"
+        android:layout_marginRight="35dp"
+        android:layout_marginTop="220dp"
+        android:textColor="@color/black"
+        android:lineSpacingExtra="6dip"
+        android:textSize="15sp"
 
-    <Button
-        android:id="@+id/next"
-        android:layout_width="match_parent"
+        android:text="@string/cloud_pager_1"
+        />
+
+    <TextView
+        android:id="@+id/txt2"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/next" />
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:layout_marginLeft="35dp"
+        android:layout_marginRight="35dp"
+        android:layout_below="@+id/txt1"
+        android:layout_marginTop="30dp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:textSize="15sp"
+
+        android:text="@string/cloud_pager_1_1"
+        />
+
+    <TextView
+        android:id="@+id/payable_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_below="@+id/txt2"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/skyblue"
+        android:text="180401 10:10"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:layout_marginBottom="10dp"
+        />
 
 
-</LinearLayout>
+    <!--<Button-->
+        <!--android:id="@+id/next"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="@string/next" />-->
+
+
+
+</RelativeLayout>

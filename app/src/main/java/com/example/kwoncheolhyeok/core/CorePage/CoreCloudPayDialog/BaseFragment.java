@@ -50,13 +50,13 @@ public abstract class BaseFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        Button next = view.findViewById(R.id.next);
-        if(next != null) next.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                viewPager.setCurrentItem(viewPager.getCurrentItem()+1);
-            }
-        });
+//        Button next = view.findViewById(R.id.next);
+//        if(next != null) next.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                viewPager.setCurrentItem(viewPager.getCurrentItem()+1);
+//            }
+//        });
 
     }
 

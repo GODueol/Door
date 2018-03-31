@@ -38,6 +38,7 @@ public abstract class BaseDialogFragment extends DialogFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setStyle(DialogFragment.STYLE_NO_TITLE, R.style.Theme_AppCompat_Light_NoActionBar);
+
     }
 
     @Nullable
@@ -46,8 +47,9 @@ public abstract class BaseDialogFragment extends DialogFragment {
         View view = inflater.inflate(getLayoutResId(), null, false);
         final Window window = getDialog().getWindow();
 
+
         window.setBackgroundDrawable(new ColorDrawable(0x00000000));
-        window.getDecorView().setPadding(0, 0, 0, 0);
+        window.getDecorView().setPadding(0, 380, 0, 380);
         WindowManager.LayoutParams wlp = window.getAttributes();
         wlp.gravity = Gravity.BOTTOM;
         wlp.width = WindowManager.LayoutParams.MATCH_PARENT;

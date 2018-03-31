@@ -1,20 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <TextView
-        android:gravity="center"
-        android:background="@android:color/black"
-        android:textColor="@color/colorPrimary"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="포스트 100개가 다 찬 경우에는 (1번째 포스트 게시 종료 시간) 이후에 결제할 수 있습니다."
-        />
-    <Button
-        android:id="@+id/next"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/next" />
-</LinearLayout>
+    android:layout_height="450dp"
+    android:background="@color/white"
+    android:layout_gravity="center"
+    >
+
+
+
+        <ImageView
+            android:id="@+id/img_cld_notice"
+            android:layout_width="match_parent"
+            android:layout_height="110dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="55dp"
+            />
+
+        <TextView
+            android:id="@+id/txt1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:layout_marginLeft="35dp"
+            android:layout_marginRight="35dp"
+            android:layout_marginTop="220dp"
+            android:textColor="@color/black"
+            android:lineSpacingExtra="6dip"
+            android:textSize="15sp"
+
+            android:text="@string/cloud_pager_2"
+            />
+
+        <TextView
+            android:id="@+id/txt2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:layout_marginLeft="35dp"
+            android:layout_marginRight="35dp"
+            android:layout_below="@+id/txt1"
+            android:layout_marginTop="30dp"
+            android:textColor="@color/black"
+            android:lineSpacingExtra="6dip"
+            android:textSize="15sp"
+
+            android:text="@string/cloud_pager_2_1"
+            />
+
+
+
+
+        <!--<Button-->
+        <!--android:id="@+id/next"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="@string/next" />-->
+
+
+
+</RelativeLayout>

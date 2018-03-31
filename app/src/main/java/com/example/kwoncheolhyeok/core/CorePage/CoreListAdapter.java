@@ -297,6 +297,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                                 // Transaction completed
                                 Map coreCloudMap = (Map) dataSnapshot.getValue();
                                 if(coreCloudMap == null || coreCloudMap.size() < CoreCloudMax) {
+
                                     // 코어클라우드 결제 가능
                                     //★☆★☆★☆★☆여기입니다요★☆★☆★☆★☆
                                     DealDialogFragment dealDialogFragment = new DealDialogFragment(new DealDialogFragment.CallbackListener() {

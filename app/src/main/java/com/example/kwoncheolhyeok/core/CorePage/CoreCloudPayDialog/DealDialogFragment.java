@@ -1,6 +1,7 @@
 package com.example.kwoncheolhyeok.core.CorePage.CoreCloudPayDialog;
 
 import android.annotation.SuppressLint;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -17,6 +18,8 @@ public class DealDialogFragment extends BaseDialogFragment {
 
     private List<Fragment> fragmentList = new ArrayList<>();
     CallbackListener callbackListener;
+
+    TabLayout tabLayout = null;
 
     @SuppressLint("ValidFragment")
     public DealDialogFragment(CallbackListener callbackListener){
@@ -40,12 +43,16 @@ public class DealDialogFragment extends BaseDialogFragment {
         fragmentList.add(new CoreCloudNotice1(viewPager));
         fragmentList.add(new CoreCloudNotice2(viewPager));
         fragmentList.add(new CoreCloudNotice3(viewPager));
-        fragmentList.add(new CoreCloudNotice4(viewPager, callbackListener, DealDialogFragment.this));
+        fragmentList.add(new CoreCloudNotice4(viewPager));
+        fragmentList.add(new CoreCloudNotice5(viewPager, callbackListener, DealDialogFragment.this));
 
         CustomViewpagerAdapter customViewpagerAdapter = new CustomViewpagerAdapter(getChildFragmentManager(), fragmentList);
         viewPager.setAdapter(customViewpagerAdapter);
         viewPager.setCurrentItem(0);
 
+        // Viewpager indicator
+        tabLayout = dialog.findViewById(R.id.tabDots);
+        tabLayout.setupWithViewPager(viewPager, true);
 
     }
 
