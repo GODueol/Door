@@ -164,7 +164,7 @@
     <string name="cloud_pager_5">클라우드에 올린 포스트가 관리자에 의해 제재 당하거나,</string>
     <string name="cloud_pager_5_1">본인 실수로 삭제하실 경우 결제없이 재 업로드는 불가능합니다</string>
     <string name="cloud_pager_5_2">고지사항을 모두 숙지하고 결제를 동의합니다.</string>
-
+    <string name="possibleUploadCloud">현재 클라우드 업로드 가능합니다</string>
 
 
 </resources>

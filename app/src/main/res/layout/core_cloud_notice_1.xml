@@ -62,7 +62,7 @@
         android:layout_below="@+id/txt2"
         android:layout_marginTop="10dp"
         android:textColor="@color/skyblue"
-        android:text="180401 10:10"
+        android:text="@string/possibleUploadCloud"
         android:textStyle="bold"
         android:textSize="20sp"
         android:layout_marginBottom="10dp"

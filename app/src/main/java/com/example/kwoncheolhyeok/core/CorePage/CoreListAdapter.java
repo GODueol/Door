@@ -306,20 +306,9 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 
                                 // Transaction completed
                                 Map coreCloudMap = (Map) dataSnapshot.getValue();
-                                if(coreCloudMap == null || coreCloudMap.size() < CoreCloudMax) {
+                                long possibleDate = -1; // -1 은 올림 가능
+                                if(!isPossibleAddCloud(coreCloudMap)) {
 
-                                    // 코어클라우드 결제 가능
-                                    //★☆★☆★☆★☆여기입니다요★☆★☆★☆★☆
-                                    DealDialogFragment dealDialogFragment = new DealDialogFragment(new DealDialogFragment.CallbackListener() {
-                                        @Override
-                                        public void callback() {
-                                            putCloudDialog();
-                                        }
-                                    });
-
-                                    dealDialogFragment.show(((AppCompatActivity)context).getSupportFragmentManager(),"");
-
-                                } else {
                                     // 가장 오래된 메세지가져오기
                                     long minDate = Long.MAX_VALUE;
                                     for(DataSnapshot snapshot : dataSnapshot.getChildren()){
@@ -329,11 +318,27 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                                     }
 
                                     // minDate + 1일
-                                    long possibleDate = minDate + DataContainer.SecToDay;
+                                    possibleDate = minDate + DataContainer.SecToDay;
 
-                                    Toast.makeText(context, "더이상 클라우드 코어를 추가할 수 없습니다.\n" + new DateUtil(possibleDate).getDate() + " " + new DateUtil(possibleDate).getTime() + " 이후에 다시 시도하세요", Toast.LENGTH_SHORT).show();
+//                                    Toast.makeText(context, "더이상 클라우드 코어를 추가할 수 없습니다.\n" + new DateUtil(possibleDate).getDate() + " " + new DateUtil(possibleDate).getTime() + " 이후에 다시 시도하세요", Toast.LENGTH_SHORT).show();
                                 }
 
+                                // 코어클라우드 결제 가능
+                                //★☆★☆★☆★☆여기입니다요★☆★☆★☆★☆
+                                DealDialogFragment dealDialogFragment = new DealDialogFragment(possibleDate, new DealDialogFragment.CallbackListener() {
+                                    @Override
+                                    public void callback() {
+                                        putCloudDialog();
+                                    }
+                                });
+
+                                dealDialogFragment.show(((AppCompatActivity)context).getSupportFragmentManager(),"");
+
+
+                            }
+
+                            private boolean isPossibleAddCloud(Map coreCloudMap) {
+                                return coreCloudMap == null || coreCloudMap.size() < CoreCloudMax;
                             }
                         });
                     }

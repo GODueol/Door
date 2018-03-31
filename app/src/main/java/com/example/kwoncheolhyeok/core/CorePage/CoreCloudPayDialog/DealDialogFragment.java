@@ -20,10 +20,12 @@ public class DealDialogFragment extends BaseDialogFragment {
     CallbackListener callbackListener;
 
     TabLayout tabLayout = null;
+    long possibleDate;
 
     @SuppressLint("ValidFragment")
-    public DealDialogFragment(CallbackListener callbackListener){
+    public DealDialogFragment(long possibleDate, CallbackListener callbackListener){
         this.callbackListener = callbackListener;
+        this.possibleDate = possibleDate;
     }
 
     @Override
@@ -40,11 +42,11 @@ public class DealDialogFragment extends BaseDialogFragment {
 
         ViewPager viewPager = dialog.findViewById(R.id.view_pager);
 
-        fragmentList.add(new CoreCloudNotice1(viewPager));
+        fragmentList.add(new CoreCloudNotice1(viewPager, possibleDate));
         fragmentList.add(new CoreCloudNotice2(viewPager));
         fragmentList.add(new CoreCloudNotice3(viewPager));
         fragmentList.add(new CoreCloudNotice4(viewPager));
-        fragmentList.add(new CoreCloudNotice5(viewPager, callbackListener, DealDialogFragment.this));
+        fragmentList.add(new CoreCloudNotice5(viewPager, callbackListener, DealDialogFragment.this, possibleDate));
 
         CustomViewpagerAdapter customViewpagerAdapter = new CustomViewpagerAdapter(getChildFragmentManager(), fragmentList);
         viewPager.setAdapter(customViewpagerAdapter);
