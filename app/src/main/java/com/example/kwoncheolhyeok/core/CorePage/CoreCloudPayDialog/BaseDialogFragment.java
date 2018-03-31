@@ -49,7 +49,13 @@ public abstract class BaseDialogFragment extends DialogFragment {
 
 
         window.setBackgroundDrawable(new ColorDrawable(0x00000000));
-        window.getDecorView().setPadding(0, 380, 0, 380);
+        window.getDecorView().setPadding(0, 300, 0, 300);
+//        DisplayMetrics displayMetrics = this.getResources().getDisplayMetrics();
+//        int deviceHeight = displayMetrics.heightPixels;
+//        window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, (int) (deviceHeight*0.55));  // 전체 레이아웃 가로세로는 여기서 수정
+
+//        getActivity().setFinishOnTouchOutside(false); // 적용 안됨
+
         WindowManager.LayoutParams wlp = window.getAttributes();
         wlp.gravity = Gravity.BOTTOM;
         wlp.width = WindowManager.LayoutParams.MATCH_PARENT;
