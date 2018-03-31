@@ -65,7 +65,10 @@ public class CoreCloudActivity extends CoreActivity {
                 final String postKey = dataSnapshot.getKey();
                 // create 순으로 List Add
                 coreListItemMap.put(postKey, new CoreListItem(null, null, postKey, coreCloud.getcUuid()));
-                list.add(coreListItemMap.get(postKey));
+
+                list.add(0, coreListItemMap.get(postKey)); // 최신순
+//                list.add(coreListItemMap.get(postKey)); // 오래된순
+
                 setData(dataSnapshot, coreCloud, postKey);
             }
 
