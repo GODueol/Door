@@ -6,8 +6,10 @@ import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.GlideApp;
@@ -41,9 +43,17 @@ public class CoreCloudNotice5 extends BaseFragment {
                 .into(img_cld_notice);
 
         TextView approval = view.findViewById(R.id.approval);
+
+        final CheckBox check_notice = view.findViewById(R.id.check_notice);
+
         approval.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(!check_notice.isChecked()){
+                    Toast.makeText(getActivity(), "동의 체크를 누르셔야 결제 가능합니다", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 callbackListener.callback();
                 dealDialogFragment.dismiss();
             }
