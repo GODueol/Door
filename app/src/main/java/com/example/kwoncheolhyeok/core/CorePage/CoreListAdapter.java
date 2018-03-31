@@ -205,6 +205,13 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 
         holder.seekBar.setClickable(false);
         holder.seekBar.setEnabled(false);
+
+        // 클라우드 체크
+        if(corePost.isCloud()){
+            holder.check_cloud.setVisibility(View.VISIBLE);
+        } else {
+            holder.check_cloud.setVisibility(View.INVISIBLE);
+        }
     }
 
     private void setPostViewDiff(CorePostHolder holder, final CoreListItem coreListItem, final CorePost corePost, String mUuid) {
@@ -222,7 +229,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
             if(user == null && corePost.getReply() != null){    // 답변이 달린 익명글일 때
                 setPostMenu(holder, coreListItem, R.menu.core_post_only_delete_menu);
             } else if(context instanceof CoreCloudActivity) {
-                    setPostMenu(holder, coreListItem, R.menu.core_post_cloud_menu);
+                setPostMenu(holder, coreListItem, R.menu.core_post_cloud_menu);
             } else {
                 setPostMenu(holder, coreListItem, R.menu.core_post_normal_menu);
             }
@@ -601,6 +608,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
         SeekBar seekBar;
         TextView textView_maxTime, textView_currentPosion;
         ImageButton core_cloud;
+        TextView check_cloud;
 
         CorePostHolder(View itemView) {
             super(itemView);
@@ -632,6 +640,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
             textView_maxTime = itemView.findViewById(R.id.textView_maxTime);
             textView_currentPosion = itemView.findViewById(R.id.textView_currentPosion);
             core_cloud = itemView.findViewById(R.id.core_cloud);
+            check_cloud = itemView.findViewById(R.id.check_cloud);
         }
     }
 
