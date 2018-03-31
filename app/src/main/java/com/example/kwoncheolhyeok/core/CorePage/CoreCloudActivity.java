@@ -50,7 +50,7 @@ public class CoreCloudActivity extends CoreActivity {
                 long diff;
                 try {
                     assert coreCloud != null;
-                    diff = coreCloud.getAttachDate() - UiUtil.getInstance().getCurrentTime(CoreCloudActivity.this);
+                    diff = UiUtil.getInstance().getCurrentTime(CoreCloudActivity.this) - coreCloud.getAttachDate();
                 } catch (NotSetAutoTimeException e) {
                     e.printStackTrace();
                     return;
