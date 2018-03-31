@@ -37,6 +37,8 @@ import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.Exception.ChildSizeMaxException;
 import com.example.kwoncheolhyeok.core.Exception.NotSetAutoTimeException;
 import com.example.kwoncheolhyeok.core.MessageActivity.util.DateUtil;
+import com.example.kwoncheolhyeok.core.PeopleFragment.FullImageActivity;
+import com.example.kwoncheolhyeok.core.PeopleFragment.GridItem;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.AlarmUtil;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
@@ -223,6 +225,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
         } else {    // 타인글
             setAnonymousPost(holder, coreListItem, corePost, mUuid);
         }
+
         if (corePost.getUuid().equals(mUuid)) {   // 본인 게시물
             
             // 수정 삭제 가능
@@ -425,7 +428,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
         }
     }
 
-    private void setMasterPost(CorePostHolder holder, CorePost corePost, User user) {
+    private void setMasterPost(CorePostHolder holder, final CorePost corePost, final User user) {
         holder.replyBtnLayout.setVisibility(View.GONE);
         holder.core_img.setVisibility(View.VISIBLE);
 
@@ -456,6 +459,27 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
         if (holder.core_img != null) Glide.with(context /* context */)
                 .load(corePost.getPictureUrl())
                 .into(holder.core_img);
+
+        // cloud 일 경우는 프사 클릭시 프로필 액티비티로 들어가지게
+        if(context instanceof CoreCloudActivity){
+            holder.core_pic.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    // block 확인
+                    if(DataContainer.getInstance().isBlockWithMe(corePost.getUuid())){
+                        return;
+                    }
+
+                    Intent p = new Intent(context.getApplicationContext(), FullImageActivity.class);
+                    p.putExtra("item", new GridItem(0, corePost.getUuid(), user.getSummaryUser(), ""));
+                    context.startActivity(p);
+
+                }
+            });
+        } else {
+            holder.core_pic.setOnClickListener(null);
+        }
     }
 
     private void setPostMenu(CorePostHolder holder, final CoreListItem coreListItem, final int menuId) {
