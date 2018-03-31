@@ -203,6 +203,7 @@
                 android:maxLength="1000"
                 android:hint="자신을 표현해 보세요."
                 android:lineSpacingExtra="8dip"
+                android:gravity="start"
                 android:theme="@style/EditText.Color.Black" />
 
         </RelativeLayout>
