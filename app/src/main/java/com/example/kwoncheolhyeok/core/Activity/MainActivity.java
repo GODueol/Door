@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity
         GlideApp.with(this)
                 .load(UiUtil.resourceToUri(this, R.drawable.tb_coreplus))
 //                .override(80, 23)
-//                .centerCrop()
+                .fitCenter()
                 .into(coreplus);
 
 
@@ -504,13 +504,13 @@ public class MainActivity extends AppCompatActivity
             bitmap3 = ((BitmapDrawable) drawable3).getBitmap();
         }
         if (bitmap != null) {
-            icon_open = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 100, 100, true));
+            icon_open = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 90, 90, true));
         }
         if (bitmap2 != null) {
-            icon_open_badge = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap2, 100, 100, true));
+            icon_open_badge = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap2, 90, 90, true));
         }
         if (bitmap3 != null) {
-            icon_close = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap3, 100, 100, true));
+            icon_close = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap3, 90, 90, true));
         }
     }
 
