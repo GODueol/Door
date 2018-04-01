@@ -313,7 +313,7 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
             return; // 자신일 경우
 
         // 트랜잭션을 이용해야함
-        DatabaseReference viewedMeUsersRef = DataContainer.getInstance().getUserRef(item.getUuid()).child("viewedMeUsers");
+        final DatabaseReference viewedMeUsersRef = DataContainer.getInstance().getUserRef(item.getUuid()).child("viewedMeUsers");
         viewedMeUsersRef.runTransaction(new Transaction.Handler() {
             @Override
             public Transaction.Result doTransaction(MutableData mutableData) {
@@ -339,16 +339,7 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
                         mutableData.setValue(map);
                     }
                 }
-                // Viewed me
-                FirebaseSendPushMsg.sendPostToFCM("View",item.getUuid(), mUser.getId(),"");
-                // 데이터 추가
-                try {
-                    map.put(mUuid, UiUtil.getInstance().getCurrentTime(FullImageActivity.this));
-                } catch (NotSetAutoTimeException e) {
-                    e.printStackTrace();
-                    Toast.makeText(FullImageActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                    ActivityCompat.finishAffinity(FullImageActivity.this);
-                }
+
                 mutableData.setValue(map);
                 return Transaction.success(mutableData);
             }
@@ -358,6 +349,17 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
                                    DataSnapshot dataSnapshot) {
                 // Transaction completed
                 Log.d(getClass().getName(), "viewedMeUsersTransaction:onComplete:" + databaseError);
+
+                // Viewed me
+                FirebaseSendPushMsg.sendPostToFCM("View",item.getUuid(), mUser.getId(),"");
+                // 데이터 추가
+                try {
+                    viewedMeUsersRef.child(mUuid).setValue(UiUtil.getInstance().getCurrentTime(FullImageActivity.this));
+                } catch (NotSetAutoTimeException e) {
+                    e.printStackTrace();
+                    Toast.makeText(FullImageActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    ActivityCompat.finishAffinity(FullImageActivity.this);
+                }
             }
         });
 
