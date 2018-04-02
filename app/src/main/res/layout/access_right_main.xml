@@ -48,7 +48,7 @@
                 android:layout_marginTop="20dp"
                 android:gravity="center"
                 android:text="@string/access1"
-                android:textColor="black"
+                android:textColor="@color/black"
                 android:textSize="15sp" />
 
             <RelativeLayout
