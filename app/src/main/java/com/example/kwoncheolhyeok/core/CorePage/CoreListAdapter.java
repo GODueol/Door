@@ -36,7 +36,6 @@ import com.example.kwoncheolhyeok.core.Entity.CorePost;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.Exception.ChildSizeMaxException;
 import com.example.kwoncheolhyeok.core.Exception.NotSetAutoTimeException;
-import com.example.kwoncheolhyeok.core.MessageActivity.util.DateUtil;
 import com.example.kwoncheolhyeok.core.PeopleFragment.FullImageActivity;
 import com.example.kwoncheolhyeok.core.PeopleFragment.GridItem;
 import com.example.kwoncheolhyeok.core.R;
@@ -545,11 +544,29 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                                 break;
                             case R.id.detach_cloud:
                                 // 클라우드 내리기
-
                                 if(context instanceof CoreCloudActivity){
-                                    Toast.makeText(context, "CoreCloudActivity", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    Toast.makeText(context, "CoreAtivity", Toast.LENGTH_SHORT).show();
+                                    UiUtil.getInstance().showDialog(context, "클라우드 내리기", "정말 클라우드를 내리겠습니까?"
+                                        , new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                Map<String, Object> childUpdate = new HashMap<>();
+                                                // 포스트 isCloud = false
+                                                childUpdate.put("posts/" + coreListItem.getcUuid() + "/" + coreListItem.getPostKey() + "/isCloud", false);
+
+                                                // 클라우드에서 포스트 키 null
+                                                childUpdate.put("coreCloud/" + coreListItem.getPostKey(), null);
+
+                                                FirebaseDatabase.getInstance().getReference().updateChildren(childUpdate).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        if(task.isSuccessful()){
+                                                            Toast.makeText(context, "코어 포스트를 내렸습니다", Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    }
+                                                });
+                                            }
+                                        }, null
+                                    );
                                 }
                                 break;
                             default:
