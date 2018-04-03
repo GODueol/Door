@@ -52,6 +52,7 @@ public class CorePlusActivity extends AppCompatActivity {
                 .fitCenter()
                 .into(img_cp_4);
 
+
         Intent serviceIntent =
                 new Intent("com.android.vending.billing.InAppBillingService.BIND");
         serviceIntent.setPackage("com.android.vending");
