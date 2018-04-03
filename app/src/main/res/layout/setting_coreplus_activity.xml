@@ -415,11 +415,61 @@
                 android:text="@string/cp_23"
                 android:textColor="@color/black" />
 
+            <RelativeLayout
+                android:id="@+id/cp_function_6"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_below="@+id/txt14"
+                android:layout_marginTop="95dp"
+                android:background="@drawable/cp_function_background">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="@string/cp_27"
+                    android:textColor="@color/white"
+                    android:textSize="14dp"
+                    android:textStyle="bold" />
+
+            </RelativeLayout>
+
+            <ImageView
+                android:id="@+id/img_cp_7"
+                android:layout_width="210dp"
+                android:layout_height="180dp"
+                android:layout_below="@+id/cp_function_6"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="75dp"
+                android:background="@drawable/cp_7"
+                />
+
+
+            <TextView
+                android:id="@+id/txt15"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/img_cp_7"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="20dp"
+                android:text="@string/cp_28"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/txt16"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txt15"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="5dp"
+                android:textColor="@color/black" />
+
+
             <View
                 android:id="@+id/section_line2"
                 android:layout_width="match_parent"
                 android:layout_height="0.5dip"
-                android:layout_below="@+id/txt14"
+                android:layout_below="@+id/txt16"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="75dp"
                 android:background="@color/black"></View>
@@ -438,7 +488,7 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/txt15"
+                android:id="@+id/txt17"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/btn_cp_subs2"
@@ -451,14 +501,14 @@
                 android:id="@+id/layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/txt15"
+                android:layout_below="@+id/txt17"
                 android:layout_centerHorizontal="true"
                 android:layout_marginBottom="100dp"
                 android:layout_marginTop="5dp"
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/txt16"
+                    android:id="@+id/txt18"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -467,7 +517,7 @@
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/txt17"
+                    android:id="@+id/txt19"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
