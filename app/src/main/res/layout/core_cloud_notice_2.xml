@@ -6,6 +6,16 @@
     android:background="@color/white"
     android:layout_gravity="center"
     >
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="none"
+            >
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    >
 
 
 
@@ -50,7 +60,9 @@
 
             android:text="@string/cloud_pager_2_1"
             />
+                </RelativeLayout>
 
+        </ScrollView>
 
 
 

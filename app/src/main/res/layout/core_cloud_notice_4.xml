@@ -7,6 +7,16 @@
     android:layout_gravity="center"
     >
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none"
+        >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
 
 
     <ImageView
@@ -51,7 +61,9 @@
         android:text="@string/cloud_pager_4_1"
         />
 
+        </RelativeLayout>
 
+    </ScrollView>
 
 
     <!--<Button-->
