@@ -48,6 +48,7 @@ public class CoreActivity extends BlockBaseActivity {
     private String cUuid = null;
     public ArrayList<CoreListItem> list;
     private FloatingActionButton fab;
+    private  String postId;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -77,8 +78,9 @@ public class CoreActivity extends BlockBaseActivity {
 
         Intent intent = getIntent();
         cUuid = intent.getStringExtra("uuid");
-        String postId = intent.getStringExtra("postId");
+        postId = intent.getStringExtra("postId");
         if (postId != null) {
+            toolbar.invalidate();
             Log.d("test", postId);
         }
         // 엑티비티 Uuid 저장
@@ -245,7 +247,7 @@ public class CoreActivity extends BlockBaseActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.clear();
-        if (cUuid != null && cUuid.equals(dc.getUid())) {
+        if (postId==null &&cUuid != null && cUuid.equals(dc.getUid())) {
             getMenuInflater().inflate(R.menu.core_activity_menu, menu);
             menu.getItem(0).setChecked(dc.getUser().isAnonymityProhibition());
         }
