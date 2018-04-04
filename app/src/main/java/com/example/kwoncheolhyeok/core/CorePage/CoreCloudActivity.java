@@ -39,7 +39,7 @@ public class CoreCloudActivity extends CoreActivity {
 
     public void addPostsToList(final ArrayList<CoreListItem> list) {
         list.clear();
-        postQuery = DataContainer.getInstance().getCoreCloudRef().orderByChild("createDate");
+        postQuery = DataContainer.getInstance().getCoreCloudRef().orderByChild("attachDate");
 
         listener = new ChildEventListener() {
             @Override
@@ -66,8 +66,8 @@ public class CoreCloudActivity extends CoreActivity {
                 // create 순으로 List Add
                 coreListItemMap.put(postKey, new CoreListItem(null, null, postKey, coreCloud.getcUuid()));
 
-//                list.add(0, coreListItemMap.get(postKey)); // 오래된순
-                list.add(coreListItemMap.get(postKey)); // 최신순
+                list.add(0, coreListItemMap.get(postKey)); // 최신순
+//                list.add(coreListItemMap.get(postKey)); // 오래된순
 
                 if(coreCloud != null && postKey != null) setData(dataSnapshot, coreCloud, postKey);
             }
@@ -102,7 +102,7 @@ public class CoreCloudActivity extends CoreActivity {
 
             }
 
-            private void setData(DataSnapshot dataSnapshot, CoreCloud coreCloud, final String postKey) {
+            private void setData(DataSnapshot dataSnapshot, final CoreCloud coreCloud, final String postKey) {
 
                 // Set Post 데이터
                 if(coreCloud.getcUuid() == null) return;
@@ -113,6 +113,7 @@ public class CoreCloudActivity extends CoreActivity {
                                 CoreListItem coreListItem = coreListItemMap.get(postKey);
                                 int position = list.lastIndexOf(coreListItem);
                                 coreListItem.setCorePost(dataSnapshot.getValue(CorePost.class));
+                                //coreListItem.getCorePost().setWriteDate(coreCloud.getAttachDate()); // 날짜 표현을 Attach 시간으로 변경
                                 if(coreListItem.getUser() != null) coreListAdapter.notifyItemChanged(position);
                             }
 
