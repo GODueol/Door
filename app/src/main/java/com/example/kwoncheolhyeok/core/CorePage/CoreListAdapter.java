@@ -243,14 +243,6 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                     @Override
                     public void onClick(View view) {
 
-                        // 이미 코어글이 올라가있는지 확인
-                        for(CoreListItem coreListItemTemp : coreListItems){
-                            if(coreListItemTemp.getCorePost().isCloud()) {
-                                Toast.makeText(context, "이미 코어 클라우드에 게시하셨었습니다. 더이상 게시할 수 없습니다.", Toast.LENGTH_SHORT).show();
-                                return;
-                            }
-                        }
-
                         // 이미 코어가 올라가 있는 게시물인지 확인
                         if(corePost.isCloud()){
                             Toast.makeText(context, "이미 코어 클라우드에 게시된글입니다", Toast.LENGTH_SHORT).show();
@@ -300,6 +292,15 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 
                             @Override
                             public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+
+                                // 이미 코어글이 올라가있는지 확인
+                                for(CoreListItem coreListItemTemp : coreListItems){
+                                    if(coreListItemTemp.getCorePost().isCloud()) {
+                                        Toast.makeText(context, "이미 코어 클라우드에 게시하셨었습니다. 더이상 게시할 수 없습니다.", Toast.LENGTH_SHORT).show();
+                                        Log.d("kbj", "getPostKey : " + coreListItemTemp.getPostKey());
+                                        return;
+                                    }
+                                }
 
                                 UiUtil.getInstance().stopProgressDialog();
 
