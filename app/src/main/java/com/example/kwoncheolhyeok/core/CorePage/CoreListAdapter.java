@@ -292,6 +292,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 
                             @Override
                             public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+                                UiUtil.getInstance().stopProgressDialog();
 
                                 // 이미 코어글이 올라가있는지 확인
                                 for(CoreListItem coreListItemTemp : coreListItems){
@@ -301,8 +302,6 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                                         return;
                                     }
                                 }
-
-                                UiUtil.getInstance().stopProgressDialog();
 
                                 // 커밋 실패
                                 if(!b){
