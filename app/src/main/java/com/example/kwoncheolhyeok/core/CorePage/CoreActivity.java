@@ -79,6 +79,23 @@ public class CoreActivity extends BlockBaseActivity {
         Intent intent = getIntent();
         cUuid = intent.getStringExtra("uuid");
         postId = intent.getStringExtra("postId");
+
+        // 알람받은 포스트가 있는지 여부확인
+        if(postId != null)FirebaseDatabase.getInstance().getReference().child("posts/" + cUuid + "/" + postId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(!dataSnapshot.exists()){
+                    // 없으면, 삭제되었다는 메세지
+                    findViewById(R.id.removePostMsg).setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
         if (postId != null) {
             toolbar.invalidate();
             Log.d("test", postId);
