@@ -208,7 +208,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
         holder.seekBar.setEnabled(false);
 
         // 클라우드 체크
-        if(corePost.isCloud()){
+        if(corePost.isCloud() && !(context instanceof CoreCloudActivity)){
             holder.check_cloud.setVisibility(View.VISIBLE);
         } else {
             holder.check_cloud.setVisibility(View.INVISIBLE);
@@ -294,6 +294,10 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                             public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
                                 UiUtil.getInstance().stopProgressDialog();
 
+                                // 삭제가 완료 되면 isCloud 도 false 되도록
+                                FirebaseDatabase.getInstance().getReference().updateChildren(postIsCloudMap);
+
+
                                 // 이미 코어글이 올라가있는지 확인
                                 for(CoreListItem coreListItemTemp : coreListItems){
                                     if(coreListItemTemp.getCorePost().isCloud()) {
@@ -310,7 +314,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                                     return;
                                 }
 
-                                FirebaseDatabase.getInstance().getReference().updateChildren(postIsCloudMap);
+
 
                                 // Transaction completed
                                 Map coreCloudMap = (Map) dataSnapshot.getValue();
