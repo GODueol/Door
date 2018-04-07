@@ -408,7 +408,8 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
         holder.core_id.setText(user.getId());
         holder.core_subProfile.setText(UiUtil.getInstance().setSubProfile(user));
 
-        if (holder.core_img != null) Glide.with(context /* context */)
+        if (holder.core_img != null)
+            Glide.with(context /* context */)
                 .load(corePost.getPictureUrl())
                 .into(holder.core_img);
 
