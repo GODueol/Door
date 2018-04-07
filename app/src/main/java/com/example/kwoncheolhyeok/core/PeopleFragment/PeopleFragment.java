@@ -294,7 +294,12 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
         super.onDestroy();
         if (geoQuery != null) geoQuery.removeAllListeners();
         if (userRef != null && userListener != null) userRef.removeEventListener(userListener);
-        BusProvider.getInstance().unregister(this);
+
+        try {
+            BusProvider.getInstance().unregister(this);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 }
 
