@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
@@ -13,8 +14,13 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
+import com.example.kwoncheolhyeok.core.Exception.NotSetAutoTimeException;
 import com.example.kwoncheolhyeok.core.R;
+import com.example.kwoncheolhyeok.core.Util.UiUtil;
+
+import static com.example.kwoncheolhyeok.core.Util.DataContainer.SecToDay;
 
 public abstract class BaseFragment extends Fragment {
 
@@ -76,4 +82,22 @@ public abstract class BaseFragment extends Fragment {
         super.onPause();
     }
 
+
+    public boolean isPostPossible(long oldestPostDate) {
+
+        if(oldestPostDate == Long.MAX_VALUE) return true;
+
+        // diff
+        long diff = 0;
+        try {
+            diff = UiUtil.getInstance().getCurrentTime(getContext()) - oldestPostDate;
+        } catch (NotSetAutoTimeException e) {
+            e.printStackTrace();
+            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+            ActivityCompat.finishAffinity(getActivity());
+        }
+
+        // 해당 포스트 삭제 후에 가능
+        return diff >= SecToDay;
+    }
 }

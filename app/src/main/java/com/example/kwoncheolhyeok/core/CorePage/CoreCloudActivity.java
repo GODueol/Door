@@ -45,17 +45,17 @@ public class CoreCloudActivity extends CoreActivity {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 CoreCloud coreCloud = dataSnapshot.getValue(CoreCloud.class);
-
-                // 하루 지난 포스트는 안보임
-                long diff;
-                try {
-                    assert coreCloud != null;
-                    diff = UiUtil.getInstance().getCurrentTime(CoreCloudActivity.this) - coreCloud.getAttachDate();
-                } catch (NotSetAutoTimeException e) {
-                    e.printStackTrace();
-                    return;
-                }
-                if(diff > (SecToDay)) return;
+//
+//                // 하루 지난 포스트는 안보임
+//                long diff;
+//                try {
+//                    assert coreCloud != null;
+//                    diff = UiUtil.getInstance().getCurrentTime(CoreCloudActivity.this) - coreCloud.getAttachDate();
+//                } catch (NotSetAutoTimeException e) {
+//                    e.printStackTrace();
+//                    return;
+//                }
+//                if(diff > (SecToDay)) return;
 
                 // 블럭된 유저는 안보이도록
                 if(DataContainer.getInstance().isBlockWithMe(coreCloud.getcUuid())){

@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.view.View;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -21,14 +20,14 @@ public class CoreCloudNotice5 extends BaseFragment {
 
     DealDialogFragment.CallbackListener callbackListener;
     DealDialogFragment dealDialogFragment;
-    long possibleDate;
+    long oldestPostDate;
 
     @SuppressLint("ValidFragment")
-    public CoreCloudNotice5(ViewPager viewPager, DealDialogFragment.CallbackListener callbackListener, DealDialogFragment dealDialogFragment, long possibleDate) {
+    public CoreCloudNotice5(ViewPager viewPager, DealDialogFragment.CallbackListener callbackListener, DealDialogFragment dealDialogFragment, long oldestPostDate) {
         super(viewPager);
         this.callbackListener = callbackListener;
         this.dealDialogFragment = dealDialogFragment;
-        this.possibleDate = possibleDate;
+        this.oldestPostDate = oldestPostDate;
     }
 
     @Override
@@ -50,7 +49,7 @@ public class CoreCloudNotice5 extends BaseFragment {
         final CheckBox check_notice = view.findViewById(R.id.check_notice);
 
         RelativeLayout checkLayout = view.findViewById(R.id.checkLayout);
-        if(possibleDate == -1){
+        if(isPostPossible(oldestPostDate)){
             approval.setVisibility(View.VISIBLE);
             checkLayout.setVisibility(View.VISIBLE);
 
