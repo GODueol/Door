@@ -12,6 +12,7 @@ import android.support.v7.widget.SimpleItemAnimator;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -19,6 +20,7 @@ import com.example.kwoncheolhyeok.core.Entity.CoreListItem;
 import com.example.kwoncheolhyeok.core.Entity.CorePost;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.Event.TargetUserBlocksMeEvent;
+import com.example.kwoncheolhyeok.core.PeopleFragment.FullImageActivity;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.BaseActivity.BlockBaseActivity;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
@@ -48,7 +50,7 @@ public class CoreActivity extends BlockBaseActivity {
     private String cUuid = null;
     public ArrayList<CoreListItem> list;
     private FloatingActionButton fab;
-    private  String postId;
+    private String postId;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -269,7 +271,7 @@ public class CoreActivity extends BlockBaseActivity {
         String postId = getIntent().getStringExtra("postId");
 
 
-        if(postId != null){ // 알람을 통해서 진행할 경우
+        if (postId != null) { // 알람을 통해서 진행할 경우
             fab.setVisibility(View.INVISIBLE);
             return FirebaseDatabase.getInstance().getReference().child("posts").child(cUuid).orderByKey().equalTo(postId);
 
@@ -281,8 +283,15 @@ public class CoreActivity extends BlockBaseActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.clear();
-        if (postId==null &&cUuid != null && cUuid.equals(dc.getUid())) {
-            getMenuInflater().inflate(R.menu.core_activity_menu, menu);
+        getMenuInflater().inflate(R.menu.core_activity_menu, menu);
+        MenuItem profile = menu.findItem(R.id.core_profile);
+        MenuItem prohibition = menu.findItem(R.id.anonymity_prohibition);
+        if (postId != null) {
+            profile.setVisible(true);
+            prohibition.setVisible(false);
+        } else if (cUuid != null && cUuid.equals(dc.getUid())) {
+            profile.setVisible(false);
+            prohibition.setVisible(true);
             menu.getItem(0).setChecked(dc.getUser().isAnonymityProhibition());
         }
 
@@ -301,6 +310,14 @@ public class CoreActivity extends BlockBaseActivity {
 
                 dc.getUser().setAnonymityProhibition(isChecked);
                 dc.getMyUserRef().child("anonymityProhibition").setValue(isChecked);
+                return true;
+            case R.id.core_profile:
+                if (postId != null) {
+                    Intent p = new Intent(this, FullImageActivity.class);
+                    //p.putExtra("item", item); 요기예요 병진형 <<<
+                    this.startActivity(p);
+                }
+
                 return true;
         }
 

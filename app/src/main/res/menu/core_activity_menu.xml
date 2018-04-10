@@ -4,7 +4,13 @@
     <item
         android:id="@+id/anonymity_prohibition"
         android:checkable="true"
+        android:visible="false"
         android:title="@string/anonymityProhibition"
-        
+        />
+
+    <item
+        android:id="@+id/core_profile"
+        android:visible="false"
+        android:title="프로필"
         />
 </menu>

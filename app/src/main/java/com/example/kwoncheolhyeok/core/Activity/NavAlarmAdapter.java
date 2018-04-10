@@ -56,7 +56,7 @@ public class NavAlarmAdapter extends RecyclerView.Adapter<NavAlarmAdapter.ViewHo
 
     @SuppressLint("ResourceAsColor")
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, final int position) {
         final AlarmSummary item = items.get(position);
 
         DateUtil dateUtil = new DateUtil(item.getTime());
@@ -97,8 +97,9 @@ public class NavAlarmAdapter extends RecyclerView.Adapter<NavAlarmAdapter.ViewHo
                 
                 if(DataContainer.getInstance().isBlockWithMe(item.getcUuid())) {
                     Toast.makeText(context, "포스트를 볼 수 없습니다.", Toast.LENGTH_SHORT).show();
-                    // TODO : 여기서 알람 삭제
-
+                    FirebaseDatabase.getInstance().getReference("Alarm").child(DataContainer.getInstance().getUid()).child(item.getKey()).removeValue();
+                    items.remove(position);
+                    notifyDataSetChanged();
                     return;
                 }
                 try {

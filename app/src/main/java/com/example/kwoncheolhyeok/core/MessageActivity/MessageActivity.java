@@ -43,6 +43,7 @@ public class MessageActivity extends AppCompatActivity implements SharedPreferen
     private DatabaseReference chatRoomListRef;
     private FirebaseAuth mAuth;
     private String userId;
+    private int BadgeCount=0;
 
     private SharedPreferencesUtil SPUtil;
 
@@ -141,7 +142,11 @@ public class MessageActivity extends AppCompatActivity implements SharedPreferen
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 final RoomVO roomList = dataSnapshot.getValue(RoomVO.class);
                 try {
-                    roomList.setBadgeCount(SPUtil.getChatRoomBadge(roomList.getChatRoomid()));
+                    // 뱃지 수 동기화
+                    int c = SPUtil.getChatRoomBadge(roomList.getChatRoomid());
+                    roomList.setBadgeCount(c);
+                    BadgeCount +=c;
+                    SPUtil.setBadgeCount(getApplicationContext().getString(R.string.badgeChat),BadgeCount);
                 } catch (Exception e) {
                     roomList.setBadgeCount(0);
                 }
