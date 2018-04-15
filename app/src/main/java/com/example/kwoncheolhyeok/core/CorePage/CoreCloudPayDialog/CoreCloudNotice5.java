@@ -5,9 +5,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.view.View;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,12 +20,14 @@ public class CoreCloudNotice5 extends BaseFragment {
 
     DealDialogFragment.CallbackListener callbackListener;
     DealDialogFragment dealDialogFragment;
+    long oldestPostDate;
 
     @SuppressLint("ValidFragment")
-    public CoreCloudNotice5(ViewPager viewPager, DealDialogFragment.CallbackListener callbackListener, DealDialogFragment dealDialogFragment) {
+    public CoreCloudNotice5(ViewPager viewPager, DealDialogFragment.CallbackListener callbackListener, DealDialogFragment dealDialogFragment, long oldestPostDate) {
         super(viewPager);
         this.callbackListener = callbackListener;
         this.dealDialogFragment = dealDialogFragment;
+        this.oldestPostDate = oldestPostDate;
     }
 
     @Override
@@ -46,18 +48,30 @@ public class CoreCloudNotice5 extends BaseFragment {
 
         final CheckBox check_notice = view.findViewById(R.id.check_notice);
 
-        approval.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(!check_notice.isChecked()){
-                    Toast.makeText(getActivity(), "동의 체크를 누르셔야 결제 가능합니다", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+        RelativeLayout checkLayout = view.findViewById(R.id.checkLayout);
+        if(isPostPossible(oldestPostDate)){
+            approval.setVisibility(View.VISIBLE);
+            checkLayout.setVisibility(View.VISIBLE);
 
-                callbackListener.callback();
-                dealDialogFragment.dismiss();
-            }
-        });
+            approval.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(!check_notice.isChecked()){
+                        Toast.makeText(getActivity(), "동의 체크를 누르셔야 결제 가능합니다", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    callbackListener.callback();
+                    dealDialogFragment.dismiss();
+                }
+            });
+        } else {
+            approval.setVisibility(View.INVISIBLE);
+            checkLayout.setVisibility(View.INVISIBLE);
+
+            approval.setOnClickListener(null);
+        }
+
 
     }
 

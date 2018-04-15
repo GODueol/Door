@@ -39,23 +39,23 @@ public class CoreCloudActivity extends CoreActivity {
 
     public void addPostsToList(final ArrayList<CoreListItem> list) {
         list.clear();
-        postQuery = DataContainer.getInstance().getCoreCloudRef().orderByChild("createDate");
+        postQuery = DataContainer.getInstance().getCoreCloudRef().orderByChild("attachDate");
 
         listener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 CoreCloud coreCloud = dataSnapshot.getValue(CoreCloud.class);
-
-                // 하루 지난 포스트는 안보임
-                long diff;
-                try {
-                    assert coreCloud != null;
-                    diff = UiUtil.getInstance().getCurrentTime(CoreCloudActivity.this) - coreCloud.getAttachDate();
-                } catch (NotSetAutoTimeException e) {
-                    e.printStackTrace();
-                    return;
-                }
-                if(diff > (SecToDay)) return;
+//
+//                // 하루 지난 포스트는 안보임
+//                long diff;
+//                try {
+//                    assert coreCloud != null;
+//                    diff = UiUtil.getInstance().getCurrentTime(CoreCloudActivity.this) - coreCloud.getAttachDate();
+//                } catch (NotSetAutoTimeException e) {
+//                    e.printStackTrace();
+//                    return;
+//                }
+//                if(diff > (SecToDay)) return;
 
                 // 블럭된 유저는 안보이도록
                 if(DataContainer.getInstance().isBlockWithMe(coreCloud.getcUuid())){
@@ -102,7 +102,7 @@ public class CoreCloudActivity extends CoreActivity {
 
             }
 
-            private void setData(DataSnapshot dataSnapshot, CoreCloud coreCloud, final String postKey) {
+            private void setData(DataSnapshot dataSnapshot, final CoreCloud coreCloud, final String postKey) {
 
                 // Set Post 데이터
                 if(coreCloud.getcUuid() == null) return;
@@ -113,6 +113,7 @@ public class CoreCloudActivity extends CoreActivity {
                                 CoreListItem coreListItem = coreListItemMap.get(postKey);
                                 int position = list.lastIndexOf(coreListItem);
                                 coreListItem.setCorePost(dataSnapshot.getValue(CorePost.class));
+                                //coreListItem.getCorePost().setWriteDate(coreCloud.getAttachDate()); // 날짜 표현을 Attach 시간으로 변경
                                 if(coreListItem.getUser() != null) coreListAdapter.notifyItemChanged(position);
                             }
 

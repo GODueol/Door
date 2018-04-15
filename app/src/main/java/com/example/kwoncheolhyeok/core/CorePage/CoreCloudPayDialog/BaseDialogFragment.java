@@ -2,8 +2,10 @@ package com.example.kwoncheolhyeok.core.CorePage.CoreCloudPayDialog;
 
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.view.Gravity;

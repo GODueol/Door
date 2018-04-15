@@ -90,6 +90,11 @@ public class SharedPreferencesUtil {
         return sharedPref_badge.getInt(str, 0);
     }
 
+    // 뱃지
+    public void setBadgeCount(String str,int i) {
+        editor_badge.putInt(str, i).apply();
+    }
+
     public boolean getBadgeState(String str){
         return sharedPref_badge.getBoolean(str,false);
     }

@@ -2,16 +2,22 @@ package com.example.kwoncheolhyeok.core.CorePage.CoreCloudPayDialog;
 
 import android.annotation.SuppressLint;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
+import android.widget.Toast;
 
+import com.example.kwoncheolhyeok.core.Exception.NotSetAutoTimeException;
 import com.example.kwoncheolhyeok.core.R;
+import com.example.kwoncheolhyeok.core.Util.UiUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.example.kwoncheolhyeok.core.Util.DataContainer.SecToDay;
 
 @SuppressLint("ValidFragment")
 public class DealDialogFragment extends BaseDialogFragment {
@@ -20,10 +26,12 @@ public class DealDialogFragment extends BaseDialogFragment {
     CallbackListener callbackListener;
 
     TabLayout tabLayout = null;
+    long oldestPostDate;
 
     @SuppressLint("ValidFragment")
-    public DealDialogFragment(CallbackListener callbackListener){
+    public DealDialogFragment(long oldestPostDate, CallbackListener callbackListener){
         this.callbackListener = callbackListener;
+        this.oldestPostDate = oldestPostDate;
     }
 
     @Override
@@ -35,16 +43,15 @@ public class DealDialogFragment extends BaseDialogFragment {
         return R.layout.core_cloud_notice_viewpager;
     }
 
-
     protected void initView(View dialog) {
 
         ViewPager viewPager = dialog.findViewById(R.id.view_pager);
 
-        fragmentList.add(new CoreCloudNotice1(viewPager));
+        fragmentList.add(new CoreCloudNotice1(viewPager, oldestPostDate));
         fragmentList.add(new CoreCloudNotice2(viewPager));
         fragmentList.add(new CoreCloudNotice3(viewPager));
         fragmentList.add(new CoreCloudNotice4(viewPager));
-        fragmentList.add(new CoreCloudNotice5(viewPager, callbackListener, DealDialogFragment.this));
+        fragmentList.add(new CoreCloudNotice5(viewPager, callbackListener, DealDialogFragment.this, oldestPostDate));
 
         CustomViewpagerAdapter customViewpagerAdapter = new CustomViewpagerAdapter(getChildFragmentManager(), fragmentList);
         viewPager.setAdapter(customViewpagerAdapter);

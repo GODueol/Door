@@ -12,7 +12,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,7 +35,6 @@ import com.example.kwoncheolhyeok.core.Entity.CorePost;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.Exception.ChildSizeMaxException;
 import com.example.kwoncheolhyeok.core.Exception.NotSetAutoTimeException;
-import com.example.kwoncheolhyeok.core.MessageActivity.util.DateUtil;
 import com.example.kwoncheolhyeok.core.PeopleFragment.FullImageActivity;
 import com.example.kwoncheolhyeok.core.PeopleFragment.GridItem;
 import com.example.kwoncheolhyeok.core.R;
@@ -52,8 +50,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.MutableData;
-import com.google.firebase.database.Transaction;
+import com.google.firebase.database.ValueEventListener;
 import com.like.LikeButton;
 import com.like.OnLikeListener;
 
@@ -62,9 +59,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
-import static com.example.kwoncheolhyeok.core.Util.DataContainer.CoreCloudMax;
-import static com.example.kwoncheolhyeok.core.Util.DataContainer.SecToDay;
 
 public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePostHolder> {
 
@@ -209,14 +203,14 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
         holder.seekBar.setEnabled(false);
 
         // 클라우드 체크
-        if(corePost.isCloud()){
+        if(corePost.isCloud() && !(context instanceof CoreCloudActivity)){
             holder.check_cloud.setVisibility(View.VISIBLE);
         } else {
             holder.check_cloud.setVisibility(View.INVISIBLE);
         }
     }
 
-    private void setPostViewDiff(CorePostHolder holder, final CoreListItem coreListItem, final CorePost corePost, String mUuid) {
+    private void setPostViewDiff(CorePostHolder holder, final CoreListItem coreListItem, final CorePost corePost, final String mUuid) {
         holder.core_cloud.setVisibility(View.INVISIBLE);
         
         User user = coreListItem.getUser();
@@ -238,114 +232,75 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
             }
 
             // 본인 게시물이 주인일 때만 클라우드 가능
-            if(user != null){
+            if(user != null && !(context instanceof CoreCloudActivity)){
                 holder.core_cloud.setVisibility(View.VISIBLE);
                 holder.core_cloud.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
 
+                        // 이미 코어가 올라가 있는 게시물인지 확인
                         if(corePost.isCloud()){
                             Toast.makeText(context, "이미 코어 클라우드에 게시된글입니다", Toast.LENGTH_SHORT).show();
                             return;
                         }
 
                         // cloud
-                        UiUtil.getInstance().startProgressDialog((Activity)context);
-                        final Map<String, Object> postIsCloudMap = new HashMap<>();
-                        DataContainer.getInstance().getCoreCloudRef().runTransaction(new Transaction.Handler() {
+                        //UiUtil.getInstance().startProgressDialog((Activity)context);
+
+                        // 클라우드 돌면서 100개 인지 확인
+                        // 100개면 1일 넘는 리스트 확인, 가장 오래된 날짜를 다이얼로그에 넘기고, 포스트키를 콜백에 넘김(삭제)
+                        // 100개고 1일 넘는것도 없으면, 가장 오래된 포스트 키를 다이얼로그에 넘김(언제 이후로 가능한지 출력)
+                        DataContainer.getInstance().getCoreCloudRef().addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
-                            public Transaction.Result doTransaction(MutableData mutableData) {
+                            public void onDataChange(DataSnapshot dataSnapshot) {
 
-                                Map coreCloudMap = (Map) mutableData.getValue();
-                                if (mutableData.getValue() == null) {
-                                    return Transaction.success(mutableData);
-                                }
+                                long oldestPostDate = Long.MAX_VALUE;   // 올릴수 있으면 MAX
+                                String deletePostKey = null;
 
-                                // 1일 지난 클라우드 삭제
-                                for (MutableData data : mutableData.getChildren()){
+                                // 코어 클라우드 최대한계 확인
+                                if(dataSnapshot.getChildrenCount() >= DataContainer.CoreCloudMax) {
 
-                                    CoreCloud coreCloud = data.getValue(CoreCloud.class);
-
-                                    long diff = 0;
-                                    try {
-                                        assert coreCloud != null;
-                                        diff = UiUtil.getInstance().getCurrentTime(context) - coreCloud.getAttachDate();
-                                    } catch (NotSetAutoTimeException e) {
-                                        e.printStackTrace();
-                                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-                                        ActivityCompat.finishAffinity((Activity)context);
+                                    // 순회
+                                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                        CoreCloud coreCloud = snapshot.getValue(CoreCloud.class);
+                                        if (coreCloud.getAttachDate() < oldestPostDate) {
+                                            oldestPostDate = coreCloud.getAttachDate();
+                                            deletePostKey = dataSnapshot.getKey();
+                                        }
                                     }
 
-                                    if(diff > (SecToDay)){
-                                        // 삭제 대상
-                                        assert coreCloudMap != null;
-                                        coreCloudMap.remove(data.getKey());
-                                        postIsCloudMap.put("posts/" + coreCloud.getcUuid() + "/" + data.getKey() + "/isCloud",false);
-                                    }
-
+                                    // Toast.makeText(context, "100개의 포스트 중 24시간이 지난 포스트가 없어서 클라우드를 올릴수 없습니다.", Toast.LENGTH_SHORT).show();
                                 }
 
-                                // Set value and report transaction success
-                                mutableData.setValue(coreCloudMap);
-                                return Transaction.success(mutableData);
+                                // 코어클라우드 결제 가능
+                                //★☆★☆★☆★☆여기입니다요★☆★☆★☆★☆
+                                final String finalDeletePostKey = (oldestPostDate == Long.MAX_VALUE? null : deletePostKey);
+                                DealDialogFragment dealDialogFragment = new DealDialogFragment(oldestPostDate, new DealDialogFragment.CallbackListener() {
+                                    @Override
+                                    public void callback() {
+                                        putCloudDialog(finalDeletePostKey);
+                                    }
+                                });
+
+                                dealDialogFragment.show(((AppCompatActivity) context).getSupportFragmentManager(), "");
+
                             }
 
                             @Override
-                            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
-
-                                UiUtil.getInstance().stopProgressDialog();
-
-                                // 커밋 실패
-                                if(!b){
-                                    Log.d("kbj", databaseError.getMessage());
-                                    Toast.makeText(context, databaseError.getMessage(), Toast.LENGTH_SHORT).show();
-                                    return;
-                                }
-
-                                FirebaseDatabase.getInstance().getReference().updateChildren(postIsCloudMap);
-
-                                // Transaction completed
-                                Map coreCloudMap = (Map) dataSnapshot.getValue();
-                                if(coreCloudMap == null || coreCloudMap.size() < CoreCloudMax) {
-
-                                    // 코어클라우드 결제 가능
-                                    //★☆★☆★☆★☆여기입니다요★☆★☆★☆★☆
-                                    DealDialogFragment dealDialogFragment = new DealDialogFragment(new DealDialogFragment.CallbackListener() {
-                                        @Override
-                                        public void callback() {
-                                            putCloudDialog();
-                                        }
-                                    });
-
-                                    dealDialogFragment.show(((AppCompatActivity)context).getSupportFragmentManager(),"");
-
-                                } else {
-                                    // 가장 오래된 메세지가져오기
-                                    long minDate = Long.MAX_VALUE;
-                                    for(DataSnapshot snapshot : dataSnapshot.getChildren()){
-                                        CoreCloud coreCloud = snapshot.getValue(CoreCloud.class);
-                                        assert coreCloud != null;
-                                        if(minDate > coreCloud.getAttachDate()) minDate = coreCloud.getAttachDate();
-                                    }
-
-                                    // minDate + 1일
-                                    long possibleDate = minDate + DataContainer.SecToDay;
-
-                                    Toast.makeText(context, "더이상 클라우드 코어를 추가할 수 없습니다.\n" + new DateUtil(possibleDate).getDate() + " " + new DateUtil(possibleDate).getTime() + " 이후에 다시 시도하세요", Toast.LENGTH_SHORT).show();
-                                }
+                            public void onCancelled(DatabaseError databaseError) {
 
                             }
                         });
                     }
 
-                    private void putCloudDialog() {
+                    private void putCloudDialog(final String deletePostKey) {
                         UiUtil.getInstance().showDialog(context, "Core Cloud", "코어를 클라우드에 추가합니다. 결재하시겠습니까",
                                 new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
                                         UiUtil.getInstance().startProgressDialog((Activity)context);
                                         try {
-                                            FireBaseUtil.getInstance().putCoreCloud(coreListItem.getcUuid(), coreListItem, context).addOnSuccessListener(new OnSuccessListener() {
+                                            FireBaseUtil.getInstance().putCoreCloud(coreListItem.getcUuid(), coreListItem, context, deletePostKey).addOnSuccessListener(new OnSuccessListener() {
                                                 @Override
                                                 public void onSuccess(Object o) {
                                                     Toast.makeText(context, "코어가 클라우드에 추가되었습니다", Toast.LENGTH_SHORT).show();
@@ -358,10 +313,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                                             ActivityCompat.finishAffinity(((Activity) context).getParent());
                                         }
                                     }
-                                }, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {}
-                                }
+                                }, null
                         );
                     }
                 });
@@ -456,7 +408,8 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
         holder.core_id.setText(user.getId());
         holder.core_subProfile.setText(UiUtil.getInstance().setSubProfile(user));
 
-        if (holder.core_img != null) Glide.with(context /* context */)
+        if (holder.core_img != null)
+            Glide.with(context /* context */)
                 .load(corePost.getPictureUrl())
                 .into(holder.core_img);
 
@@ -540,11 +493,29 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                                 break;
                             case R.id.detach_cloud:
                                 // 클라우드 내리기
-
                                 if(context instanceof CoreCloudActivity){
-                                    Toast.makeText(context, "CoreCloudActivity", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    Toast.makeText(context, "CoreAtivity", Toast.LENGTH_SHORT).show();
+                                    UiUtil.getInstance().showDialog(context, "클라우드 내리기", "정말 클라우드를 내리겠습니까?"
+                                        , new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                Map<String, Object> childUpdate = new HashMap<>();
+                                                // 포스트 isCloud = false
+                                                childUpdate.put("posts/" + coreListItem.getcUuid() + "/" + coreListItem.getPostKey() + "/isCloud", false);
+
+                                                // 클라우드에서 포스트 키 null
+                                                childUpdate.put("coreCloud/" + coreListItem.getPostKey(), null);
+
+                                                FirebaseDatabase.getInstance().getReference().updateChildren(childUpdate).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        if(task.isSuccessful()){
+                                                            Toast.makeText(context, "코어 포스트를 내렸습니다", Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    }
+                                                });
+                                            }
+                                        }, null
+                                    );
                                 }
                                 break;
                             default:

@@ -1,7 +1,10 @@
 package com.example.kwoncheolhyeok.core.Util;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.widget.Toast;
 
 import com.example.kwoncheolhyeok.core.Entity.CoreCloud;
 import com.example.kwoncheolhyeok.core.Entity.CoreListItem;
@@ -323,14 +326,18 @@ public class FireBaseUtil {
         });
     }
 
-    public Task putCoreCloud(String cUuid, CoreListItem coreListItem, Context context) throws NotSetAutoTimeException {
+    public Task putCoreCloud(String cUuid, CoreListItem coreListItem, final Context context, String deletePostKey) throws NotSetAutoTimeException {
 
         Map<String, Object> childUpdates = new HashMap<>();
 
-        // coreCloud
-        childUpdates.put("coreCloud/" + coreListItem.getPostKey(), new CoreCloud(cUuid, UiUtil.getInstance().getCurrentTime(context), UiUtil.getInstance().getCurrentTime(context)));
+        // delete coreCloud
+        if(deletePostKey != null){  // 지워야할 포스트 지우기
+            childUpdates.put("coreCloud/" + deletePostKey, null);
+            childUpdates.put("posts/" + cUuid + "/" + deletePostKey + "/isCloud",false);
+        }
 
-        // posts >> boolean isCloud
+        // add coreCloud
+        childUpdates.put("coreCloud/" + coreListItem.getPostKey(), new CoreCloud(cUuid, UiUtil.getInstance().getCurrentTime(context), UiUtil.getInstance().getCurrentTime(context)));
         childUpdates.put("posts/" + cUuid + "/" + coreListItem.getPostKey() + "/isCloud", true);
 
         return FirebaseDatabase.getInstance().getReference().updateChildren(childUpdates);

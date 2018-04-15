@@ -5,6 +5,31 @@
 
     <!-- The toolbar -->
     <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/removePostMsg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:visibility="invisible"
+            android:text="해당 포스트는 삭제되었습니다" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/core_listview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="?attr/actionBarSize"
+            android:cacheColorHint="@color/transparent"
+            android:divider="@null"
+            android:scrollbars="none" />
+
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
         android:id="@+id/toolbar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -32,15 +57,6 @@
 
     </RelativeLayout>
 
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/core_listview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="?attr/actionBarSize"
-        android:cacheColorHint="@color/transparent"
-        android:divider="@null"
-        android:scrollbars="none" />
 
     <LinearLayout
         android:layout_width="wrap_content"

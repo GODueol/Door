@@ -21,6 +21,7 @@ import com.example.kwoncheolhyeok.core.Exception.NotSetAutoTimeException;
 import com.example.kwoncheolhyeok.core.MessageActivity.util.DateUtil;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
+import com.example.kwoncheolhyeok.core.Util.GlideApp;
 import com.example.kwoncheolhyeok.core.Util.UiUtil;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -55,7 +56,7 @@ public class NavAlarmAdapter extends RecyclerView.Adapter<NavAlarmAdapter.ViewHo
 
     @SuppressLint("ResourceAsColor")
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, final int position) {
         final AlarmSummary item = items.get(position);
 
         DateUtil dateUtil = new DateUtil(item.getTime());
@@ -96,8 +97,9 @@ public class NavAlarmAdapter extends RecyclerView.Adapter<NavAlarmAdapter.ViewHo
                 
                 if(DataContainer.getInstance().isBlockWithMe(item.getcUuid())) {
                     Toast.makeText(context, "포스트를 볼 수 없습니다.", Toast.LENGTH_SHORT).show();
-                    // TODO : 여기서 알람 삭제
-
+                    FirebaseDatabase.getInstance().getReference("Alarm").child(DataContainer.getInstance().getUid()).child(item.getKey()).removeValue();
+                    items.remove(position);
+                    notifyDataSetChanged();
                     return;
                 }
                 try {
@@ -146,13 +148,13 @@ public class NavAlarmAdapter extends RecyclerView.Adapter<NavAlarmAdapter.ViewHo
     private void setAlarmImg(ImageView imageView, String Type) {
         switch (Type) {
             case "Like":
-                imageView.setBackgroundResource(R.drawable.new_alarm_heart);
+                GlideApp.with(imageView.getContext()).load(R.drawable.new_alarm_heart).into(imageView);
                 break;
             case "Post":
-                imageView.setBackgroundResource(R.drawable.new_alarm_question);
+                GlideApp.with(imageView.getContext()).load(R.drawable.new_alarm_question).into(imageView);
                 break;
             default:
-                imageView.setBackgroundResource(R.drawable.new_alarm_answer);
+                GlideApp.with(imageView.getContext()).load(R.drawable.new_alarm_answer).into(imageView);
                 break;
         }
     }

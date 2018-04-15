@@ -52,6 +52,16 @@ public class User implements Serializable {
 
     private Map<String, Long> viewedMeUsers = new HashMap<>();    // uuid, 추가 시간
 
+    private String accountType;
+
+    public String getAccountType() {
+        return accountType;
+    }
+
+    public void setAccountType(String accountType) {
+        this.accountType = accountType;
+    }
+
     public boolean isAnonymityProhibition() {
         return isAnonymityProhibition;
     }

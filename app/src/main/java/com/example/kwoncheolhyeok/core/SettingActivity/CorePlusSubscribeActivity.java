@@ -1,6 +1,9 @@
 package com.example.kwoncheolhyeok.core.SettingActivity;
 
 import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
@@ -8,19 +11,15 @@ import android.support.v7.widget.Toolbar;
 import android.widget.ImageView;
 
 import com.android.vending.billing.IInAppBillingService;
-import android.content.ServiceConnection;
-import android.content.Intent;
-import android.content.Context;
-
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.GlideApp;
 import com.example.kwoncheolhyeok.core.Util.UiUtil;
 
 /**
- * Created by Kwon on 2018-01-04.
+ * Created by Kwon on 2018-04-07.
  */
 
-public class CorePlusActivity extends AppCompatActivity {
+public class CorePlusSubscribeActivity extends AppCompatActivity {
 
     Toolbar toolbar = null;
     IInAppBillingService mService;

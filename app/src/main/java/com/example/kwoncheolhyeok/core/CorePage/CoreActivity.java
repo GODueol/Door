@@ -12,6 +12,7 @@ import android.support.v7.widget.SimpleItemAnimator;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -19,6 +20,7 @@ import com.example.kwoncheolhyeok.core.Entity.CoreListItem;
 import com.example.kwoncheolhyeok.core.Entity.CorePost;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.Event.TargetUserBlocksMeEvent;
+import com.example.kwoncheolhyeok.core.PeopleFragment.FullImageActivity;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.BaseActivity.BlockBaseActivity;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
@@ -48,6 +50,7 @@ public class CoreActivity extends BlockBaseActivity {
     private String cUuid = null;
     public ArrayList<CoreListItem> list;
     private FloatingActionButton fab;
+    private String postId;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -77,8 +80,26 @@ public class CoreActivity extends BlockBaseActivity {
 
         Intent intent = getIntent();
         cUuid = intent.getStringExtra("uuid");
-        String postId = intent.getStringExtra("postId");
+        postId = intent.getStringExtra("postId");
+
+        // 알람받은 포스트가 있는지 여부확인
+        if(postId != null)FirebaseDatabase.getInstance().getReference().child("posts/" + cUuid + "/" + postId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(!dataSnapshot.exists()){
+                    // 없으면, 삭제되었다는 메세지
+                    findViewById(R.id.removePostMsg).setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
         if (postId != null) {
+            toolbar.invalidate();
             Log.d("test", postId);
         }
         // 엑티비티 Uuid 저장
@@ -133,7 +154,24 @@ public class CoreActivity extends BlockBaseActivity {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         User cUser = dataSnapshot.getValue(User.class);
+
                         if (cUser != null) {
+                            // CORE 주인 일반 회원
+                            if(cUser.getAccountType() == null || cUser.getAccountType().equals(DataContainer.ACCOUNT_TYPE.NORMAL)){
+                                // 100개 제한
+                                if(cUser.getCorePostCount() >= DataContainer.NORMAL_CORE_LIMIT){
+                                    Toast.makeText(CoreActivity.this, "Core 주인이 일반 계정이기 때문에 " + DataContainer.NORMAL_CORE_LIMIT + "초과하여 글을 추가할수 없습니다", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+                            } else {
+                                // 300개 제한
+                                if(cUser.getCorePostCount() >= DataContainer.PLUS_CORE_LIMIT){
+                                    Toast.makeText(CoreActivity.this, DataContainer.NORMAL_CORE_LIMIT + "초과하여 글을 추가할수 없습니다", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+                            }
+
+                            // 블럭 관계 확인
                             if (cUser.getBlockUsers().containsKey(dc.getUid())) {
                                 Toast.makeText(CoreActivity.this, "포스트를 작성할 수 없습니다.", Toast.LENGTH_SHORT).show();
                                 finish();
@@ -233,7 +271,7 @@ public class CoreActivity extends BlockBaseActivity {
         String postId = getIntent().getStringExtra("postId");
 
 
-        if(postId != null){ // 알람을 통해서 진행할 경우
+        if (postId != null) { // 알람을 통해서 진행할 경우
             fab.setVisibility(View.INVISIBLE);
             return FirebaseDatabase.getInstance().getReference().child("posts").child(cUuid).orderByKey().equalTo(postId);
 
@@ -245,8 +283,15 @@ public class CoreActivity extends BlockBaseActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.clear();
-        if (cUuid != null && cUuid.equals(dc.getUid())) {
-            getMenuInflater().inflate(R.menu.core_activity_menu, menu);
+        getMenuInflater().inflate(R.menu.core_activity_menu, menu);
+        MenuItem profile = menu.findItem(R.id.core_profile);
+        MenuItem prohibition = menu.findItem(R.id.anonymity_prohibition);
+        if (postId != null) {
+            profile.setVisible(true);
+            prohibition.setVisible(false);
+        } else if (cUuid != null && cUuid.equals(dc.getUid())) {
+            profile.setVisible(false);
+            prohibition.setVisible(true);
             menu.getItem(0).setChecked(dc.getUser().isAnonymityProhibition());
         }
 
@@ -265,6 +310,14 @@ public class CoreActivity extends BlockBaseActivity {
 
                 dc.getUser().setAnonymityProhibition(isChecked);
                 dc.getMyUserRef().child("anonymityProhibition").setValue(isChecked);
+                return true;
+            case R.id.core_profile:
+                if (postId != null) {
+                    Intent p = new Intent(this, FullImageActivity.class);
+                    //p.putExtra("item", item); 요기예요 병진형 <<<
+                    this.startActivity(p);
+                }
+
                 return true;
         }
 

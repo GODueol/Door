@@ -1,4 +1,4 @@
-package com.example.kwoncheolhyeok.core.Activity;
+package com.example.kwoncheolhyeok.core.CorePage;
 
 import android.content.Intent;
 import android.os.Bundle;
