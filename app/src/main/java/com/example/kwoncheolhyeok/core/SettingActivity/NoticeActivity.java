@@ -2,10 +2,21 @@ package com.example.kwoncheolhyeok.core.SettingActivity;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SimpleItemAnimator;
 import android.support.v7.widget.Toolbar;
 
+import com.example.kwoncheolhyeok.core.CorePage.CoreListAdapter;
+import com.example.kwoncheolhyeok.core.Entity.CoreListItem;
+import com.example.kwoncheolhyeok.core.Entity.CorePost;
 import com.example.kwoncheolhyeok.core.R;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 
 /**
  * Created by Kwon on 2018-01-04.
@@ -22,7 +33,7 @@ public class NoticeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.setting_notice_activity);
 
-        toolbar = findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         // 툴바 뒤로가기 버튼
@@ -32,33 +43,32 @@ public class NoticeActivity extends AppCompatActivity {
 
 
         // Notice Set
-        /*
-        recyclerView = findViewById(R.id.core_listview);
+        recyclerView = (RecyclerView) findViewById(R.id.core_listview);
 
         final ArrayList<CoreListItem> list = new ArrayList<>();
-        coreListAdapter = new CoreListAdapter(list, this, cUuid);
+        final CoreListAdapter noticeAdapter = new CoreListAdapter(list, this);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(coreListAdapter);
+        recyclerView.setAdapter(noticeAdapter);
 
         ((SimpleItemAnimator) recyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
 
         // 코어 주인의 User Get
-        dc = DataContainer.getInstance();
-        dc.getUserRef(cUuid).addListenerForSingleValueEvent(new ValueEventListener() {
+        FirebaseDatabase.getInstance().getReference().child("notice").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                User cUser = dataSnapshot.getValue(User.class);
-                addPostToList(cUuid, list, cUser);
-                if(!cUuid.equals(dc.getUid()) && cUser.isAnonymityProhibition()) fab.setVisibility(View.GONE);
-                else fab.setVisibility(View.VISIBLE);
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    CorePost corePost = snapshot.getValue(CorePost.class);
+                    list.add(new CoreListItem(null, corePost, snapshot.getKey(), null));
+                }
+                noticeAdapter.notifyDataSetChanged();
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }
         });
-        */
+
 
     }
 

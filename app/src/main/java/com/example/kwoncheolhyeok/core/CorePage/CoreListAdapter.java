@@ -74,7 +74,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 
     private String currentPlayUrl = "";
 
-    CoreListAdapter(List<CoreListItem> coreListItems, Context context) {
+    public CoreListAdapter(List<CoreListItem> coreListItems, Context context) {
         this.coreListItems = coreListItems;
         this.context = context;
         this.mediaPlayer = new MediaPlayer();
@@ -100,7 +100,6 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
         if(context instanceof CoreCloudActivity && (corePost == null || coreListItem.getUser() == null)) return;
 
         // 보이는 방식 결정
-        // setPostViewDiff
         setPostViewDiff(holder, coreListItem, corePost, mUuid);
 
         // common set
@@ -212,6 +211,27 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 
     private void setPostViewDiff(CorePostHolder holder, final CoreListItem coreListItem, final CorePost corePost, final String mUuid) {
         holder.core_cloud.setVisibility(View.INVISIBLE);
+
+        // Notice
+        if(corePost.getUuid() == null || coreListItem.getcUuid() == null){
+            // Picture
+            if (holder.core_img != null)
+                Glide.with(context /* context */)
+                        .load(corePost.getPictureUrl())
+                        .into(holder.core_img);
+
+            // 가릴거 가리기
+            holder.replyBtnLayout.setVisibility(View.GONE);
+            holder.profile_layout.setVisibility(View.GONE);
+            holder.core_media.setVisibility(View.GONE);
+            holder.heart_btn_layout.setVisibility(View.GONE);
+            return;
+        } else {
+            holder.replyBtnLayout.setVisibility(View.VISIBLE);
+            holder.profile_layout.setVisibility(View.VISIBLE);
+            holder.core_media.setVisibility(View.VISIBLE);
+            holder.heart_btn_layout.setVisibility(View.VISIBLE);
+        }
         
         User user = coreListItem.getUser();
         if (user != null) {  // 주인글
@@ -337,6 +357,11 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
     }
 
     private void setAnonymousPost(CorePostHolder holder, CoreListItem coreListItem, CorePost corePost, String mUuid) {
+        if(coreListItem.getcUuid() == null){
+            // Notice
+            return;
+        }
+
         holder.replyBtnLayout.setVisibility(View.VISIBLE);
         holder.core_img.setVisibility(View.GONE);
         holder.core_media.setVisibility(View.GONE);
@@ -605,6 +630,9 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
         ImageButton core_cloud;
         TextView check_cloud;
 
+        RelativeLayout profile_layout;
+        RelativeLayout heart_btn_layout;
+
         CorePostHolder(View itemView) {
             super(itemView);
 
@@ -636,6 +664,8 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
             textView_currentPosion = itemView.findViewById(R.id.textView_currentPosion);
             core_cloud = itemView.findViewById(R.id.core_cloud);
             check_cloud = itemView.findViewById(R.id.check_cloud);
+            profile_layout = itemView.findViewById(R.id.profile_layout);
+            heart_btn_layout = itemView.findViewById(R.id.heart_btn_layout);
         }
     }
 
