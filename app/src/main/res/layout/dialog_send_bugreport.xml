@@ -60,7 +60,13 @@
             android:inputType="textEmailAddress"
             android:textColor="@color/black"
             android:textSize="15sp" />
-
+        <TextView
+            android:id="@+id/email_error"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/recive_email"
+            android:textColor="@color/red"
+            android:visibility="gone" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -86,16 +92,19 @@
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:layout_below="@+id/txt3"
-            android:layout_marginTop="10dp"
-            android:padding="2dp"
             android:background="@drawable/edit_text_style"
-            android:ellipsize="start"
             android:hint="정확한 상담을 위해 문의 내용을 자세히 작성해주세요."
             android:textColor="@color/black"
-            android:lineSpacingExtra="7dip"
             android:gravity="start"
             android:textSize="15sp" />
 
+        <TextView
+            android:id="@+id/content_error"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/edit_report"
+            android:textColor="@color/red"
+            android:visibility="gone" />
     </RelativeLayout>
 
     <TextView

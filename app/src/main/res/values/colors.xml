@@ -8,6 +8,7 @@
     <color name="black">#000000</color>
     <color name="blue">#ff2570ba</color>
     <color name="grey">#f7f7f7</color>
+    <color name="red">#ff0000</color>
     <color name="message_color">#BBDEF2</color>
 
     <color name="transparent">#00000000</color>
