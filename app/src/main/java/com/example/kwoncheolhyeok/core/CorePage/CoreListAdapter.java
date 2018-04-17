@@ -209,7 +209,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
         }
     }
 
-    private void setPostViewDiff(CorePostHolder holder, final CoreListItem coreListItem, final CorePost corePost, final String mUuid) {
+    private void setPostViewDiff(final CorePostHolder holder, final CoreListItem coreListItem, final CorePost corePost, final String mUuid) {
         holder.core_cloud.setVisibility(View.INVISIBLE);
 
         // Notice
@@ -255,8 +255,10 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
             if(user != null && !(context instanceof CoreCloudActivity)){
                 holder.core_cloud.setVisibility(View.VISIBLE);
                 holder.core_cloud.setOnClickListener(new View.OnClickListener() {
+                    DealDialogFragment dealDialogFragment;
                     @Override
                     public void onClick(View view) {
+                        UiUtil.getInstance().startProgressDialog((Activity) context);
 
                         // 이미 코어가 올라가 있는 게시물인지 확인
                         if(corePost.isCloud()){
@@ -294,22 +296,23 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 
                                 // 코어클라우드 결제 가능
                                 //★☆★☆★☆★☆여기입니다요★☆★☆★☆★☆
-                                final String finalDeletePostKey = (oldestPostDate == Long.MAX_VALUE? null : deletePostKey);
-                                DealDialogFragment dealDialogFragment = new DealDialogFragment(oldestPostDate, new DealDialogFragment.CallbackListener() {
+                                if (dealDialogFragment != null && dealDialogFragment.getDialog() != null && dealDialogFragment.getDialog().isShowing()) return;
+                                final String finalDeletePostKey = (oldestPostDate == Long.MAX_VALUE ? null : deletePostKey);
+                                dealDialogFragment = new DealDialogFragment(oldestPostDate, new DealDialogFragment.CallbackListener() {
                                     @Override
                                     public void callback() {
                                         putCloudDialog(finalDeletePostKey);
                                     }
                                 });
-
                                 dealDialogFragment.show(((AppCompatActivity) context).getSupportFragmentManager(), "");
-
+                                UiUtil.getInstance().stopProgressDialog();
                             }
 
                             @Override
                             public void onCancelled(DatabaseError databaseError) {
-
+                                UiUtil.getInstance().stopProgressDialog();
                             }
+
                         });
                     }
 

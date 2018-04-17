@@ -47,6 +47,7 @@ public class UiUtil {
     }
 
     public void startProgressDialog(Activity activity) {
+        if(progressDialog != null && progressDialog.isShowing()) return;
         //프로그레스 다이얼로그 이미지만 센터에서 돌아가게
         progressDialog = new ProgressDialog(activity, R.style.MyTheme);
         progressDialog.setIndeterminate(true);
