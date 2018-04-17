@@ -21,6 +21,7 @@ import com.example.kwoncheolhyeok.core.Entity.CorePost;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.Event.TargetUserBlocksMeEvent;
 import com.example.kwoncheolhyeok.core.PeopleFragment.FullImageActivity;
+import com.example.kwoncheolhyeok.core.PeopleFragment.GridItem;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.BaseActivity.BlockBaseActivity;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
@@ -63,7 +64,7 @@ public class CoreActivity extends BlockBaseActivity {
         //스크린샷 방지
 //        ScreenshotSetApplication.getInstance().allowUserSaveScreenshot(false);
 
-        toolbar = findViewById(
+        toolbar = (Toolbar) findViewById(
                 R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -74,7 +75,7 @@ public class CoreActivity extends BlockBaseActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true); //홈 아이콘을 숨김처리합니다.
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
 
-        recyclerView = findViewById(R.id.core_listview);
+        recyclerView = (RecyclerView) findViewById(R.id.core_listview);
 
         LinearLayoutManager layoutManager = new WrapContentLinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
 
@@ -145,7 +146,7 @@ public class CoreActivity extends BlockBaseActivity {
     }
 
     public void setFab() {
-        fab = findViewById(R.id.fab);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -313,9 +314,23 @@ public class CoreActivity extends BlockBaseActivity {
                 return true;
             case R.id.core_profile:
                 if (postId != null) {
-                    Intent p = new Intent(this, FullImageActivity.class);
-                    //p.putExtra("item", item); 요기예요 병진형 <<<
-                    this.startActivity(p);
+
+
+                    dc.getUserRef(cUuid).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            Intent p = new Intent(CoreActivity.this, FullImageActivity.class);
+                            p.putExtra("item", new GridItem(0, cUuid, dataSnapshot.getValue(User.class).getSummaryUser(), ""));
+                            CoreActivity.this.startActivity(p);
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
+
                 }
 
                 return true;
