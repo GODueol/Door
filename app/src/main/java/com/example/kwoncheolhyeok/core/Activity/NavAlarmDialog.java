@@ -1,6 +1,5 @@
 package com.example.kwoncheolhyeok.core.Activity;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -8,10 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.TextView;
 
 import com.example.kwoncheolhyeok.core.CorePage.CustomDialog;
 import com.example.kwoncheolhyeok.core.Entity.AlarmSummary;
@@ -21,8 +17,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,13 +31,10 @@ import butterknife.ButterKnife;
  * Created by Kwon on 2018-03-16.
  */
 
-public class NavAlarmDialog extends Dialog {
+public class NavAlarmDialog extends CustomDialog {
 
     @Bind(R.id.navAlarmList)
     RecyclerView recyclerView;
-
-    @Bind(R.id.nontext)
-    TextView nonText;
     private static int MAXIUM_ALARM_COUNT = 150;
     private NavAlarmAdapter navAlarmAdapter;
     private List<AlarmSummary> items;
@@ -101,6 +92,7 @@ public class NavAlarmDialog extends Dialog {
                         key = key.substring(0, key.lastIndexOf("_"));
                         alarmSummary.setPostId(key);
                         items.add(0, alarmSummary);
+
                     count++;
                 }
                 Collections.sort(items, new Comparator<AlarmSummary>() {
@@ -109,12 +101,6 @@ public class NavAlarmDialog extends Dialog {
                         return t2.getTime().compareTo(t1.getTime());
                     }
                 });
-
-                if(count==0){
-                    nonText.setVisibility(View.VISIBLE);
-                }else {
-                    nonText.setVisibility(View.GONE);
-                }
                 recyclerView.getRecycledViewPool().clear();
                 navAlarmAdapter.notifyDataSetChanged();
             }
