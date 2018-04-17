@@ -261,10 +261,12 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                         UiUtil.getInstance().startProgressDialog((Activity) context);
 
                         // 이미 코어가 올라가 있는 게시물인지 확인
-                        if(corePost.isCloud()){
-                            Toast.makeText(context, "이미 코어 클라우드에 게시된글입니다", Toast.LENGTH_SHORT).show();
-                            UiUtil.getInstance().stopProgressDialog();
-                            return;
+                        for(CoreListItem item : coreListItems){
+                            if(item.getCorePost().isCloud()) {
+                                Toast.makeText(context, "이미 코어 클라우드 게시하였습니다", Toast.LENGTH_SHORT).show();
+                                UiUtil.getInstance().stopProgressDialog();
+                                return;
+                            }
                         }
 
                         // cloud
