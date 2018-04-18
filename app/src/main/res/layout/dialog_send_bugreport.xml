@@ -95,6 +95,7 @@
             android:background="@drawable/edit_text_style"
             android:hint="정확한 상담을 위해 문의 내용을 자세히 작성해주세요."
             android:textColor="@color/black"
+            android:maxLength="500"
             android:gravity="start"
             android:textSize="15sp" />
 

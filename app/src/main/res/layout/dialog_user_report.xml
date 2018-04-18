@@ -1,86 +1,113 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="500dp">
 
-    <ImageView
-        android:id="@+id/layout0"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="18dp"
-        android:background="@drawable/icon" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <RelativeLayout
-        android:id="@+id/layout1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/layout0"
-        android:layout_marginTop="30dp">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/btn_min"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="30dp"
-            android:text="@string/ReportAndBlock" />
+            <ImageView
+                android:id="@+id/layout0"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="18dp"
+                android:background="@drawable/icon" />
 
-        <CheckBox
-            android:id="@+id/isOnlyBlock"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="30dp" />
+            <RelativeLayout
+                android:id="@+id/layout1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/layout0"
+                android:layout_marginTop="30dp">
 
-    </RelativeLayout>
+                <TextView
+                    android:id="@+id/btn_min"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="30dp"
+                    android:text="@string/ReportAndBlock" />
 
+                <CheckBox
+                    android:id="@+id/isOnlyBlock"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="30dp" />
 
-    <NumberPicker
-        android:id="@+id/typePicker"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/layout1"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:theme="@style/NumberPickerText" />
+            </RelativeLayout>
 
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/typePicker"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="40dp"
-        android:layout_marginTop="40dp"
-        android:orientation="horizontal"
-        android:weightSum="3">
+            <NumberPicker
+                android:id="@+id/typePicker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/layout1"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="20dp"
+                android:theme="@style/NumberPickerText" />
 
-        <TextView
-            android:id="@+id/cancel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="80dp"
-            android:layout_weight="0.5"
-            android:text="@string/cancle"
-            android:textStyle="bold"
-            android:textSize="15dp" />
 
-        <TextView
-            android:id="@+id/report"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_weight="0.5"
-            android:text="@string/ok"
-            android:textColor="@color/skyblue"
-            android:textStyle="bold"
-            android:textSize="15dp"
+            <EditText
+                android:id="@+id/txt_report"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_below="@+id/typePicker"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="20dp"
+                android:maxLength="500"
+                android:background="@drawable/edit_text_style"
+                android:gravity="start"
+                android:hint="기타 신고 사항을 자세히 입력해 주세요. 허위로 등록하실 경우 신고하신 회원의 제재가 있을 수 있습니다."
+                android:textColor="@color/black"
+                android:textSize="15sp" />
 
-            />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txt_report"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="25dp"
+                android:layout_marginBottom="25dp"
+                android:orientation="horizontal"
+                android:weightSum="3">
 
-    </LinearLayout>
+                <TextView
+                    android:id="@+id/cancel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="80dp"
+                    android:layout_weight="0.5"
+                    android:text="@string/cancle"
+                    android:textSize="15dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/report"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="0.5"
+                    android:text="@string/ok"
+                    android:textColor="@color/skyblue"
+                    android:textSize="15dp"
+                    android:textStyle="bold"
+
+                    />
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </ScrollView>
 
 
 </RelativeLayout>
