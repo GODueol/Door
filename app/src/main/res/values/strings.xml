@@ -22,11 +22,12 @@
     <string name="action_check_updates">Check for Updates</string>
 
 
-    <string name="underweight">underweight</string>
+    <string name="light">light</string>
     <string name="skinny">skinny</string>
     <string name="standard">standard</string>
     <string name="muscular">muscular</string>
-    <string name="overweight">overweight</string>
+    <string name="heavy">heavy</string>
+    <string name="obesity">obesity</string>
 
     <string name="unblock_to_all_user">전체 회원 블럭 해제</string>
     <string name="people">People</string>
