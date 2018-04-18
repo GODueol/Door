@@ -34,7 +34,7 @@ public class DataContainer {
 
 
 
-    public static final String[] bodyTypes = {"light", "Skinny", "Standard", "Muscular", "heavy", "obesity"};
+    public static final String[] bodyTypes = {"Slim", "Light", "Normal", "Muscular", "Heavy", "Fat"};
 
     private static final DataContainer ourInstance = new DataContainer();
 
