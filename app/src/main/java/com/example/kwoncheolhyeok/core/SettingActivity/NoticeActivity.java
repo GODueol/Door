@@ -54,7 +54,7 @@ public class NoticeActivity extends AppCompatActivity {
         ((SimpleItemAnimator) recyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
 
         // 코어 주인의 User Get
-        FirebaseDatabase.getInstance().getReference().child("notice").addValueEventListener(new ValueEventListener() {
+        FirebaseDatabase.getInstance().getReference().child("notice").orderByChild("writeDate").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){

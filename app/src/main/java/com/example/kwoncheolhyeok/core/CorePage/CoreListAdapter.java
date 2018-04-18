@@ -276,8 +276,6 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                         }
 
                         // cloud
-                        //UiUtil.getInstance().startProgressDialog((Activity)context);
-
                         // 클라우드 돌면서 100개 인지 확인
                         // 100개면 1일 넘는 리스트 확인, 가장 오래된 날짜를 다이얼로그에 넘기고, 포스트키를 콜백에 넘김(삭제)
                         // 100개고 1일 넘는것도 없으면, 가장 오래된 포스트 키를 다이얼로그에 넘김(언제 이후로 가능한지 출력)
