@@ -257,14 +257,14 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                 holder.core_cloud.setOnClickListener(new View.OnClickListener() {
                     DealDialogFragment dealDialogFragment;
                     @Override
-                    public void onClick(View view) {
-                        UiUtil.getInstance().startProgressDialog((Activity) context);
+                    public void onClick(final View view) {
+                        view.setClickable(false);
 
                         // 이미 코어가 올라가 있는 게시물인지 확인
                         for(CoreListItem item : coreListItems){
                             if(item.getCorePost().isCloud()) {
                                 Toast.makeText(context, "이미 코어 클라우드 게시하였습니다", Toast.LENGTH_SHORT).show();
-                                UiUtil.getInstance().stopProgressDialog();
+                                view.setClickable(true);
                                 return;
                             }
                         }
@@ -308,12 +308,12 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                                     }
                                 });
                                 dealDialogFragment.show(((AppCompatActivity) context).getSupportFragmentManager(), "");
-                                UiUtil.getInstance().stopProgressDialog();
+                                view.setClickable(true);
                             }
 
                             @Override
                             public void onCancelled(DatabaseError databaseError) {
-                                UiUtil.getInstance().stopProgressDialog();
+                                view.setClickable(true);
                             }
 
                         });
