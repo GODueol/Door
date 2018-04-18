@@ -164,7 +164,6 @@ public class IntroActivity extends Activity {
     }
 
     private void logout() {
-        FirebaseDatabase.getInstance().getReference("users").child(DataContainer.getInstance().getUid()).child("token").removeValue();
         FirebaseAuth.getInstance().signOut();
         goToLoginActivity();
     }

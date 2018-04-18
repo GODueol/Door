@@ -479,11 +479,20 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void logout() {
-        FirebaseAuth.getInstance().signOut();
-        DataContainer.getInstance().setUser(null);
-        Intent i = new Intent(this, LoginActivity.class);
-        startActivity(i);
-        finish();
+
+        // 병진형 요기서 에러가 나요요오오오오 ㅜㅜ
+        Task<Void> task = FirebaseDatabase.getInstance().getReference("users").child(DataContainer.getInstance().getUid()).child("token").removeValue();
+        final Intent i = new Intent(this, LoginActivity.class);
+        task.addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                FirebaseAuth.getInstance().signOut();
+                DataContainer.getInstance().setUser(null);
+                startActivity(i);
+                finish();
+            }
+        });
+
     }
 
 
