@@ -56,6 +56,7 @@ public class DataContainer {
     }
 
     public String getUid() {
+        if(FirebaseAuth.getInstance().getCurrentUser() == null) return "";
         return FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 

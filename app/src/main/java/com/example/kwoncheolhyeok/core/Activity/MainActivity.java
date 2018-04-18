@@ -107,11 +107,11 @@ public class MainActivity extends AppCompatActivity
 //        ScreenshotSetApplication.getInstance().allowUserSaveScreenshot(true);
         // 블락 탐지 엑티비티 Uuid 초기화
         // (Main View)네비게이션바 관련
-        drawer = findViewById(R.id.drawer_layout);
-        toolbar = findViewById(R.id.toolbar);
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         //툴바 이미지 붙이기 (코어 회원이면 drawable : tb_core / 코어플러스 회원이면 tb_coreplus)
-        ImageView coreplus = findViewById(R.id.tb_coreplus);
+        ImageView coreplus = (ImageView) findViewById(R.id.tb_coreplus);
         GlideApp.with(this)
                 .load(UiUtil.resourceToUri(this, R.drawable.tb_coreplus))
 //                .override(80, 23)
@@ -141,7 +141,7 @@ public class MainActivity extends AppCompatActivity
         });
 
         //Navigation view
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setItemIconTintList(null); //네비게이션 안의 아이콘 색을 오리지널로 표현
 
         //네비게이션 드로워 안의 COREPLUS 텍스트 색 변경
@@ -165,7 +165,7 @@ public class MainActivity extends AppCompatActivity
         // people,board,club 스와이프 탭 view 관련
         // final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
         Intent p = getIntent();
-        viewPager = findViewById(R.id.pager);
+        viewPager = (ViewPager) findViewById(R.id.pager);
         TabPagerAdapter tabPagerAdapter = new TabPagerAdapter(
                 getSupportFragmentManager(),
                 getResources().getStringArray(R.array.titles_tab));
