@@ -253,6 +253,12 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 
             // 본인 게시물이 주인일 때만 클라우드 가능
             if(user != null && !(context instanceof CoreCloudActivity)){
+                if(context instanceof CoreActivity && ((CoreActivity)context).postId != null) {
+                    // 알람에서 들어갔을 경우
+                    holder.core_cloud.setVisibility(View.INVISIBLE);
+                    return;
+                }
+
                 holder.core_cloud.setVisibility(View.VISIBLE);
                 holder.core_cloud.setOnClickListener(new View.OnClickListener() {
                     DealDialogFragment dealDialogFragment;

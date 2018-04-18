@@ -51,7 +51,7 @@ public class CoreActivity extends BlockBaseActivity {
     private String cUuid = null;
     public ArrayList<CoreListItem> list;
     private FloatingActionButton fab;
-    private String postId;
+    public String postId;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
