@@ -59,7 +59,7 @@ public class NoticeActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     CorePost corePost = snapshot.getValue(CorePost.class);
-                    list.add(new CoreListItem(null, corePost, snapshot.getKey(), null));
+                    list.add(0,new CoreListItem(null, corePost, snapshot.getKey(), null));
                 }
                 noticeAdapter.notifyDataSetChanged();
             }

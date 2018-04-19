@@ -23,7 +23,7 @@ public class AppInfoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.setting_appinfo_activity);
 
-        toolbar = findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         // 툴바 뒤로가기 버튼
@@ -31,7 +31,7 @@ public class AppInfoActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true); //홈 아이콘을 숨김처리합니다.
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
 
-        SendBugReport = findViewById(R.id.layout4);
+        SendBugReport = (RelativeLayout) findViewById(R.id.layout4);
         SendBugReport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

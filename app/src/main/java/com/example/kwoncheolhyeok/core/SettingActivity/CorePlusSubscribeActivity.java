@@ -29,7 +29,7 @@ public class CorePlusSubscribeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.setting_coreplus_activity);
 
-        toolbar = findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         // 툴바 뒤로가기 버튼
@@ -38,14 +38,14 @@ public class CorePlusSubscribeActivity extends AppCompatActivity {
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
 
 
-        ImageView cor2 = findViewById(R.id.cor2);
+        ImageView cor2 = (ImageView) findViewById(R.id.cor2);
         GlideApp.with(this)
                 .load(UiUtil.resourceToUri(this, R.drawable.cp_main))
                 .fitCenter()
                 .into(cor2);
 
 
-        ImageView img_cp_4 = findViewById(R.id.img_cp_4);
+        ImageView img_cp_4 = (ImageView) findViewById(R.id.img_cp_4);
         GlideApp.with(this)
                 .load(UiUtil.resourceToUri(this, R.drawable.cp_4))
                 .fitCenter()

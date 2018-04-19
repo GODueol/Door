@@ -31,14 +31,14 @@ public class SettingActivity extends AppCompatActivity {
         // Get the view from new_activity.xml
         setContentView(R.layout.setting_activity);
 
-        toolbar = findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //액션바 아이콘을 업 네비게이션 형태로 표시합니다.
         getSupportActionBar().setDisplayShowHomeEnabled(true); //홈 아이콘을 숨김처리합니다.
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
 
-        setting_list = findViewById(R.id.setting_list);
+        setting_list = (ListView) findViewById(R.id.setting_list);
 
         String[] setting_contents = new String[]{"CORE PLUS", "공지사항", "계정", "알림", "블럭", "앱 정보", "로그아웃"};
 

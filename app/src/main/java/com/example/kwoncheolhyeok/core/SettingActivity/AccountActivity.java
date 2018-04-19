@@ -50,19 +50,19 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.setting_account_activity);
 
-        email = findViewById(R.id.email);
+        email = (TextView) findViewById(R.id.email);
         email.setText(DataContainer.getInstance().getUser().getEmail());
 
-        toolbar = findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        set_password = findViewById(R.id.layout1);
-        new_password_layout = findViewById(R.id.layout2);
-        currentPw = findViewById(R.id.cur_pw);
-        pw = findViewById(R.id.new_pw);
-        pwConfirm = findViewById(R.id.re_pw);
-        forgotPw = findViewById(R.id.forgot_pw);
-        changePw = findViewById(R.id.change_pw);
+        set_password = (RelativeLayout) findViewById(R.id.layout1);
+        new_password_layout = (RelativeLayout) findViewById(R.id.layout2);
+        currentPw = (EditText) findViewById(R.id.cur_pw);
+        pw = (EditText) findViewById(R.id.new_pw);
+        pwConfirm = (EditText) findViewById(R.id.re_pw);
+        forgotPw = (TextView) findViewById(R.id.forgot_pw);
+        changePw = (TextView) findViewById(R.id.change_pw);
 
         // 툴바 뒤로가기 버튼
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //액션바 아이콘을 업 네비게이션 형태로 표시합니다.
