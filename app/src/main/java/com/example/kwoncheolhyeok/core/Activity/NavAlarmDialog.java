@@ -44,7 +44,7 @@ public class NavAlarmDialog extends Dialog {
 
     @Bind(R.id.nontext)
     TextView nonText;
-    private static int MAXIUM_ALARM_COUNT = 150;
+    private static int MAXIUM_ALARM_COUNT = 5;
     private NavAlarmAdapter navAlarmAdapter;
     private List<AlarmSummary> items;
 
@@ -92,8 +92,7 @@ public class NavAlarmDialog extends Dialog {
                     String key = data.getKey();
                     AlarmSummary alarmSummary = data.child("alarmSummary").getValue(AlarmSummary.class);
                     if(count >= MAXIUM_ALARM_COUNT) {
-                        FirebaseDatabase.getInstance().getReference("Alarm").child(Uuid).child(key).removeValue();
-                        continue;
+                        FirebaseDatabase.getInstance().getReference("Alarm").child(Uuid).child(items.remove(items.size()-1).getKey()).removeValue();
                     }
                     // 포스트키를 잘라줌 (뒤에 Post,Like,Answer)
 
