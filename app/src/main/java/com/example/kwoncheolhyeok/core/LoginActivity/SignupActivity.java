@@ -19,6 +19,7 @@ import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.example.kwoncheolhyeok.core.Activity.MainActivity;
 import com.example.kwoncheolhyeok.core.Entity.User;
@@ -88,6 +89,9 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
 
     @Bind(R.id.access_terms3)
     TextView access_terms3;
+
+    @Bind(R.id.access_agree)
+    ToggleButton access_agree;
 
     @Bind(R.id.btn_signup)
     Button _signupButton;
@@ -381,6 +385,9 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
         } else if (Bodytype.isEmpty()) {
             _bodyType.setText("Normal");
 //            throw new Exception("바디타입을 설정해주세요.");
+        }
+        if (!access_agree.isChecked()){
+            throw new Exception("약관에 동의합니다를 눌러주세요.");
         }
     }
 
