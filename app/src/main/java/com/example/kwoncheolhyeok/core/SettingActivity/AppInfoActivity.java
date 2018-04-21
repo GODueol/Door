@@ -1,5 +1,6 @@
 package com.example.kwoncheolhyeok.core.SettingActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -16,6 +17,10 @@ public class AppInfoActivity extends AppCompatActivity {
 
     Toolbar toolbar = null;
 
+    RelativeLayout access_terms1 = null;
+    RelativeLayout access_terms2 = null;
+    RelativeLayout access_terms3 = null;
+
     RelativeLayout SendBugReport = null;
 
     @Override
@@ -31,11 +36,38 @@ public class AppInfoActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true); //홈 아이콘을 숨김처리합니다.
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
 
-        SendBugReport = (RelativeLayout) findViewById(R.id.layout4);
+
+        access_terms1 = (RelativeLayout) findViewById(R.id.layout2);
+        access_terms1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getApplicationContext(), AccessTerms1.class);
+                startActivity(i);
+            }
+        });
+
+        access_terms2 = (RelativeLayout) findViewById(R.id.layout3);
+        access_terms2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getApplicationContext(), AccessTerms2.class);
+                startActivity(i);
+            }
+        });
+
+        access_terms3 = (RelativeLayout) findViewById(R.id.layout4);
+        access_terms3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getApplicationContext(), AccessTerms3.class);
+                startActivity(i);
+            }
+        });
+
+        SendBugReport = (RelativeLayout) findViewById(R.id.layout5);
         SendBugReport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 new SendBugReportDialog(AppInfoActivity.this, new SendBugReportDialog.SendBugReportDialogListener() {
                     @Override
                     public void show_sendBugReport_dialog() {
