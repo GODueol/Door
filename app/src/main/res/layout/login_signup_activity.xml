@@ -14,27 +14,23 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingLeft="24dp"
-            android:paddingRight="24dp"
-            android:paddingTop="15dp">
-
+            android:padding="10dp"
+            >
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/join_mail_1"
                 android:layout_gravity="center"
                 android:layout_marginBottom="15dp"
-
+                android:text="@string/join_mail_1"
                 />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/join_mail_2"
                 android:layout_gravity="center"
                 android:layout_marginBottom="15dp"
-
+                android:text="@string/join_mail_2"
                 />
 
 
@@ -171,31 +167,130 @@
 
         </LinearLayout>
 
-        <!-- Signup Button -->
-        <android.support.v7.widget.AppCompatButton
-            android:id="@+id/btn_signup"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:id="@+id/layout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/sign_up_layout2"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="24dp"
-            android:layout_marginTop="24dp"
-            android:background="@android:color/transparent"
-            android:padding="12dp"
-            android:text="회원가입 완료"
-            android:textSize="16dip" />
+            android:layout_below="@+id/sign_up_layout2">
 
-        <TextView
-            android:id="@+id/link_login"
-            android:layout_width="wrap_content"
+            <RelativeLayout
+                android:id="@+id/layout1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true">
+
+                <TextView
+                    android:id="@+id/access_terms1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="이용 약관(필수)"
+                    android:textColor="@color/black"
+                    android:textSize="11dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/txt1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+                    android:layout_toRightOf="@+id/access_terms1"
+                    android:text=","
+                    android:textColor="@color/black"
+                    android:textSize="11dp" />
+
+                <TextView
+                    android:id="@+id/access_terms2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+                    android:layout_toRightOf="@+id/txt1"
+                    android:text="개인정보 취급방침(필수)"
+                    android:textColor="@color/black"
+                    android:textSize="11dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/txt2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+                    android:layout_toRightOf="@+id/access_terms2"
+                    android:text=","
+                    android:textColor="@color/black"
+                    android:textSize="11dp" />
+
+                <TextView
+                    android:id="@+id/access_terms3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+                    android:layout_toRightOf="@+id/txt2"
+                    android:text="위치정보 제공동의(필수)"
+                    android:textColor="@color/black"
+                    android:textSize="11dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/txt3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+                    android:layout_toRightOf="@+id/access_terms3"
+                    android:text="에"
+                    android:textColor="@color/black"
+                    android:textSize="11dp" />
+
+            </RelativeLayout>
+
+            <ToggleButton
+                android:id="@+id/txt_agree"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/layout1"
+                android:layout_centerHorizontal="true"
+                android:background="@color/transparent"
+                android:textColor="@color/agree_color"
+                android:textOff="동의합니다"
+                android:textOn="동의합니다"
+                android:textSize="16dp"
+                android:textStyle="bold" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/btn_signup"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="24dp"
-            android:gravity="center"
-            android:text="이미 가입하셨나요?"
+            android:layout_below="@+id/layout">
 
-            />
+
+            <!-- Signup Button -->
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/btn_signup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginBottom="24dp"
+                android:layout_marginRight="10dp"
+                android:background="@android:color/transparent"
+                android:text="회원가입 완료"
+                android:textSize="16dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/link_login"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginBottom="24dp"
+                android:layout_marginLeft="10dp"
+                android:text="로그인 화면으로" />
+
+        </RelativeLayout>
+
 
     </RelativeLayout>
 

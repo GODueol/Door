@@ -3,11 +3,14 @@ package com.example.kwoncheolhyeok.core.LoginActivity;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.provider.Settings.Secure;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.SpannableString;
+import android.text.style.UnderlineSpan;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +24,9 @@ import com.example.kwoncheolhyeok.core.Activity.MainActivity;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.Exception.NotSetAutoTimeException;
 import com.example.kwoncheolhyeok.core.R;
+import com.example.kwoncheolhyeok.core.SettingActivity.AccessTerms1;
+import com.example.kwoncheolhyeok.core.SettingActivity.AccessTerms2;
+import com.example.kwoncheolhyeok.core.SettingActivity.AccessTerms3;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.UiUtil;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -74,6 +80,15 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
     @Bind(R.id.input_bodytype)
     EditText _bodyType;
 
+    @Bind(R.id.access_terms1)
+    TextView access_terms1;
+
+    @Bind(R.id.access_terms2)
+    TextView access_terms2;
+
+    @Bind(R.id.access_terms3)
+    TextView access_terms3;
+
     @Bind(R.id.btn_signup)
     Button _signupButton;
 
@@ -82,7 +97,8 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
 
     private EditText bodytype;
     private String deviceIdentifier;
-    final String[] values = {"Underweight", "Skinny", "Standard", "Muscular", "Overweight"};
+
+    final String[] values = {"Slim", "Light", "Normal", "Muscular", "Heavy", "Fat"};
 
     @SuppressLint("HardwareIds")
     @Override
@@ -103,6 +119,35 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
             }
         });
 
+        access_terms1.setPaintFlags(access_terms1.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        access_terms2.setPaintFlags(access_terms2.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        access_terms3.setPaintFlags(access_terms3.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+
+        access_terms1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getApplicationContext(), AccessTerms1.class);
+                startActivity(i);
+            }
+        });
+
+        access_terms2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getApplicationContext(), AccessTerms2.class);
+                startActivity(i);
+            }
+        });
+
+        access_terms3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getApplicationContext(), AccessTerms3.class);
+                startActivity(i);
+            }
+        });
+
+
         _signupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -122,6 +167,8 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
         });
 
         mAuth = FirebaseAuth.getInstance();
+
+
     }
 
     private void setUserInfo(FirebaseUser user) {
@@ -173,7 +220,7 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
 
         np.setMinValue(0); //from array first value
         np.setMaxValue(values.length - 1); //to array last value
-        np.setValue(values.length - 3);
+        np.setValue(values.length - 4); //normal 체형이 디폴트
         np.setDisplayedValues(values);
         np.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
         np.setWrapSelectorWheel(false);
@@ -332,7 +379,7 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
             focusEditText(_weightText);
             throw new Exception("올바른 몸무게로 작성해주세요.");
         } else if (Bodytype.isEmpty()) {
-            _bodyType.setText("Standard");
+            _bodyType.setText("Normal");
 //            throw new Exception("바디타입을 설정해주세요.");
         }
     }
