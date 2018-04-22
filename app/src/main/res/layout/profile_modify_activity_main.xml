@@ -92,7 +92,6 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1">
 
-                    <!--1번 이미지는 잠글 수 없음:메인사진에 무조건 한장은 등록되게-->
                     <Button
                         android:id="@+id/lock1"
                         android:layout_width="45dp"
@@ -264,7 +263,7 @@
                 android:layout_below="@id/section_line2"
                 android:layout_centerInParent="true"
                 android:layout_marginTop="10dp"
-                android:text="nickname"
+                android:text="Nickname"
                 android:textColor="#FFFFFF"
                 android:textSize="17dp"
                 android:textStyle="bold" />
@@ -281,7 +280,6 @@
                 android:hint="닉네임을 입력하세요"
                 android:maxLength="10"
                 android:maxLines="1"
-                android:text="nickname"
                 android:textColor="#FFFFFF"
                 android:textSize="18dp"
                 android:theme="@style/Theme.App.Base" />
@@ -416,11 +414,23 @@
                 android:textSize="16dp"
                 android:theme="@style/Theme.App.Base" />
 
+            <TextView
+                android:id="@+id/content_error"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/modify_introduce"
+                android:textColor="@color/red"
+                android:gravity="right"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="10dp"
+                android:visibility="visible"
+                />
+
             <View
                 android:id="@+id/section_line5"
                 android:layout_width="match_parent"
                 android:layout_height="1dip"
-                android:layout_below="@+id/modify_introduce"
+                android:layout_below="@+id/content_error"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 android:layout_marginTop="25dp"

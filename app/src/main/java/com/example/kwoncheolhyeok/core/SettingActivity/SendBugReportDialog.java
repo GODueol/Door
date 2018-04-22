@@ -87,7 +87,7 @@ public class SendBugReportDialog extends CustomDialog {
                 FirebaseDatabase.getInstance().getReference("suggestion").push().setValue(suggestion).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        Toast.makeText(getContext(), "의견보내기에 성공하였습니다", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "의견을 보내주셔서 감사합니다.", Toast.LENGTH_SHORT).show();
                         dismiss();
                     }
                 }).addOnFailureListener(new OnFailureListener() {

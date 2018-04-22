@@ -9,7 +9,10 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.InputFilter;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -63,6 +66,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
     TextView weightPick = null;
     TextView bodyTypePick = null;
 
+    private static int MAX_CONTENT = 130;
 
     private TextView min_age_filter, max_age_filter, min_height_filter, max_height_filter, min_weight_filter, max_weight_filter, min_bodytype_filter, max_bodytype_filter;
 
@@ -83,6 +87,9 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 
     @Bind(R.id.modify_introduce)
     EditText introEditText;
+
+    @Bind(R.id.content_error)
+    TextView content_error;
 
     @Bind(R.id.filter_switch)
     Switch filterSwitch;
@@ -272,6 +279,9 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         bodyTypePick.setText(user.getBodyType());
         introEditText.setText(user.getIntro());
 
+        //소개 텍스트 맥스 숫자 제한 표시
+        setVerification();
+
         // 텍스트뷰를 에딧텍스트로 바꿔서 포커스 준 다음에 인풋못하게 막으면 포커스도 잡으면서 수정도 막는 일석이조라고~
         introduce_focus.requestFocus();
         introduce_focus.setInputType(InputType.TYPE_NULL);
@@ -379,6 +389,8 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 
 
     }
+
+
 
     private void setOnDelPicBtnClickListener(final ImageView btn, final ImageView targetPic) {
         View.OnClickListener onDeleteClickListener = new View.OnClickListener() {
@@ -918,4 +930,26 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         profilePic4.setClickable(true);
 
     }
+
+    // 소개 텍스트 맥스 제한
+    private void setVerification() {
+        introEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (charSequence.length() <= MAX_CONTENT) {
+                    content_error.setText(charSequence.length() + "/" + MAX_CONTENT);
+                } else {
+                    content_error.setText(MAX_CONTENT + "/" + MAX_CONTENT);
+                }
+            }
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+    }
+
 }

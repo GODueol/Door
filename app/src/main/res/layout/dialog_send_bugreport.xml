@@ -93,7 +93,7 @@
             android:layout_height="200dp"
             android:layout_below="@+id/txt3"
             android:background="@drawable/edit_text_style"
-            android:hint="정확한 상담을 위해 문의 내용을 자세히 작성해주세요."
+            android:hint="정확한 상담을 위해 문의 내용을 자세히 작성해주세요. 의미없는 내용을 반복적으로 보낼 시 제재대상이 될 수 있습니다."
             android:textColor="@color/black"
             android:maxLength="500"
             android:gravity="start"
