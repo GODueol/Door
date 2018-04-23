@@ -25,7 +25,7 @@ import java.util.ArrayList;
 public class NoticeActivity extends AppCompatActivity {
 
     Toolbar toolbar = null;
-    private RecyclerView recyclerView;
+    public RecyclerView recyclerView;
     private Query noticeQuery;
     private ValueEventListener noticeListner;
 
@@ -61,6 +61,8 @@ public class NoticeActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Notice notice = snapshot.getValue(Notice.class);
+                    assert notice != null;
+                    notice.setKey(snapshot.getKey());
                     list.add(0,notice);
                 }
                 noticeAdapter.notifyDataSetChanged();
@@ -72,7 +74,6 @@ public class NoticeActivity extends AppCompatActivity {
         };
 
         noticeQuery.addValueEventListener(noticeListner);
-
 
     }
 

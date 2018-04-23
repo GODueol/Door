@@ -7,6 +7,15 @@ public class Notice {
     private String text;
     private String pictureUrl;
     private long writeDate;
+    private String key;
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
 
     public String getPictureUrl() {
         return pictureUrl;

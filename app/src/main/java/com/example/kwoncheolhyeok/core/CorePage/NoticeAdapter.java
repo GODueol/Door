@@ -11,7 +11,9 @@ import android.widget.TextView;
 import com.example.kwoncheolhyeok.core.Entity.Notice;
 import com.example.kwoncheolhyeok.core.MessageActivity.util.DateUtil;
 import com.example.kwoncheolhyeok.core.R;
+import com.example.kwoncheolhyeok.core.SettingActivity.NoticeActivity;
 import com.example.kwoncheolhyeok.core.Util.GlideApp;
+import com.example.kwoncheolhyeok.core.Util.SharedPreferencesUtil;
 
 import java.util.List;
 
@@ -19,10 +21,12 @@ public class NoticeAdapter extends RecyclerView.Adapter<NoticeAdapter.NoticeHold
 
     private List<Notice> noticeList;
     private Context context;
+    private SharedPreferencesUtil sp;
 
     public NoticeAdapter(List<Notice> noticeList, Context context) {
         this.noticeList = noticeList;
         this.context = context;
+        sp = new SharedPreferencesUtil(context);
     }
 
     @Override
@@ -32,10 +36,11 @@ public class NoticeAdapter extends RecyclerView.Adapter<NoticeAdapter.NoticeHold
     }
 
     @Override
-    public void onBindViewHolder(NoticeHolder holder, int i) {
+    public void onBindViewHolder(final NoticeHolder holder, int i) {
 
-        Notice notice = noticeList.get(i);
+        final Notice notice = noticeList.get(i);
 
+        // Image
         if(notice.getPictureUrl() == null) {
             holder.image.setVisibility(View.GONE);
         } else {
@@ -49,6 +54,35 @@ public class NoticeAdapter extends RecyclerView.Adapter<NoticeAdapter.NoticeHold
         holder.title.setText(notice.getTitle());
         holder.date.setText(new DateUtil(notice.getWriteDate()).getDateAndTime());
 
+        // set New tag
+        if(sp.isNoticeRead(notice.getKey())){
+            holder.new_dot.setVisibility(View.INVISIBLE);
+        } else {
+            holder.new_dot.setVisibility(View.VISIBLE);
+        }
+
+        // Text 누르면 펼침, 읽음 저장
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                // 읽음 저장
+                sp.putNoticeRead(notice.getKey());
+
+                // set New tag Invisible
+                NoticeActivity noticeActivity = (NoticeActivity) context;
+                NoticeHolder noticeHolder = (NoticeHolder) noticeActivity.recyclerView.findViewHolderForAdapterPosition(holder.getAdapterPosition());
+                noticeHolder.new_dot.setVisibility(View.INVISIBLE);
+
+                // 펼침
+                if(noticeHolder.text.getMaxLines() == 1){
+                    noticeHolder.text.setMaxLines(50);
+                } else {
+                    noticeHolder.text.setMaxLines(1);
+                }
+
+            }
+        });
     }
 
     @Override

@@ -17,11 +17,13 @@ public class SharedPreferencesUtil {
     private SharedPreferences sharedPref_chatListBadge;
     private SharedPreferences sharedPref_badge;
     private SharedPreferences sharedPref_friends;
+    private SharedPreferences sharedPref_notice;
 
     private SharedPreferences.Editor editor;
     private SharedPreferences.Editor editor_badge;
     private SharedPreferences.Editor editor_friends;
     private SharedPreferences.Editor editor_chatListBadge;
+    private SharedPreferences.Editor editor_notice;
 
     @SuppressLint("CommitPrefEdits")
     public SharedPreferencesUtil(Context context) {
@@ -30,11 +32,13 @@ public class SharedPreferencesUtil {
         sharedPref_badge = context.getSharedPreferences(context.getString(R.string.badge), Context.MODE_PRIVATE);
         sharedPref_chatListBadge = context.getSharedPreferences(context.getString(R.string.chatListBadge), Context.MODE_PRIVATE);
         sharedPref_friends = context.getSharedPreferences(context.getString(R.string.friends), Context.MODE_PRIVATE);
+        sharedPref_notice = context.getSharedPreferences(context.getString(R.string.notice), Context.MODE_PRIVATE);
 
         editor = sharedPref.edit();
         editor_badge = sharedPref_badge.edit();
         editor_friends = sharedPref_friends.edit();
         editor_chatListBadge = sharedPref_chatListBadge.edit();
+        editor_notice = sharedPref_notice.edit();
     }
 
 
@@ -168,4 +172,15 @@ public class SharedPreferencesUtil {
     public void removeCurrentChat(String str) {
         editor.remove(str).apply();
     }
+
+    // 공지 읽었는지 여부
+    public boolean isNoticeRead(String key) {
+        return sharedPref_notice.getBoolean(key, false);
+    }
+
+    // 공지 읽었음 저장
+    public void putNoticeRead(String key) {
+        editor_notice.putBoolean(key, true).apply();
+    }
+
 }
