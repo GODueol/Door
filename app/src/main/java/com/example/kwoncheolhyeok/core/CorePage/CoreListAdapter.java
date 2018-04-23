@@ -74,7 +74,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 
     private String currentPlayUrl = "";
 
-    public CoreListAdapter(List<CoreListItem> coreListItems, Context context) {
+    CoreListAdapter(List<CoreListItem> coreListItems, Context context) {
         this.coreListItems = coreListItems;
         this.context = context;
         this.mediaPlayer = new MediaPlayer();
@@ -623,7 +623,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
         return coreListItems.size();
     }
 
-    class CorePostHolder extends RecyclerView.ViewHolder {
+    static class CorePostHolder extends RecyclerView.ViewHolder {
         ImageView core_pic, core_img;
         //        ImageButton Core_heart;
         ImageButton core_setting;

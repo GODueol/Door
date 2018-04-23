@@ -37,7 +37,6 @@ public class FriendsActivity extends UserListBaseActivity implements SharedPrefe
     private UserListAdapter adapter;
     private SharedPreferencesUtil SPUtil;
 
-    private View friend, follower, following, viewed;
     private List<Badge> badges;
 
     boolean firstView;
@@ -48,7 +47,7 @@ public class FriendsActivity extends UserListBaseActivity implements SharedPrefe
         setContentView(R.layout.friends_activity);
         firstView = true;
         // bottomTab
-        final BottomNavigationViewEx navigation = findViewById(R.id.navigation);
+        final BottomNavigationViewEx navigation = (BottomNavigationViewEx) findViewById(R.id.navigation);
         navigation.enableAnimation(false);
         navigation.enableShiftingMode(false);
         navigation.enableItemShiftingMode(false);
@@ -110,8 +109,8 @@ public class FriendsActivity extends UserListBaseActivity implements SharedPrefe
         };
         navigation.setOnNavigationItemSelectedListener(selectedListener);
 
-        toolbar = findViewById(R.id.toolbar);
-        final RecyclerView recyclerView = findViewById(R.id.friendsRecyclerView);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.friendsRecyclerView);
 
         setSupportActionBar(toolbar);
 
@@ -152,25 +151,24 @@ public class FriendsActivity extends UserListBaseActivity implements SharedPrefe
     private void navigationViewinitBadge(BottomNavigationMenuView bottomNavigationMenuView) {
         //뱃지 위치 조정 코드 : 수평축은 숫자 작아질수록 우로 / 수직축은 숫자 작아질수록 위로
         int badge;
-        friend = bottomNavigationMenuView.getChildAt(0);
+        View friend = bottomNavigationMenuView.getChildAt(0);
         badge = SPUtil.getBadgeCount(getString(R.string.badgeFriend));
         setQbadge(friend, badge, (float) 15.5, (float) -7.5);
 
-        follower = bottomNavigationMenuView.getChildAt(1);
+        View follower = bottomNavigationMenuView.getChildAt(1);
         badge = SPUtil.getBadgeCount(getString(R.string.badgeFollow));
         setQbadge(follower, badge, (float) 9.5, (float) -7.5);
 
-        following = bottomNavigationMenuView.getChildAt(2);
+        View following = bottomNavigationMenuView.getChildAt(2);
         badge = SPUtil.getBadgeCount(getString(R.string.badgeFollowing));
         setQbadge(following, badge, (float) 9.5, (float) -7.5);
 
-        viewed = bottomNavigationMenuView.getChildAt(3);
+        View viewed = bottomNavigationMenuView.getChildAt(3);
         boolean state = SPUtil.getBadgeState(getString(R.string.badgeView));
         setQbadge(viewed, state, (float) 1.5, (float) -4.5);
     }
 
     private void setQbadge(View view, int num, float x, float y) {
-        boolean b;
 
         badges.add(new QBadgeView(this).bindTarget(view)
                 .setBadgeTextColor(getResources().getColor(R.color.black))

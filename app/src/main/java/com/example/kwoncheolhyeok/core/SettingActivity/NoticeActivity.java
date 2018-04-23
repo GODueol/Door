@@ -7,13 +7,13 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.support.v7.widget.Toolbar;
 
-import com.example.kwoncheolhyeok.core.CorePage.CoreListAdapter;
-import com.example.kwoncheolhyeok.core.Entity.CoreListItem;
-import com.example.kwoncheolhyeok.core.Entity.CorePost;
+import com.example.kwoncheolhyeok.core.CorePage.NoticeAdapter;
+import com.example.kwoncheolhyeok.core.Entity.Notice;
 import com.example.kwoncheolhyeok.core.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -26,7 +26,8 @@ public class NoticeActivity extends AppCompatActivity {
 
     Toolbar toolbar = null;
     private RecyclerView recyclerView;
-
+    private Query noticeQuery;
+    private ValueEventListener noticeListner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,8 +46,8 @@ public class NoticeActivity extends AppCompatActivity {
         // Notice Set
         recyclerView = (RecyclerView) findViewById(R.id.core_listview);
 
-        final ArrayList<CoreListItem> list = new ArrayList<>();
-        final CoreListAdapter noticeAdapter = new CoreListAdapter(list, this);
+        final ArrayList<Notice> list = new ArrayList<>();
+        final NoticeAdapter noticeAdapter = new NoticeAdapter(list, this);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(noticeAdapter);
@@ -54,12 +55,13 @@ public class NoticeActivity extends AppCompatActivity {
         ((SimpleItemAnimator) recyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
 
         // 코어 주인의 User Get
-        FirebaseDatabase.getInstance().getReference().child("notice").orderByChild("writeDate").addValueEventListener(new ValueEventListener() {
+        noticeQuery = FirebaseDatabase.getInstance().getReference().child("notice").orderByChild("writeDate");
+        noticeListner = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
-                    CorePost corePost = snapshot.getValue(CorePost.class);
-                    list.add(0,new CoreListItem(null, corePost, snapshot.getKey(), null));
+                    Notice notice = snapshot.getValue(Notice.class);
+                    list.add(0,notice);
                 }
                 noticeAdapter.notifyDataSetChanged();
             }
@@ -67,11 +69,12 @@ public class NoticeActivity extends AppCompatActivity {
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }
-        });
+        };
+
+        noticeQuery.addValueEventListener(noticeListner);
 
 
     }
-
 
     // 뒤로가기 버튼 기능
     public boolean onOptionsItemSelected(android.view.MenuItem item) {
@@ -84,5 +87,9 @@ public class NoticeActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
+    @Override
+    protected void onDestroy() {
+        if(noticeQuery != null && noticeListner != null) noticeQuery.removeEventListener(noticeListner);
+        super.onDestroy();
+    }
 }

@@ -389,7 +389,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
         return items.size();
     }
 
-    class UserHolder extends RecyclerView.ViewHolder {
+    static class UserHolder extends RecyclerView.ViewHolder {
         ImageView profilePicImage;
         TextView idText;
         TextView subProfileText;
