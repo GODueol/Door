@@ -327,7 +327,7 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
     }
 
     public void onSignupSuccess() {
-        Toast.makeText(getBaseContext(), "Join Success", Toast.LENGTH_LONG).show();
+        Toast.makeText(getBaseContext(), "환영합니다!", Toast.LENGTH_LONG).show();
         _signupButton.setEnabled(true);
         Intent i = new Intent(this, MainActivity.class);
         startActivity(i);
@@ -335,7 +335,7 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
     }
 
     public void onSignupFailed(Exception e) {
-        Toast.makeText(getBaseContext(), "Join Failed : " + e.getMessage(), Toast.LENGTH_LONG).show();
+        Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
         _signupButton.setEnabled(true);
         UiUtil.getInstance().stopProgressDialog();
     }
@@ -355,6 +355,8 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
         String Height = _heightText.getText().toString();
         String Weight = _weightText.getText().toString();
         String Bodytype = _bodyType.getText().toString();
+
+
 
         if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             focusEditText(_emailText);

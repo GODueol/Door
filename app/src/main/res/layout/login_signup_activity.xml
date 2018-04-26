@@ -276,7 +276,9 @@
                 android:background="@android:color/transparent"
                 android:text="회원가입 완료"
                 android:textSize="16dp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:textColor="@color/skyblue"
+                />
 
             <TextView
                 android:id="@+id/link_login"
@@ -287,7 +289,8 @@
                 android:layout_centerVertical="true"
                 android:layout_marginBottom="24dp"
                 android:layout_marginLeft="10dp"
-                android:text="로그인 화면으로" />
+                android:text="로그인 화면으로"
+                />
 
         </RelativeLayout>
 

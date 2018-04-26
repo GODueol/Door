@@ -51,8 +51,8 @@ public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
     private static final int REQUEST_SIGNUP = 0;
 
-    AnimationDrawable animationDrawable;
-    FrameLayout frameLayout;
+//    AnimationDrawable animationDrawable;
+//    FrameLayout frameLayout;
 
     // auth
     private FirebaseAuth mAuth;
@@ -81,12 +81,11 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.login_activity);
         ButterKnife.bind(this);
 
-        frameLayout = (FrameLayout)findViewById(R.id.framelayout);
-        animationDrawable = (AnimationDrawable)frameLayout.getBackground();
-
-        animationDrawable.setEnterFadeDuration(5000);
-        animationDrawable.setExitFadeDuration(5000);
-        animationDrawable.start();
+//        frameLayout = (FrameLayout)findViewById(R.id.framelayout);
+//        animationDrawable = (AnimationDrawable)frameLayout.getBackground();
+//        animationDrawable.setEnterFadeDuration(5000);
+//        animationDrawable.setExitFadeDuration(5000);
+//        animationDrawable.start();
 
         ImageView cor2 = (ImageView) findViewById(R.id.CORE_LOGO);
         GlideApp.with(this)
