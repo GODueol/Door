@@ -77,7 +77,7 @@ public class NoticeAdapter extends RecyclerView.Adapter<NoticeAdapter.NoticeHold
 
                 // 펼침
                 if(noticeHolder.text.getMaxLines() == 1){
-                    noticeHolder.text.setMaxLines(50);
+                    noticeHolder.text.setMaxLines(Integer.MAX_VALUE);
                 } else {
                     noticeHolder.text.setMaxLines(1);
                 }
