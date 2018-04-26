@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.kwoncheolhyeok.core.Entity.Notice;
 import com.example.kwoncheolhyeok.core.MessageActivity.util.DateUtil;
 import com.example.kwoncheolhyeok.core.R;
@@ -45,7 +46,7 @@ public class NoticeAdapter extends RecyclerView.Adapter<NoticeAdapter.NoticeHold
             holder.image.setVisibility(View.GONE);
         } else {
             holder.image.setVisibility(View.VISIBLE);
-            GlideApp.with(context /* context */)
+            Glide.with(context /* context */)
                     .load(notice.getPictureUrl())
                     .into(holder.image);
         }

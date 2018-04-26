@@ -19,9 +19,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:maxLength="23"
-        android:text="타이틀입니다타이틀입니다타이틀입니다타이틀입니다타이틀입니다타이틀입니다"
+        android:text=""
         android:textColor="@color/black"
-        android:textSize="16sp"
+        android:textSize="17sp"
         android:textStyle="bold" />
 
 
@@ -39,14 +39,14 @@
     <ImageView
         android:id="@+id/image"
         android:layout_width="match_parent"
-        android:layout_height="230dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:adjustViewBounds="true"
         android:layout_below="@+id/title_layout"
         android:layout_marginTop="8dp"
-        android:scaleType="centerCrop"
-        android:background="@drawable/background"
         />
+
+
 
     <TextView
         android:id="@+id/text"
@@ -58,9 +58,9 @@
         android:layout_below="@+id/image"
         android:maxLines="1"
         android:ellipsize="end"
-        android:text="공지사항의 내용입니다. 공지사항의 내용입니다.공지사항의 내용입니다.공지사항의 내용입니다.공지사항의 내용입니다.공지사항의 내용입니다.공지사항의 내용입니다.공지사항의 내용입니다.공지사항의 내용입니다.공지사항의 내용입니다."
+        android:text=""
         android:textColor="@color/black"
-        android:textSize="13sp" />
+        android:textSize="15sp" />
 
     <TextView
         android:id="@+id/date"
@@ -70,9 +70,9 @@
         android:layout_alignParentRight="true"
         android:layout_marginRight="10dp"
         android:layout_marginTop="8dp"
-        android:text="2018-04-21 오전 12:00"
+        android:text=""
         android:textColor="@color/black"
-        android:textSize="11sp"
+        android:textSize="12sp"
         />
 
 </RelativeLayout>

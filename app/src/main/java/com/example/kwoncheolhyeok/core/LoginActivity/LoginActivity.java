@@ -26,6 +26,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.kwoncheolhyeok.core.Activity.MainActivity;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.R;
@@ -88,9 +89,8 @@ public class LoginActivity extends AppCompatActivity {
 //        animationDrawable.start();
 
         ImageView cor2 = (ImageView) findViewById(R.id.CORE_LOGO);
-        GlideApp.with(this)
+        Glide.with(this)
                 .load(UiUtil.resourceToUri(this, R.drawable.login_core_ani))
-                .fitCenter()
                 .into(cor2);
 
 

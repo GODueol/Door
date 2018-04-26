@@ -2,6 +2,7 @@ package com.example.kwoncheolhyeok.core.SettingActivity;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
@@ -9,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 
 import com.example.kwoncheolhyeok.core.CorePage.NoticeAdapter;
 import com.example.kwoncheolhyeok.core.Entity.Notice;
+import com.example.kwoncheolhyeok.core.FriendsActivity.FriendsActivity;
 import com.example.kwoncheolhyeok.core.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -51,6 +53,7 @@ public class NoticeActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(noticeAdapter);
+        recyclerView.addItemDecoration(new DividerItemDecoration(NoticeActivity.this, DividerItemDecoration.VERTICAL)); //리사이클뷰 구분선
 
         ((SimpleItemAnimator) recyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
 

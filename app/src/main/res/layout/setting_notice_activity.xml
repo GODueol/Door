@@ -39,7 +39,6 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/toolbar_layout"
         android:cacheColorHint="#00000000"
-        android:divider="#00000000"
         android:scrollbars="none" />
 
 </RelativeLayout>
