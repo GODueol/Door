@@ -4,9 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.util.DisplayMetrics;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.NumberPicker;
 import android.widget.TextView;
@@ -26,7 +24,7 @@ public class ReportDialog extends CustomDialog {
 
     private String oUuid;
 
-    ReportDialog(@NonNull Context context, String oUuid) {
+    public ReportDialog(@NonNull Context context, String oUuid) {
         super(context);
         this.oUuid = oUuid;
     }

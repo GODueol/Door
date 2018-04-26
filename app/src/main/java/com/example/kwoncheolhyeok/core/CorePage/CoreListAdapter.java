@@ -28,7 +28,6 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.kwoncheolhyeok.core.CorePage.CoreCloudPayDialog.DealDialogFragment;
 import com.example.kwoncheolhyeok.core.Entity.CoreCloud;
 import com.example.kwoncheolhyeok.core.Entity.CoreListItem;
@@ -38,14 +37,13 @@ import com.example.kwoncheolhyeok.core.Exception.ChildSizeMaxException;
 import com.example.kwoncheolhyeok.core.Exception.NotSetAutoTimeException;
 import com.example.kwoncheolhyeok.core.PeopleFragment.FullImageActivity;
 import com.example.kwoncheolhyeok.core.PeopleFragment.GridItem;
+import com.example.kwoncheolhyeok.core.PeopleFragment.ReportDialog;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.AlarmUtil;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
 import com.example.kwoncheolhyeok.core.Util.GlideApp;
 import com.example.kwoncheolhyeok.core.Util.UiUtil;
-import com.github.chrisbanes.photoview.PhotoView;
-import com.github.chrisbanes.photoview.PhotoViewAttacher;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -237,13 +235,17 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
         }
         
         User user = coreListItem.getUser();
-        if (user != null) {  // 주인글
+        // 주인글
+        if (user != null) {
             setMasterPost(holder, corePost, user);
-        } else {    // 타인글
+        }
+        // 타인글
+        else {
             setAnonymousPost(holder, coreListItem, corePost, mUuid);
         }
 
-        if (corePost.getUuid().equals(mUuid)) {   // 본인 게시물
+        // 본인 게시물
+        if (corePost.getUuid().equals(mUuid)) {
             
             // 수정 삭제 가능
             if(user == null && corePost.getReply() != null){    // 답변이 달린 익명글일 때
@@ -295,6 +297,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                                     // 순회
                                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                                         CoreCloud coreCloud = snapshot.getValue(CoreCloud.class);
+                                        assert coreCloud != null;
                                         if (coreCloud.getAttachDate() < oldestPostDate) {
                                             oldestPostDate = coreCloud.getAttachDate();
                                             deletePostKey = dataSnapshot.getKey();
@@ -351,13 +354,22 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                     }
                 });
             }
-        } else if (coreListItem.getcUuid().equals(mUuid)) { // Core 주인이 뷰어일 경우
+        }
+        // Core 주인이 뷰어일 경우
+        else if (coreListItem.getcUuid().equals(mUuid)) {
             // 삭제 가능, Edit은 불가능
             setPostMenu(holder, coreListItem, R.menu.core_post_master_menu);
             holder.core_cloud.setVisibility(View.INVISIBLE);
-        } else {
-            holder.core_setting.setVisibility(View.GONE);
+        }
+        // 타인의 코어, 본인 글 아님
+        else {
+
+            // 신고 메뉴
+            setPostMenu(holder, coreListItem, R.menu.core_post_other_menu);
+//            holder.core_setting.setVisibility(View.GONE);
             holder.core_cloud.setVisibility(View.INVISIBLE);
+
+
         }
     }
 
@@ -555,6 +567,10 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                                         }, null
                                     );
                                 }
+                                break;
+                            case R.id.report:
+                                // 신고 다이얼로그
+                                new ReportDialog(context, coreListItem.getCorePost().getUuid()).show();
                                 break;
                             default:
                                 break;
