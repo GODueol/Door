@@ -28,6 +28,7 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.kwoncheolhyeok.core.CorePage.CoreCloudPayDialog.DealDialogFragment;
 import com.example.kwoncheolhyeok.core.Entity.CoreCloud;
 import com.example.kwoncheolhyeok.core.Entity.CoreListItem;
@@ -43,6 +44,8 @@ import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
 import com.example.kwoncheolhyeok.core.Util.GlideApp;
 import com.example.kwoncheolhyeok.core.Util.UiUtil;
+import com.github.chrisbanes.photoview.PhotoView;
+import com.github.chrisbanes.photoview.PhotoViewAttacher;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -444,7 +447,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
         holder.core_subProfile.setText(UiUtil.getInstance().setSubProfile(user));
 
         if (holder.core_img != null)
-            Glide.with(context /* context */)
+            Glide.with(context)
                 .load(corePost.getPictureUrl())
                 .into(holder.core_img);
 
@@ -625,7 +628,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 
     static class CorePostHolder extends RecyclerView.ViewHolder {
         ImageView core_pic, core_img;
-        //        ImageButton Core_heart;
+
         ImageButton core_setting;
         TextView core_id, core_subProfile, core_date, core_contents, core_heart_count;
         LikeButton core_heart_btn;

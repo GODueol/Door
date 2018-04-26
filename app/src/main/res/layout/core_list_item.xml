@@ -90,7 +90,7 @@
     </RelativeLayout>
 
 
-    <ImageView
+    <com.github.chrisbanes.photoview.PhotoView
         android:id="@+id/core_img"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
