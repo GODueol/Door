@@ -1,9 +1,13 @@
 package com.example.kwoncheolhyeok.core.LoginActivity;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
@@ -16,7 +20,9 @@ import android.widget.AutoCompleteTextView;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +30,7 @@ import com.example.kwoncheolhyeok.core.Activity.MainActivity;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
+import com.example.kwoncheolhyeok.core.Util.GlideApp;
 import com.example.kwoncheolhyeok.core.Util.UiUtil;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -44,6 +51,9 @@ public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
     private static final int REQUEST_SIGNUP = 0;
 
+    AnimationDrawable animationDrawable;
+    FrameLayout frameLayout;
+
     // auth
     private FirebaseAuth mAuth;
 
@@ -63,12 +73,28 @@ public class LoginActivity extends AppCompatActivity {
     @Bind(R.id.link_find_password)
     ImageView link_find_password;
 
+    private ProgressDialog progressDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_activity);
         ButterKnife.bind(this);
+
+        frameLayout = (FrameLayout)findViewById(R.id.framelayout);
+        animationDrawable = (AnimationDrawable)frameLayout.getBackground();
+
+        animationDrawable.setEnterFadeDuration(5000);
+        animationDrawable.setExitFadeDuration(5000);
+        animationDrawable.start();
+
+        ImageView cor2 = (ImageView) findViewById(R.id.CORE_LOGO);
+        GlideApp.with(this)
+                .load(UiUtil.resourceToUri(this, R.drawable.login_core_ani))
+                .fitCenter()
+                .into(cor2);
+
+
 
         final SharedPreferences pref = getSharedPreferences(DataContainer.getInstance().PREFERENCE, MODE_PRIVATE);
         String emailPref = pref.getString("email", "");

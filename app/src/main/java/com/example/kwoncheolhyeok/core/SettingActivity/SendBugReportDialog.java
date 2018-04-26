@@ -145,6 +145,7 @@ public class SendBugReportDialog extends CustomDialog {
                 if (charSequence.length() < MiN_CONTENT) {
                     avaliableContent = false;
                     content_error.setVisibility(View.VISIBLE);
+
                     content_error.setText(charSequence.length() + "/" + MiN_CONTENT + "자 이상 입력해 주세요");
                 } else {
                     avaliableContent = true;
