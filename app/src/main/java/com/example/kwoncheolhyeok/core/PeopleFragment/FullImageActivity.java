@@ -124,7 +124,7 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
 
         ButterKnife.bind(this);
 
-        toolbar = findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         // 툴바 뒤로가기 버튼
@@ -133,13 +133,13 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
 
         //Tab Fragment 1에서 받아온 썸네일 이미지를 이 액티비티로 받아옴
-        page1 = findViewById(R.id.image1);
+        page1 = (ImageView) findViewById(R.id.image1);
         page1.setOnClickListener(this);
-        page2 = findViewById(R.id.image2);
+        page2 = (ImageView) findViewById(R.id.image2);
         page2.setOnClickListener(this);
-        page3 = findViewById(R.id.image3);
+        page3 = (ImageView) findViewById(R.id.image3);
         page3.setOnClickListener(this);
-        page4 = findViewById(R.id.image4);
+        page4 = (ImageView) findViewById(R.id.image4);
         page4.setOnClickListener(this);
 
         Intent p = getIntent();
@@ -205,7 +205,7 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
             });
         }
         //개인 화면에서 코어 액티비티로 넘어감
-        core_enter = findViewById(R.id.core_enter_layout);
+        core_enter = (RelativeLayout) findViewById(R.id.core_enter_layout);
         core_enter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

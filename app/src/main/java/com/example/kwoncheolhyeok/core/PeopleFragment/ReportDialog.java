@@ -6,15 +6,22 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.kwoncheolhyeok.core.CorePage.CustomDialog;
+import com.example.kwoncheolhyeok.core.Entity.Report;
+import com.example.kwoncheolhyeok.core.Exception.ChildSizeMaxException;
 import com.example.kwoncheolhyeok.core.Exception.NotSetAutoTimeException;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
+import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
 import com.example.kwoncheolhyeok.core.Util.UiUtil;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.FirebaseDatabase;
 
 /**
  * Created by kimbyeongin on 2018-01-06.
@@ -23,10 +30,19 @@ import com.example.kwoncheolhyeok.core.Util.UiUtil;
 public class ReportDialog extends CustomDialog {
 
     private String oUuid;
+    private String postKey;
+    private String cUuid;
 
-    public ReportDialog(@NonNull Context context, String oUuid) {
+    ReportDialog(@NonNull Context context, String oUuid) {
         super(context);
         this.oUuid = oUuid;
+    }
+
+    public ReportDialog(@NonNull Context context, String oUuid, String cUuid, String postKey) {
+        super(context);
+        this.oUuid = oUuid;
+        this.postKey = postKey;
+        this.cUuid = cUuid;
     }
 
     @Override
@@ -38,6 +54,7 @@ public class ReportDialog extends CustomDialog {
 
         TextView cancel = findViewById(R.id.cancel);
         TextView report = findViewById(R.id.report);
+        final EditText txt_report = findViewById(R.id.txt_report);
         final NumberPicker picker = findViewById(R.id.typePicker);
         final CheckBox isOnlyBlockBtn = findViewById(R.id.isOnlyBlock);
 
@@ -61,17 +78,65 @@ public class ReportDialog extends CustomDialog {
             public void onClick(View view) {
                 // 신고 : 아래 5개의 정보를 DB에 넣는다
                 String picStr = reportTypeList[picker.getValue()];
-                boolean isOnlyBlock = isOnlyBlockBtn.isChecked();
+
                 try {
                     long date = UiUtil.getInstance().getCurrentTime(getContext());
+
+                    String mUuid = DataContainer.getInstance().getUid();
+
+                    Task task;
+                    Report report = new Report(txt_report.getText().toString(), date);
+                    if(postKey == null){
+                        // user 신고
+                        task = FirebaseDatabase.getInstance().getReference().child("reports/users")
+                                .child(oUuid)   // 신고 타겟 유저
+                                .child(picStr).child(mUuid).setValue(report);
+                    } else {
+                        // post 신고
+                        task = FirebaseDatabase.getInstance().getReference().child("reports/posts")
+                                .child(oUuid)   // 신고 타겟 유저
+                                .child(cUuid)   // 코어 유저+
+                                .child(postKey) // 신고 포스트 키+
+                                .child(picStr).child(mUuid).setValue(report);
+                    }
+
+                    task.addOnCompleteListener(new OnCompleteListener() {
+                        @Override
+                        public void onComplete(@NonNull Task task) {
+                            if(task.isSuccessful()){
+                                Toast.makeText(getContext(), "신고 완료되었습니다.", Toast.LENGTH_SHORT).show();
+                                dismiss();
+                            } else {
+                                Toast.makeText(getContext(), "신고 실패 : " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+
+                    boolean isOnlyBlock = isOnlyBlockBtn.isChecked();
+                    if(isOnlyBlock){
+                        // 차단
+                        try {
+                            FireBaseUtil.getInstance().block(oUuid).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    // 차단 실패 시
+                                    if(!task.isSuccessful()){
+                                        Toast.makeText(getContext(), "차단실패 : " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                        } catch (ChildSizeMaxException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+
                 } catch (NotSetAutoTimeException e) {
                     e.printStackTrace();
                     Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
                     ActivityCompat.finishAffinity(getOwnerActivity());
                 }
-                String mUuid = DataContainer.getInstance().getUid();
-                // oUuid
-
             }
         });
 

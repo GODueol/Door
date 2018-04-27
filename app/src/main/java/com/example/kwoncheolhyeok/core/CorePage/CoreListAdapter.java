@@ -570,7 +570,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                                 break;
                             case R.id.report:
                                 // 신고 다이얼로그
-                                new ReportDialog(context, coreListItem.getCorePost().getUuid()).show();
+                                new ReportDialog(context, coreListItem.getCorePost().getUuid(), coreListItem.getcUuid() , coreListItem.getPostKey()).show();
                                 break;
                             default:
                                 break;
