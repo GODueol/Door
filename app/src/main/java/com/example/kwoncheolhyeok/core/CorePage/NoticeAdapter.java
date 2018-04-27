@@ -76,10 +76,10 @@ public class NoticeAdapter extends RecyclerView.Adapter<NoticeAdapter.NoticeHold
                 noticeHolder.new_dot.setVisibility(View.INVISIBLE);
 
                 // 펼침
-                if(noticeHolder.text.getMaxLines() == 1){
+                if(noticeHolder.text.getMaxLines() == 3){
                     noticeHolder.text.setMaxLines(Integer.MAX_VALUE);
                 } else {
-                    noticeHolder.text.setMaxLines(1);
+                    noticeHolder.text.setMaxLines(3);
                 }
 
             }
