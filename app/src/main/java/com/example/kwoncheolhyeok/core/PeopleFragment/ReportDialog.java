@@ -56,7 +56,6 @@ public class ReportDialog extends CustomDialog {
         TextView report = findViewById(R.id.report);
         final EditText txt_report = findViewById(R.id.txt_report);
         final NumberPicker picker = findViewById(R.id.typePicker);
-        final CheckBox isOnlyBlockBtn = findViewById(R.id.isOnlyBlock);
 
         final String[] reportTypeList = new String[]{"성기 노출 사진", "타인의 사진 도용", "성매매 등 부적절한 글", "미성년자 회원", "스팸 및 광고", "기타 사유"};
         picker.setMinValue(0);
@@ -111,26 +110,6 @@ public class ReportDialog extends CustomDialog {
                             }
                         }
                     });
-
-                    boolean isOnlyBlock = isOnlyBlockBtn.isChecked();
-                    if(isOnlyBlock){
-                        // 차단
-                        try {
-                            FireBaseUtil.getInstance().block(oUuid).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    // 차단 실패 시
-                                    if(!task.isSuccessful()){
-                                        Toast.makeText(getContext(), "차단실패 : " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                            });
-                        } catch (ChildSizeMaxException e) {
-                            e.printStackTrace();
-                        }
-
-                    }
-
 
                 } catch (NotSetAutoTimeException e) {
                     e.printStackTrace();

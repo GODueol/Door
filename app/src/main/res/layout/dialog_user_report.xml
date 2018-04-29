@@ -18,38 +18,11 @@
                 android:layout_marginTop="18dp"
                 android:background="@drawable/icon" />
 
-            <RelativeLayout
-                android:id="@+id/layout1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/layout0"
-                android:layout_marginTop="30dp">
-
-                <TextView
-                    android:id="@+id/btn_min"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="30dp"
-                    android:text="@string/ReportAndBlock" />
-
-                <CheckBox
-                    android:id="@+id/isOnlyBlock"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginRight="30dp" />
-
-            </RelativeLayout>
-
-
             <NumberPicker
                 android:id="@+id/typePicker"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/layout1"
+                android:layout_below="@+id/layout0"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="20dp"
                 android:theme="@style/NumberPickerText" />
