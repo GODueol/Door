@@ -159,7 +159,7 @@
                     android:layout_marginLeft="30dp"
                     android:layout_marginRight="30dp"
                     android:layout_marginTop="8dp"
-                    android:text="마이크 권한을 가져와 앱 내 [마이 코어]에서 음성 녹음 서비스를 허용합니다."
+                    android:text="마이크 권한을 가져와 앱 내 음성 녹음 서비스를 허용합니다."
                     android:textColor="@color/black" />
 
             </RelativeLayout>

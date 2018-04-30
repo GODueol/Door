@@ -2,7 +2,10 @@ package com.example.kwoncheolhyeok.core.CorePage;
 
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -10,10 +13,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.Toast;
 
 import com.example.kwoncheolhyeok.core.Entity.CoreListItem;
@@ -52,6 +58,10 @@ public class CoreActivity extends BlockBaseActivity {
     public ArrayList<CoreListItem> list;
     private FloatingActionButton fab;
     public String postId;
+
+    public static final String PREFS_NAME = "MyPrefsFile1";
+    public CheckBox dontShowAgain;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -341,6 +351,60 @@ public class CoreActivity extends BlockBaseActivity {
 
     @Override
     public void onResume() {
+        // 코어 게시물 위반 및 제재 사항 고지 다이얼로그
+        AlertDialog.Builder adb = new AlertDialog.Builder(this);
+        LayoutInflater adbInflater = LayoutInflater.from(this);
+        View eulaLayout = adbInflater.inflate(R.layout.core_notice_dialog, null);
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+        String skipMessage = settings.getString("skipMessage", "NOT checked");
+
+        dontShowAgain = (CheckBox) eulaLayout.findViewById(R.id.check_access);
+        adb.setView(eulaLayout);
+
+        adb.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                String checkBoxResult = "NOT checked";
+
+                if (dontShowAgain.isChecked()) {
+                    checkBoxResult = "checked";
+                }
+
+                SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+                SharedPreferences.Editor editor = settings.edit();
+
+                editor.putString("skipMessage", checkBoxResult);
+                editor.commit();
+
+                // Do what you want to do on "OK" action
+
+                return;
+            }
+        });
+
+//        adb.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+//            public void onClick(DialogInterface dialog, int which) {
+//                String checkBoxResult = "NOT checked";
+//
+//                if (dontShowAgain.isChecked()) {
+//                    checkBoxResult = "checked";
+//                }
+//
+//                SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+//                SharedPreferences.Editor editor = settings.edit();
+//
+//                editor.putString("skipMessage", checkBoxResult);
+//                editor.commit();
+//
+//                // Do what you want to do on "CANCEL" action
+//
+//                return;
+//            }
+//        });
+
+        if (!skipMessage.equals("checked")) {
+            adb.show();
+        }
+
         super.onResume();
 //        ScreenshotSetApplication.getInstance().registerScreenshotObserver();
     }
@@ -376,3 +440,4 @@ public class CoreActivity extends BlockBaseActivity {
         finish();
     }
 }
+

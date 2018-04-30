@@ -1,6 +1,7 @@
 package com.example.kwoncheolhyeok.core.SettingActivity;
 
 import android.content.DialogInterface;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
@@ -52,6 +53,7 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
 
         email = (TextView) findViewById(R.id.email);
         email.setText(DataContainer.getInstance().getUser().getEmail());
+        email.setTypeface(null, Typeface.BOLD);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

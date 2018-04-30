@@ -25,7 +25,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/txt1"
             android:layout_marginTop="5dp"
-            android:text="rp@rp.com"
             android:textColor="@color/black"
             android:textSize="15sp" />
 
