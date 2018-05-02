@@ -43,7 +43,7 @@ public class MessageActivity extends AppCompatActivity implements SharedPreferen
     private DatabaseReference chatRoomListRef;
     private FirebaseAuth mAuth;
     private String userId;
-    private int BadgeCount=0;
+    private int BadgeCount = 0;
 
     private SharedPreferencesUtil SPUtil;
 
@@ -145,8 +145,8 @@ public class MessageActivity extends AppCompatActivity implements SharedPreferen
                     // 뱃지 수 동기화
                     int c = SPUtil.getChatRoomBadge(roomList.getChatRoomid());
                     roomList.setBadgeCount(c);
-                    BadgeCount +=c;
-                    SPUtil.setBadgeCount(getApplicationContext().getString(R.string.badgeChat),BadgeCount);
+                    BadgeCount += c;
+                    SPUtil.setBadgeCount(getApplicationContext().getString(R.string.badgeChat), BadgeCount);
                 } catch (Exception e) {
                     roomList.setBadgeCount(0);
                 }
@@ -157,7 +157,9 @@ public class MessageActivity extends AppCompatActivity implements SharedPreferen
                         FirebaseDatabase.getInstance().getReference("users").child(roomList.getTargetUuid()).addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
-                                refreshChatRoomList(dataSnapshot.getValue(User.class), roomList);
+                                if (!dataSnapshot.getKey().equals(getApplicationContext().getString(R.string.TeamCore))) {
+                                    refreshChatRoomList(dataSnapshot.getValue(User.class), roomList);
+                                }
                             }
 
                             @Override
@@ -255,21 +257,25 @@ public class MessageActivity extends AppCompatActivity implements SharedPreferen
     }
 
     public void refreshChatRoomList(User target, RoomVO roomList) {
-        Log.d("test", target.getId());
+        try {
+            Log.d("test", target.getId());
 
-        if (target.getId() != null && !target.getId().equals(roomList.getTargetNickName())) {
-            roomList.setTargetNickName(target.getId());
-            chatRoomListRef.child(userId).child(roomList.getTargetUuid()).child("targetNickName").setValue(target.getId());
-        }
+            if (target.getId() != null && !target.getId().equals(roomList.getTargetNickName())) {
+                roomList.setTargetNickName(target.getId());
+                chatRoomListRef.child(userId).child(roomList.getTargetUuid()).child("targetNickName").setValue(target.getId());
+            }
 
-        if (target.getTotalProfile() != null && !target.getTotalProfile().equals(roomList.getTargetProfile())) {
-            roomList.setTargetProfile(target.getTotalProfile());
-            chatRoomListRef.child(userId).child(roomList.getTargetUuid()).child("targetProfile").setValue(target.getTotalProfile());
-        }
+            if (target.getTotalProfile() != null && !target.getTotalProfile().equals(roomList.getTargetProfile())) {
+                roomList.setTargetProfile(target.getTotalProfile());
+                chatRoomListRef.child(userId).child(roomList.getTargetUuid()).child("targetProfile").setValue(target.getTotalProfile());
+            }
 
-        if (target.getPicUrls() != null && target.getPicUrls().getThumbNail_picUrl1() != null && !target.getPicUrls().getThumbNail_picUrl1().equals(roomList.getTargetUrl())) {
-            roomList.setTargetUrl(target.getPicUrls().getThumbNail_picUrl1());
-            chatRoomListRef.child(userId).child(roomList.getTargetUuid()).child("targetUrl").setValue(target.getPicUrls().getThumbNail_picUrl1());
+            if (target.getPicUrls() != null && target.getPicUrls().getThumbNail_picUrl1() != null && !target.getPicUrls().getThumbNail_picUrl1().equals(roomList.getTargetUrl())) {
+                roomList.setTargetUrl(target.getPicUrls().getThumbNail_picUrl1());
+                chatRoomListRef.child(userId).child(roomList.getTargetUuid()).child("targetUrl").setValue(target.getPicUrls().getThumbNail_picUrl1());
+            }
+        }catch (Exception e){
+
         }
 
         messageRecyclerAdapter.notifyDataSetChanged();

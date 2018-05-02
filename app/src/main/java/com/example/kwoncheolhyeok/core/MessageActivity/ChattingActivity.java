@@ -83,7 +83,6 @@ public class ChattingActivity extends BlockBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
         Window window = getWindow();
         window.setContentView(R.layout.chatting_activity);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -102,8 +101,9 @@ public class ChattingActivity extends BlockBaseActivity {
         // 상대방 데이터 셋
         targetUser = (User) p.getSerializableExtra("user");
         targetUuid = (String) p.getSerializableExtra("userUuid");
+
         // 엑티비티 Uuid 저장
-        SPUtil.setBlockMeUserCurrentActivity(getString(R.string.currentActivity),targetUuid);
+        SPUtil.setBlockMeUserCurrentActivity(getString(R.string.currentActivity), targetUuid);
         // 내정보 데이터 셋
         mAuth = FirebaseAuth.getInstance();
         user = DataContainer.getInstance().getUser();
@@ -124,6 +124,11 @@ public class ChattingActivity extends BlockBaseActivity {
                 LinearLayout.LayoutParams.MATCH_PARENT
         );
         send_message_layout = (LinearLayout) findViewById(R.id.send_message_layout);
+
+        // TeamCore 메세지의 경우
+       if(targetUuid.equals(getApplicationContext().getString(R.string.TeamCore))){
+            send_message_layout.setVisibility(View.GONE);
+        }
         send_message_layout.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
         int layout_height = send_message_layout.getMeasuredHeight();
 
@@ -147,7 +152,6 @@ public class ChattingActivity extends BlockBaseActivity {
         chattingRecyclerview.setOnTouchListener(onTouchListener);
 
         // 블락이면 안들어가지게
-
         chatFirebaseUtil = new ChatFirebaseUtil(this, user, targetUser, userUuid, targetUuid, overlay, hideText);
         chatFirebaseUtil.setchatRoom(chattingRecyclerview, chatListItem);
         chattingRecyclerview.addOnScrollListener(dateToastListener);
@@ -294,20 +298,21 @@ public class ChattingActivity extends BlockBaseActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        menu.clear();
-        getMenuInflater().inflate(R.menu.chat_menu, menu);
-        ArrayList<String> menulist = new ArrayList<String>();
-        menulist.add("프로필");
-        menulist.add("블럭");
+        if (!targetUuid.equals(getApplicationContext().getString(R.string.TeamCore))) {
+            menu.clear();
+            getMenuInflater().inflate(R.menu.chat_menu, menu);
+            ArrayList<String> menulist = new ArrayList<String>();
+            menulist.add("프로필");
+            menulist.add("블럭");
 
-        int positionOfMenuItem = 0;
-        for (String name : menulist) {
-            MenuItem item = menu.getItem(positionOfMenuItem++);
-            SpannableString s = new SpannableString(name);
-            s.setSpan(new ForegroundColorSpan(Color.WHITE), 0, s.length(), 0);
-            item.setTitle(s);
+            int positionOfMenuItem = 0;
+            for (String name : menulist) {
+                MenuItem item = menu.getItem(positionOfMenuItem++);
+                SpannableString s = new SpannableString(name);
+                s.setSpan(new ForegroundColorSpan(Color.WHITE), 0, s.length(), 0);
+                item.setTitle(s);
+            }
         }
-
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -366,7 +371,7 @@ public class ChattingActivity extends BlockBaseActivity {
     };
 
     @Subscribe
-    public void FinishActivity(TargetUserBlocksMeEvent someoneBlocksMeEvent){
+    public void FinishActivity(TargetUserBlocksMeEvent someoneBlocksMeEvent) {
         finish();
     }
 

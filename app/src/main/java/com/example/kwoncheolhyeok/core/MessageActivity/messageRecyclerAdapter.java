@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,6 +23,8 @@ import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.GlideApp;
 
 import java.util.List;
+
+import static android.view.View.GONE;
 
 /**
  * Created by Administrator on 2017-12-04.
@@ -56,6 +59,7 @@ public class messageRecyclerAdapter extends RecyclerView.Adapter<messageRecycler
     @Override
     public void onBindViewHolder(messageRecyclerAdapter.ViewHolder holder, int position) {
         final RoomVO room = roomList.get(position);
+
         holder.content.setText(room.getLastChat());
         holder.nickname.setText(room.getTargetNickName());
         holder.profile.setText(room.getTargetProfile());
@@ -88,6 +92,7 @@ public class messageRecyclerAdapter extends RecyclerView.Adapter<messageRecycler
                 .centerCrop()
                 .into(holder.img);
 
+
         holder.edit_message.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -105,6 +110,18 @@ public class messageRecyclerAdapter extends RecyclerView.Adapter<messageRecycler
                 popup.show();
             }
         });
+
+        if(room.getTargetUuid().equals(context.getString(R.string.TeamCore))){
+            holder.nickname.setText(context.getString(R.string.TeamCore));
+            holder.edit_message.setVisibility(View.INVISIBLE);
+            GlideApp.with(holder.img.getContext())
+                    .load(R.drawable.app_icon)
+                    .override(width, height)
+                    .placeholder(R.drawable.a)
+                    .centerCrop()
+                    .into(holder.img);
+        }
+
     }
 
     @Override

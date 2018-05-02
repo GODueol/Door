@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -133,6 +134,12 @@ public class ChattingMessageAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 setDateUtil(holder1.timeTextView, holder1.checkTextView, holder1.dateTextView, date, check);
                 setProfileImage(holder1.profileImageView, profileImage);
                 holder1.profileImageView.setOnClickListener(moveProfileListener);
+
+                // TeamCore  메세지
+                if(chatMessage.getItem().getUuid().equals(context.getString(R.string.TeamCore))){
+                    GlideApp.with(holder1.profileImageView).load(R.drawable.app_icon).into(holder1.profileImageView);
+                    holder1.profileImageView.setClickable(false);
+                }
                 break;
             case MY_IMAGE:
                 ViewHolder_mine_image holder2 = (ViewHolder_mine_image) viewHolder;
@@ -158,8 +165,16 @@ public class ChattingMessageAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 setDateLineVisiable(holder3.dateLinearLayout, date, date2);
                 setDateUtil(holder3.timeTextView, holder3.checkTextView, holder3.dateTextView, date, check);
                 holder3.profileImageView.setOnClickListener(moveProfileListener);
+
+                // TeamCore  메세지
+                if(chatMessage.getItem().getUuid().equals(context.getString(R.string.TeamCore))){
+                    GlideApp.with(holder3.profileImageView).load(R.drawable.app_icon).into(holder3.profileImageView);
+                    holder3.profileImageView.setClickable(false);
+                }
                 break;
         }
+
+
     }
 
     @Override

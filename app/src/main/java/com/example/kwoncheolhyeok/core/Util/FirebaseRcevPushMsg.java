@@ -125,7 +125,7 @@ public class FirebaseRcevPushMsg extends FirebaseMessagingService {
         String channelId = "notification";
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder =
-                new NotificationCompat.Builder(this, channelId)
+                new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.icon)
                         .setContentTitle(title)
                         .setContentText(messageBody)

@@ -101,8 +101,12 @@ public class ChatFirebaseUtil {
         this.targetUuid = targetUuid;
         this.hideText = hideText;
         this.overlay = overlay;
-        userPickurl = currentUser.getPicUrls().getThumbNail_picUrl1();
-        targetPicurl = targetUser.getPicUrls().getThumbNail_picUrl1();
+        try {
+            userPickurl = currentUser.getPicUrls().getThumbNail_picUrl1();
+            targetPicurl = targetUser.getPicUrls().getThumbNail_picUrl1();
+        }catch (Exception e){
+
+        }
         SPUtil = new SharedPreferencesUtil(context);
         first = true;
     }
@@ -272,26 +276,32 @@ public class ChatFirebaseUtil {
                 }
 
                 SPUtil.setCurrentChat(context.getString(R.string.currentRoom), roomName);
-                item = new GridItem(0, targetUuid, targetUser.getSummaryUser(), targetPicurl);
-                // 상대방과의 거리 셋팅
-                DatabaseReference ref = FirebaseDatabase.getInstance().getReference(FireBaseUtil.currentLocationPath);
-                GeoFire geoFire = new GeoFire(ref);
-                final Location location = GPSInfo.getmInstance(context).getGPSLocation();
-                geoFire.getLocation(targetUuid, new LocationCallback() {
-                    @SuppressLint("DefaultLocale")
-                    @Override
-                    public void onLocationResult(String s, GeoLocation geoLocation) {
-                        Location targetLocation = new Location("");//provider name is unnecessary
-                        targetLocation.setLatitude(geoLocation.latitude);//your coords of course
-                        targetLocation.setLongitude(geoLocation.longitude);
-                        final float distance = location.distanceTo(targetLocation);
-                        item.setDistance(distance);
-                    }
+                try {
+                    item = new GridItem(0, targetUuid, targetUser.getSummaryUser(), targetPicurl);
+                    // 상대방과의 거리 셋팅
+                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference(FireBaseUtil.currentLocationPath);
+                    GeoFire geoFire = new GeoFire(ref);
+                    final Location location = GPSInfo.getmInstance(context).getGPSLocation();
+                    geoFire.getLocation(targetUuid, new LocationCallback() {
+                        @SuppressLint("DefaultLocale")
+                        @Override
+                        public void onLocationResult(String s, GeoLocation geoLocation) {
+                            Location targetLocation = new Location("");//provider name is unnecessary
+                            targetLocation.setLatitude(geoLocation.latitude);//your coords of course
+                            targetLocation.setLongitude(geoLocation.longitude);
+                            final float distance = location.distanceTo(targetLocation);
+                            item.setDistance(distance);
+                        }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                    }
-                });
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                        }
+                    });
+                }catch (Exception e){
+                    item = new GridItem(0,null,null,null);
+                    item.setUuid(targetUuid);
+                }
+
 
                 chatDatabaseRef = FirebaseDatabase.getInstance().getReference().child(chat).child(roomName);
                 // 처음 모든 메세지 읽음처리

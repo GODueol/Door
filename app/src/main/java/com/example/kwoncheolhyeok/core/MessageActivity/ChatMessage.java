@@ -39,7 +39,11 @@ public class ChatMessage {
         isMine = mine;
         isImage = image;
         this.item = item;
-        this.profileImage = item.getPicUrl();
+        try {
+            this.profileImage = item.getPicUrl();
+        }catch (Exception e){
+
+        }
     }
 
 
