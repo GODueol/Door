@@ -1,12 +1,9 @@
 package com.example.kwoncheolhyeok.core.PeopleFragment.FullImageViewPager;
 
-import android.annotation.TargetApi;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ScrollView;
 
 import com.bumptech.glide.Glide;
 import com.example.kwoncheolhyeok.core.R;
@@ -20,8 +17,6 @@ public class PagerPage extends android.support.v4.app.Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
-
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

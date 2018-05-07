@@ -213,6 +213,9 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         bodyTypePick.setText(user.getBodyType());
         introEditText.setText(user.getIntro());
 
+        introEditText.setEnabled(false);
+
+
         //소개 텍스트 맥스 숫자 제한 표시
         setVerification();
 
@@ -343,10 +346,6 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         int FLAG;
         if (isChecked) FLAG = View.VISIBLE;
         else FLAG = View.GONE;
-//        ageFilterLayout.setVisibility(FLAG);
-//        heightFilterLayout.setVisibility(FLAG);
-//        weightFilterLayout.setVisibility(FLAG);
-//        bodyTypeFilterLayout.setVisibility(FLAG);
         ageFilterLayout1.setVisibility(FLAG);
         heightFilterLayout1.setVisibility(FLAG);
         weightFilterLayout1.setVisibility(FLAG);

@@ -97,7 +97,6 @@ public class MainActivity extends AppCompatActivity
 
     private SharedPreferencesUtil SPUtil;
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 

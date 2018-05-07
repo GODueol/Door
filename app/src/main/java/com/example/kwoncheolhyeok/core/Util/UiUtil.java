@@ -12,7 +12,9 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.Settings;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
 import android.util.Log;
@@ -28,6 +30,8 @@ import com.example.kwoncheolhyeok.core.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.function.Consumer;
 
 /**
  * Created by gimbyeongjin on 2017. 10. 5..
@@ -141,6 +145,44 @@ public class UiUtil {
         }
     }
 
+    // TODO : 컨슈머로 만들어보기
+    /*
+    public void checkPostPrevent(Context context, Consumer<Boolean> consumer) {
+        FireBaseUtil.getInstance().getPreventsPost(DataContainer.getInstance().getUid()).child("releaseDate")
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        try {
+                            if(dataSnapshot.exists()){
+                                long releaseDate = dataSnapshot.getValue(Long.class);
+                                long currentTime = UiUtil.getInstance().getCurrentTime(context);
+
+                                if(releaseDate > currentTime){
+                                    Toast.makeText(context,
+                                            "포스트 사진 제재 당하셨기 때문에 " +
+                                                    new DateUtil(releaseDate).getDate2() + " 까지 프로필을 업로드 할 수 없습니다"
+                                            , Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+                            }
+
+                            // callback
+                            consumer.accept(dataSnapshot.exists());
+                            runnable.run();
+
+                        } catch (NotSetAutoTimeException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+    }
+*/
     public void checkPostPrevent(Context context, Runnable runnable) {
         FireBaseUtil.getInstance().getPreventsPost(DataContainer.getInstance().getUid()).child("releaseDate")
                 .addValueEventListener(new ValueEventListener() {
@@ -148,12 +190,8 @@ public class UiUtil {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         try {
                             if(dataSnapshot.exists()){
-                                Log.d("KBJ", "dataSnapshot : " + dataSnapshot.getValue());
                                 long releaseDate = dataSnapshot.getValue(Long.class);
                                 long currentTime = UiUtil.getInstance().getCurrentTime(context);
-
-                                Log.d("KBJ", "releaseDate : " + releaseDate);
-                                Log.d("KBJ", "currentTime : " + currentTime);
 
                                 if(releaseDate > currentTime){
                                     Toast.makeText(context,
@@ -188,12 +226,8 @@ public class UiUtil {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         try {
                             if(dataSnapshot.exists()){
-                                Log.d("KBJ", "dataSnapshot : " + dataSnapshot.getValue());
                                 long releaseDate = dataSnapshot.getValue(Long.class);
                                 long currentTime = UiUtil.getInstance().getCurrentTime(context);
-
-                                Log.d("KBJ", "releaseDate : " + releaseDate);
-                                Log.d("KBJ", "currentTime : " + currentTime);
 
                                 if(releaseDate > currentTime){
                                     Toast.makeText(context,
