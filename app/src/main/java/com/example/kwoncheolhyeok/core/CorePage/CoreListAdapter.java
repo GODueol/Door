@@ -245,59 +245,57 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                     @Override
                     public void onClick(final View view) {
                         // 포스트 제재 확인
-                        UiUtil.getInstance().checkPostPrevent(context, ()->{
-                            view.setClickable(false);
+                        view.setClickable(false);
 
-                            // 이미 코어가 올라가 있는 게시물인지 확인
-                            for(CoreListItem item : coreListItems){
-                                if(item.getCorePost().isCloud()) {
-                                    Toast.makeText(context, "이미 코어 클라우드 게시하였습니다", Toast.LENGTH_SHORT).show();
-                                    view.setClickable(true);
-                                    return;
-                                }
+                        // 이미 코어가 올라가 있는 게시물인지 확인
+                        for(CoreListItem item : coreListItems){
+                            if(item.getCorePost().isCloud()) {
+                                Toast.makeText(context, "이미 코어 클라우드 게시하였습니다", Toast.LENGTH_SHORT).show();
+                                view.setClickable(true);
+                                return;
                             }
+                        }
 
-                            // 클라우드 돌면서 100개 인지 확인
-                            // 100개면 1일 넘는 리스트 확인, 가장 오래된 날짜를 다이얼로그에 넘기고, 포스트키를 콜백에 넘김(삭제)
-                            // 100개고 1일 넘는것도 없으면, 가장 오래된 포스트 키를 다이얼로그에 넘김(언제 이후로 가능한지 출력)
-                            DataContainer.getInstance().getCoreCloudRef().addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
+                        // 클라우드 돌면서 100개 인지 확인
+                        // 100개면 1일 넘는 리스트 확인, 가장 오래된 날짜를 다이얼로그에 넘기고, 포스트키를 콜백에 넘김(삭제)
+                        // 100개고 1일 넘는것도 없으면, 가장 오래된 포스트 키를 다이얼로그에 넘김(언제 이후로 가능한지 출력)
+                        DataContainer.getInstance().getCoreCloudRef().addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
 
-                                    long oldestPostDate = Long.MAX_VALUE;   // 올릴수 있으면 MAX
-                                    String deletePostKey = null;
+                                long oldestPostDate = Long.MAX_VALUE;   // 올릴수 있으면 MAX
+                                String deletePostKey = null;
 
-                                    // 코어 클라우드 최대한계 확인
-                                    if(dataSnapshot.getChildrenCount() >= DataContainer.CoreCloudMax) {
+                                // 코어 클라우드 최대한계 확인
+                                if(dataSnapshot.getChildrenCount() >= DataContainer.CoreCloudMax) {
 
-                                        // 순회
-                                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                            CoreCloud coreCloud = snapshot.getValue(CoreCloud.class);
-                                            assert coreCloud != null;
-                                            if (coreCloud.getAttachDate() < oldestPostDate) {
-                                                oldestPostDate = coreCloud.getAttachDate();
-                                                deletePostKey = dataSnapshot.getKey();
-                                            }
+                                    // 순회
+                                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                        CoreCloud coreCloud = snapshot.getValue(CoreCloud.class);
+                                        assert coreCloud != null;
+                                        if (coreCloud.getAttachDate() < oldestPostDate) {
+                                            oldestPostDate = coreCloud.getAttachDate();
+                                            deletePostKey = dataSnapshot.getKey();
                                         }
-
-                                        // Toast.makeText(context, "100개의 포스트 중 24시간이 지난 포스트가 없어서 클라우드를 올릴수 없습니다.", Toast.LENGTH_SHORT).show();
                                     }
 
-                                    // 코어클라우드 결제 가능
-                                    //★☆★☆★☆★☆여기입니다요★☆★☆★☆★☆
-                                    if (dealDialogFragment != null && dealDialogFragment.getDialog() != null && dealDialogFragment.getDialog().isShowing()) return;
-                                    final String finalDeletePostKey = (oldestPostDate == Long.MAX_VALUE ? null : deletePostKey);
-                                    dealDialogFragment = new DealDialogFragment(oldestPostDate, () -> putCloudDialog(finalDeletePostKey));
-                                    dealDialogFragment.show(((AppCompatActivity) context).getSupportFragmentManager(), "");
-                                    view.setClickable(true);
+                                    // Toast.makeText(context, "100개의 포스트 중 24시간이 지난 포스트가 없어서 클라우드를 올릴수 없습니다.", Toast.LENGTH_SHORT).show();
                                 }
 
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
-                                    view.setClickable(true);
-                                }
+                                // 코어클라우드 결제 가능
+                                //★☆★☆★☆★☆여기입니다요★☆★☆★☆★☆
+                                if (dealDialogFragment != null && dealDialogFragment.getDialog() != null && dealDialogFragment.getDialog().isShowing()) return;
+                                final String finalDeletePostKey = (oldestPostDate == Long.MAX_VALUE ? null : deletePostKey);
+                                dealDialogFragment = new DealDialogFragment(oldestPostDate, () -> putCloudDialog(finalDeletePostKey));
+                                dealDialogFragment.show(((AppCompatActivity) context).getSupportFragmentManager(), "");
+                                view.setClickable(true);
+                            }
 
-                            });
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                                view.setClickable(true);
+                            }
+
                         });
                     }
 
@@ -458,7 +456,16 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 
                 switch (i) {
                     case R.id.edit:
-                        UiUtil.getInstance().checkPostPrevent(context, ()->{
+                        UiUtil.getInstance().checkPostPrevent(context, (isRelease, releaseDate)->{
+
+                            if(!isRelease) {
+                                Toast.makeText(context,
+                                        "포스트 사진 제재 당하셨기 때문에 " +
+                                                releaseDate + " 까지 프로필을 업로드 할 수 없습니다"
+                                        , Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+
                             Intent intent = new Intent(context, CoreWriteActivity.class);
                             intent.putExtra("cUuid", coreListItem.getcUuid());
                             intent.putExtra("postKey", coreListItem.getPostKey());

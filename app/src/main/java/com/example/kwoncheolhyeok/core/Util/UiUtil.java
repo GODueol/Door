@@ -12,12 +12,9 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
-import android.os.Build;
 import android.provider.Settings;
-import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.example.kwoncheolhyeok.core.CorePage.CoreActivity;
@@ -29,9 +26,8 @@ import com.example.kwoncheolhyeok.core.MessageActivity.util.DateUtil;
 import com.example.kwoncheolhyeok.core.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
-
-import java.util.function.Consumer;
 
 /**
  * Created by gimbyeongjin on 2017. 10. 5..
@@ -145,114 +141,49 @@ public class UiUtil {
         }
     }
 
-    // TODO : 컨슈머로 만들어보기
-    /*
-    public void checkPostPrevent(Context context, Consumer<Boolean> consumer) {
-        FireBaseUtil.getInstance().getPreventsPost(DataContainer.getInstance().getUid()).child("releaseDate")
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        try {
-                            if(dataSnapshot.exists()){
-                                long releaseDate = dataSnapshot.getValue(Long.class);
-                                long currentTime = UiUtil.getInstance().getCurrentTime(context);
-
-                                if(releaseDate > currentTime){
-                                    Toast.makeText(context,
-                                            "포스트 사진 제재 당하셨기 때문에 " +
-                                                    new DateUtil(releaseDate).getDate2() + " 까지 프로필을 업로드 할 수 없습니다"
-                                            , Toast.LENGTH_SHORT).show();
-                                    return;
-                                }
-                            }
-
-                            // callback
-                            consumer.accept(dataSnapshot.exists());
-                            runnable.run();
-
-                        } catch (NotSetAutoTimeException e) {
-                            e.printStackTrace();
-                        }
-
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
-    }
-*/
-    public void checkPostPrevent(Context context, Runnable runnable) {
-        FireBaseUtil.getInstance().getPreventsPost(DataContainer.getInstance().getUid()).child("releaseDate")
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        try {
-                            if(dataSnapshot.exists()){
-                                long releaseDate = dataSnapshot.getValue(Long.class);
-                                long currentTime = UiUtil.getInstance().getCurrentTime(context);
-
-                                if(releaseDate > currentTime){
-                                    Toast.makeText(context,
-                                            "포스트 사진 제재 당하셨기 때문에 " +
-                                                    new DateUtil(releaseDate).getDate2() + " 까지 프로필을 업로드 할 수 없습니다"
-                                            , Toast.LENGTH_SHORT).show();
-                                    return;
-                                }
-                            }
-
-                            // callback
-                            runnable.run();
-
-                        } catch (NotSetAutoTimeException e) {
-                            e.printStackTrace();
-                        }
-
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
+    public interface CheckPreventCallback {
+        void run(Boolean isRelease, String releaseDate);
     }
 
-
-    public void checkUserPrevent(Context context, Runnable runnable) {
-        FireBaseUtil.getInstance().getPreventsUser(DataContainer.getInstance().getUid()).child("releaseDate")
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        try {
-                            if(dataSnapshot.exists()){
-                                long releaseDate = dataSnapshot.getValue(Long.class);
-                                long currentTime = UiUtil.getInstance().getCurrentTime(context);
-
-                                if(releaseDate > currentTime){
-                                    Toast.makeText(context,
-                                            "프로필 사진 제재 당하셨기 때문에 " +
-                                                    new DateUtil(releaseDate).getDate2() + " 까지 프로필을 업로드 할 수 없습니다"
-                                            , Toast.LENGTH_SHORT).show();
-                                    return;
-                                }
-                            }
-
-                            // callback
-                            runnable.run();
-
-                        } catch (NotSetAutoTimeException e) {
-                            e.printStackTrace();
-                        }
-
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
+    public void checkPostPrevent(final Context context, final CheckPreventCallback callback) {
+        checkPrevent(context, FireBaseUtil.getInstance().getPreventsPost(DataContainer.getInstance().getUid()), callback);
     }
 
+    public void checkUserPrevent(final Context context, final CheckPreventCallback callback) {
+        checkPrevent(context, FireBaseUtil.getInstance().getPreventsUser(DataContainer.getInstance().getUid()), callback);
+    }
+
+    private void checkPrevent(final Context context, DatabaseReference reference, final CheckPreventCallback callback) {
+        reference.child("releaseDate").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                try {
+                    boolean isRelease = true;
+                    long releaseDate = 0;
+
+                    if(dataSnapshot.exists()) {
+                        releaseDate = dataSnapshot.getValue(Long.class);
+                        long currentTime = UiUtil.getInstance().getCurrentTime(context);
+                        if(releaseDate > currentTime){
+                            isRelease = false;
+                        }
+                    }
+
+                    // callback
+                    callback.run(isRelease, new DateUtil(releaseDate).getDate2());
+
+                } catch (NotSetAutoTimeException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
 
 }

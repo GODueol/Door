@@ -63,6 +63,7 @@ public class CoreActivity extends BlockBaseActivity {
     public CheckBox dontShowAgain;
 
 
+    @SuppressLint("LogNotTimber")
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -159,53 +160,62 @@ public class CoreActivity extends BlockBaseActivity {
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(view -> {
             // 포스트 제재 확인
-            UiUtil.getInstance().checkPostPrevent(CoreActivity.this, () ->
-                DataContainer.getInstance().getUserRef(cUuid).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        User cUser = dataSnapshot.getValue(User.class);
-
-                        if (cUser != null) {
-                            // CORE 주인 일반 회원
-                            if(cUser.getAccountType() == null || cUser.getAccountType().equals(DataContainer.ACCOUNT_TYPE.NORMAL)){
-                                // 100개 제한
-                                if(cUser.getCorePostCount() >= DataContainer.NORMAL_CORE_LIMIT){
-                                    Toast.makeText(CoreActivity.this, "Core 주인이 일반 계정이기 때문에 " + DataContainer.NORMAL_CORE_LIMIT + "초과하여 글을 추가할수 없습니다", Toast.LENGTH_SHORT).show();
-                                    return;
-                                }
-                            } else {
-                                // 300개 제한
-                                if(cUser.getCorePostCount() >= DataContainer.PLUS_CORE_LIMIT){
-                                    Toast.makeText(CoreActivity.this, DataContainer.NORMAL_CORE_LIMIT + "초과하여 글을 추가할수 없습니다", Toast.LENGTH_SHORT).show();
-                                    return;
-                                }
-                            }
-
-                            // 블럭 관계 확인
-                            if (cUser.getBlockUsers().containsKey(dc.getUid())) {
-                                Toast.makeText(CoreActivity.this, "포스트를 작성할 수 없습니다.", Toast.LENGTH_SHORT).show();
-                                finish();
-                                return;
-                            } else if (!cUuid.equals(dc.getUid()) && cUser.isAnonymityProhibition()) {
-                                Toast.makeText(CoreActivity.this, "포스트를 작성할 수 없습니다.", Toast.LENGTH_SHORT).show();
-                                return;
-                            }
+            UiUtil.getInstance().checkPostPrevent(CoreActivity.this, (isRelease, releaseDate) -> {
+                        if(!isRelease) {
+                            Toast.makeText(CoreActivity.this,
+                                    "포스트 사진 제재 당하셨기 때문에 " +
+                                            releaseDate + " 까지 프로필을 업로드 할 수 없습니다"
+                                    , Toast.LENGTH_SHORT).show();
+                            return;
                         }
 
-                        // 자신, 타인 액티비티 구별
-                        Intent i;
-                        i = new Intent(CoreActivity.this, CoreWriteActivity.class);
-                        i.putExtra("cUuid", cUuid);
+                        DataContainer.getInstance().getUserRef(cUuid).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                User cUser = dataSnapshot.getValue(User.class);
 
-                        startActivityForResult(i, WRITE_SUCC);
+                                if (cUser != null) {
+                                    // CORE 주인 일반 회원
+                                    if(cUser.getAccountType() == null || cUser.getAccountType().equals(DataContainer.ACCOUNT_TYPE.NORMAL)){
+                                        // 100개 제한
+                                        if(cUser.getCorePostCount() >= DataContainer.NORMAL_CORE_LIMIT){
+                                            Toast.makeText(CoreActivity.this, "Core 주인이 일반 계정이기 때문에 " + DataContainer.NORMAL_CORE_LIMIT + "초과하여 글을 추가할수 없습니다", Toast.LENGTH_SHORT).show();
+                                            return;
+                                        }
+                                    } else {
+                                        // 300개 제한
+                                        if(cUser.getCorePostCount() >= DataContainer.PLUS_CORE_LIMIT){
+                                            Toast.makeText(CoreActivity.this, DataContainer.NORMAL_CORE_LIMIT + "초과하여 글을 추가할수 없습니다", Toast.LENGTH_SHORT).show();
+                                            return;
+                                        }
+                                    }
 
+                                    // 블럭 관계 확인
+                                    if (cUser.getBlockUsers().containsKey(dc.getUid())) {
+                                        Toast.makeText(CoreActivity.this, "포스트를 작성할 수 없습니다.", Toast.LENGTH_SHORT).show();
+                                        finish();
+                                        return;
+                                    } else if (!cUuid.equals(dc.getUid()) && cUser.isAnonymityProhibition()) {
+                                        Toast.makeText(CoreActivity.this, "포스트를 작성할 수 없습니다.", Toast.LENGTH_SHORT).show();
+                                        return;
+                                    }
+                                }
+
+                                // 자신, 타인 액티비티 구별
+                                Intent i;
+                                i = new Intent(CoreActivity.this, CoreWriteActivity.class);
+                                i.putExtra("cUuid", cUuid);
+
+                                startActivityForResult(i, WRITE_SUCC);
+
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
                     }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                })
             );
         });
     }

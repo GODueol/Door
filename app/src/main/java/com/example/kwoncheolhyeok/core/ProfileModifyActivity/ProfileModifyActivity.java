@@ -213,8 +213,16 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         bodyTypePick.setText(user.getBodyType());
         introEditText.setText(user.getIntro());
 
-        introEditText.setEnabled(false);
-
+        // 제재 시, 개인정보 바꾸지 못하도록
+        // TODO : 눌렀을 때 제재조치기간인지 표시하는 기능을 넣어야하는지 알아보기
+        UiUtil.getInstance().checkUserPrevent(ProfileModifyActivity.this,(isRelease, releaseDate) ->{
+            _idText.setEnabled(isRelease);
+            agePick.setEnabled(isRelease);
+            heightPick.setEnabled(isRelease);
+            weightPick.setEnabled(isRelease);
+            bodyTypePick.setEnabled(isRelease);
+            introEditText.setEnabled(isRelease);
+        });
 
         //소개 텍스트 맥스 숫자 제한 표시
         setVerification();
@@ -235,7 +243,16 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         galleryPick = new GalleryPick(ProfileModifyActivity.this);
         View.OnClickListener onProfilePicClickListener = v -> {
             // 제재 기간인지 확인
-            UiUtil.getInstance().checkUserPrevent(ProfileModifyActivity.this,() -> {
+            UiUtil.getInstance().checkUserPrevent(ProfileModifyActivity.this,(isRelease, releaseDate) -> {
+                if(!isRelease){
+
+                    Toast.makeText(ProfileModifyActivity.this,
+                            "프로필 사진 제재 당하셨기 때문에 " +
+                                    releaseDate + " 까지 프로필을 업로드 할 수 없습니다"
+                            , Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 modifyingPic = (ImageView) v;
                 galleryPick.goToGallery();
                 profilePic1.setClickable(false);
@@ -354,6 +371,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
     }
 
     //implements 부분 구현
+    @SuppressLint("LogNotTimber")
     @Override
     public void onValueChange(NumberPicker numberPicker, int oldVal, int newVal) {
         Log.i("value is", "" + newVal);
@@ -623,6 +641,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         return profilePicPath;
     }
 
+    @SuppressLint("LogNotTimber")
     public void save(View view) {
         getInstance().startProgressDialog(this);
 
