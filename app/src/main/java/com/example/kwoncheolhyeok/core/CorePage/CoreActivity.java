@@ -1,9 +1,9 @@
 package com.example.kwoncheolhyeok.core.CorePage;
 
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -13,7 +13,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.support.v7.widget.Toolbar;
-import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -32,6 +31,7 @@ import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.BaseActivity.BlockBaseActivity;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.SharedPreferencesUtil;
+import com.example.kwoncheolhyeok.core.Util.UiUtil;
 import com.example.kwoncheolhyeok.core.Util.WrapContentLinearLayoutManager;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -157,10 +157,9 @@ public class CoreActivity extends BlockBaseActivity {
 
     public void setFab() {
         fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
+        fab.setOnClickListener(view -> {
+            // 포스트 제재 확인
+            UiUtil.getInstance().checkPostPrevent(CoreActivity.this, () ->
                 DataContainer.getInstance().getUserRef(cUuid).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -206,8 +205,8 @@ public class CoreActivity extends BlockBaseActivity {
                     public void onCancelled(DatabaseError databaseError) {
 
                     }
-                });
-            }
+                })
+            );
         });
     }
 
@@ -354,31 +353,28 @@ public class CoreActivity extends BlockBaseActivity {
         // 코어 게시물 위반 및 제재 사항 고지 다이얼로그
         AlertDialog.Builder adb = new AlertDialog.Builder(this);
         LayoutInflater adbInflater = LayoutInflater.from(this);
-        View eulaLayout = adbInflater.inflate(R.layout.core_notice_dialog, null);
+        @SuppressLint("InflateParams") View eulaLayout = adbInflater.inflate(R.layout.core_notice_dialog, null);
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
         String skipMessage = settings.getString("skipMessage", "NOT checked");
 
-        dontShowAgain = (CheckBox) eulaLayout.findViewById(R.id.check_access);
+        dontShowAgain = eulaLayout.findViewById(R.id.check_access);
         adb.setView(eulaLayout);
 
-        adb.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                String checkBoxResult = "NOT checked";
+        adb.setPositiveButton("Ok", (dialog, which) -> {
+            String checkBoxResult = "NOT checked";
 
-                if (dontShowAgain.isChecked()) {
-                    checkBoxResult = "checked";
-                }
-
-                SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-                SharedPreferences.Editor editor = settings.edit();
-
-                editor.putString("skipMessage", checkBoxResult);
-                editor.commit();
-
-                // Do what you want to do on "OK" action
-
-                return;
+            if (dontShowAgain.isChecked()) {
+                checkBoxResult = "checked";
             }
+
+            SharedPreferences settings1 = getSharedPreferences(PREFS_NAME, 0);
+            SharedPreferences.Editor editor = settings1.edit();
+
+            editor.putString("skipMessage", checkBoxResult);
+            editor.apply();
+
+            // Do what you want to do on "OK" action
+
         });
 
 

@@ -15,6 +15,7 @@ import android.net.Uri;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.example.kwoncheolhyeok.core.CorePage.CoreActivity;
@@ -22,7 +23,11 @@ import com.example.kwoncheolhyeok.core.Entity.CorePost;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.Exception.NotSetAutoTimeException;
 import com.example.kwoncheolhyeok.core.LoginActivity.IntroActivity;
+import com.example.kwoncheolhyeok.core.MessageActivity.util.DateUtil;
 import com.example.kwoncheolhyeok.core.R;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
 /**
  * Created by gimbyeongjin on 2017. 10. 5..
@@ -135,5 +140,85 @@ public class UiUtil {
             }
         }
     }
+
+    public void checkPostPrevent(Context context, Runnable runnable) {
+        FireBaseUtil.getInstance().getPreventsPost(DataContainer.getInstance().getUid()).child("releaseDate")
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        try {
+                            if(dataSnapshot.exists()){
+                                Log.d("KBJ", "dataSnapshot : " + dataSnapshot.getValue());
+                                long releaseDate = dataSnapshot.getValue(Long.class);
+                                long currentTime = UiUtil.getInstance().getCurrentTime(context);
+
+                                Log.d("KBJ", "releaseDate : " + releaseDate);
+                                Log.d("KBJ", "currentTime : " + currentTime);
+
+                                if(releaseDate > currentTime){
+                                    Toast.makeText(context,
+                                            "포스트 사진 제재 당하셨기 때문에 " +
+                                                    new DateUtil(releaseDate).getDate2() + " 까지 프로필을 업로드 할 수 없습니다"
+                                            , Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+                            }
+
+                            // callback
+                            runnable.run();
+
+                        } catch (NotSetAutoTimeException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+    }
+
+
+    public void checkUserPrevent(Context context, Runnable runnable) {
+        FireBaseUtil.getInstance().getPreventsUser(DataContainer.getInstance().getUid()).child("releaseDate")
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        try {
+                            if(dataSnapshot.exists()){
+                                Log.d("KBJ", "dataSnapshot : " + dataSnapshot.getValue());
+                                long releaseDate = dataSnapshot.getValue(Long.class);
+                                long currentTime = UiUtil.getInstance().getCurrentTime(context);
+
+                                Log.d("KBJ", "releaseDate : " + releaseDate);
+                                Log.d("KBJ", "currentTime : " + currentTime);
+
+                                if(releaseDate > currentTime){
+                                    Toast.makeText(context,
+                                            "프로필 사진 제재 당하셨기 때문에 " +
+                                                    new DateUtil(releaseDate).getDate2() + " 까지 프로필을 업로드 할 수 없습니다"
+                                            , Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+                            }
+
+                            // callback
+                            runnable.run();
+
+                        } catch (NotSetAutoTimeException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+    }
+
 
 }

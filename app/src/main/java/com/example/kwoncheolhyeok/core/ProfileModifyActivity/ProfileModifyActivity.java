@@ -29,8 +29,6 @@ import com.bumptech.glide.Glide;
 import com.example.kwoncheolhyeok.core.Entity.IntBoundary;
 import com.example.kwoncheolhyeok.core.Entity.StringBoundary;
 import com.example.kwoncheolhyeok.core.Entity.User;
-import com.example.kwoncheolhyeok.core.Exception.NotSetAutoTimeException;
-import com.example.kwoncheolhyeok.core.MessageActivity.util.DateUtil;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
@@ -39,9 +37,6 @@ import com.example.kwoncheolhyeok.core.Util.UiUtil;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -237,8 +232,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         galleryPick = new GalleryPick(ProfileModifyActivity.this);
         View.OnClickListener onProfilePicClickListener = v -> {
             // 제재 기간인지 확인
-            // checkPrevent
-            checkPrevent(() -> {
+            UiUtil.getInstance().checkUserPrevent(ProfileModifyActivity.this,() -> {
                 modifyingPic = (ImageView) v;
                 galleryPick.goToGallery();
                 profilePic1.setClickable(false);
@@ -248,6 +242,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
             });
 
         };
+
         profilePic1.setOnClickListener(onProfilePicClickListener);
         profilePic2.setOnClickListener(onProfilePicClickListener);
         profilePic3.setOnClickListener(onProfilePicClickListener);
@@ -316,45 +311,6 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         setOnDelPicBtnClickListener(delete4Image, profilePic4);
 
 
-    }
-
-    private void checkPrevent(Runnable r) {
-        FireBaseUtil.getInstance().getPreventsUser(DataContainer.getInstance().getUid()).child("releaseDate")
-                .addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                try {
-                    if(dataSnapshot.exists()){
-                        Log.d("KBJ", "dataSnapshot : " + dataSnapshot.getValue());
-                        long releaseDate = dataSnapshot.getValue(Long.class);
-                        long currentTime = UiUtil.getInstance().getCurrentTime(ProfileModifyActivity.this);
-
-                        Log.d("KBJ", "releaseDate : " + releaseDate);
-                        Log.d("KBJ", "currentTime : " + currentTime);
-
-                        if(releaseDate > currentTime){
-                            Toast.makeText(ProfileModifyActivity.this,
-                                    "프로필 사진 제재 당하셨기 때문에 " +
-                                    new DateUtil(releaseDate).getDate2() + " 까지 프로필을 업로드 할 수 없습니다"
-                                    , Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-                    }
-
-                    // callback
-                    r.run();
-
-                } catch (NotSetAutoTimeException e) {
-                    e.printStackTrace();
-                }
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
     }
 
 

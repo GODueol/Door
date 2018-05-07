@@ -9,12 +9,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -35,7 +33,6 @@ import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
 import com.example.kwoncheolhyeok.core.Util.GalleryPick;
 import com.example.kwoncheolhyeok.core.Util.UiUtil;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
@@ -116,7 +113,7 @@ public class CoreWriteActivity extends BlockBaseActivity {
 
         mUuid = DataContainer.getInstance().getUid();
 
-        toolbar = findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         // 툴바 뒤로가기 버튼
@@ -124,25 +121,25 @@ public class CoreWriteActivity extends BlockBaseActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true); //홈 아이콘을 숨김처리합니다.
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
 
-        pictureFab_layout = findViewById(R.id.pictureFab_layout);
-        audioFab_layout = findViewById(R.id.audioFab_layout);
-        fab = findViewById(R.id.fab);
-        picture_fab = findViewById(R.id.fab2);
-        audio_fab = findViewById(R.id.fab3);
+        pictureFab_layout = (LinearLayout) findViewById(R.id.pictureFab_layout);
+        audioFab_layout = (LinearLayout) findViewById(R.id.audioFab_layout);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+        picture_fab = (FloatingActionButton) findViewById(R.id.fab2);
+        audio_fab = (FloatingActionButton) findViewById(R.id.fab3);
         fabBGLayout = findViewById(R.id.fabBGLayout);
-        editImage = findViewById(R.id.edit_img);
-        saveBtn = findViewById(R.id.save);
-        textContents = findViewById(R.id.edit_txt);
-        edit_audio_layout = findViewById(R.id.edit_audio_layout);
-        image_x_btn = findViewById(R.id.image_x_btn);
-        image_edit_layout = findViewById(R.id.image_edit_layout);
+        editImage = (ImageView) findViewById(R.id.edit_img);
+        saveBtn = (ImageButton) findViewById(R.id.save);
+        textContents = (TextView) findViewById(R.id.edit_txt);
+        edit_audio_layout = (RelativeLayout) findViewById(R.id.edit_audio_layout);
+        image_x_btn = (ImageButton) findViewById(R.id.image_x_btn);
+        image_edit_layout = (RelativeLayout) findViewById(R.id.image_edit_layout);
 
-        textCurrentPosition = findViewById(R.id.textView_currentPosion);
-        textMaxTime = findViewById(R.id.textView_maxTime);
-        startAndPause = findViewById(R.id.button_start_pause);
-        seekBar = findViewById(R.id.seekBar);
+        textCurrentPosition = (TextView) findViewById(R.id.textView_currentPosion);
+        textMaxTime = (TextView) findViewById(R.id.textView_maxTime);
+        startAndPause = (ToggleButton) findViewById(R.id.button_start_pause);
+        seekBar = (SeekBar) findViewById(R.id.seekBar);
 
-        sound_x_btn = findViewById(R.id.sound_x_btn);
+        sound_x_btn = (ImageButton) findViewById(R.id.sound_x_btn);
 
         // 본인, 타인 구분
         if (isAnonymousPost()) {    // 타인
@@ -152,90 +149,73 @@ public class CoreWriteActivity extends BlockBaseActivity {
             textContents.setHint("익명으로 글을 남깁니다. 모욕적인 글 작성 시 해당 코어 주인에게 차단당할 수 있습니다.");
         }
 
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!isFABOpen) {
-                    showFABMenu();
-                } else {
-                    closeFABMenu();
-                }
-            }
-        });
-
-        fabBGLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        fab.setOnClickListener(view -> {
+            if (!isFABOpen) {
+                showFABMenu();
+            } else {
                 closeFABMenu();
             }
         });
 
+        fabBGLayout.setOnClickListener(view -> closeFABMenu());
+
         // Get Picture Btn Set
-        pictureFab_layout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                galleryPick = new GalleryPick(CoreWriteActivity.this).goToGallery();
-                pictureFab_layout.setClickable(false);
-            }
+        pictureFab_layout.setOnClickListener(view -> {
+            galleryPick = new GalleryPick(CoreWriteActivity.this).goToGallery();
+            pictureFab_layout.setClickable(false);
         });
 
-        saveBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        saveBtn.setOnClickListener(view -> {
 
-                // 차단관계인 경우 불가능
-                if (DataContainer.getInstance().getUser().getBlockMeUsers().containsKey(cUuid)) {// 차단
-                    Toast.makeText(CoreWriteActivity.this, "차단으로 인해 익명 포스트를 남길 수 없습니다", Toast.LENGTH_SHORT).show();
-                    finish();
-                    return;
+            // 차단관계인 경우 불가능
+            if (DataContainer.getInstance().getUser().getBlockMeUsers().containsKey(cUuid)) {// 차단
+                Toast.makeText(CoreWriteActivity.this, "차단으로 인해 익명 포스트를 남길 수 없습니다", Toast.LENGTH_SHORT).show();
+                finish();
+                return;
+            }
+
+            // 답변 검사
+            FirebaseDatabase.getInstance().getReference().child("posts").child(cUuid).child(postKey).child("reply").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    // 답변이 달린경우
+                    if (dataSnapshot.getValue() != null) {
+                        if (isAnonymousPost()) {
+                            Toast.makeText(CoreWriteActivity.this, "답변이 달린 경우 글 내용을 수정할 수 없습니다.", Toast.LENGTH_SHORT).show();
+                            finish();
+                            return;
+                        }
+                    }
+                    saveCore();
                 }
 
-                // 답변 검사
-                FirebaseDatabase.getInstance().getReference().child("posts").child(cUuid).child(postKey).child("reply").addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        // 답변이 달린경우
-                        if (dataSnapshot.getValue() != null) {
-                            if (isAnonymousPost()) {
-                                Toast.makeText(CoreWriteActivity.this, "답변이 달린 경우 글 내용을 수정할 수 없습니다.", Toast.LENGTH_SHORT).show();
-                                finish();
-                                return;
-                            }
-                        }
-                        saveCore();
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        Toast.makeText(CoreWriteActivity.this, databaseError.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Toast.makeText(CoreWriteActivity.this, databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
         });
 
-        audioFab_layout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        audioFab_layout.setOnClickListener(view -> {
 
-                // 다이얼로그 녹음
-                recordFilePath = Environment.getExternalStorageDirectory() + "/core_recorded_audio.wav";
-                int color = getResources().getColor(R.color.white);
-                AndroidAudioRecorder.with(CoreWriteActivity.this)
-                        // Required
-                        .setFilePath(recordFilePath)
-                        .setColor(color)
-                        .setRequestCode(REQUEST_RECORD)
+            // 다이얼로그 녹음
+            recordFilePath = Environment.getExternalStorageDirectory() + "/core_recorded_audio.wav";
+            int color = getResources().getColor(R.color.white);
+            AndroidAudioRecorder.with(CoreWriteActivity.this)
+                    // Required
+                    .setFilePath(recordFilePath)
+                    .setColor(color)
+                    .setRequestCode(REQUEST_RECORD)
 
-                        // Optional
-                        .setSource(AudioSource.MIC)
-                        .setChannel(AudioChannel.STEREO)
-                        .setSampleRate(AudioSampleRate.HZ_48000)
-                        .setAutoStart(true)
-                        .setKeepDisplayOn(true)
+                    // Optional
+                    .setSource(AudioSource.MIC)
+                    .setChannel(AudioChannel.STEREO)
+                    .setSampleRate(AudioSampleRate.HZ_48000)
+                    .setAutoStart(true)
+                    .setKeepDisplayOn(true)
 
-                        // Start recording
-                        .record();
-            }
+                    // Start recording
+                    .record();
         });
 
         // edit 판별
@@ -285,13 +265,10 @@ public class CoreWriteActivity extends BlockBaseActivity {
             });
         }
 
-        image_x_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // 사진 삭제
-                image_edit_layout.setVisibility(View.GONE);
-                editImageUri = null;
-            }
+        image_x_btn.setOnClickListener(view -> {
+            // 사진 삭제
+            image_edit_layout.setVisibility(View.GONE);
+            editImageUri = null;
         });
 
 
@@ -302,25 +279,19 @@ public class CoreWriteActivity extends BlockBaseActivity {
 
         mediaPlayer = new MediaPlayer();
 
-        startAndPause.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b) {
-                    doStart();
-                } else {
-                    doPause();
-                }
+        startAndPause.setOnCheckedChangeListener((compoundButton, b) -> {
+            if (b) {
+                doStart();
+            } else {
+                doPause();
             }
         });
 
-        sound_x_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // 음성 삭제
-                startAndPause.setChecked(false);
-                edit_audio_layout.setVisibility(View.GONE);
-                soundUri = null;
-            }
+        sound_x_btn.setOnClickListener(view -> {
+            // 음성 삭제
+            startAndPause.setChecked(false);
+            edit_audio_layout.setVisibility(View.GONE);
+            soundUri = null;
         });
 
     }
@@ -339,12 +310,9 @@ public class CoreWriteActivity extends BlockBaseActivity {
 
         corePost.setText(textContents.getText().toString());
         Task<Void> postUploadTask = postRef.setValue(corePost);
-        tasks.put(postUploadTask, new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                // addCorePostCount
-                if (!isEdit) FireBaseUtil.getInstance().syncCorePostCount(cUuid);
-            }
+        tasks.put(postUploadTask, (OnSuccessListener<Void>) aVoid -> {
+            // addCorePostCount
+            if (!isEdit) FireBaseUtil.getInstance().syncCorePostCount(cUuid);
         });
 
         // image
@@ -371,23 +339,20 @@ public class CoreWriteActivity extends BlockBaseActivity {
         // 모든 비동기 호출이 다 끝낫을 때
         for (Task task : tasks.keySet()) {
             task.addOnSuccessListener(tasks.get(task));
-            task.addOnCompleteListener(new OnCompleteListener() {
-                @Override
-                public void onComplete(@NonNull Task taskRtn) {
-                    for (Task task : tasks.keySet()) {
-                        if (!task.isComplete()) return;
-                    }
-                    if(isAnonymousPost()){
-                       // 익명게시글이면
-                        AlarmUtil.getInstance().sendAlarm(getApplicationContext(),"Post","UnKnown",corePost,postKey,cUuid,cUuid);
-                    }
-
-                    // 클라우드
-                    UiUtil.getInstance().noticeModifyToCloud(corePost, postKey, CoreWriteActivity.this);
-
-                    setResult(Activity.RESULT_OK);
-                    finish();
+            task.addOnCompleteListener(taskRtn -> {
+                for (Task task1 : tasks.keySet()) {
+                    if (!task1.isComplete()) return;
                 }
+                if(isAnonymousPost()){
+                   // 익명게시글이면
+                    AlarmUtil.getInstance().sendAlarm(getApplicationContext(),"Post","UnKnown",corePost,postKey,cUuid,cUuid);
+                }
+
+                // 클라우드
+                UiUtil.getInstance().noticeModifyToCloud(corePost, postKey, CoreWriteActivity.this);
+
+                setResult(Activity.RESULT_OK);
+                finish();
             });
         }
     }
@@ -509,46 +474,25 @@ public class CoreWriteActivity extends BlockBaseActivity {
     private void uploadPicture() throws Exception {
         final StorageReference spaceRef = storageRef.child("posts").child(cUuid).child(postKey).child("picture");
         UploadTask uploadTask = galleryPick.upload(spaceRef);
-        tasks.put(uploadTask, new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                postRef.child("pictureUrl").setValue(taskSnapshot.getDownloadUrl().toString());
-            }
-        });
+        tasks.put(uploadTask, (OnSuccessListener<UploadTask.TaskSnapshot>) taskSnapshot -> postRef.child("pictureUrl").setValue(taskSnapshot.getDownloadUrl().toString()));
     }
 
     private void deletePicture() {
         final StorageReference spaceRef = storageRef.child("posts").child(cUuid).child(postKey).child("picture");
         Task task = spaceRef.delete();
-        tasks.put(task, new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                postRef.child("pictureUrl").setValue(null);
-            }
-        });
+        tasks.put(task, (OnSuccessListener<UploadTask.TaskSnapshot>) taskSnapshot -> postRef.child("pictureUrl").setValue(null));
     }
 
     private void uploadSound() {
         final StorageReference spaceRef = storageRef.child("posts").child(cUuid).child(postKey).child("sound");
         UploadTask uploadTask = spaceRef.putFile(soundUri);
-        tasks.put(uploadTask, new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
-                postRef.child("soundUrl").setValue(taskSnapshot.getDownloadUrl().toString());
-            }
-        });
+        tasks.put(uploadTask, (OnSuccessListener<UploadTask.TaskSnapshot>) taskSnapshot -> postRef.child("soundUrl").setValue(taskSnapshot.getDownloadUrl().toString()));
     }
 
     private void deleteSound() {
         final StorageReference spaceRef = storageRef.child("posts").child(cUuid).child(postKey).child("sound");
         Task task = spaceRef.delete();
-        tasks.put(task, new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                postRef.child("soundUrl").setValue(null);
-            }
-        });
+        tasks.put(task, (OnSuccessListener<UploadTask.TaskSnapshot>) taskSnapshot -> postRef.child("soundUrl").setValue(null));
     }
 
     @Override
