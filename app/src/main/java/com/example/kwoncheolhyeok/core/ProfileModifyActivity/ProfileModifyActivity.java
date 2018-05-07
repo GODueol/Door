@@ -2,7 +2,6 @@ package com.example.kwoncheolhyeok.core.ProfileModifyActivity;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,7 +9,6 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
-import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -31,16 +29,19 @@ import com.bumptech.glide.Glide;
 import com.example.kwoncheolhyeok.core.Entity.IntBoundary;
 import com.example.kwoncheolhyeok.core.Entity.StringBoundary;
 import com.example.kwoncheolhyeok.core.Entity.User;
+import com.example.kwoncheolhyeok.core.Exception.NotSetAutoTimeException;
+import com.example.kwoncheolhyeok.core.MessageActivity.util.DateUtil;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
 import com.example.kwoncheolhyeok.core.Util.GalleryPick;
 import com.example.kwoncheolhyeok.core.Util.UiUtil;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -164,7 +165,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         setContentView(R.layout.profile_modify_activity_main);
         ButterKnife.bind(this);
 
-        toolbar = findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayShowTitleEnabled(false); //툴바 안의 앱네임 안보이게
@@ -172,102 +173,40 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         getSupportActionBar().setDisplayShowHomeEnabled(true); //홈 아이콘을 숨김처리합니다.
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
 
-//        focusview.requestFocus();
+        agePick = (TextView) findViewById(R.id.numberPicker1);
+        agePick.setOnClickListener(v -> show_numPick());
 
-        agePick = findViewById(R.id.numberPicker1);
-        agePick.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                show_numPick();
-            }
-        });
+        heightPick = (TextView) findViewById(R.id.numberPicker2);
+        heightPick.setOnClickListener(v -> show_numPick());
 
-        heightPick = findViewById(R.id.numberPicker2);
-        heightPick.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                show_numPick();
-            }
-        });
+        weightPick = (TextView) findViewById(R.id.numberPicker3);
+        weightPick.setOnClickListener(v -> show_numPick());
 
-        weightPick = findViewById(R.id.numberPicker3);
-        weightPick.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                show_numPick();
-            }
-        });
-
-        bodyTypePick = findViewById(R.id.numberPicker4);
-        bodyTypePick.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                show_numPick();
-            }
-        });
+        bodyTypePick = (TextView) findViewById(R.id.numberPicker4);
+        bodyTypePick.setOnClickListener(v -> show_numPick());
 
         ImageView[] profilePics = new ImageView[]{profilePic1, profilePic2, profilePic3, profilePic4};
 
         // 필터 다이얼로그 열기
-        min_age_filter = findViewById(R.id.min_age_filter);
-        min_age_filter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                show(min_age_filter, max_age_filter, FILTER.AGE);
-            }
-        });
-        max_age_filter = findViewById(R.id.max_age_filter);
-        max_age_filter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                show(min_age_filter, max_age_filter, FILTER.AGE);
-            }
-        });
+        min_age_filter = (TextView) findViewById(R.id.min_age_filter);
+        min_age_filter.setOnClickListener(v -> show(min_age_filter, max_age_filter, FILTER.AGE));
+        max_age_filter = (TextView) findViewById(R.id.max_age_filter);
+        max_age_filter.setOnClickListener(v -> show(min_age_filter, max_age_filter, FILTER.AGE));
 
-        min_height_filter = findViewById(R.id.min_height_filter);
-        min_height_filter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                show(min_height_filter, max_height_filter, FILTER.HEIGHT);
-            }
-        });
-        max_height_filter = findViewById(R.id.max_height_filter);
-        max_height_filter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                show(min_height_filter, max_height_filter, FILTER.HEIGHT);
-            }
-        });
+        min_height_filter = (TextView) findViewById(R.id.min_height_filter);
+        min_height_filter.setOnClickListener(v -> show(min_height_filter, max_height_filter, FILTER.HEIGHT));
+        max_height_filter = (TextView) findViewById(R.id.max_height_filter);
+        max_height_filter.setOnClickListener(v -> show(min_height_filter, max_height_filter, FILTER.HEIGHT));
 
-        min_weight_filter = findViewById(R.id.min_weight_filter);
-        min_weight_filter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                show(min_weight_filter, max_weight_filter, FILTER.WEIGHT);
-            }
-        });
-        max_weight_filter = findViewById(R.id.max_weight_filter);
-        max_weight_filter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                show(min_weight_filter, max_weight_filter, FILTER.WEIGHT);
-            }
-        });
+        min_weight_filter = (TextView) findViewById(R.id.min_weight_filter);
+        min_weight_filter.setOnClickListener(v -> show(min_weight_filter, max_weight_filter, FILTER.WEIGHT));
+        max_weight_filter = (TextView) findViewById(R.id.max_weight_filter);
+        max_weight_filter.setOnClickListener(v -> show(min_weight_filter, max_weight_filter, FILTER.WEIGHT));
 
-        min_bodytype_filter = findViewById(R.id.min_bodytype_filter);
-        min_bodytype_filter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showBodyType();
-            }
-        });
-        max_bodytype_filter = findViewById(R.id.max_bodytype_filter);
-        max_bodytype_filter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showBodyType();
-            }
-        });
+        min_bodytype_filter = (TextView) findViewById(R.id.min_bodytype_filter);
+        min_bodytype_filter.setOnClickListener(v -> showBodyType());
+        max_bodytype_filter = (TextView) findViewById(R.id.max_bodytype_filter);
+        max_bodytype_filter.setOnClickListener(v -> showBodyType());
 
 
         // 개인정보 Setting
@@ -296,21 +235,18 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 
         // Set Event of Getting Picture
         galleryPick = new GalleryPick(ProfileModifyActivity.this);
-        View.OnClickListener onProfilePicClickListener = new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
+        View.OnClickListener onProfilePicClickListener = v -> {
+            // 제재 기간인지 확인
+            // checkPrevent
+            checkPrevent(() -> {
                 modifyingPic = (ImageView) v;
-
-
                 galleryPick.goToGallery();
-
                 profilePic1.setClickable(false);
                 profilePic2.setClickable(false);
                 profilePic3.setClickable(false);
                 profilePic4.setClickable(false);
+            });
 
-            }
         };
         profilePic1.setOnClickListener(onProfilePicClickListener);
         profilePic2.setOnClickListener(onProfilePicClickListener);
@@ -352,12 +288,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         /* filter_switch */
         filterSwitch.setChecked(user.isUseFilter());
         setVisibilityFilterLayout(filterSwitch.isChecked());
-        filterSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                setVisibilityFilterLayout(isChecked);
-            }
-        });
+        filterSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> setVisibilityFilterLayout(isChecked));
 
         /* pic lock */
         lock2Toggle.setChecked(user.getIsLockPics().getIsLockPic2());
@@ -365,17 +296,14 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         lock4Toggle.setChecked(user.getIsLockPics().getIsLockPic4());
 
         /* lock change event */
-        CompoundButton.OnCheckedChangeListener listener = new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                String msg;
-                if(b){  // True 잠금
-                    msg = "이 사진을 비공개 합니다.";
-                } else {
-                    msg = "이 사진을 전체공개 합니다";
-                }
-                Toast.makeText(ProfileModifyActivity.this, msg, Toast.LENGTH_SHORT).show();
+        CompoundButton.OnCheckedChangeListener listener = (compoundButton, b) -> {
+            String msg;
+            if(b){  // True 잠금
+                msg = "이 사진을 비공개 합니다.";
+            } else {
+                msg = "이 사진을 전체공개 합니다";
             }
+            Toast.makeText(ProfileModifyActivity.this, msg, Toast.LENGTH_SHORT).show();
         };
         lock2Toggle.setOnCheckedChangeListener(listener);
         lock3Toggle.setOnCheckedChangeListener(listener);
@@ -390,26 +318,54 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 
     }
 
+    private void checkPrevent(Runnable r) {
+        FireBaseUtil.getInstance().getPreventsUser(DataContainer.getInstance().getUid()).child("releaseDate")
+                .addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                try {
+                    if(dataSnapshot.exists()){
+                        Log.d("KBJ", "dataSnapshot : " + dataSnapshot.getValue());
+                        long releaseDate = dataSnapshot.getValue(Long.class);
+                        long currentTime = UiUtil.getInstance().getCurrentTime(ProfileModifyActivity.this);
+
+                        Log.d("KBJ", "releaseDate : " + releaseDate);
+                        Log.d("KBJ", "currentTime : " + currentTime);
+
+                        if(releaseDate > currentTime){
+                            Toast.makeText(ProfileModifyActivity.this,
+                                    "프로필 사진 제재 당하셨기 때문에 " +
+                                    new DateUtil(releaseDate).getDate2() + " 까지 프로필을 업로드 할 수 없습니다"
+                                    , Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                    }
+
+                    // callback
+                    r.run();
+
+                } catch (NotSetAutoTimeException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
 
 
     private void setOnDelPicBtnClickListener(final ImageView btn, final ImageView targetPic) {
-        View.OnClickListener onDeleteClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        View.OnClickListener onDeleteClickListener = v -> UiUtil.getInstance().showDialog(ProfileModifyActivity.this, "사진 삭제", " 사진을 삭제하시겠습니까?"
+                , (dialog, whichButton) -> {
 
-                UiUtil.getInstance().showDialog(ProfileModifyActivity.this, "사진 삭제", " 사진을 삭제하시겠습니까?"
-                        , new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-
-                                targetPic.setImageResource(R.drawable.a);
-                                uriMap.put(targetPic.getId(), null);
-                            }
-                        }, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                            }
-                        });
-            }
-        };
+                    targetPic.setImageResource(R.drawable.a);
+                    uriMap.put(targetPic.getId(), null);
+                }, (dialog, whichButton) -> {
+                });
 
         btn.setOnClickListener(onDeleteClickListener);
     }
@@ -448,6 +404,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         Log.i("value is", "" + newVal);
     }
 
+    @SuppressLint("SetTextI18n")
     public void show_numPick() {
 
         final Dialog d = new Dialog(ProfileModifyActivity.this);
@@ -501,25 +458,17 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         numberpicker4.setWrapSelectorWheel(false);
         numberpicker4.setOnValueChangedListener(this);
 
-        b1.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("SetTextI18n")
-            @Override
-            public void onClick(View v) {
+        b1.setOnClickListener((View v) -> {
 
-                agePick.setText(Integer.toString(numberpicker1.getValue()));
-                heightPick.setText(Integer.toString(numberpicker2.getValue()));
-                weightPick.setText(Integer.toString(numberpicker3.getValue()));
-                bodyTypePick.setText(DataContainer.bodyTypes[numberpicker4.getValue()]);
-                d.dismiss();
-            }
+            agePick.setText(Integer.toString(numberpicker1.getValue()));
+            heightPick.setText(Integer.toString(numberpicker2.getValue()));
+            weightPick.setText(Integer.toString(numberpicker3.getValue()));
+            bodyTypePick.setText(DataContainer.bodyTypes[numberpicker4.getValue()]);
+            d.dismiss();
         });
 
-        b2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                d.dismiss();
-            }
-        });
+        b2.setOnClickListener(
+                v -> d.dismiss());
         d.show();
     }
 
@@ -547,12 +496,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         final NumberPicker np = d.findViewById(R.id.numberPicker1);
         np.setMaxValue(maxBoundary[filterType.ordinal()]); // max value 100
         np.setMinValue(minBoundary[filterType.ordinal()]);   // min value 0
-        btn_min.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                np.setValue(minBoundary[filterType.ordinal()]);
-            }
-        });
+        btn_min.setOnClickListener(view -> np.setValue(minBoundary[filterType.ordinal()]));
 
         np.setValue(Integer.parseInt(min_filter.getText().toString()));
         np.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);  //데이터 선택시 edittext 방지
@@ -561,46 +505,28 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         final NumberPicker np2 = d.findViewById(R.id.numberPicker2);
         np2.setMaxValue(maxBoundary[filterType.ordinal()]); // max value 100
         np2.setMinValue(np.getValue());   // min value 0
-        btn_max.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                np2.setValue(maxBoundary[filterType.ordinal()]);
-            }
-        });
+        btn_max.setOnClickListener(view -> np2.setValue(maxBoundary[filterType.ordinal()]));
         np2.setValue(Integer.parseInt(max_filter.getText().toString()));
         np2.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);  //데이터 선택시 edittext 방지
         np2.setWrapSelectorWheel(false);
 
         // min 값 바뀌면 max의 하한선이 변경
-        np.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-            @Override
-            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-                np2.setMinValue(newVal);
+        np.setOnValueChangedListener((picker, oldVal, newVal) -> np2.setMinValue(newVal));
+
+        b1.setOnClickListener(v -> {
+            int pos = np.getValue();
+            int pos2 = np2.getValue();
+            if (pos > pos2) {
+                Toast.makeText(getBaseContext(), "범위가 잘못되었습니다.", Toast.LENGTH_SHORT).show();
+                return;
             }
+            min_filter.setText(String.valueOf(np.getValue())); //set the value to textview
+            d.dismiss();
+            max_filter.setText(String.valueOf(np2.getValue())); //set the value to textview
+            d.dismiss();
         });
 
-        b1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int pos = np.getValue();
-                int pos2 = np2.getValue();
-                if (pos > pos2) {
-                    Toast.makeText(getBaseContext(), "범위가 잘못되었습니다.", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                min_filter.setText(String.valueOf(np.getValue())); //set the value to textview
-                d.dismiss();
-                max_filter.setText(String.valueOf(np2.getValue())); //set the value to textview
-                d.dismiss();
-            }
-        });
-
-        b2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                d.dismiss();
-            }
-        });
+        b2.setOnClickListener(v -> d.dismiss());
         d.show();
     }
 
@@ -629,12 +555,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         np.setMinValue(0); //from array first value
         np.setMaxValue(DataContainer.bodyTypes.length - 1); //to array last value
         np.setValue(Arrays.asList(DataContainer.bodyTypes).indexOf(min_bodytype_filter.getText()));
-        btn_min.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                np.setValue(0);
-            }
-        });
+        btn_min.setOnClickListener(view -> np.setValue(0));
         np.setDisplayedValues(DataContainer.bodyTypes);
         np.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
         np.setWrapSelectorWheel(false);
@@ -643,40 +564,27 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
         final NumberPicker np2 = d.findViewById(R.id.numberPicker2);
         np2.setMinValue(0); //from array first value
         np2.setMaxValue(DataContainer.bodyTypes.length - 1); //to array last value
-        btn_max.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                np2.setValue(DataContainer.bodyTypes.length - 1);
-            }
-        });
+        btn_max.setOnClickListener(view -> np2.setValue(DataContainer.bodyTypes.length - 1));
         np2.setValue(Arrays.asList(DataContainer.bodyTypes).indexOf(max_bodytype_filter.getText()));
         np2.setDisplayedValues(DataContainer.bodyTypes);
         np2.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
         np2.setWrapSelectorWheel(false);
         np2.setOnValueChangedListener(this);
 
-        b1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int pos = np.getValue();
-                int pos2 = np2.getValue();
-                if (pos > pos2) {
-                    Toast.makeText(getBaseContext(), "범위가 잘못되었습니다.", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                min_bodytype_filter.setText(DataContainer.bodyTypes[pos]); //set the value to textview
-                d.dismiss();
-                max_bodytype_filter.setText(DataContainer.bodyTypes[pos2]); //set the value to textview
-                d.dismiss();
+        b1.setOnClickListener(v -> {
+            int pos = np.getValue();
+            int pos2 = np2.getValue();
+            if (pos > pos2) {
+                Toast.makeText(getBaseContext(), "범위가 잘못되었습니다.", Toast.LENGTH_SHORT).show();
+                return;
             }
+            min_bodytype_filter.setText(DataContainer.bodyTypes[pos]); //set the value to textview
+            d.dismiss();
+            max_bodytype_filter.setText(DataContainer.bodyTypes[pos2]); //set the value to textview
+            d.dismiss();
         });
 
-        b2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                d.dismiss();
-            }
-        });
+        b2.setOnClickListener(v -> d.dismiss());
         d.show();
     }
 
@@ -823,7 +731,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 
             // 사진
             for (int id : uriMap.keySet()) {
-                final ImageView targetImageView = findViewById(id);
+                final ImageView targetImageView = (ImageView) findViewById(id);
                 final Uri uri = uriMap.get(id);
 
 
@@ -837,20 +745,10 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
                     Task task = spaceRef.delete();
 
                     tasks.add(task);
-                    task.addOnSuccessListener(new OnSuccessListener() {
-                        @Override
-                        public void onSuccess(Object o) {
-                            removeUserPicUrl(targetImageView);
-                        }
-                    });
+                    task.addOnSuccessListener(o -> removeUserPicUrl(targetImageView));
 
                     Task thumbNailTask = thumbNailSpaceRef.delete();
-                    thumbNailTask.addOnSuccessListener(new OnSuccessListener() {
-                        @Override
-                        public void onSuccess(Object o) {
-                            removeUserThumbNailPicUrl(targetImageView);
-                        }
-                    });
+                    thumbNailTask.addOnSuccessListener(o -> removeUserThumbNailPicUrl(targetImageView));
                     tasks.add(thumbNailTask);
 
                 } else {
@@ -859,22 +757,12 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
                     try {
                         task = galleryPick.upload(spaceRef, uri);
                         tasks.add(task);
-                        task.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                            @Override
-                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                saveUserPicUrl(taskSnapshot.getDownloadUrl(), targetImageView);
-                            }
-                        });
+                        task.addOnSuccessListener(taskSnapshot -> saveUserPicUrl(taskSnapshot.getDownloadUrl(), targetImageView));
 
                         // make thumbnail
                         UploadTask thumNailTask = galleryPick.makeThumbNail(thumbNailSpaceRef, uri);
                         if (thumNailTask != null)
-                            thumNailTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                @Override
-                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                    saveUserThumbNailPicUrl(taskSnapshot.getDownloadUrl(), targetImageView);
-                                }
-                            });
+                            thumNailTask.addOnSuccessListener(taskSnapshot -> saveUserThumbNailPicUrl(taskSnapshot.getDownloadUrl(), targetImageView));
                         else removeUserThumbNailPicUrl(targetImageView);
 
                     } catch (Exception e) {
@@ -886,18 +774,15 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
             }
 
             for (Task task : tasks) {
-                task.addOnCompleteListener(new OnCompleteListener() {
-                    @Override
-                    public void onComplete(@NonNull Task compTask) {
-                        for (Task task : tasks) {
-                            if (!task.isComplete()) return;
-                        }
-                        // 성공시 백버튼
-                        onBackPressed();
-
-                        getInstance().stopProgressDialog();
-
+                task.addOnCompleteListener(compTask -> {
+                    for (Task task1 : tasks) {
+                        if (!task1.isComplete()) return;
                     }
+                    // 성공시 백버튼
+                    onBackPressed();
+
+                    getInstance().stopProgressDialog();
+
                 });
             }
 
@@ -937,6 +822,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             }
+            @SuppressLint("SetTextI18n")
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if (charSequence.length() <= MAX_CONTENT) {

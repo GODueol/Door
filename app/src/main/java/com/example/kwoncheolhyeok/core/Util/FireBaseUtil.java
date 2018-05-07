@@ -1,10 +1,7 @@
 package com.example.kwoncheolhyeok.core.Util;
 
-import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.widget.Toast;
 
 import com.example.kwoncheolhyeok.core.Entity.CoreCloud;
 import com.example.kwoncheolhyeok.core.Entity.CoreListItem;
@@ -15,8 +12,6 @@ import com.example.kwoncheolhyeok.core.Exception.NotSetAutoTimeException;
 import com.example.kwoncheolhyeok.core.MessageActivity.util.MessageVO;
 import com.example.kwoncheolhyeok.core.MessageActivity.util.RoomVO;
 import com.example.kwoncheolhyeok.core.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -271,43 +266,37 @@ public class FireBaseUtil {
 
     public void deletePostExcution(final CoreListItem coreListItem, DatabaseReference postsRef, final String cUuid) {
         postsRef.child(cUuid).child(coreListItem.getPostKey())
-                .removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
+                .removeValue().addOnSuccessListener(aVoid -> {
 
-                final ArrayList<Task> deleteTasks = new ArrayList<>();
+                    final ArrayList<Task> deleteTasks = new ArrayList<>();
 
-                // coreCloud
-                if(coreListItem.getCorePost().isCloud()){
-                    DataContainer.getInstance().getCoreCloudRef().child(coreListItem.getPostKey()).removeValue();
-                }
+                    // coreCloud
+                    if(coreListItem.getCorePost().isCloud()){
+                        DataContainer.getInstance().getCoreCloudRef().child(coreListItem.getPostKey()).removeValue();
+                    }
 
-                // 갯수 갱신
-                FireBaseUtil.getInstance().syncCorePostCount(cUuid);
+                    // 갯수 갱신
+                    FireBaseUtil.getInstance().syncCorePostCount(cUuid);
 
-                // Storage Delete
-                StorageReference postStorageRef = FirebaseStorage.getInstance().getReference().child("posts").child(cUuid).child(coreListItem.getPostKey());
-                if (coreListItem.getCorePost().getSoundUrl() != null)
-                    deleteTasks.add(postStorageRef.child("sound").delete());
-                if (coreListItem.getCorePost().getPictureUrl() != null)
-                    deleteTasks.add(postStorageRef.child("picture").delete());
+                    // Storage Delete
+                    StorageReference postStorageRef = FirebaseStorage.getInstance().getReference().child("posts").child(cUuid).child(coreListItem.getPostKey());
+                    if (coreListItem.getCorePost().getSoundUrl() != null)
+                        deleteTasks.add(postStorageRef.child("sound").delete());
+                    if (coreListItem.getCorePost().getPictureUrl() != null)
+                        deleteTasks.add(postStorageRef.child("picture").delete());
 
-//                                if(deleteTasks.isEmpty()) UiUtil.getInstance().stopProgressDialog();    // 사진이나 음성이 없으면 프로그레스바 종료
+    //                                if(deleteTasks.isEmpty()) UiUtil.getInstance().stopProgressDialog();    // 사진이나 음성이 없으면 프로그레스바 종료
 
-                for (Task task : deleteTasks) {
-                    task.addOnCompleteListener(new OnCompleteListener() {
-                        @Override
-                        public void onComplete(@NonNull Task mTask) {
+                    for (Task task : deleteTasks) {
+                        task.addOnCompleteListener(mTask -> {
                             for (Task t : deleteTasks) {
                                 if (!t.isComplete()) return;
 //                                                UiUtil.getInstance().stopProgressDialog();
                             }
-                        }
-                    });
-                }
+                        });
+                    }
 
-            }
-        });
+                });
     }
 
     public void syncUser(final SyncUserListener syncUserListener){
@@ -348,16 +337,18 @@ public class FireBaseUtil {
     }
 
     public void queryBlockWithMe(final String uuid, final BlockListener blockListener){
-        syncUser(new SyncUserListener() {
-            @Override
-            public void onSuccessSync(User mUser) {
-                blockListener.isBlockCallback(mUser.getBlockMeUsers().containsKey(uuid) || mUser.getBlockUsers().containsKey(uuid));
-            }
-        });
+        syncUser(mUser -> blockListener.isBlockCallback(mUser.getBlockMeUsers().containsKey(uuid) || mUser.getBlockUsers().containsKey(uuid)));
     }
 
     public interface BlockListener {
         void isBlockCallback(boolean isBlockWithMe);
     }
 
+    public DatabaseReference getPreventsUser(String uuid){
+        return FirebaseDatabase.getInstance().getReference().child("prevents/user").child(uuid);
+    }
+
+    public DatabaseReference getPreventsPost(String uuid){
+        return FirebaseDatabase.getInstance().getReference().child("prevents/post").child(uuid);
+    }
 }
