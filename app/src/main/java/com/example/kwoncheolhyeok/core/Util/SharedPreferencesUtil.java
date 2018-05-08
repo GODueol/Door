@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.example.kwoncheolhyeok.core.Exception.NotSetAutoTimeException;
 import com.example.kwoncheolhyeok.core.R;
 
 /**
@@ -181,6 +182,20 @@ public class SharedPreferencesUtil {
     // 공지 읽었음 저장
     public void putNoticeRead(String key) {
         editor_notice.putBoolean(key, true).apply();
+    }
+
+
+
+    // 코어 공지 가능 여부
+    public boolean isCoreNoticePossible(Context context) throws NotSetAutoTimeException {
+        long currentDate = UiUtil.getInstance().getCurrentTime(context);
+        long checkDate = sharedPref_notice.getLong("coreNoticeCheckDate", -1);
+        return checkDate == -1 || currentDate - checkDate > DataContainer.SecToDay;
+    }
+
+    // 코어 공지 읽은 날짜 저장
+    public void putCoreNoticeCheck(Context context) throws NotSetAutoTimeException {
+        editor_notice.putLong("coreNoticeCheckDate", UiUtil.getInstance().getCurrentTime(context)).apply();
     }
 
 }

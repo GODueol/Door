@@ -5,7 +5,6 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -25,6 +24,7 @@ import com.example.kwoncheolhyeok.core.Entity.CoreListItem;
 import com.example.kwoncheolhyeok.core.Entity.CorePost;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.Event.TargetUserBlocksMeEvent;
+import com.example.kwoncheolhyeok.core.Exception.NotSetAutoTimeException;
 import com.example.kwoncheolhyeok.core.PeopleFragment.FullImageActivity;
 import com.example.kwoncheolhyeok.core.PeopleFragment.GridItem;
 import com.example.kwoncheolhyeok.core.R;
@@ -59,7 +59,6 @@ public class CoreActivity extends BlockBaseActivity {
     private FloatingActionButton fab;
     public String postId;
 
-    public static final String PREFS_NAME = "MyPrefsFile1";
     public CheckBox dontShowAgain;
 
 
@@ -361,35 +360,27 @@ public class CoreActivity extends BlockBaseActivity {
     @Override
     public void onResume() {
         // 코어 게시물 위반 및 제재 사항 고지 다이얼로그
-        AlertDialog.Builder adb = new AlertDialog.Builder(this);
-        LayoutInflater adbInflater = LayoutInflater.from(this);
-        @SuppressLint("InflateParams") View eulaLayout = adbInflater.inflate(R.layout.core_notice_dialog, null);
-        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-        String skipMessage = settings.getString("skipMessage", "NOT checked");
+        try {
+            if(SPUtil.isCoreNoticePossible(CoreActivity.this)){
 
-        dontShowAgain = eulaLayout.findViewById(R.id.check_access);
-        adb.setView(eulaLayout);
-
-        adb.setPositiveButton("Ok", (dialog, which) -> {
-            String checkBoxResult = "NOT checked";
-
-            if (dontShowAgain.isChecked()) {
-                checkBoxResult = "checked";
+                AlertDialog.Builder adb = new AlertDialog.Builder(this);
+                LayoutInflater adbInflater = LayoutInflater.from(this);
+                @SuppressLint("InflateParams") View eulaLayout = adbInflater.inflate(R.layout.core_notice_dialog, null);
+                dontShowAgain = eulaLayout.findViewById(R.id.check_access);
+                adb.setView(eulaLayout);
+                adb.setPositiveButton("Ok", (dialog, which) -> {
+                    if (dontShowAgain.isChecked()) {
+                        try {
+                            SPUtil.putCoreNoticeCheck(CoreActivity.this);
+                        } catch (NotSetAutoTimeException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+                adb.show();
             }
-
-            SharedPreferences settings1 = getSharedPreferences(PREFS_NAME, 0);
-            SharedPreferences.Editor editor = settings1.edit();
-
-            editor.putString("skipMessage", checkBoxResult);
-            editor.apply();
-
-            // Do what you want to do on "OK" action
-
-        });
-
-
-        if (!skipMessage.equals("checked")) {
-            adb.show();
+        } catch (NotSetAutoTimeException e) {
+            e.printStackTrace();
         }
 
         super.onResume();
