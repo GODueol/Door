@@ -56,6 +56,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import static com.example.kwoncheolhyeok.core.Util.DataContainer.SecToDay;
+
 public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePostHolder> {
 
     private final DatabaseReference postsRef;
@@ -275,11 +277,21 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                                         assert coreCloud != null;
                                         if (coreCloud.getAttachDate() < oldestPostDate) {
                                             oldestPostDate = coreCloud.getAttachDate();
-                                            deletePostKey = dataSnapshot.getKey();
+                                            deletePostKey = snapshot.getKey();
                                         }
                                     }
 
-                                    // Toast.makeText(context, "100개의 포스트 중 24시간이 지난 포스트가 없어서 클라우드를 올릴수 없습니다.", Toast.LENGTH_SHORT).show();
+                                    // 오래된 포스트가 없는 경우
+                                    try {
+                                        long current = UiUtil.getInstance().getCurrentTime(context);
+                                        if(oldestPostDate + SecToDay > current){
+                                            Toast.makeText(context, "클라우드에 올라간 총 " + DataContainer.CoreCloudMax + " 개의 포스트 중 24시간이 지난 포스트가 없어서 클라우드를 올릴수 없습니다.", Toast.LENGTH_SHORT).show();
+                                            return;
+                                        }
+                                    } catch (NotSetAutoTimeException e) {
+                                        e.printStackTrace();
+                                        return;
+                                    }
                                 }
 
                                 // 코어클라우드 결제 가능

@@ -2,22 +2,16 @@ package com.example.kwoncheolhyeok.core.CorePage.CoreCloudPayDialog;
 
 import android.annotation.SuppressLint;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
-import android.widget.Toast;
 
-import com.example.kwoncheolhyeok.core.Exception.NotSetAutoTimeException;
 import com.example.kwoncheolhyeok.core.R;
-import com.example.kwoncheolhyeok.core.Util.UiUtil;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.example.kwoncheolhyeok.core.Util.DataContainer.SecToDay;
 
 @SuppressLint("ValidFragment")
 public class DealDialogFragment extends BaseDialogFragment {
