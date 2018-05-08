@@ -9,7 +9,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
@@ -20,14 +19,10 @@ import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.UiUtil;
 import com.example.kwoncheolhyeok.core.Util.setPermission;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.ProviderQueryResult;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.gun0912.tedpermission.PermissionListener;
 
@@ -75,7 +70,7 @@ public class IntroActivity extends Activity {
         PermissionListener permissionListener = new PermissionListener() {
             @Override
             public void onPermissionGranted() {
-                Toast.makeText(getApplication(), "권한가져옴", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplication(), "권한가져옴", Toast.LENGTH_SHORT).show();
                 if (isHaveAllPermission()) {
                     getUserInfo(FirebaseAuth.getInstance().getCurrentUser());
                 }
@@ -109,6 +104,7 @@ public class IntroActivity extends Activity {
             Log.i("Internet Connection", "인터넷 연결 안된 상태");
             Toast.makeText(getApplicationContext(), "인터넷 연결이 안되어 있습니다", Toast.LENGTH_SHORT).show();
             finish();
+            return;
         }
 
         if (user != null) {
@@ -118,43 +114,40 @@ public class IntroActivity extends Activity {
                 logout();
                 return;
             }
-            mAuth.fetchProvidersForEmail(user.getEmail()).addOnCompleteListener(new OnCompleteListener<ProviderQueryResult>() {
-                @Override
-                public void onComplete(@NonNull Task<ProviderQueryResult> task) {
-                    if (!task.isSuccessful()) {
-                        Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                        finish();
-                    }
-
-                    List<String> provider = task.getResult().getProviders();
-                    if (provider == null || provider.isEmpty()) { // 계정이 없는 경우
-                        Log.d(getApplication().getClass().getName(), "계정없음:" + user.getUid());
-                        logout();
-                        return;
-                    }
-
-                    // User is signed in
-                    Log.d(getApplication().getClass().getName(), "onAuthStateChanged:signed_in:" + user.getUid());
-
-                    // user 정보 읽어오기
-                    String uuid = user.getUid();
-                    DataContainer.getInstance().getUsersRef().child(uuid).addListenerForSingleValueEvent(new ValueEventListener() {
-
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            User mUser = dataSnapshot.getValue(User.class);
-                            DataContainer.getInstance().setUser(mUser);
-                            onLoginSuccess();
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                            Toast.makeText(getApplicationContext(), "Getting UserInfo Cancelled", Toast.LENGTH_SHORT).show();
-                            Log.d(getApplication().getClass().getName(), databaseError.getMessage());
-                        }
-
-                    });
+            mAuth.fetchProvidersForEmail(user.getEmail()).addOnCompleteListener(task -> {
+                if (!task.isSuccessful()) {
+                    Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    finish();
+                    return;
                 }
+                List<String> provider = task.getResult().getProviders();
+                if (provider == null || provider.isEmpty()) { // 계정이 없는 경우
+                    Log.d(getApplication().getClass().getName(), "계정없음:" + user.getUid());
+                    logout();
+                    return;
+                }
+
+                // User is signed in
+                Log.d(getApplication().getClass().getName(), "onAuthStateChanged:signed_in:" + user.getUid());
+
+                // user 정보 읽어오기
+                String uuid = user.getUid();
+                DataContainer.getInstance().getUsersRef().child(uuid).addListenerForSingleValueEvent(new ValueEventListener() {
+
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        User mUser = dataSnapshot.getValue(User.class);
+                        DataContainer.getInstance().setUser(mUser);
+                        onLoginSuccess();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Toast.makeText(getApplicationContext(), "Getting UserInfo Cancelled", Toast.LENGTH_SHORT).show();
+                        Log.d(getApplication().getClass().getName(), databaseError.getMessage());
+                    }
+
+                });
             });
         } else {
             // User is signed out
@@ -169,13 +162,11 @@ public class IntroActivity extends Activity {
     }
 
     private void goToLoginActivity() {
-        new Handler().postDelayed(new Runnable() {
-            public void run() {
-                Intent intent = new Intent(IntroActivity.this, LoginActivity.class);
-                startActivity(intent);
-                // 뒤로가기 했을경우 안나오도록 없애주기 >> finish!!
-                finish();
-            }
+        new Handler().postDelayed(() -> {
+            Intent intent = new Intent(IntroActivity.this, LoginActivity.class);
+            startActivity(intent);
+            // 뒤로가기 했을경우 안나오도록 없애주기 >> finish!!
+            finish();
         }, 1800);
     }
 
