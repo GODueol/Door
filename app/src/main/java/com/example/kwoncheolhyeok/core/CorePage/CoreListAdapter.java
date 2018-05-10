@@ -267,8 +267,9 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 
                                 long oldestPostDate = Long.MAX_VALUE;   // 올릴수 있으면 MAX
                                 String deletePostKey = null;
+                                String deleteCUuid = null;
 
-                                // 코어 클라우드 최대한계 확인
+                                // 코어 클라우드 최대한계를 넘을 때
                                 if(dataSnapshot.getChildrenCount() >= DataContainer.CoreCloudMax) {
 
                                     // 순회
@@ -278,19 +279,8 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                                         if (coreCloud.getAttachDate() < oldestPostDate) {
                                             oldestPostDate = coreCloud.getAttachDate();
                                             deletePostKey = snapshot.getKey();
+                                            deleteCUuid = coreCloud.getcUuid();
                                         }
-                                    }
-
-                                    // 오래된 포스트가 없는 경우
-                                    try {
-                                        long current = UiUtil.getInstance().getCurrentTime(context);
-                                        if(oldestPostDate + SecToDay > current){
-                                            Toast.makeText(context, "클라우드에 올라간 총 " + DataContainer.CoreCloudMax + " 개의 포스트 중 24시간이 지난 포스트가 없어서 클라우드를 올릴수 없습니다.", Toast.LENGTH_SHORT).show();
-                                            return;
-                                        }
-                                    } catch (NotSetAutoTimeException e) {
-                                        e.printStackTrace();
-                                        return;
                                     }
                                 }
 
@@ -298,7 +288,8 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                                 //★☆★☆★☆★☆여기입니다요★☆★☆★☆★☆
                                 if (dealDialogFragment != null && dealDialogFragment.getDialog() != null && dealDialogFragment.getDialog().isShowing()) return;
                                 final String finalDeletePostKey = (oldestPostDate == Long.MAX_VALUE ? null : deletePostKey);
-                                dealDialogFragment = new DealDialogFragment(oldestPostDate, () -> putCloudDialog(finalDeletePostKey));
+                                String finalDeleteCUuid = deleteCUuid;
+                                dealDialogFragment = new DealDialogFragment(oldestPostDate, () -> putCloudDialog(finalDeletePostKey, finalDeleteCUuid));
                                 dealDialogFragment.show(((AppCompatActivity) context).getSupportFragmentManager(), "");
                                 view.setClickable(true);
                             }
@@ -311,12 +302,12 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                         });
                     }
 
-                    private void putCloudDialog(final String deletePostKey) {
+                    private void putCloudDialog(final String deletePostKey, String deleteCUuid) {
                         UiUtil.getInstance().showDialog(context, "Core Cloud", "코어를 클라우드에 추가합니다. 결재하시겠습니까",
                                 (dialogInterface, i) -> {
                                     UiUtil.getInstance().startProgressDialog((Activity)context);
                                     try {
-                                        FireBaseUtil.getInstance().putCoreCloud(coreListItem.getcUuid(), coreListItem, context, deletePostKey).addOnSuccessListener(o -> {
+                                        FireBaseUtil.getInstance().putCoreCloud(coreListItem.getcUuid(), coreListItem, context, deletePostKey, deleteCUuid).addOnSuccessListener(o -> {
                                             Toast.makeText(context, "코어가 클라우드에 추가되었습니다", Toast.LENGTH_SHORT).show();
                                             UiUtil.getInstance().stopProgressDialog();
                                         });

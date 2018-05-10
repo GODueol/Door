@@ -315,14 +315,14 @@ public class FireBaseUtil {
         });
     }
 
-    public Task putCoreCloud(String cUuid, CoreListItem coreListItem, final Context context, String deletePostKey) throws NotSetAutoTimeException {
+    public Task putCoreCloud(String cUuid, CoreListItem coreListItem, final Context context, String deletePostKey, String deleteCUuid) throws NotSetAutoTimeException {
 
         Map<String, Object> childUpdates = new HashMap<>();
 
         // delete coreCloud
         if(deletePostKey != null){  // 지워야할 포스트 지우기
             childUpdates.put("coreCloud/" + deletePostKey, null);
-            childUpdates.put("posts/" + cUuid + "/" + deletePostKey + "/isCloud",false);
+            childUpdates.put("posts/" + deleteCUuid + "/" + deletePostKey + "/isCloud",false);
         }
 
         // add coreCloud
