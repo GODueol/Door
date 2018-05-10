@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/modify_toolbar"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/profile_modify_background"
     >
 
-
     <!-- The toolbar -->
     <RelativeLayout
         android:id="@+id/toolbar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fitsSystemWindows="true">
+        android:fitsSystemWindows="true"
+        android:background="@color/white"
+        >
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
@@ -36,9 +38,7 @@
             android:background="@drawable/save_check"
             android:onClick="save" />
 
-
     </RelativeLayout>
-
 
     <ScrollView
         android:id="@+id/scrollView"
@@ -212,7 +212,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_below="@+id/image_four"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="10dp"
                 android:orientation="horizontal"
                 android:weightSum="4">
 
@@ -246,15 +246,42 @@
                     android:src="@drawable/delete_button" />
             </LinearLayout>
 
+            <RelativeLayout
+                android:id="@+id/upload_notice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/image_delete"
+                android:background="@color/white_25"
+                android:layout_marginTop="10dp"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:text="@string/pic_upload_notice"
+                    android:textColor="@color/white"
+                    android:lineSpacingExtra="4dp"
+                    android:textSize="12sp"
+                    />
+
+
+            </RelativeLayout>
+
             <View
                 android:id="@+id/section_line2"
                 android:layout_width="match_parent"
                 android:layout_height="0.5dip"
-                android:layout_below="@+id/image_delete"
+                android:layout_below="@+id/upload_notice"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
-                android:layout_marginTop="20dp"
-                android:background="#FFFFFF"></View>
+                android:layout_marginTop="10dp"
+                android:background="#FFFFFF">
+
+            </View>
 
             <TextView
                 android:id="@+id/id_nouse"
@@ -287,14 +314,14 @@
             <View
                 android:id="@+id/section_line3"
                 android:layout_width="match_parent"
-                android:layout_height="1dip"
+                android:layout_height="0.5dip"
                 android:layout_below="@+id/modify_id"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 android:layout_marginTop="25dp"
                 android:background="#FFFFFF"></View>
 
-            <TextView
+            <EditText
                 android:id="@+id/age_nouse"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -302,6 +329,8 @@
                 android:layout_centerInParent="true"
                 android:layout_marginLeft="5dp"
                 android:layout_marginTop="10dp"
+                android:background="@null"
+                android:cursorVisible="false"
                 android:text="Age / Height / Weight / BodyType"
                 android:textColor="#FFFFFF"
                 android:textSize="17dp"
@@ -383,15 +412,13 @@
 
             </View>
 
-            <EditText
+            <TextView
                 android:id="@+id/introduce_nouse"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/section_line4"
                 android:layout_centerInParent="true"
                 android:layout_marginTop="10dp"
-                android:background="@null"
-                android:cursorVisible="false"
                 android:text="Introduce"
                 android:textColor="#FFFFFF"
                 android:textSize="17dp"
@@ -429,7 +456,7 @@
             <View
                 android:id="@+id/section_line5"
                 android:layout_width="match_parent"
-                android:layout_height="1dip"
+                android:layout_height="0.5dip"
                 android:layout_below="@+id/content_error"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
@@ -702,7 +729,7 @@
             <View
                 android:id="@+id/section_line6"
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="0.5dip"
                 android:layout_below="@+id/BODY_TYPE_FILTER"
                 android:layout_marginBottom="20dp"
                 android:layout_marginLeft="5dp"

@@ -4,6 +4,8 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">@color/skyblue</color>
     <color name="white">#FFFFFF</color>
+    <color name="white_25">#40FFFFFF</color>
+    <color name="login_text">#9aa0b2</color>
     <color name="text_white">#FFFFFF</color>
     <color name="black">#000000</color>
     <color name="blue">#ff2570ba</color>

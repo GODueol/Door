@@ -134,7 +134,7 @@ public class ProfileModifyActivity extends AppCompatActivity implements NumberPi
 
     private GalleryPick galleryPick;
 
-    @Bind(R.id.introduce_nouse)
+    @Bind(R.id.age_nouse)
     EditText introduce_focus;
 
     // filter boundary

@@ -25,8 +25,8 @@
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="70dp"
-                    android:paddingLeft="20dp"
-                    android:paddingRight="20dp"
+                    android:paddingLeft="80dp"
+                    android:paddingRight="80dp"
                     />
 
                 <RelativeLayout
@@ -95,7 +95,7 @@
                         android:layout_marginRight="3dp"
                         android:layout_toLeftOf="@+id/cb_save_id"
                         android:text="이메일 기억하기"
-                        android:textColor="@color/white" />
+                        android:textColor="@color/login_text" />
 
                     <android.support.v7.widget.AppCompatCheckBox
                         android:id="@+id/cb_save_id"
@@ -104,7 +104,7 @@
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:layout_marginRight="10dp"
-                        android:buttonTint="@color/white" />
+                        android:buttonTint="@color/login_text" />
 
                 </RelativeLayout>
 
