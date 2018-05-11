@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
 
@@ -17,11 +16,13 @@ import com.example.kwoncheolhyeok.core.Entity.SummaryUser;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.Event.RefreshLocationEvent;
 import com.example.kwoncheolhyeok.core.Event.SomeoneBlocksMeEvent;
+import com.example.kwoncheolhyeok.core.Exception.NotSetAutoTimeException;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.BusProvider;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
 import com.example.kwoncheolhyeok.core.Util.GPSInfo;
+import com.example.kwoncheolhyeok.core.Util.UiUtil;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQuery;
@@ -57,31 +58,24 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
 
 
 
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                GridItem item = imageAdapter.getItem(position);
-                // block 유저한테는 못들어가게함
-                if(DataContainer.getInstance().isBlockWithMe(item.getUuid())) return;
-                Intent p = new Intent(getActivity().getApplicationContext(), FullImageActivity.class);
-                p.putExtra("id", position);
-                p.putExtra("item", item);
-                startActivity(p);
-            }
+        gridView.setOnItemClickListener((parent, view1, position, id) -> {
+            GridItem item = imageAdapter.getItem(position);
+            // block 유저한테는 못들어가게함
+            if(DataContainer.getInstance().isBlockWithMe(item.getUuid())) return;
+            Intent p = new Intent(getActivity().getApplicationContext(), FullImageActivity.class);
+            p.putExtra("id", position);
+            p.putExtra("item", item);
+            startActivity(p);
         });
 
         // 스와이프로 위치 새로고침
         final SwipeRefreshLayout mSwipeRefreshLayout = view.findViewById(R.id.swipe_layout);
-        SwipeRefreshLayout.OnRefreshListener onRefreshListener = new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                // 위치 새로고침
-                imageAdapter.clear();
-                refreshGrid(null);
+        SwipeRefreshLayout.OnRefreshListener onRefreshListener = () -> {
+            // 위치 새로고침
+            imageAdapter.clear();
+            refreshGrid(null);
 
-                mSwipeRefreshLayout.setRefreshing(false);
-            }
+            mSwipeRefreshLayout.setRefreshing(false);
         };
         mSwipeRefreshLayout.setOnRefreshListener(onRefreshListener);
 
@@ -148,9 +142,14 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         SummaryUser oSummary = dataSnapshot.getValue(SummaryUser.class);
-                        if (isInBlock(oUuid) || !isInFilter(oSummary)) {
-                            onKeyExited(oUuid);
-                            return;
+
+                        try {
+                            if (isInBlock(oUuid) || !isInFilter(oSummary)) {
+                                onKeyExited(oUuid);
+                                return;
+                            }
+                        } catch (NotSetAutoTimeException e) {
+                            e.printStackTrace();
                         }
 
                         Log.d(getClass().toString(), String.format("Key %s entered the search area at [%f,%f]", oUuid, geoLocation.latitude, geoLocation.longitude));
@@ -236,7 +235,10 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
         return mUser.getBlockUsers().containsKey(oUuid) || mUser.getBlockMeUsers().containsKey(oUuid);
     }
 
-    private boolean isInFilter(SummaryUser summaryUser) {
+    private boolean isInFilter(SummaryUser summaryUser) throws NotSetAutoTimeException {
+        // 로그인한지 2개월 이상 제외
+        if(summaryUser.getLoginDate() != 0 && UiUtil.getInstance().getCurrentTime(getContext()) - summaryUser.getLoginDate() > DataContainer.SecToDay*60 ) return false;
+
         if (!mUser.isUseFilter()) return true;   // 필터 적용여부
         if (!(mUser.getAgeBoundary().getMin() <= summaryUser.getAge() && summaryUser.getAge() <= mUser.getAgeBoundary().getMax()))
             return false;
@@ -258,16 +260,13 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(FireBaseUtil.currentLocationPath);
         GeoFire geoFire = new GeoFire(ref);
 
-        geoFire.setLocation(DataContainer.getInstance().getUid(), new GeoLocation(location.getLatitude(), location.getLongitude()), new GeoFire.CompletionListener() {
-            @Override
-            public void onComplete(String key, DatabaseError error) {
-                if (error != null) {
-                    if (getActivity() != null)
-                        Toast.makeText(getActivity(), "There was an error saving the location to GeoFire: " + error, Toast.LENGTH_SHORT).show();
-                } else {
-                    if (getActivity() != null)
-                        Toast.makeText(getActivity(), "Location saved on server successfully! ", Toast.LENGTH_SHORT).show();
-                }
+        geoFire.setLocation(DataContainer.getInstance().getUid(), new GeoLocation(location.getLatitude(), location.getLongitude()), (key, error) -> {
+            if (error != null) {
+                if (getActivity() != null)
+                    Toast.makeText(getActivity(), "There was an error saving the location to GeoFire: " + error, Toast.LENGTH_SHORT).show();
+            } else {
+                if (getActivity() != null)
+                    Toast.makeText(getActivity(), "Location saved on server successfully! ", Toast.LENGTH_SHORT).show();
             }
         });
     }

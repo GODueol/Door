@@ -14,30 +14,26 @@ import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.GlideApp;
 import com.example.kwoncheolhyeok.core.Util.IndexedTreeSet;
 
-import java.util.Comparator;
 import java.util.HashMap;
 
 public class ImageAdapter extends BaseAdapter {
 
-    private IndexedTreeSet<GridItem> mItems = new IndexedTreeSet<>(new Comparator<GridItem>() {
-        @Override
-        public int compare(GridItem item1, GridItem item2) {
-            if (item1.getUuid().equals(item2.getUuid())) return 0;
-            if (item2.getUuid().equals(DataContainer.getInstance().getUid())) return 1;   // 1. 본인계정
-            if (item1.getUuid().equals(DataContainer.getInstance().getUid()))
-                return -1;   // 1. 본인계정
-            if (item1.distance != item2.distance) {
-                float diff = (item1.distance - item2.distance);
-                if (diff < 0.0) return -1;
-                if (diff > 0.0) return 1;
-                return 0;
-            }
-
-            int compReturn = item1.getUuid().compareTo(item2.getUuid());
-            if (compReturn < 0) return -1;
-            if (compReturn > 0) return 1;
+    private IndexedTreeSet<GridItem> mItems = new IndexedTreeSet<>((item1, item2) -> {
+        if (item1.getUuid().equals(item2.getUuid())) return 0;
+        if (item2.getUuid().equals(DataContainer.getInstance().getUid())) return 1;   // 1. 본인계정
+        if (item1.getUuid().equals(DataContainer.getInstance().getUid()))
+            return -1;   // 1. 본인계정
+        if (item1.distance != item2.distance) {
+            float diff = (item1.distance - item2.distance);
+            if (diff < 0.0) return -1;
+            if (diff > 0.0) return 1;
             return 0;
         }
+
+        int compReturn = item1.getUuid().compareTo(item2.getUuid());
+        if (compReturn < 0) return -1;
+        if (compReturn > 0) return 1;
+        return 0;
     });
 
     private HashMap<String, GridItem> itemHashMap = new HashMap<>();

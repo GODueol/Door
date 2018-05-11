@@ -6,7 +6,7 @@ import java.io.Serializable;
  * Created by gimbyeongjin on 2018. 1. 22..
  */
 public class SummaryUser implements Serializable {
-    String pictureUrl;
+    private String pictureUrl;
 
     private int age;
     private int height;
@@ -15,16 +15,19 @@ public class SummaryUser implements Serializable {
 
     private int corePostCount;
 
+    private long loginDate;
+
     public SummaryUser() {
     }
 
-    public SummaryUser(String pictureUrl, int age, int height, int weight, String bodyType, int corePostCount) {
+    SummaryUser(String pictureUrl, int age, int height, int weight, String bodyType, int corePostCount, long loginDate) {
         this.pictureUrl = pictureUrl;
         this.age = age;
         this.height = height;
         this.weight = weight;
         this.bodyType = bodyType;
         this.corePostCount = corePostCount;
+        this.loginDate = loginDate;
     }
 
     public String getPictureUrl() {
@@ -73,5 +76,13 @@ public class SummaryUser implements Serializable {
 
     public void setCorePostCount(int corePostCount) {
         this.corePostCount = corePostCount;
+    }
+
+    public long getLoginDate() {
+        return loginDate;
+    }
+
+    public void setLoginDate(long loginDate) {
+        this.loginDate = loginDate;
     }
 }
