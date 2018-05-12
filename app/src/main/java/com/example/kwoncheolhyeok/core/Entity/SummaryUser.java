@@ -85,4 +85,17 @@ public class SummaryUser implements Serializable {
     public void setLoginDate(long loginDate) {
         this.loginDate = loginDate;
     }
+
+    @Override
+    public String toString() {
+        return "SummaryUser{" +
+                "pictureUrl='" + pictureUrl + '\'' +
+                ", age=" + age +
+                ", height=" + height +
+                ", weight=" + weight +
+                ", bodyType='" + bodyType + '\'' +
+                ", corePostCount=" + corePostCount +
+                ", loginDate=" + loginDate +
+                '}';
+    }
 }
