@@ -94,20 +94,21 @@ public class CoreActivity extends BlockBaseActivity {
         postId = intent.getStringExtra("postId");
 
         // 알람받은 포스트가 있는지 여부확인
-        if(postId != null)FirebaseDatabase.getInstance().getReference().child("posts/" + cUuid + "/" + postId).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if(!dataSnapshot.exists()){
-                    // 없으면, 삭제되었다는 메세지
-                    findViewById(R.id.removePostMsg).setVisibility(View.VISIBLE);
+        if (postId != null)
+            FirebaseDatabase.getInstance().getReference().child("posts/" + cUuid + "/" + postId).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (!dataSnapshot.exists()) {
+                        // 없으면, 삭제되었다는 메세지
+                        findViewById(R.id.removePostMsg).setVisibility(View.VISIBLE);
+                    }
                 }
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-            }
-        });
+                }
+            });
 
         if (postId != null) {
             toolbar.invalidate();
@@ -160,7 +161,7 @@ public class CoreActivity extends BlockBaseActivity {
         fab.setOnClickListener(view -> {
             // 포스트 제재 확인
             UiUtil.getInstance().checkPostPrevent(CoreActivity.this, (isRelease, releaseDate) -> {
-                        if(!isRelease) {
+                        if (!isRelease) {
                             Toast.makeText(CoreActivity.this,
                                     "포스트 사진 제재 당하셨기 때문에 " +
                                             releaseDate + " 까지 프로필을 업로드 할 수 없습니다"
@@ -175,15 +176,15 @@ public class CoreActivity extends BlockBaseActivity {
 
                                 if (cUser != null) {
                                     // CORE 주인 일반 회원
-                                    if(cUser.getAccountType() == null || cUser.getAccountType().equals(DataContainer.ACCOUNT_TYPE.NORMAL)){
+                                    if (cUser.getAccountType() == null || cUser.getAccountType().equals(DataContainer.ACCOUNT_TYPE.NORMAL)) {
                                         // 100개 제한
-                                        if(cUser.getCorePostCount() >= DataContainer.NORMAL_CORE_LIMIT){
+                                        if (cUser.getCorePostCount() >= DataContainer.NORMAL_CORE_LIMIT) {
                                             Toast.makeText(CoreActivity.this, "Core 주인이 일반 계정이기 때문에 " + DataContainer.NORMAL_CORE_LIMIT + "초과하여 글을 추가할수 없습니다", Toast.LENGTH_SHORT).show();
                                             return;
                                         }
                                     } else {
                                         // 300개 제한
-                                        if(cUser.getCorePostCount() >= DataContainer.PLUS_CORE_LIMIT){
+                                        if (cUser.getCorePostCount() >= DataContainer.PLUS_CORE_LIMIT) {
                                             Toast.makeText(CoreActivity.this, DataContainer.NORMAL_CORE_LIMIT + "초과하여 글을 추가할수 없습니다", Toast.LENGTH_SHORT).show();
                                             return;
                                         }
@@ -361,13 +362,15 @@ public class CoreActivity extends BlockBaseActivity {
     public void onResume() {
         // 코어 게시물 위반 및 제재 사항 고지 다이얼로그
         try {
-            if(SPUtil.isCoreNoticePossible(CoreActivity.this)){
+            if (SPUtil.isCoreNoticePossible(CoreActivity.this)) {
 
                 AlertDialog.Builder adb = new AlertDialog.Builder(this);
                 LayoutInflater adbInflater = LayoutInflater.from(this);
-                @SuppressLint("InflateParams") View eulaLayout = adbInflater.inflate(R.layout.core_notice_dialog, null);
-                dontShowAgain = eulaLayout.findViewById(R.id.check_access);
-                adb.setView(eulaLayout);
+                @SuppressLint("InflateParams")
+
+                View v = adbInflater.inflate(R.layout.core_notice_dialog, null);
+                dontShowAgain = v.findViewById(R.id.check_access);
+                adb.setView(v);
                 adb.setPositiveButton("Ok", (dialog, which) -> {
                     if (dontShowAgain.isChecked()) {
                         try {

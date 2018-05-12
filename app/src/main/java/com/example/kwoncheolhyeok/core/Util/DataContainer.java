@@ -12,7 +12,7 @@ public class DataContainer {
     public final String PREFERENCE = "com.example.kwoncheolhyeok.core.samplesharepreference";
     public static final int ChildrenMax = 1000;
     public static final int ViewedMeMax = 45;
-    public static final int CoreCloudMax = 10;
+    public static final int CoreCloudMax = 7;
     public static final int SecToDay = TIME_MAXIMUM.SEC*TIME_MAXIMUM.MIN*TIME_MAXIMUM.HOUR*1000;
 //    public static final int SecToDay = TIME_MAXIMUM.SEC*TIME_MAXIMUM.MIN*TIME_MAXIMUM.HOUR*1000/24/60;
 

@@ -237,7 +237,7 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
 
     private boolean isInFilter(SummaryUser summaryUser) throws NotSetAutoTimeException {
         // 로그인한지 2개월 이상 제외
-        if(summaryUser.getLoginDate() != 0 && UiUtil.getInstance().getCurrentTime(getContext()) - summaryUser.getLoginDate() > DataContainer.SecToDay*60 ) return false;
+        if(summaryUser.getLoginDate() != 0 && UiUtil.getInstance().getCurrentTime(getContext()) - summaryUser.getLoginDate() > DataContainer.SecToDay*31 ) return false;
 
         if (!mUser.isUseFilter()) return true;   // 필터 적용여부
         if (!(mUser.getAgeBoundary().getMin() <= summaryUser.getAge() && summaryUser.getAge() <= mUser.getAgeBoundary().getMax()))
