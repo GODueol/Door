@@ -56,8 +56,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import static com.example.kwoncheolhyeok.core.Util.DataContainer.SecToDay;
-
 public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePostHolder> {
 
     private final DatabaseReference postsRef;
@@ -706,7 +704,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
             String currentPositionStr = millisecondsToString(currentPosition);
             currentHolder.textView_currentPosion.setText(currentPositionStr);
 
-            if (context == null || currentHolder.textView_currentPosion.getText().equals(currentHolder.textView_maxTime.getText())) {
+            if (((Activity) context).isFinishing() || currentHolder.textView_currentPosion.getText().equals(currentHolder.textView_maxTime.getText())) {
                 // 사운드 재생 끝
                 currentHolder.startAndPause.setChecked(false);  // 버튼 Stop
                 currentHolder.textView_currentPosion.setText("0:0");
