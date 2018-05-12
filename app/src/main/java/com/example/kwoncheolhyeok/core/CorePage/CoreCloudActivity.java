@@ -9,6 +9,8 @@ import com.example.kwoncheolhyeok.core.Exception.NotSetAutoTimeException;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.UiUtil;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -28,9 +30,19 @@ import static com.example.kwoncheolhyeok.core.Util.DataContainer.SecToDay;
 public class CoreCloudActivity extends CoreActivity {
 
     HashMap<String, CoreListItem> coreListItemMap = new HashMap<>();
+    private AdView mAdView;
 
     public void setContentView() {
         setContentView(R.layout.core_cloud_activity_main);
+
+
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                .addTestDevice("0D525D9C92269D80384121978C3C4267")
+                .build();
+        mAdView.loadAd(adRequest);
+
     }
 
     public void setFab(){

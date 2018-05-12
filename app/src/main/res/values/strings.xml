@@ -4,6 +4,13 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
+    <string name="adsID">ca-app-pub-4410935111031067~7345603486</string>
+    <string name="main_banner_id">ca-app-pub-4410935111031067/1225001978</string>
+    <string name="nav_alarm_reward">ca-app-pub-4410935111031067/4388877434</string>
+    
+    <string name="core_banner_id">ca-app-pub-4410935111031067/1507439519</string>
+    <string name="cloud_banner_id">ca-app-pub-4410935111031067/9549581066</string>
+
     <string name="find_map">지도 검색</string>
     <string name="find_id">회원 검색</string>
     <string name="lock_to_all_user">공개한 사진 모두 잠금</string>

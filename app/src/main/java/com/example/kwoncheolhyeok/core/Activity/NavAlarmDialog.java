@@ -2,27 +2,28 @@ package com.example.kwoncheolhyeok.core.Activity;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.example.kwoncheolhyeok.core.CorePage.CustomDialog;
 import com.example.kwoncheolhyeok.core.Entity.AlarmSummary;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.reward.RewardItem;
+import com.google.android.gms.ads.reward.RewardedVideoAd;
+import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,13 +38,15 @@ import butterknife.ButterKnife;
  * Created by Kwon on 2018-03-16.
  */
 
-public class NavAlarmDialog extends Dialog {
+public class NavAlarmDialog extends Dialog  {
 
     @Bind(R.id.navAlarmList)
     RecyclerView recyclerView;
 
     @Bind(R.id.nontext)
     TextView nonText;
+
+
     private static int MAXIUM_ALARM_COUNT = 5;
     private NavAlarmAdapter navAlarmAdapter;
     private List<AlarmSummary> items;
@@ -62,6 +65,7 @@ public class NavAlarmDialog extends Dialog {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.nav_alarm_activity_main);
         ButterKnife.bind(this);
+
         setRecyclerView();
         setItems();
 
@@ -115,6 +119,7 @@ public class NavAlarmDialog extends Dialog {
                     nonText.setVisibility(View.GONE);
                 }
                 recyclerView.getRecycledViewPool().clear();
+
                 navAlarmAdapter.notifyDataSetChanged();
             }
 
@@ -125,4 +130,6 @@ public class NavAlarmDialog extends Dialog {
         });
 
     }
+
+
 }
