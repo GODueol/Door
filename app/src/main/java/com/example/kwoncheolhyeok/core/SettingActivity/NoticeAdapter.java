@@ -1,4 +1,4 @@
-package com.example.kwoncheolhyeok.core.CorePage;
+package com.example.kwoncheolhyeok.core.SettingActivity;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -12,8 +12,6 @@ import com.bumptech.glide.Glide;
 import com.example.kwoncheolhyeok.core.Entity.Notice;
 import com.example.kwoncheolhyeok.core.MessageActivity.util.DateUtil;
 import com.example.kwoncheolhyeok.core.R;
-import com.example.kwoncheolhyeok.core.SettingActivity.NoticeActivity;
-import com.example.kwoncheolhyeok.core.Util.GlideApp;
 import com.example.kwoncheolhyeok.core.Util.SharedPreferencesUtil;
 
 import java.util.List;

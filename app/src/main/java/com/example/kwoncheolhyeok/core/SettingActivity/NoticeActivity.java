@@ -8,9 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.support.v7.widget.Toolbar;
 
-import com.example.kwoncheolhyeok.core.CorePage.NoticeAdapter;
 import com.example.kwoncheolhyeok.core.Entity.Notice;
-import com.example.kwoncheolhyeok.core.FriendsActivity.FriendsActivity;
 import com.example.kwoncheolhyeok.core.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
