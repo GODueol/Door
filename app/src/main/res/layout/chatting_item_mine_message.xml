@@ -9,7 +9,9 @@
         android:id="@+id/dateLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingTop="10dp"
+        >
 
         <View
         android:layout_width="wrap_content"
