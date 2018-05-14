@@ -70,7 +70,7 @@
             android:layout_weight="1"
             app:cmv_backgroundColor="@color/msg_gray"
             app:cmv_backgroundColorPressed="@color/white"
-            app:cmv_cornerRadius="3dp"
+            app:cmv_cornerRadius="1dp"
             app:cmv_showArrow="false">
 
             <TextView
@@ -87,7 +87,9 @@
             android:layout_gravity="bottom|start"
             android:layout_marginLeft="1dp"
             android:orientation="vertical"
-            android:padding="2dp">
+            android:paddingTop="3dp"
+            android:paddingRight="3dp"
+            android:paddingLeft="3dp"            >
 
             <TextView
                 android:id="@+id/check"

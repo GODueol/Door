@@ -49,7 +49,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="2dp"
+            android:paddingTop="3dp"
+            android:paddingRight="3dp"
+            android:paddingLeft="3dp"
             >
 
             <LinearLayout
@@ -91,7 +93,7 @@
                 android:layout_weight="1"
                 app:cmv_backgroundColor="@color/msg_blue"
                 app:cmv_backgroundColorPressed="@color/white"
-                app:cmv_cornerRadius="3dp"
+                app:cmv_cornerRadius="1dp"
                 app:cmv_showArrow="false">
 
                 <TextView
