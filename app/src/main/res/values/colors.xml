@@ -15,6 +15,9 @@
 
     <color name="transparent">#00000000</color>
 
+    <color name="msg_gray">#D6DBDF</color>
+    <color name="msg_blue">#D6EAF8</color>
+
     <color name="tr_gray35">#599E9E9E</color>
     <color name="tr_gray65">#A69E9E9E</color>
 

@@ -672,7 +672,7 @@ public class ChatFirebaseUtil {
         databaseRef.updateChildren(childUpdates).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                FirebaseSendPushMsg.sendPostToFCM("chat", oUuid, nickName, "누군가 당신에게 비공개 사진을 열었어요!", room);
+                FirebaseSendPushMsg.sendPostToFCM("chat", oUuid, nickName, "비공개 사진을 열었습니다!", room);
             }
         });
     }
