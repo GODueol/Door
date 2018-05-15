@@ -334,7 +334,7 @@ public class ChattingMessageAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     public void setImageMessage(final ImageView imageView, final String url, final String parent, final int position) {
         GlideApp.with(imageView.getContext())
                 .asBitmap()
-                .placeholder(R.drawable.picture_load)
+                .placeholder(R.drawable.pic_load_ani)
                 .centerCrop()
                 .load(url)
                 .override(600, 600)
