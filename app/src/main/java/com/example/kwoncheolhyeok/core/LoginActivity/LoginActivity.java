@@ -8,6 +8,8 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.media.Image;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
@@ -16,6 +18,8 @@ import android.text.InputType;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AutoCompleteTextView;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -87,6 +91,17 @@ public class LoginActivity extends AppCompatActivity {
 //        animationDrawable.setEnterFadeDuration(5000);
 //        animationDrawable.setExitFadeDuration(5000);
 //        animationDrawable.start();
+
+        //statusbar 투명하게
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            Window w = getWindow(); // in Activity's onCreate() for instance
+            w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        }
+
+        ImageView r = (ImageView)findViewById(R.id.milkyway);
+        Glide.with(this)
+                .load(UiUtil.resourceToUri(this, R.drawable.milkyway))
+                .into(r);
 
         ImageView cor2 = (ImageView) findViewById(R.id.CORE_LOGO);
         Glide.with(this)
