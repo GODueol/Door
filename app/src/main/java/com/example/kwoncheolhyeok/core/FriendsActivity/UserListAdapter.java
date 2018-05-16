@@ -29,6 +29,8 @@ import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
 import com.example.kwoncheolhyeok.core.Util.GlideApp;
 import com.example.kwoncheolhyeok.core.Util.UiUtil;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
@@ -46,6 +48,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
     private Context context;
     private String field;
     public boolean isReverse = false;
+    private InterstitialAd mInterstitialAd;
 
     private class VIEW_TYPES {
         static final int Header = 1;
@@ -56,6 +59,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
     public UserListAdapter(Context context, List<Item> items) {
         this.context = context;
         this.items = items;
+        setmInterstitialAd();
     }
 
     public void setItemMenu(int itemMenu, String tabName) {
@@ -160,7 +164,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
 
                                     UiUtil.getInstance().startProgressDialog((Activity) context);
                                     try {
-                                        FireBaseUtil.getInstance().block(item.getUuid()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        FireBaseUtil.getInstance().block(mInterstitialAd,item.getUuid()).addOnCompleteListener(new OnCompleteListener<Void>() {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
                                                 UiUtil.getInstance().stopProgressDialog();
@@ -406,6 +410,12 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
         }
     }
 
+    public void setmInterstitialAd(){
+        mInterstitialAd = new InterstitialAd(context);
+        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+    }
+
     public static class Item {
         User user;
         long date;
@@ -444,5 +454,6 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
         }
 
     }
+
 
 }

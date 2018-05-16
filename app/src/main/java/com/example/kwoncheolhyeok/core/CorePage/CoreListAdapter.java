@@ -42,6 +42,8 @@ import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
 import com.example.kwoncheolhyeok.core.Util.GlideApp;
 import com.example.kwoncheolhyeok.core.Util.UiUtil;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -69,6 +71,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
     private int currentSeekBarPosition;
 
     private String currentPlayUrl = "";
+    private InterstitialAd mInterstitialAd;
 
     CoreListAdapter(List<CoreListItem> coreListItems, Context context) {
         this.coreListItems = coreListItems;
@@ -76,6 +79,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
         this.mediaPlayer = new MediaPlayer();
         currentHolder = new CorePostHolder(new View(context));
         postsRef = FirebaseDatabase.getInstance().getReference().child("posts");
+        setmInterstitialAd();
     }
 
     @Override
@@ -515,7 +519,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                             UiUtil.getInstance().startProgressDialog((Activity) context);
                             // blockUsers 추가
                             try {
-                                FireBaseUtil.getInstance().block(coreListItem.getCorePost().getUuid()).addOnSuccessListener(aVoid -> Toast.makeText(context, "차단되었습니다", Toast.LENGTH_SHORT).show()).addOnCompleteListener(task -> UiUtil.getInstance().stopProgressDialog());
+                                FireBaseUtil.getInstance().block(mInterstitialAd,coreListItem.getCorePost().getUuid()).addOnSuccessListener(aVoid -> Toast.makeText(context, "차단되었습니다", Toast.LENGTH_SHORT).show()).addOnCompleteListener(task -> UiUtil.getInstance().stopProgressDialog());
                             } catch (ChildSizeMaxException e) {
                                 Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
                                 UiUtil.getInstance().stopProgressDialog();
@@ -753,5 +757,13 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
             this.mediaPlayer.seekTo(currentPosition + ADD_TIME);
         }
     }
+
+
+    public void setmInterstitialAd(){
+        mInterstitialAd = new InterstitialAd(context);
+        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+    }
+
 
 }

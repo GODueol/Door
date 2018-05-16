@@ -12,6 +12,9 @@ import com.example.kwoncheolhyeok.core.Exception.NotSetAutoTimeException;
 import com.example.kwoncheolhyeok.core.MessageActivity.util.MessageVO;
 import com.example.kwoncheolhyeok.core.MessageActivity.util.RoomVO;
 import com.example.kwoncheolhyeok.core.R;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -113,7 +116,8 @@ public class FireBaseUtil {
         return mDatabase.updateChildren(childUpdates);
     }
 
-    public Task<Void> block(final String oUuid) throws ChildSizeMaxException {
+    public Task<Void> block(InterstitialAd mInterstitialAd, final String oUuid) throws ChildSizeMaxException {
+
 
         final String mUuid = DataContainer.getInstance().getUid();
         final User mUser = DataContainer.getInstance().getUser();
@@ -126,65 +130,97 @@ public class FireBaseUtil {
         DatabaseReference mDatabase = DataContainer.getInstance().getUsersRef();
         final Map<String, Object> childUpdate = new HashMap<>();
 
-        // block 리스트 삭제
-        // 로컬 상에서 Block 리스트 추가
-        mUser.getBlockUsers().put(oUuid, now);
-        childUpdate.put("/" + mUuid + "/blockUsers/" + oUuid, now);  // DB 상에서 본인 Block 리스트 추가
-        childUpdate.put("/" + oUuid + "/blockMeUsers/" + mUuid, now);  // DB 상에서 상대 BlockMe 리스트 추가
 
 
-        // 내 팔로우 관계 모두 삭제(로컬)
-        mUser.getFollowerUsers().remove(oUuid);
-        mUser.getFollowingUsers().remove(oUuid);
-        mUser.getFriendUsers().remove(oUuid);
-        mUser.getViewedMeUsers().remove(oUuid);
-
-        // 내 팔로우 관계 모두 삭제(DB)
-        childUpdate.put("/" + mUuid + "/followerUsers/" + oUuid, null);
-        childUpdate.put("/" + mUuid + "/followingUsers/" + oUuid, null);
-        childUpdate.put("/" + mUuid + "/friendUsers/" + oUuid, null);
-        childUpdate.put("/" + mUuid + "/viewedMeUsers/" + oUuid, null);
-
-        // 친구의 팔로우 관계 모두 삭제(DB)
-        childUpdate.put("/" + oUuid + "/followerUsers/" + mUuid, null);
-        childUpdate.put("/" + oUuid + "/followingUsers/" + mUuid, null);
-        childUpdate.put("/" + oUuid + "/friendUsers/" + mUuid, null);
-        childUpdate.put("/" + oUuid + "/viewedMeUsers/" + mUuid, null);
-
-        // 채팅 관계 모두 삭제(DB)
-        //TODO:미완성
-        FirebaseDatabase.getInstance().getReference("chatRoomList").child(mUuid).child(oUuid).addListenerForSingleValueEvent(new ValueEventListener() {
+        mInterstitialAd.setAdListener(new AdListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                try {
-                    final String roomId = dataSnapshot.getValue(RoomVO.class).getChatRoomid();
-                    // 채팅방 이미지 젼체 삭제
-                    FirebaseDatabase.getInstance().getReference("chat").child(roomId).orderByChild("isImage").equalTo(1).addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            for (DataSnapshot ds : dataSnapshot.getChildren()) {//마찬가지로 중복 유무 확인
-                                MessageVO message = ds.getValue(MessageVO.class);
-                                FirebaseStorage.getInstance().getReferenceFromUrl(message.getImage()).delete();
-                            }
-                            FirebaseDatabase.getInstance().getReference("chat").child(roomId).removeValue();
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
-                    });
-                    FirebaseDatabase.getInstance().getReference("chatRoomList").child(mUuid).child(oUuid).removeValue();
-                    FirebaseDatabase.getInstance().getReference("chatRoomList").child(oUuid).child(mUuid).removeValue();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+            public void onAdLoaded() {
+                // Code to be executed when an ad finishes loading.
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onAdFailedToLoad(int errorCode) {
+                // Code to be executed when an ad request fails.
+            }
+
+            @Override
+            public void onAdOpened() {
+                // Code to be executed when the ad is displayed.
+            }
+
+            @Override
+            public void onAdLeftApplication() {
+                // Code to be executed when the user has left the app.
+            }
+
+            @Override
+            public void onAdClosed() {
+
+                // block 리스트 삭제
+                // 로컬 상에서 Block 리스트 추가
+                mUser.getBlockUsers().put(oUuid, now);
+                childUpdate.put("/" + mUuid + "/blockUsers/" + oUuid, now);  // DB 상에서 본인 Block 리스트 추가
+                childUpdate.put("/" + oUuid + "/blockMeUsers/" + mUuid, now);  // DB 상에서 상대 BlockMe 리스트 추가
+
+
+                // 내 팔로우 관계 모두 삭제(로컬)
+                mUser.getFollowerUsers().remove(oUuid);
+                mUser.getFollowingUsers().remove(oUuid);
+                mUser.getFriendUsers().remove(oUuid);
+                mUser.getViewedMeUsers().remove(oUuid);
+
+                // 내 팔로우 관계 모두 삭제(DB)
+                childUpdate.put("/" + mUuid + "/followerUsers/" + oUuid, null);
+                childUpdate.put("/" + mUuid + "/followingUsers/" + oUuid, null);
+                childUpdate.put("/" + mUuid + "/friendUsers/" + oUuid, null);
+                childUpdate.put("/" + mUuid + "/viewedMeUsers/" + oUuid, null);
+
+                // 친구의 팔로우 관계 모두 삭제(DB)
+                childUpdate.put("/" + oUuid + "/followerUsers/" + mUuid, null);
+                childUpdate.put("/" + oUuid + "/followingUsers/" + mUuid, null);
+                childUpdate.put("/" + oUuid + "/friendUsers/" + mUuid, null);
+                childUpdate.put("/" + oUuid + "/viewedMeUsers/" + mUuid, null);
+
+                // 채팅 관계 모두 삭제(DB)
+                //TODO:미완성
+                FirebaseDatabase.getInstance().getReference("chatRoomList").child(mUuid).child(oUuid).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        try {
+                            final String roomId = dataSnapshot.getValue(RoomVO.class).getChatRoomid();
+                            // 채팅방 이미지 젼체 삭제
+                            FirebaseDatabase.getInstance().getReference("chat").child(roomId).orderByChild("isImage").equalTo(1).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    for (DataSnapshot ds : dataSnapshot.getChildren()) {//마찬가지로 중복 유무 확인
+                                        MessageVO message = ds.getValue(MessageVO.class);
+                                        FirebaseStorage.getInstance().getReferenceFromUrl(message.getImage()).delete();
+                                    }
+                                    FirebaseDatabase.getInstance().getReference("chat").child(roomId).removeValue();
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
+                            FirebaseDatabase.getInstance().getReference("chatRoomList").child(mUuid).child(oUuid).removeValue();
+                            FirebaseDatabase.getInstance().getReference("chatRoomList").child(oUuid).child(mUuid).removeValue();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                    }
+                });
+                // Code to be executed when when the interstitial ad is closed.
             }
         });
+
+        mInterstitialAd.show();
+
         return mDatabase.updateChildren(childUpdate);
     }
 

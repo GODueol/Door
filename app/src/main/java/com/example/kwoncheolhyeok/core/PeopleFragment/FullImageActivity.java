@@ -33,6 +33,10 @@ import com.example.kwoncheolhyeok.core.Util.UiUtil;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.LocationCallback;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -113,7 +117,7 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
     private GridItem item;
 
     User mUser;
-
+    private InterstitialAd mInterstitialAd;
 
     @SuppressLint("DefaultLocale")
     @Override
@@ -144,6 +148,7 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
 
         Intent p = getIntent();
         item = (GridItem) p.getSerializableExtra("item");
+        setmInterstitialAd();
         // 엑티비티 Uuid 저장
         SPUtil.setBlockMeUserCurrentActivity(getString(R.string.currentActivity),item.getUuid());
         DataContainer.getInstance().getMyUserRef().addListenerForSingleValueEvent(new ValueEventListener() {
@@ -477,7 +482,7 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
                         UiUtil.getInstance().startProgressDialog(FullImageActivity.this);
                         // blockUsers 추가
                         try {
-                            FireBaseUtil.getInstance().block(item.getUuid()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            FireBaseUtil.getInstance().block(mInterstitialAd,item.getUuid()).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
                                     finish();
@@ -670,6 +675,11 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
         super.onDestroy();
     }
 
+    public void setmInterstitialAd(){
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+    }
 
 //    @Subscribe
 //    public void FinishActivity(TargetUserBlocksMeEvent someoneBlocksMeEvent){

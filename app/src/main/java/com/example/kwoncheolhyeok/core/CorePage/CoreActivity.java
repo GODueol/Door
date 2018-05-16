@@ -33,6 +33,8 @@ import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.SharedPreferencesUtil;
 import com.example.kwoncheolhyeok.core.Util.UiUtil;
 import com.example.kwoncheolhyeok.core.Util.WrapContentLinearLayoutManager;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -60,6 +62,8 @@ public class CoreActivity extends BlockBaseActivity {
     public String postId;
 
     public CheckBox dontShowAgain;
+    private AdView mAdView;
+
 
 
     @SuppressLint("LogNotTimber")
@@ -132,6 +136,13 @@ public class CoreActivity extends BlockBaseActivity {
 
     public void setContentView() {
         setContentView(R.layout.core_activity);
+
+        mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                .addTestDevice("0D525D9C92269D80384121978C3C4267")
+                .build();
+        mAdView.loadAd(adRequest);
     }
 
     public void addPostsToList(final ArrayList<CoreListItem> list) {

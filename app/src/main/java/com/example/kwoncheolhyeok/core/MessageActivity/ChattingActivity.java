@@ -44,6 +44,8 @@ import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
 import com.example.kwoncheolhyeok.core.Util.GalleryPick;
 import com.example.kwoncheolhyeok.core.Util.UiUtil;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -78,6 +80,7 @@ public class ChattingActivity extends BlockBaseActivity {
     private User targetUser;
     private String targetUuid;
     private GalleryPick galleryPick;
+    private InterstitialAd mInterstitialAd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,7 +104,7 @@ public class ChattingActivity extends BlockBaseActivity {
         // 상대방 데이터 셋
         targetUser = (User) p.getSerializableExtra("user");
         targetUuid = (String) p.getSerializableExtra("userUuid");
-
+        setmInterstitialAd();
         // 엑티비티 Uuid 저장
         SPUtil.setBlockMeUserCurrentActivity(getString(R.string.currentActivity), targetUuid);
         // 내정보 데이터 셋
@@ -266,7 +269,7 @@ public class ChattingActivity extends BlockBaseActivity {
                         UiUtil.getInstance().startProgressDialog(ChattingActivity.this);
                         // blockUsers 추가
                         try {
-                            FireBaseUtil.getInstance().block(chatFirebaseUtil.getItem().getUuid()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            FireBaseUtil.getInstance().block(mInterstitialAd,chatFirebaseUtil.getItem().getUuid()).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
                                     finish();
@@ -374,5 +377,12 @@ public class ChattingActivity extends BlockBaseActivity {
     public void FinishActivity(TargetUserBlocksMeEvent someoneBlocksMeEvent) {
         finish();
     }
+
+    public void setmInterstitialAd(){
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+    }
+
 
 }

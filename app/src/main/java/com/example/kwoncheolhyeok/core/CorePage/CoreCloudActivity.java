@@ -34,9 +34,7 @@ public class CoreCloudActivity extends CoreActivity {
 
     public void setContentView() {
         setContentView(R.layout.core_cloud_activity_main);
-
-
-        mAdView = findViewById(R.id.adView);
+        mAdView = (AdView) findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder()
                 .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
                 .addTestDevice("0D525D9C92269D80384121978C3C4267")
