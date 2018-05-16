@@ -40,7 +40,7 @@ import butterknife.ButterKnife;
  * Created by Administrator on 2018-03-25.
  */
 
-public class NavAlarmAdapter extends RecyclerView.Adapter<NavAlarmAdapter.ViewHolder> implements RewardedVideoAdListener {
+public class NavAlarmAdapter extends RecyclerView.Adapter<NavAlarmAdapter.ViewHolder>{
 
     private List<AlarmSummary> items;
     private Context context;
@@ -54,8 +54,6 @@ public class NavAlarmAdapter extends RecyclerView.Adapter<NavAlarmAdapter.ViewHo
 
         // Use an activity context to get the rewarded video instance.
         mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(context);
-        mRewardedVideoAd.setRewardedVideoAdListener(this);
-
         loadRewardedVideoAd();
 
     }
@@ -111,29 +109,77 @@ public class NavAlarmAdapter extends RecyclerView.Adapter<NavAlarmAdapter.ViewHo
             @Override
             public void onClick(View view) {
                 //if (mRewardedVideoAd.isLoaded()) {
+
+                mRewardedVideoAd.setRewardedVideoAdListener(new RewardedVideoAdListener() {
+
+
+                    @Override
+                    public void onRewardedVideoAdLoaded() {
+                        Log.d("test","onRewardedVideoAdLoaded");
+                    }
+
+                    @Override
+                    public void onRewardedVideoAdOpened() {
+                        Log.d("test","onRewardedVideoAdOpened" +
+                                "");
+
+                    }
+
+                    @Override
+                    public void onRewardedVideoStarted() {
+                        Log.d("test","onRewardedVideoStarted");
+                    }
+
+                    @Override
+                    public void onRewardedVideoAdClosed() {
+                        loadRewardedVideoAd();
+
+                        if (DataContainer.getInstance().isBlockWithMe(item.getcUuid())) {
+                            Toast.makeText(context, "포스트를 볼 수 없습니다.", Toast.LENGTH_SHORT).show();
+                            FirebaseDatabase.getInstance().getReference("Alarm").child(DataContainer.getInstance().getUid()).child(item.getKey()).removeValue();
+                            items.remove(position);
+                            notifyDataSetChanged();
+                            return;
+                        }
+                        try {
+                            Long time = UiUtil.getInstance().getCurrentTime(context);
+                            item.setViewTime(time);
+                            FirebaseDatabase.getInstance().getReference("Alarm").child(DataContainer.getInstance().getUid()).child(item.getKey()).child("alarmSummary").child("viewTime").setValue(time);
+                        } catch (NotSetAutoTimeException e) {
+                            e.printStackTrace();
+                        }
+
+                        Intent p = new Intent(context.getApplicationContext(), CoreActivity.class);
+                        p.putExtra("uuid", item.getcUuid());
+                        p.putExtra("postId", item.getPostId());
+                        context.startActivity(p);
+                        notifyDataSetChanged();
+
+
+                        Log.d("test","onRewardedVideoAdClosed");
+                    }
+
+                    @Override
+                    public void onRewarded(RewardItem rewardItem) {
+                        Toast.makeText(context, "onRewarded! currency: " + rewardItem.getType() + "  amount: " +
+                                rewardItem.getAmount(), Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onRewardedVideoAdLeftApplication() {
+
+                        Log.d("test","onRewardedVideoAdLeftApplication");
+                    }
+
+                    @Override
+                    public void onRewardedVideoAdFailedToLoad(int i) {
+                        Log.d("test","onRewardedVideoAdFailedToLoad" + i);
+                    }
+                });
                     mRewardedVideoAd.show();
                 //}else {
                     /*Log.d("test", "로드안됨" + AdRequest.DEVICE_ID_EMULATOR);
-                    if (DataContainer.getInstance().isBlockWithMe(item.getcUuid())) {
-                        Toast.makeText(context, "포스트를 볼 수 없습니다.", Toast.LENGTH_SHORT).show();
-                        FirebaseDatabase.getInstance().getReference("Alarm").child(DataContainer.getInstance().getUid()).child(item.getKey()).removeValue();
-                        items.remove(position);
-                        notifyDataSetChanged();
-                        return;
-                    }
-                    try {
-                        Long time = UiUtil.getInstance().getCurrentTime(context);
-                        item.setViewTime(time);
-                        FirebaseDatabase.getInstance().getReference("Alarm").child(DataContainer.getInstance().getUid()).child(item.getKey()).child("alarmSummary").child("viewTime").setValue(time);
-                    } catch (NotSetAutoTimeException e) {
-                        e.printStackTrace();
-                    }
 
-                    Intent p = new Intent(context.getApplicationContext(), CoreActivity.class);
-                    p.putExtra("uuid", item.getcUuid());
-                    p.putExtra("postId", item.getPostId());
-                    context.startActivity(p);
-                    notifyDataSetChanged();
                 }*/
             }
         });
@@ -217,46 +263,5 @@ public class NavAlarmAdapter extends RecyclerView.Adapter<NavAlarmAdapter.ViewHo
                 new AdRequest.Builder().addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
                         .addTestDevice("0D525D9C92269D80384121978C3C4267")
                         .build());
-    }
-
-
-    @Override
-    public void onRewardedVideoAdLoaded() {
-        Log.d("test","onRewardedVideoAdLoaded");
-    }
-
-    @Override
-    public void onRewardedVideoAdOpened() {
-        Log.d("test","onRewardedVideoAdOpened" +
-                "");
-
-    }
-
-    @Override
-    public void onRewardedVideoStarted() {
-        Log.d("test","onRewardedVideoStarted");
-    }
-
-    @Override
-    public void onRewardedVideoAdClosed() {
-        loadRewardedVideoAd();
-        Log.d("test","onRewardedVideoAdClosed");
-    }
-
-    @Override
-    public void onRewarded(RewardItem rewardItem) {
-        Toast.makeText(context, "onRewarded! currency: " + rewardItem.getType() + "  amount: " +
-                rewardItem.getAmount(), Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onRewardedVideoAdLeftApplication() {
-
-        Log.d("test","onRewardedVideoAdLeftApplication");
-    }
-
-    @Override
-    public void onRewardedVideoAdFailedToLoad(int i) {
-        Log.d("test","onRewardedVideoAdFailedToLoad" + i);
     }
 }
