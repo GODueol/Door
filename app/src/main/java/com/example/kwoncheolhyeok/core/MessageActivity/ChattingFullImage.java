@@ -24,7 +24,7 @@ public class ChattingFullImage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chatting_fullimage_activity);
 
-        toolbar = findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         // 툴바 뒤로가기 버튼

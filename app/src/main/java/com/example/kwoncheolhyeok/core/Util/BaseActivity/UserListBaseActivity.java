@@ -8,6 +8,8 @@ import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.FriendsActivity.UserListAdapter;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
+import com.example.kwoncheolhyeok.core.Util.SharedPreferencesUtil;
+import com.google.android.gms.ads.InterstitialAd;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
@@ -24,6 +26,7 @@ import java.util.HashMap;
 public class UserListBaseActivity extends AppCompatActivity {
     public ValueEventListener listener;
     public Query ref;
+    protected SharedPreferencesUtil SPUtil;
 
     public void setRecyclerView(final ArrayList<UserListAdapter.Item> items, final UserListAdapter adapter, final String field, int item_menu, Query ref){
         adapter.setItemMenu(item_menu, field);

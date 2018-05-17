@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 
 import com.example.kwoncheolhyeok.core.Exception.NotSetAutoTimeException;
 import com.example.kwoncheolhyeok.core.R;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 
 /**
  * Created by Administrator on 2018-03-08.
@@ -19,12 +21,14 @@ public class SharedPreferencesUtil {
     private SharedPreferences sharedPref_badge;
     private SharedPreferences sharedPref_friends;
     private SharedPreferences sharedPref_notice;
+    private SharedPreferences sharedPref_ad;
 
     private SharedPreferences.Editor editor;
     private SharedPreferences.Editor editor_badge;
     private SharedPreferences.Editor editor_friends;
     private SharedPreferences.Editor editor_chatListBadge;
     private SharedPreferences.Editor editor_notice;
+    private SharedPreferences.Editor editor_ad;
 
     @SuppressLint("CommitPrefEdits")
     public SharedPreferencesUtil(Context context) {
@@ -34,12 +38,14 @@ public class SharedPreferencesUtil {
         sharedPref_chatListBadge = context.getSharedPreferences(context.getString(R.string.chatListBadge), Context.MODE_PRIVATE);
         sharedPref_friends = context.getSharedPreferences(context.getString(R.string.friends), Context.MODE_PRIVATE);
         sharedPref_notice = context.getSharedPreferences(context.getString(R.string.notice), Context.MODE_PRIVATE);
+        sharedPref_ad = context.getSharedPreferences("ads", Context.MODE_PRIVATE);
 
         editor = sharedPref.edit();
         editor_badge = sharedPref_badge.edit();
         editor_friends = sharedPref_friends.edit();
         editor_chatListBadge = sharedPref_chatListBadge.edit();
         editor_notice = sharedPref_notice.edit();
+        editor_ad = sharedPref_ad.edit();
     }
 
 
@@ -196,6 +202,49 @@ public class SharedPreferencesUtil {
     // 코어 공지 읽은 날짜 저장
     public void putCoreNoticeCheck(Context context) throws NotSetAutoTimeException {
         editor_notice.putLong("coreNoticeCheckDate", UiUtil.getInstance().getCurrentTime(context)).apply();
+    }
+
+    // 현재 접속한 채팅방 설정
+    public void initAds() {
+        editor_ad.putInt("mainGrid", 0).apply();
+        editor_ad.putInt("chat", 0).apply();
+        editor_ad.putInt("follower", 0).apply();
+        editor_ad.putInt("following", 0).apply();
+        editor_ad.putInt("viewedMe", 0).apply();
+    }
+    // 각 채팅방 별개 뱃지
+    public void increaseAds(InterstitialAd mInterstitialAd, String str) {
+        int now = sharedPref_ad.getInt(str, 0);
+        int count=0;
+
+        switch (str){
+            case "mainGrid" :
+                count=7;
+                break;
+            case "chat" :
+                count=2;
+                break;
+            case "follower" :
+                count=3;
+                break;
+            case "following" :
+                count=3;
+                break;
+            case "viewedMe" :
+                count=3;
+                break;
+        }
+
+        if(now>=count) {
+            if(mInterstitialAd.isLoaded()) {
+                mInterstitialAd.show();
+                editor_ad.putInt(str, 0).apply();
+            }else{
+                editor_ad.putInt(str, ++now).apply();
+            }
+        }else{
+            editor_ad.putInt(str, ++now).apply();
+        }
     }
 
 }

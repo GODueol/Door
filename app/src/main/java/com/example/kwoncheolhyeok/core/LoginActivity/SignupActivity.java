@@ -113,7 +113,7 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
 
 
         deviceIdentifier = Secure.getString(getApplicationContext().getContentResolver(), Secure.ANDROID_ID);
-        bodytype = findViewById(R.id.input_bodytype);
+        bodytype = (EditText) findViewById(R.id.input_bodytype);
         bodytype.setFocusable(false);
         bodytype.setClickable(false);
         bodytype.setOnClickListener(new View.OnClickListener() {

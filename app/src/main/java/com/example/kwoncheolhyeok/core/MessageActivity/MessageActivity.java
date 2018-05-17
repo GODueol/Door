@@ -19,6 +19,9 @@ import com.example.kwoncheolhyeok.core.MessageActivity.util.RoomVO;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
 import com.example.kwoncheolhyeok.core.Util.SharedPreferencesUtil;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -46,14 +49,13 @@ public class MessageActivity extends AppCompatActivity implements SharedPreferen
     private int BadgeCount = 0;
 
     private SharedPreferencesUtil SPUtil;
+    private InterstitialAd mInterstitialAd;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Get the view from new_activity.xml
         setContentView(R.layout.chatting_list_activity);
-
-
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -62,6 +64,7 @@ public class MessageActivity extends AppCompatActivity implements SharedPreferen
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
 
         SPUtil = new SharedPreferencesUtil(getApplicationContext());
+        setmInterstitialAd();
 
         mAuth = FirebaseAuth.getInstance();
         userId = mAuth.getUid();
@@ -85,6 +88,7 @@ public class MessageActivity extends AppCompatActivity implements SharedPreferen
                                     intent.putExtra("userUuid", item.getTargetUuid());
                                     SPUtil.removeChatRoomBadge(item.getChatRoomid());
                                     startActivity(intent);
+                                    SPUtil.increaseAds(mInterstitialAd, "chat");
                                 }
 
                                 @Override
@@ -311,5 +315,17 @@ public class MessageActivity extends AppCompatActivity implements SharedPreferen
                 break;
             }
         }
+    }
+
+    public void setmInterstitialAd(){
+        mInterstitialAd = new InterstitialAd(getApplicationContext());
+        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+        mInterstitialAd.setAdListener(new AdListener(){
+            @Override
+            public void onAdClosed() {
+                mInterstitialAd.loadAd(new AdRequest.Builder().build());
+            }
+        });
     }
 }

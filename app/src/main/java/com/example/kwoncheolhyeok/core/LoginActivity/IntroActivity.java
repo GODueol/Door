@@ -18,6 +18,7 @@ import com.example.kwoncheolhyeok.core.Activity.MainActivity;
 import com.example.kwoncheolhyeok.core.Entity.User;
 import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
+import com.example.kwoncheolhyeok.core.Util.SharedPreferencesUtil;
 import com.example.kwoncheolhyeok.core.Util.UiUtil;
 import com.example.kwoncheolhyeok.core.Util.setPermission;
 import com.google.android.gms.ads.MobileAds;
@@ -44,6 +45,7 @@ public class IntroActivity extends Activity {
     /**
      * Called when the activity is first created.
      */
+    private SharedPreferencesUtil SPUtil;
 
     private String[] permissions = new String[]{
             Manifest.permission.ACCESS_FINE_LOCATION,
@@ -97,8 +99,10 @@ public class IntroActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.intro_activity);
+        SPUtil = new SharedPreferencesUtil(this);
         //  광고 아이디 설정 (최초 1회)
         MobileAds.initialize(this,this.getString(R.string.adsID));
+        SPUtil.initAds();
     }
 
     private void getUserInfo(final FirebaseUser user) {
@@ -167,6 +171,7 @@ public class IntroActivity extends Activity {
     }
 
     private void logout() {
+        SPUtil.initAds();
         FirebaseAuth.getInstance().signOut();
         goToLoginActivity();
     }

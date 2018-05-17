@@ -19,6 +19,9 @@ import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.BaseActivity.UserListBaseActivity;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.SharedPreferencesUtil;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
@@ -35,10 +38,8 @@ public class FriendsActivity extends UserListBaseActivity implements SharedPrefe
     Toolbar toolbar = null;
     private ArrayList<UserListAdapter.Item> items;
     private UserListAdapter adapter;
-    private SharedPreferencesUtil SPUtil;
 
     private List<Badge> badges;
-
     boolean firstView;
     @Override
     public void onCreate(Bundle savedInstanceState) {

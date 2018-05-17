@@ -31,7 +31,6 @@ import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
 import com.example.kwoncheolhyeok.core.Util.GlideApp;
 import com.example.kwoncheolhyeok.core.Util.UiUtil;
 import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.reward.RewardItem;
 import com.google.android.gms.ads.reward.RewardedVideoAd;
@@ -113,7 +112,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
         } catch (NotSetAutoTimeException e) {
             e.printStackTrace();
             Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-            ActivityCompat.finishAffinity((Activity)context);
+            ActivityCompat.finishAffinity((Activity) context);
         }
 
         if (!field.equals("blockUsers") && !field.equals("Core Heart Count")) {   // block 아닐때만 클릭 가능하도록
@@ -129,7 +128,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
             });
         }
 
-        if(field.equals("Core Heart Count")){
+        if (field.equals("Core Heart Count")) {
             userHolder.itemMenuBtn.setVisibility(View.INVISIBLE);
         } else {
             userHolder.itemMenuBtn.setVisibility(View.VISIBLE);
@@ -289,7 +288,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
                                     } catch (NotSetAutoTimeException e) {
                                         e.printStackTrace();
                                         Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-                                        ActivityCompat.finishAffinity((Activity)context);
+                                        ActivityCompat.finishAffinity((Activity) context);
                                     }
                                     if (task == null) {
                                         Toast.makeText(context, "팔로우 취소 상태입니다", Toast.LENGTH_SHORT).show();
@@ -326,7 +325,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
                                     } catch (NotSetAutoTimeException e) {
                                         e.printStackTrace();
                                         Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-                                        ActivityCompat.finishAffinity((Activity)context);
+                                        ActivityCompat.finishAffinity((Activity) context);
                                     }
                                     if (task == null) {
                                         Toast.makeText(context, "팔로우 신청 되어있습니다", Toast.LENGTH_SHORT).show();

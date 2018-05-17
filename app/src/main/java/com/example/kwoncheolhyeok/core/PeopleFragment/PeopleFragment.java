@@ -22,11 +22,15 @@ import com.example.kwoncheolhyeok.core.Util.BusProvider;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
 import com.example.kwoncheolhyeok.core.Util.GPSInfo;
+import com.example.kwoncheolhyeok.core.Util.SharedPreferencesUtil;
 import com.example.kwoncheolhyeok.core.Util.UiUtil;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQuery;
 import com.firebase.geofire.GeoQueryEventListener;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -46,26 +50,28 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
     private ValueEventListener userListener;
     private DatabaseReference userRef;
     private GeoQuery geoQuery;
+    private SharedPreferencesUtil SPUtil;
+    private InterstitialAd mInterstitialAd;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.tab_fragment_1, container, false);
-
+        SPUtil = new SharedPreferencesUtil(getContext());
+        setmInterstitialAd();
         gridView = view.findViewById(R.id.gridview);
         imageAdapter = new ImageAdapter(getContext());
         gridView.setAdapter(imageAdapter);
 
-
-
         gridView.setOnItemClickListener((parent, view1, position, id) -> {
             GridItem item = imageAdapter.getItem(position);
             // block 유저한테는 못들어가게함
-            if(DataContainer.getInstance().isBlockWithMe(item.getUuid())) return;
+            if (DataContainer.getInstance().isBlockWithMe(item.getUuid())) return;
             Intent p = new Intent(getActivity().getApplicationContext(), FullImageActivity.class);
             p.putExtra("id", position);
             p.putExtra("item", item);
             startActivity(p);
+            SPUtil.increaseAds(mInterstitialAd, "mainGrid");
         });
 
         // 스와이프로 위치 새로고침
@@ -91,7 +97,7 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
 
                 // blockedMe 확인
                 boolean b = isEqualMap(mUser.getBlockMeUsers(), compUser.getBlockMeUsers());
-                if(!b){
+                if (!b) {
                     refreshGrid(null, GPSInfo.getmInstance(getActivity()).getGPSLocation());
                     BusProvider.getInstance().post(new SomeoneBlocksMeEvent());
                 }
@@ -115,7 +121,6 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return view;
     }
 
@@ -231,13 +236,15 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
         refreshGrid(pushEvent, location);
 
     }
+
     private boolean isInBlock(String oUuid) {
         return mUser.getBlockUsers().containsKey(oUuid) || mUser.getBlockMeUsers().containsKey(oUuid);
     }
 
     private boolean isInFilter(SummaryUser summaryUser) throws NotSetAutoTimeException {
         // 로그인을 1개월 이상 하지 않을 시 그리드에서 사라지게
-        if(summaryUser.getLoginDate() != 0 && UiUtil.getInstance().getCurrentTime(getContext()) - summaryUser.getLoginDate() > DataContainer.SecToDay*31 ) return false;
+        if (summaryUser.getLoginDate() != 0 && UiUtil.getInstance().getCurrentTime(getContext()) - summaryUser.getLoginDate() > DataContainer.SecToDay * 31)
+            return false;
 
         if (!mUser.isUseFilter()) return true;   // 필터 적용여부
         if (!(mUser.getAgeBoundary().getMin() <= summaryUser.getAge() && summaryUser.getAge() <= mUser.getAgeBoundary().getMax()))
@@ -296,9 +303,21 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
 
         try {
             BusProvider.getInstance().unregister(this);
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void setmInterstitialAd(){
+        mInterstitialAd = new InterstitialAd(getContext());
+        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+        mInterstitialAd.setAdListener(new AdListener(){
+            @Override
+            public void onAdClosed() {
+                mInterstitialAd.loadAd(new AdRequest.Builder().build());
+            }
+        });
     }
 }
 
