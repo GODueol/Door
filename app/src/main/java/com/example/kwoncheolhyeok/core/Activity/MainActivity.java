@@ -634,7 +634,11 @@ public class MainActivity extends AppCompatActivity
     // 메인토글버튼 동기화
     private void checkMainToggle() {
         Log.d("test", "dsaad");
-        if (messageBadge.getText().equals("") && coreBadge.getText().equals("") && friendBadge.getText().equals("")) {
+        try {
+            if (messageBadge.getText().equals("") && coreBadge.getText().equals("") && friendBadge.getText().equals("")) {
+                SPUtil.setMainIcon(getString(R.string.mainAlarm), false);
+            }
+        }catch (Exception e){
             SPUtil.setMainIcon(getString(R.string.mainAlarm), false);
         }
     }
