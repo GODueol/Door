@@ -11,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,6 +45,10 @@ import com.example.kwoncheolhyeok.core.Util.GlideApp;
 import com.example.kwoncheolhyeok.core.Util.UiUtil;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.reward.RewardItem;
+import com.google.android.gms.ads.reward.RewardedVideoAd;
+import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -71,7 +76,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
     private int currentSeekBarPosition;
 
     private String currentPlayUrl = "";
-    private InterstitialAd mInterstitialAd;
+    private RewardedVideoAd mRewardedVideoAd;
 
     CoreListAdapter(List<CoreListItem> coreListItems, Context context) {
         this.coreListItems = coreListItems;
@@ -79,7 +84,8 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
         this.mediaPlayer = new MediaPlayer();
         currentHolder = new CorePostHolder(new View(context));
         postsRef = FirebaseDatabase.getInstance().getReference().child("posts");
-        setmInterstitialAd();
+        mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(context);
+        loadRewardedVideoAd();
     }
 
     @Override
@@ -508,7 +514,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                         break;
 
                     case R.id.block:
-                        // 다이얼로그
+                        //
                         UiUtil.getInstance().showDialog(context, "유저 차단", "해당 유저를 차단하시겠습니까?", (dialog, whichButton) -> {
                             final User mUser = DataContainer.getInstance().getUser();
                             if (mUser.getBlockUsers().size() >= DataContainer.ChildrenMax) {
@@ -516,14 +522,73 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                                 return;
                             }
 
-                            UiUtil.getInstance().startProgressDialog((Activity) context);
-                            // blockUsers 추가
-                            try {
-                                FireBaseUtil.getInstance().block(mInterstitialAd,coreListItem.getCorePost().getUuid()).addOnSuccessListener(aVoid -> Toast.makeText(context, "차단되었습니다", Toast.LENGTH_SHORT).show()).addOnCompleteListener(task -> UiUtil.getInstance().stopProgressDialog());
-                            } catch (ChildSizeMaxException e) {
-                                Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-                                UiUtil.getInstance().stopProgressDialog();
-                            }
+                            mRewardedVideoAd.setRewardedVideoAdListener(new RewardedVideoAdListener() {
+                                @Override
+                                public void onRewardedVideoAdLoaded() {
+                                    Log.d("test", "onRewardedVideoAdLoaded");
+                                }
+
+                                @Override
+                                public void onRewardedVideoAdOpened() {
+                                    Log.d("test", "onRewardedVideoAdOpened" +
+                                            "");
+
+                                }
+
+                                @Override
+                                public void onRewardedVideoStarted() {
+                                    Log.d("test", "onRewardedVideoStarted");
+                                }
+
+                                @Override
+                                public void onRewardedVideoAdClosed() {
+                                    loadRewardedVideoAd();
+                                    FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("blockCount").addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            if (dataSnapshot.exists()) {
+                                                int value = Integer.valueOf(dataSnapshot.getValue().toString());
+                                                Log.d("test", "몇개 : " + value);
+                                                if (value > 0) {
+                                                    FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("blockCount").setValue(value - 1);
+
+                                                    UiUtil.getInstance().startProgressDialog((Activity) context);
+                                                    // blockUsers 추가
+                                                    try {
+                                                        FireBaseUtil.getInstance().block(coreListItem.getCorePost().getUuid()).addOnSuccessListener(aVoid -> Toast.makeText(context, "차단되었습니다", Toast.LENGTH_SHORT).show()).addOnCompleteListener(task -> UiUtil.getInstance().stopProgressDialog());
+                                                    } catch (ChildSizeMaxException e) {
+                                                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                        UiUtil.getInstance().stopProgressDialog();
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+
+                                        }
+                                    });
+                                    Log.d("test", "onRewardedVideoAdClosed");
+                                }
+
+                                @Override
+                                public void onRewarded(RewardItem rewardItem) {
+                                    FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("blockCount").setValue(rewardItem.getAmount());
+                                }
+
+                                @Override
+                                public void onRewardedVideoAdLeftApplication() {
+
+                                    Log.d("test", "onRewardedVideoAdLeftApplication");
+                                }
+
+                                @Override
+                                public void onRewardedVideoAdFailedToLoad(int i) {
+                                    Log.d("test", "onRewardedVideoAdFailedToLoad" + i);
+                                }
+                            });
+                            mRewardedVideoAd.show();
                         }, (dialog, whichButton) -> {
                         });
                         break;
@@ -759,10 +824,11 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
     }
 
 
-    public void setmInterstitialAd(){
-        mInterstitialAd = new InterstitialAd(context);
-        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
-        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+    private void loadRewardedVideoAd() {
+        mRewardedVideoAd.loadAd("ca-app-pub-3940256099942544/5224354917",
+                new AdRequest.Builder().addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                        .addTestDevice("0D525D9C92269D80384121978C3C4267")
+                        .build());
     }
 
 

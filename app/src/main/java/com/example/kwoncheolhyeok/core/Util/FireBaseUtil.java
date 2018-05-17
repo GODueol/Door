@@ -12,9 +12,6 @@ import com.example.kwoncheolhyeok.core.Exception.NotSetAutoTimeException;
 import com.example.kwoncheolhyeok.core.MessageActivity.util.MessageVO;
 import com.example.kwoncheolhyeok.core.MessageActivity.util.RoomVO;
 import com.example.kwoncheolhyeok.core.R;
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -116,8 +113,7 @@ public class FireBaseUtil {
         return mDatabase.updateChildren(childUpdates);
     }
 
-    public Task<Void> block(InterstitialAd mInterstitialAd, final String oUuid) throws ChildSizeMaxException {
-
+    public Task<Void> block(final String oUuid) throws ChildSizeMaxException {
 
         final String mUuid = DataContainer.getInstance().getUid();
         final User mUser = DataContainer.getInstance().getUser();
@@ -130,96 +126,67 @@ public class FireBaseUtil {
         DatabaseReference mDatabase = DataContainer.getInstance().getUsersRef();
         final Map<String, Object> childUpdate = new HashMap<>();
 
+        // block 리스트 삭제
+        // 로컬 상에서 Block 리스트 추가
+        mUser.getBlockUsers().put(oUuid, now);
+        childUpdate.put("/" + mUuid + "/blockUsers/" + oUuid, now);  // DB 상에서 본인 Block 리스트 추가
+        childUpdate.put("/" + oUuid + "/blockMeUsers/" + mUuid, now);  // DB 상에서 상대 BlockMe 리스트 추가
 
 
-        mInterstitialAd.setAdListener(new AdListener() {
+        // 내 팔로우 관계 모두 삭제(로컬)
+        mUser.getFollowerUsers().remove(oUuid);
+        mUser.getFollowingUsers().remove(oUuid);
+        mUser.getFriendUsers().remove(oUuid);
+        mUser.getViewedMeUsers().remove(oUuid);
+
+        // 내 팔로우 관계 모두 삭제(DB)
+        childUpdate.put("/" + mUuid + "/followerUsers/" + oUuid, null);
+        childUpdate.put("/" + mUuid + "/followingUsers/" + oUuid, null);
+        childUpdate.put("/" + mUuid + "/friendUsers/" + oUuid, null);
+        childUpdate.put("/" + mUuid + "/viewedMeUsers/" + oUuid, null);
+
+        // 친구의 팔로우 관계 모두 삭제(DB)
+        childUpdate.put("/" + oUuid + "/followerUsers/" + mUuid, null);
+        childUpdate.put("/" + oUuid + "/followingUsers/" + mUuid, null);
+        childUpdate.put("/" + oUuid + "/friendUsers/" + mUuid, null);
+        childUpdate.put("/" + oUuid + "/viewedMeUsers/" + mUuid, null);
+
+        // 채팅 관계 모두 삭제(DB)
+        //TODO:미완성
+        FirebaseDatabase.getInstance().getReference("chatRoomList").child(mUuid).child(oUuid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onAdLoaded() {
-                // Code to be executed when an ad finishes loading.
-            }
-
-            @Override
-            public void onAdFailedToLoad(int errorCode) {
-                // Code to be executed when an ad request fails.
-            }
-
-            @Override
-            public void onAdOpened() {
-                // Code to be executed when the ad is displayed.
-            }
-
-            @Override
-            public void onAdLeftApplication() {
-                // Code to be executed when the user has left the app.
-            }
-
-            @Override
-            public void onAdClosed() {
-
-                // block 리스트 삭제
-                // 로컬 상에서 Block 리스트 추가
-                mUser.getBlockUsers().put(oUuid, now);
-                childUpdate.put("/" + mUuid + "/blockUsers/" + oUuid, now);  // DB 상에서 본인 Block 리스트 추가
-                childUpdate.put("/" + oUuid + "/blockMeUsers/" + mUuid, now);  // DB 상에서 상대 BlockMe 리스트 추가
-
-
-                // 내 팔로우 관계 모두 삭제(로컬)
-                mUser.getFollowerUsers().remove(oUuid);
-                mUser.getFollowingUsers().remove(oUuid);
-                mUser.getFriendUsers().remove(oUuid);
-                mUser.getViewedMeUsers().remove(oUuid);
-
-                // 내 팔로우 관계 모두 삭제(DB)
-                childUpdate.put("/" + mUuid + "/followerUsers/" + oUuid, null);
-                childUpdate.put("/" + mUuid + "/followingUsers/" + oUuid, null);
-                childUpdate.put("/" + mUuid + "/friendUsers/" + oUuid, null);
-                childUpdate.put("/" + mUuid + "/viewedMeUsers/" + oUuid, null);
-
-                // 친구의 팔로우 관계 모두 삭제(DB)
-                childUpdate.put("/" + oUuid + "/followerUsers/" + mUuid, null);
-                childUpdate.put("/" + oUuid + "/followingUsers/" + mUuid, null);
-                childUpdate.put("/" + oUuid + "/friendUsers/" + mUuid, null);
-                childUpdate.put("/" + oUuid + "/viewedMeUsers/" + mUuid, null);
-
-                // 채팅 관계 모두 삭제(DB)
-                //TODO:미완성
-                FirebaseDatabase.getInstance().getReference("chatRoomList").child(mUuid).child(oUuid).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        try {
-                            final String roomId = dataSnapshot.getValue(RoomVO.class).getChatRoomid();
-                            // 채팅방 이미지 젼체 삭제
-                            FirebaseDatabase.getInstance().getReference("chat").child(roomId).orderByChild("isImage").equalTo(1).addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    for (DataSnapshot ds : dataSnapshot.getChildren()) {//마찬가지로 중복 유무 확인
-                                        MessageVO message = ds.getValue(MessageVO.class);
-                                        FirebaseStorage.getInstance().getReferenceFromUrl(message.getImage()).delete();
-                                    }
-                                    FirebaseDatabase.getInstance().getReference("chat").child(roomId).removeValue();
-                                }
-
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
-
-                                }
-                            });
-                            FirebaseDatabase.getInstance().getReference("chatRoomList").child(mUuid).child(oUuid).removeValue();
-                            FirebaseDatabase.getInstance().getReference("chatRoomList").child(oUuid).child(mUuid).removeValue();
-                        } catch (Exception e) {
-                            e.printStackTrace();
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                try {
+                    final String roomId = dataSnapshot.getValue(RoomVO.class).getChatRoomid();
+                    // 채팅방 이미지 젼체 삭제
+                    FirebaseDatabase.getInstance().getReference("chat").child(roomId).orderByChild("isImage").equalTo(1).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            for (DataSnapshot ds : dataSnapshot.getChildren()) {//마찬가지로 중복 유무 확인
+                                MessageVO message = ds.getValue(MessageVO.class);
+                                FirebaseStorage.getInstance().getReferenceFromUrl(message.getImage()).delete();
+                            }
+                            FirebaseDatabase.getInstance().getReference("chat").child(roomId).removeValue();
                         }
-                    }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                    }
-                });
-                // Code to be executed when when the interstitial ad is closed.
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                    FirebaseDatabase.getInstance().getReference("chatRoomList").child(mUuid).child(oUuid).removeValue();
+                    FirebaseDatabase.getInstance().getReference("chatRoomList").child(oUuid).child(mUuid).removeValue();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
             }
         });
+        // Code to be executed when when the interstitial ad is closed.
 
-        mInterstitialAd.show();
 
         return mDatabase.updateChildren(childUpdate);
     }
@@ -304,38 +271,38 @@ public class FireBaseUtil {
         postsRef.child(cUuid).child(coreListItem.getPostKey())
                 .removeValue().addOnSuccessListener(aVoid -> {
 
-                    final ArrayList<Task> deleteTasks = new ArrayList<>();
+            final ArrayList<Task> deleteTasks = new ArrayList<>();
 
-                    // coreCloud
-                    if(coreListItem.getCorePost().isCloud()){
-                        DataContainer.getInstance().getCoreCloudRef().child(coreListItem.getPostKey()).removeValue();
-                    }
+            // coreCloud
+            if (coreListItem.getCorePost().isCloud()) {
+                DataContainer.getInstance().getCoreCloudRef().child(coreListItem.getPostKey()).removeValue();
+            }
 
-                    // 갯수 갱신
-                    FireBaseUtil.getInstance().syncCorePostCount(cUuid);
+            // 갯수 갱신
+            FireBaseUtil.getInstance().syncCorePostCount(cUuid);
 
-                    // Storage Delete
-                    StorageReference postStorageRef = FirebaseStorage.getInstance().getReference().child("posts").child(cUuid).child(coreListItem.getPostKey());
-                    if (coreListItem.getCorePost().getSoundUrl() != null)
-                        deleteTasks.add(postStorageRef.child("sound").delete());
-                    if (coreListItem.getCorePost().getPictureUrl() != null)
-                        deleteTasks.add(postStorageRef.child("picture").delete());
+            // Storage Delete
+            StorageReference postStorageRef = FirebaseStorage.getInstance().getReference().child("posts").child(cUuid).child(coreListItem.getPostKey());
+            if (coreListItem.getCorePost().getSoundUrl() != null)
+                deleteTasks.add(postStorageRef.child("sound").delete());
+            if (coreListItem.getCorePost().getPictureUrl() != null)
+                deleteTasks.add(postStorageRef.child("picture").delete());
 
-    //                                if(deleteTasks.isEmpty()) UiUtil.getInstance().stopProgressDialog();    // 사진이나 음성이 없으면 프로그레스바 종료
+            //                                if(deleteTasks.isEmpty()) UiUtil.getInstance().stopProgressDialog();    // 사진이나 음성이 없으면 프로그레스바 종료
 
-                    for (Task task : deleteTasks) {
-                        task.addOnCompleteListener(mTask -> {
-                            for (Task t : deleteTasks) {
-                                if (!t.isComplete()) return;
+            for (Task task : deleteTasks) {
+                task.addOnCompleteListener(mTask -> {
+                    for (Task t : deleteTasks) {
+                        if (!t.isComplete()) return;
 //                                                UiUtil.getInstance().stopProgressDialog();
-                            }
-                        });
                     }
-
                 });
+            }
+
+        });
     }
 
-    public void syncUser(final SyncUserListener syncUserListener){
+    public void syncUser(final SyncUserListener syncUserListener) {
         final DataContainer dc = DataContainer.getInstance();
         dc.getMyUserRef().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -356,9 +323,9 @@ public class FireBaseUtil {
         Map<String, Object> childUpdates = new HashMap<>();
 
         // delete coreCloud
-        if(deletePostKey != null){  // 지워야할 포스트 지우기
+        if (deletePostKey != null) {  // 지워야할 포스트 지우기
             childUpdates.put("coreCloud/" + deletePostKey, null);
-            childUpdates.put("posts/" + deleteCUuid + "/" + deletePostKey + "/isCloud",false);
+            childUpdates.put("posts/" + deleteCUuid + "/" + deletePostKey + "/isCloud", false);
         }
 
         // add coreCloud
@@ -372,19 +339,20 @@ public class FireBaseUtil {
         void onSuccessSync(User user);
     }
 
-    public void queryBlockWithMe(final String uuid, final BlockListener blockListener){
+    public void queryBlockWithMe(final String uuid, final BlockListener blockListener) {
         syncUser(mUser -> blockListener.isBlockCallback(mUser.getBlockMeUsers().containsKey(uuid) || mUser.getBlockUsers().containsKey(uuid)));
     }
 
     public interface BlockListener {
         void isBlockCallback(boolean isBlockWithMe);
+
     }
 
-    public DatabaseReference getPreventsUser(String uuid){
+    public DatabaseReference getPreventsUser(String uuid) {
         return FirebaseDatabase.getInstance().getReference().child("prevents/user").child(uuid);
     }
 
-    public DatabaseReference getPreventsPost(String uuid){
+    public DatabaseReference getPreventsPost(String uuid) {
         return FirebaseDatabase.getInstance().getReference().child("prevents/post").child(uuid);
     }
 

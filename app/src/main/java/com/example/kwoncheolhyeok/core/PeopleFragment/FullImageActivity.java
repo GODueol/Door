@@ -37,6 +37,9 @@ import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.reward.RewardItem;
+import com.google.android.gms.ads.reward.RewardedVideoAd;
+import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -117,7 +120,7 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
     private GridItem item;
 
     User mUser;
-    private InterstitialAd mInterstitialAd;
+    private RewardedVideoAd mRewardedVideoAd;
 
     @SuppressLint("DefaultLocale")
     @Override
@@ -148,7 +151,8 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
 
         Intent p = getIntent();
         item = (GridItem) p.getSerializableExtra("item");
-        setmInterstitialAd();
+        mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(getApplicationContext());
+        loadRewardedVideoAd();
         // 엑티비티 Uuid 저장
         SPUtil.setBlockMeUserCurrentActivity(getString(R.string.currentActivity),item.getUuid());
         DataContainer.getInstance().getMyUserRef().addListenerForSingleValueEvent(new ValueEventListener() {
@@ -478,25 +482,82 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
                             Toast.makeText(FullImageActivity.this, DataContainer.ChildrenMax + "명을 초과할 수 없습니다", Toast.LENGTH_SHORT).show();
                             return;
                         }
+                        mRewardedVideoAd.setRewardedVideoAdListener(new RewardedVideoAdListener() {
+                            @Override
+                            public void onRewardedVideoAdLoaded() {
+                                Log.d("test", "onRewardedVideoAdLoaded");
+                            }
 
-                        UiUtil.getInstance().startProgressDialog(FullImageActivity.this);
-                        // blockUsers 추가
-                        try {
-                            FireBaseUtil.getInstance().block(mInterstitialAd,item.getUuid()).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    finish();
-                                }
-                            }).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    UiUtil.getInstance().stopProgressDialog();
-                                }
-                            });
-                        } catch (ChildSizeMaxException e) {
-                            Toast.makeText(FullImageActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                            UiUtil.getInstance().stopProgressDialog();
-                        }
+                            @Override
+                            public void onRewardedVideoAdOpened() {
+                                Log.d("test", "onRewardedVideoAdOpened" +
+                                        "");
+
+                            }
+
+                            @Override
+                            public void onRewardedVideoStarted() {
+                                Log.d("test", "onRewardedVideoStarted");
+                            }
+
+                            @Override
+                            public void onRewardedVideoAdClosed() {
+                                loadRewardedVideoAd();
+                                FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("blockCount").addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        if (dataSnapshot.exists()) {
+                                            int value = Integer.valueOf(dataSnapshot.getValue().toString());
+                                            Log.d("test", "몇개 : " + value);
+                                            if (value > 0) {
+                                                FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("blockCount").setValue(value - 1);
+                                                UiUtil.getInstance().startProgressDialog(FullImageActivity.this);
+                                                // blockUsers 추가
+                                                try {
+                                                    FireBaseUtil.getInstance().block(item.getUuid()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                        @Override
+                                                        public void onSuccess(Void aVoid) {
+                                                            finish();
+                                                        }
+                                                    }).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                            UiUtil.getInstance().stopProgressDialog();
+                                                        }
+                                                    });
+                                                } catch (ChildSizeMaxException e) {
+                                                    Toast.makeText(FullImageActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                    UiUtil.getInstance().stopProgressDialog();
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+
+                                    }
+                                });
+                                Log.d("test", "onRewardedVideoAdClosed");
+                            }
+
+                            @Override
+                            public void onRewarded(RewardItem rewardItem) {
+                                FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("blockCount").setValue(rewardItem.getAmount());
+                            }
+
+                            @Override
+                            public void onRewardedVideoAdLeftApplication() {
+
+                                Log.d("test", "onRewardedVideoAdLeftApplication");
+                            }
+
+                            @Override
+                            public void onRewardedVideoAdFailedToLoad(int i) {
+                                Log.d("test", "onRewardedVideoAdFailedToLoad" + i);
+                            }
+                        });
+                        mRewardedVideoAd.show();
                     }
                 }, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
@@ -675,10 +736,11 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
         super.onDestroy();
     }
 
-    public void setmInterstitialAd(){
-        mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
-        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+    private void loadRewardedVideoAd() {
+        mRewardedVideoAd.loadAd("ca-app-pub-3940256099942544/5224354917",
+                new AdRequest.Builder().addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                        .addTestDevice("0D525D9C92269D80384121978C3C4267")
+                        .build());
     }
 
 //    @Subscribe
