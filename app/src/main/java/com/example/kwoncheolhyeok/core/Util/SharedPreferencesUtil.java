@@ -208,9 +208,7 @@ public class SharedPreferencesUtil {
     public void initAds() {
         editor_ad.putInt("mainGrid", 0).apply();
         editor_ad.putInt("chat", 0).apply();
-        editor_ad.putInt("follower", 0).apply();
-        editor_ad.putInt("following", 0).apply();
-        editor_ad.putInt("viewedMe", 0).apply();
+        editor_ad.putInt("friends", 0).apply();
     }
     // 각 채팅방 별개 뱃지
     public void increaseAds(InterstitialAd mInterstitialAd, String str) {
@@ -224,13 +222,7 @@ public class SharedPreferencesUtil {
             case "chat" :
                 count=2;
                 break;
-            case "follower" :
-                count=3;
-                break;
-            case "following" :
-                count=3;
-                break;
-            case "viewedMe" :
+            case "friends" :
                 count=3;
                 break;
         }
