@@ -85,6 +85,17 @@ public class PictureUrls implements Serializable {
         this.picUrl4 = picUrl4;
     }
 
+    public ArrayList<String> toArrayAll() {
+        ArrayList<String> array = toArray();
+
+        array.add(getThumbNail_picUrl1());
+        array.add(getThumbNail_picUrl2());
+        array.add(getThumbNail_picUrl3());
+        array.add(getThumbNail_picUrl4());
+
+        return array;
+    }
+
     public ArrayList<String> toArray() {
         ArrayList<String> booleans = new ArrayList<>();
         booleans.add(getPicUrl1());

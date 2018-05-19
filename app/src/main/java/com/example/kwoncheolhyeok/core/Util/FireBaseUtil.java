@@ -67,7 +67,7 @@ public class FireBaseUtil {
             mUser.getFollowingUsers().remove(oUuid);
             childUpdates.put("/" + myUuid + "/followingUsers/" + oUuid, null);
 
-            oUser.getFollowerUsers().remove(myUuid);
+            if(oUser != null) oUser.getFollowerUsers().remove(myUuid);
             childUpdates.put("/" + oUuid + "/followerUsers/" + myUuid, null);
 
             // 상대방이 팔로우 되어있으면 친구 삭제
@@ -75,7 +75,7 @@ public class FireBaseUtil {
                 mUser.getFriendUsers().remove(oUuid);
                 childUpdates.put("/" + myUuid + "/friendUsers/" + oUuid, null);
 
-                oUser.getFriendUsers().remove(myUuid);
+                if(oUser != null) oUser.getFriendUsers().remove(myUuid);
                 childUpdates.put("/" + oUuid + "/friendUsers/" + myUuid, null);
             }
 
