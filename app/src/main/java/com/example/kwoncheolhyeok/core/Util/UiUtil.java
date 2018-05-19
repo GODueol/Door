@@ -29,6 +29,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
+import io.reactivex.annotations.NonNull;
+
 /**
  * Created by gimbyeongjin on 2017. 10. 5..
  */
@@ -110,7 +112,7 @@ public class UiUtil {
                 context.getResources().getResourceEntryName(resID));
     }
 
-    public boolean isAutoTimeSet(Context context) {
+    public boolean isAutoTimeSet(@NonNull Context context) {
         try {
             return Settings.System.getInt(context.getContentResolver(),
                     Settings.System.AUTO_TIME) == 1;
@@ -120,7 +122,8 @@ public class UiUtil {
 
     }
 
-    public long getCurrentTime(Context context) throws NotSetAutoTimeException {
+    public long getCurrentTime(@NonNull Context context) throws NotSetAutoTimeException {
+        if(context == null) return 0;
         if(isAutoTimeSet(context)){
             return System.currentTimeMillis();
         } else {
