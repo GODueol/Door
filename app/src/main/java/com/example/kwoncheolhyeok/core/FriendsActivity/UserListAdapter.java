@@ -29,8 +29,11 @@ import com.example.kwoncheolhyeok.core.R;
 import com.example.kwoncheolhyeok.core.Util.DataContainer;
 import com.example.kwoncheolhyeok.core.Util.FireBaseUtil;
 import com.example.kwoncheolhyeok.core.Util.GlideApp;
+import com.example.kwoncheolhyeok.core.Util.SharedPreferencesUtil;
 import com.example.kwoncheolhyeok.core.Util.UiUtil;
+import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.reward.RewardItem;
 import com.google.android.gms.ads.reward.RewardedVideoAd;
@@ -58,6 +61,10 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
     public boolean isReverse = false;
     private RewardedVideoAd mRewardedVideoAd;
 
+    private InterstitialAd mInterstitialAd;
+    private SharedPreferencesUtil SPUtil;
+
+
     private class VIEW_TYPES {
         static final int Header = 1;
         static final int Normal = 2;
@@ -69,6 +76,8 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
         this.items = items;
         mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(context);
         loadRewardedVideoAd();
+        setmInterstitialAd();
+        SPUtil = new SharedPreferencesUtil(context);
     }
 
     public void setItemMenu(int itemMenu, String tabName) {
@@ -124,6 +133,9 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
                     p.putExtra("item", new GridItem(0, item.getUuid(), user.getSummaryUser(), ""));
 
                     view.getContext().startActivity(p);
+
+
+                    SPUtil.increaseAds(mInterstitialAd, "friends");
                 }
             });
         }
@@ -524,6 +536,18 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
             return date;
         }
 
+    }
+
+    public void setmInterstitialAd(){
+        mInterstitialAd = new InterstitialAd(context);
+        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+        mInterstitialAd.setAdListener(new AdListener(){
+            @Override
+            public void onAdClosed() {
+                mInterstitialAd.loadAd(new AdRequest.Builder().build());
+            }
+        });
     }
 
 
