@@ -9,7 +9,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
@@ -22,14 +21,10 @@ import com.example.kwoncheolhyeok.core.Util.SharedPreferencesUtil;
 import com.example.kwoncheolhyeok.core.Util.UiUtil;
 import com.example.kwoncheolhyeok.core.Util.setPermission;
 import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.ProviderQueryResult;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.gun0912.tedpermission.PermissionListener;
 
@@ -42,6 +37,7 @@ import java.util.List;
  */
 
 public class IntroActivity extends Activity {
+    private static final int ACCESS_RIGHT_REQUEST = 0;
     /**
      * Called when the activity is first created.
      */
@@ -56,13 +52,7 @@ public class IntroActivity extends Activity {
     @Override
     protected void onStart() {
         super.onStart();
-        if(!UiUtil.getInstance().isAutoTimeSet(this)){
-            Toast.makeText(this, "시간을 수동으로 설정한 경우 코어를 사용하실 수 없습니다.", Toast.LENGTH_LONG).show();
-            finish();
-            return;
-        }
 
-        setPermission();
     }
 
     boolean isHaveAllPermission() {
@@ -99,6 +89,22 @@ public class IntroActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.intro_activity);
+
+        // 시간 자동 설정 체크
+        if(!UiUtil.getInstance().isAutoTimeSet(this)){
+            Toast.makeText(this, "시간을 수동으로 설정한 경우 코어를 사용하실 수 없습니다.", Toast.LENGTH_LONG).show();
+            finish();
+            return;
+        }
+
+        // 권한 체크
+        if (isHaveAllPermission()) {
+            setPermission();
+        } else {
+            // 권한 다이얼로그 띄움
+            startActivityForResult(new Intent(IntroActivity.this, AccessRightActiviry.class), ACCESS_RIGHT_REQUEST);
+        }
+
         SPUtil = new SharedPreferencesUtil(this);
         //  광고 아이디 설정 (최초 1회)
         MobileAds.initialize(this,this.getString(R.string.adsID));
@@ -125,43 +131,40 @@ public class IntroActivity extends Activity {
                 logout();
                 return;
             }
-            mAuth.fetchProvidersForEmail(user.getEmail()).addOnCompleteListener(new OnCompleteListener<ProviderQueryResult>() {
-                @Override
-                public void onComplete(@NonNull Task<ProviderQueryResult> task) {
-                    if (!task.isSuccessful()) {
-                        Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                        finish();
-                    }
-
-                    List<String> provider = task.getResult().getProviders();
-                    if (provider == null || provider.isEmpty()) { // 계정이 없는 경우
-                        Log.d(getApplication().getClass().getName(), "계정없음:" + user.getUid());
-                        logout();
-                        return;
-                    }
-
-                    // User is signed in
-                    Log.d(getApplication().getClass().getName(), "onAuthStateChanged:signed_in:" + user.getUid());
-
-                    // user 정보 읽어오기
-                    String uuid = user.getUid();
-                    DataContainer.getInstance().getUsersRef().child(uuid).addListenerForSingleValueEvent(new ValueEventListener() {
-
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            User mUser = dataSnapshot.getValue(User.class);
-                            DataContainer.getInstance().setUser(mUser);
-                            onLoginSuccess();
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                            Toast.makeText(getApplicationContext(), "Getting UserInfo Cancelled", Toast.LENGTH_SHORT).show();
-                            Log.d(getApplication().getClass().getName(), databaseError.getMessage());
-                        }
-
-                    });
+            mAuth.fetchProvidersForEmail(user.getEmail()).addOnCompleteListener(task -> {
+                if (!task.isSuccessful()) {
+                    Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    finish();
                 }
+
+                List<String> provider = task.getResult().getProviders();
+                if (provider == null || provider.isEmpty()) { // 계정이 없는 경우
+                    Log.d(getApplication().getClass().getName(), "계정없음:" + user.getUid());
+                    logout();
+                    return;
+                }
+
+                // User is signed in
+                Log.d(getApplication().getClass().getName(), "onAuthStateChanged:signed_in:" + user.getUid());
+
+                // user 정보 읽어오기
+                String uuid = user.getUid();
+                DataContainer.getInstance().getUsersRef().child(uuid).addListenerForSingleValueEvent(new ValueEventListener() {
+
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        User mUser = dataSnapshot.getValue(User.class);
+                        DataContainer.getInstance().setUser(mUser);
+                        onLoginSuccess();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Toast.makeText(getApplicationContext(), "Getting UserInfo Cancelled", Toast.LENGTH_SHORT).show();
+                        Log.d(getApplication().getClass().getName(), databaseError.getMessage());
+                    }
+
+                });
             });
         } else {
             // User is signed out
@@ -177,13 +180,11 @@ public class IntroActivity extends Activity {
     }
 
     private void goToLoginActivity() {
-        new Handler().postDelayed(new Runnable() {
-            public void run() {
-                Intent intent = new Intent(IntroActivity.this, LoginActivity.class);
-                startActivity(intent);
-                // 뒤로가기 했을경우 안나오도록 없애주기 >> finish!!
-                finish();
-            }
+        new Handler().postDelayed(() -> {
+            Intent intent = new Intent(IntroActivity.this, LoginActivity.class);
+            startActivity(intent);
+            // 뒤로가기 했을경우 안나오도록 없애주기 >> finish!!
+            finish();
         }, 1800);
     }
 
@@ -198,6 +199,14 @@ public class IntroActivity extends Activity {
         // 계정있으면 로그아웃
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             logout();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Check which request we're responding to
+        if (requestCode == ACCESS_RIGHT_REQUEST) {
+            setPermission();
         }
     }
 }
