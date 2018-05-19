@@ -269,7 +269,7 @@
             android:layout_weight="1"
             >
 
-        <com.example.kwoncheolhyeok.core.PeopleFragment.SquareImageView
+        <com.teamcore.android.core.PeopleFragment.SquareImageView
             android:id="@+id/image1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -285,7 +285,7 @@
             android:layout_weight="1"
             >
 
-        <com.example.kwoncheolhyeok.core.PeopleFragment.SquareImageView
+        <com.teamcore.android.core.PeopleFragment.SquareImageView
             android:id="@+id/image2"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -310,7 +310,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             >
-        <com.example.kwoncheolhyeok.core.PeopleFragment.SquareImageView
+        <com.teamcore.android.core.PeopleFragment.SquareImageView
             android:id="@+id/image3"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -335,7 +335,7 @@
             android:layout_weight="1"
             >
 
-        <com.example.kwoncheolhyeok.core.PeopleFragment.SquareImageView
+        <com.teamcore.android.core.PeopleFragment.SquareImageView
             android:id="@+id/image4"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
