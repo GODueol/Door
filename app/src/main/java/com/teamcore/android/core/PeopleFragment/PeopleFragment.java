@@ -12,18 +12,6 @@ import android.view.ViewGroup;
 import android.widget.GridView;
 import android.widget.Toast;
 
-import com.teamcore.android.core.Entity.SummaryUser;
-import com.teamcore.android.core.Entity.User;
-import com.teamcore.android.core.Event.RefreshLocationEvent;
-import com.teamcore.android.core.Event.SomeoneBlocksMeEvent;
-import com.teamcore.android.core.Exception.NotSetAutoTimeException;
-import com.teamcore.android.core.R;
-import com.teamcore.android.core.Util.BusProvider;
-import com.teamcore.android.core.Util.DataContainer;
-import com.teamcore.android.core.Util.FireBaseUtil;
-import com.teamcore.android.core.Util.GPSInfo;
-import com.teamcore.android.core.Util.SharedPreferencesUtil;
-import com.teamcore.android.core.Util.UiUtil;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQuery;
@@ -38,6 +26,18 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.otto.Subscribe;
+import com.teamcore.android.core.Entity.SummaryUser;
+import com.teamcore.android.core.Entity.User;
+import com.teamcore.android.core.Event.RefreshLocationEvent;
+import com.teamcore.android.core.Event.SomeoneBlocksMeEvent;
+import com.teamcore.android.core.Exception.NotSetAutoTimeException;
+import com.teamcore.android.core.R;
+import com.teamcore.android.core.Util.BusProvider;
+import com.teamcore.android.core.Util.DataContainer;
+import com.teamcore.android.core.Util.FireBaseUtil;
+import com.teamcore.android.core.Util.GPSInfo;
+import com.teamcore.android.core.Util.SharedPreferencesUtil;
+import com.teamcore.android.core.Util.UiUtil;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -134,7 +134,7 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(FireBaseUtil.currentLocationPath);
         GeoFire geoFire = new GeoFire(ref);
 //        final Location location = GPSInfo.getmInstance(getActivity()).getGPSLocation();
-        geoQuery = geoFire.queryAtLocation(new GeoLocation(location.getLatitude(), location.getLongitude()), 300);
+        geoQuery = geoFire.queryAtLocation(new GeoLocation(location.getLatitude(), location.getLongitude()), DataContainer.RadiusMax);
 
         // 쿼리받은 값을 처리
         geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {

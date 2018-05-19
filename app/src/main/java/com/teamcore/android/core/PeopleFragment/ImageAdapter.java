@@ -106,6 +106,11 @@ public class ImageAdapter extends BaseAdapter {
         }
         mItems.add(item);
         itemHashMap.put(item.getUuid(), item);
+
+        if(getCount() > DataContainer.GridMax) {
+            // remove 맨 뒤에꺼
+            remove(mItems.last().uuid);
+        }
     }
 
     GridItem getItem(String uuid) {

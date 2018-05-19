@@ -15,6 +15,9 @@ public class DataContainer {
     public static final int CoreCloudMax = 7;
     public static final long SecToDay = TIME_MAXIMUM.SEC*TIME_MAXIMUM.MIN*TIME_MAXIMUM.HOUR*1000;
 //    public static final int SecToDay = TIME_MAXIMUM.SEC*TIME_MAXIMUM.MIN*TIME_MAXIMUM.HOUR*1000/24/60;
+    public static final int GridMax = 800;
+    public static final int RadiusMax = 300;
+
 
     private static class TIME_MAXIMUM {
         static final int SEC = 60;
