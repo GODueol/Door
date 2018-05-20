@@ -78,11 +78,40 @@ public class AccountActivity extends BaseActivity implements View.OnClickListene
         });
 
         deleteAccount = (RelativeLayout) findViewById(R.id.deleteAccount);
-        deleteAccount.setOnClickListener((View v) -> UiUtil.getInstance().showDialog(this,"계정 삭제", "아직은 채팅 이미지파일 삭제 기능이 개발되지 않았습니다!!! 정말 계정을 삭제 하시겠습니까?", (dialog, whichButton) -> deleteMyAccount(DataContainer.getInstance().getUid()), null));
-
-
+        deleteAccount.setOnClickListener((View v) ->
+            checkUserPrevent(() -> checkPostPrevent(this::deleteAccount))
+        );
     }
 
+    private void deleteAccount() {
+        UiUtil.getInstance().showDialog(this, "계정 삭제", "아직은 채팅 이미지파일 삭제 기능이 개발되지 않았습니다!!! 정말 계정을 삭제 하시겠습니까?", (dialog, whichButton) -> deleteMyAccount(DataContainer.getInstance().getUid()), null);
+    }
+
+    private void checkPostPrevent(Runnable runnable) {
+        UiUtil.getInstance().checkPostPrevent(this, (isRelease, releaseDate) -> {
+            if (isRelease) {
+                runnable.run();
+            } else {
+                Toast.makeText(AccountActivity.this,
+                        "포스트 제재 당하셨기 때문에 " +
+                                releaseDate + " 까지 계정삭제 불가능합니다"
+                        , Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void checkUserPrevent(Runnable runnable) {
+        UiUtil.getInstance().checkUserPrevent(this, (isRelease, releaseDate) -> {
+            if (isRelease) {
+                runnable.run();
+            } else {
+                Toast.makeText(AccountActivity.this,
+                        "프로필 제재 당하셨기 때문에 " +
+                                releaseDate + " 까지 계정삭제 불가능합니다"
+                        , Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
     // 뒤로가기 버튼 기능
     public boolean onOptionsItemSelected(android.view.MenuItem item) {
