@@ -2,11 +2,11 @@ package com.teamcore.android.core.Util;
 
 import android.content.Context;
 
-import com.teamcore.android.core.Entity.User;
-import com.teamcore.android.core.Exception.NotSetAutoTimeException;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.teamcore.android.core.Entity.User;
+import com.teamcore.android.core.Exception.NotSetAutoTimeException;
 
 public class DataContainer {
     public final String PREFERENCE = "com.example.kwoncheolhyeok.core.samplesharepreference";
@@ -59,7 +59,7 @@ public class DataContainer {
     }
 
     public String getUid() {
-        if(FirebaseAuth.getInstance().getCurrentUser() == null) return "";
+        if(FirebaseAuth.getInstance().getCurrentUser() == null) return null;
         return FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 

@@ -92,6 +92,7 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 mUser = dataSnapshot.getValue(User.class);
+                if(mUser == null) return;
 
                 User compUser = DataContainer.getInstance().getUser();
 

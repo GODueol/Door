@@ -194,7 +194,7 @@
 
 
     <RelativeLayout
-        android:id="@+id/layout3"
+        android:id="@+id/deleteAccount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/layout2"

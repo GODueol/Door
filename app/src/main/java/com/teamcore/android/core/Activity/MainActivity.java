@@ -1,8 +1,6 @@
 package com.teamcore.android.core.Activity;
 
 import android.annotation.SuppressLint;
-import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
@@ -26,20 +24,27 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.style.TextAppearanceSpan;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.teamcore.android.core.CorePage.CoreCloudActivity;
 import com.teamcore.android.core.Entity.User;
 import com.teamcore.android.core.Event.TargetUserBlocksMeEvent;
@@ -58,20 +63,6 @@ import com.teamcore.android.core.Util.FirebaseIDService;
 import com.teamcore.android.core.Util.GlideApp;
 import com.teamcore.android.core.Util.SharedPreferencesUtil;
 import com.teamcore.android.core.Util.UiUtil;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 /**
  * drawer / viewpager drag duplication issue
@@ -100,9 +91,8 @@ public class MainActivity extends AppCompatActivity
 
     private SharedPreferencesUtil SPUtil;
 
-    private AdView mAdView;
 
-
+    @SuppressLint("ClickableViewAccessibility")
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,7 +117,7 @@ public class MainActivity extends AppCompatActivity
 
         setSupportActionBar(toolbar);
 
-        mAdView = (AdView) findViewById(R.id.adView);
+        AdView mAdView = (AdView) findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder()
                 .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
                 .addTestDevice("0D525D9C92269D80384121978C3C4267")
@@ -146,12 +136,9 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
         toggle.setDrawerIndicatorEnabled(false);
 
-        toggle.setToolbarNavigationClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SPUtil.setMainIcon(getString(R.string.mainAlarm), false);
-                changeToggleIcon();
-            }
+        toggle.setToolbarNavigationClickListener(v -> {
+            SPUtil.setMainIcon(getString(R.string.mainAlarm), false);
+            changeToggleIcon();
         });
 
         //Navigation view
@@ -167,13 +154,9 @@ public class MainActivity extends AppCompatActivity
 
 
         navigationView.setNavigationItemSelectedListener(this);
-        drawer.setOnTouchListener(new View.OnTouchListener() {
-            @SuppressLint("ClickableViewAccessibility")
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                changeToggleIcon();
-                return false;
-            }
+        drawer.setOnTouchListener((view, motionEvent) -> {
+            changeToggleIcon();
+            return false;
         });
 
         // people,board,club 스와이프 탭 view 관련
@@ -195,12 +178,9 @@ public class MainActivity extends AppCompatActivity
         //네비게이션 뷰 내의 프로필 사진 클릭시 프로필 편집
         View headerView = navigationView.getHeaderView(0);
         profileImage = headerView.findViewById(R.id.profile_image);
-        profileImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i2 = new Intent(MainActivity.this, ProfileModifyActivity.class);
-                startActivity(i2);
-            }
+        profileImage.setOnClickListener(v -> {
+            Intent i2 = new Intent(MainActivity.this, ProfileModifyActivity.class);
+            startActivity(i2);
         });
 
         // nav_alarm
@@ -211,12 +191,9 @@ public class MainActivity extends AppCompatActivity
         } else {
             nav_alarm.setBackgroundResource(R.drawable.nav_alarm_on);
         }
-        nav_alarm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SPUtil.setAlarmIcon(getString(R.string.navAlarm),false);
-                new NavAlarmDialog(MainActivity.this).show();
-            }
+        nav_alarm.setOnClickListener(v -> {
+            SPUtil.setAlarmIcon(getString(R.string.navAlarm),false);
+            new NavAlarmDialog(MainActivity.this).show();
         });
 
         // Set Profile Pic
@@ -245,25 +222,12 @@ public class MainActivity extends AppCompatActivity
         }
         fids.setUserToken(mUser);
         DataContainer.getInstance().getUsersRef().child(user.getUid()).setValue(mUser)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d(getLocalClassName(), "Success Save Login Time");
-                    }
+                .addOnSuccessListener(aVoid -> Log.d(getLocalClassName(), "Success Save Login Time"))
+                .addOnFailureListener(e -> {
+                    Toast.makeText(getApplicationContext(), "Save Fail", Toast.LENGTH_SHORT).show();
+                    Log.d(getApplication().getClass().getName(), e.getMessage());
                 })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getApplicationContext(), "Save Fail", Toast.LENGTH_SHORT).show();
-                        Log.d(getApplication().getClass().getName(), e.getMessage());
-                    }
-                })
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        UiUtil.getInstance().stopProgressDialog();
-                    }
-                });
+                .addOnCompleteListener(task -> UiUtil.getInstance().stopProgressDialog());
 
         SPUtil.getBadgePreferences().registerOnSharedPreferenceChangeListener(this);
 
@@ -412,25 +376,11 @@ public class MainActivity extends AppCompatActivity
 
                 // 다이얼로그
                 UiUtil.getInstance().showDialog(MainActivity.this, "모든 유저 사진 잠금"
-                        , "모든 유저 대상으로 사진을 잠그시겠습니까?", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                UiUtil.getInstance().startProgressDialog(MainActivity.this);
-                                user.getUnLockUsers().clear();
-                                DataContainer.getInstance().getUsersRef().child(DataContainer.getInstance().getUid()).setValue(user).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        DataContainer.getInstance().setUser(user);
-                                    }
-                                }).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        UiUtil.getInstance().stopProgressDialog();
-                                    }
-                                });
-                            }
-                        }, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                            }
+                        , "모든 유저 대상으로 사진을 잠그시겠습니까?", (dialog, whichButton) -> {
+                            UiUtil.getInstance().startProgressDialog(MainActivity.this);
+                            user.getUnLockUsers().clear();
+                            DataContainer.getInstance().getUsersRef().child(DataContainer.getInstance().getUid()).setValue(user).addOnSuccessListener(aVoid -> DataContainer.getInstance().setUser(user)).addOnCompleteListener(task -> UiUtil.getInstance().stopProgressDialog());
+                        }, (dialog, whichButton) -> {
                         });
                 return true;
 
@@ -494,17 +444,13 @@ public class MainActivity extends AppCompatActivity
 
     private void logout() {
 
-        // 병진형 요기서 에러가 나요요오오오오 ㅜㅜ
         Task<Void> task = FirebaseDatabase.getInstance().getReference("users").child(DataContainer.getInstance().getUid()).child("token").removeValue();
         final Intent i = new Intent(this, LoginActivity.class);
-        task.addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                FirebaseAuth.getInstance().signOut();
-                DataContainer.getInstance().setUser(null);
-                startActivity(i);
-                finish();
-            }
+        task.addOnSuccessListener(aVoid -> {
+            FirebaseAuth.getInstance().signOut();
+            DataContainer.getInstance().setUser(null);
+            startActivity(i);
+            finish();
         });
 
     }
