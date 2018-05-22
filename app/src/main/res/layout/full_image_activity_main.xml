@@ -294,15 +294,14 @@
 
             <ImageView
                 android:id="@+id/image2lock"
-                android:layout_width="20dp"
+                android:layout_width="22dp"
                 android:layout_height="20dp"
-                android:background="@drawable/picture_lock"
                 android:layout_alignRight="@+id/image2"
                 android:layout_alignTop="@+id/image2"
-                android:layout_marginTop="2dp"
                 android:layout_marginRight="2dp"
-                android:visibility="invisible"
-                />
+                android:layout_marginTop="2dp"
+                android:background="@drawable/picture_lock"
+                android:visibility="invisible" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -316,17 +315,17 @@
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
             android:src="@drawable/a" />
+
             <ImageView
                 android:id="@+id/image3lock"
-                android:layout_width="20dp"
+                android:layout_width="22dp"
                 android:layout_height="20dp"
-                android:background="@drawable/picture_lock"
                 android:layout_alignRight="@+id/image3"
                 android:layout_alignTop="@+id/image3"
-                android:layout_marginTop="2dp"
                 android:layout_marginRight="2dp"
-                android:visibility="invisible"
-                />
+                android:layout_marginTop="2dp"
+                android:background="@drawable/picture_lock"
+                android:visibility="invisible" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -344,15 +343,14 @@
 
             <ImageView
                 android:id="@+id/image4lock"
-                android:layout_width="20dp"
+                android:layout_width="22dp"
                 android:layout_height="20dp"
-                android:background="@drawable/picture_lock"
                 android:layout_alignRight="@+id/image4"
                 android:layout_alignTop="@+id/image4"
-                android:layout_marginTop="2dp"
                 android:layout_marginRight="2dp"
-                android:visibility="invisible"
-                />
+                android:layout_marginTop="2dp"
+                android:background="@drawable/picture_lock"
+                android:visibility="invisible" />
         </RelativeLayout>
 
     </LinearLayout>
