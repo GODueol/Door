@@ -94,8 +94,8 @@
 
                     <Button
                         android:id="@+id/lock1"
-                        android:layout_width="45dp"
-                        android:layout_height="45dp"
+                        android:layout_width="40dp"
+                        android:layout_height="34dp"
                         android:layout_centerInParent="true"
                         android:background="@drawable/check"
                         android:clickable="false"
@@ -112,8 +112,8 @@
 
                     <ToggleButton
                         android:id="@+id/lock2"
-                        android:layout_width="45dp"
-                        android:layout_height="45dp"
+                        android:layout_width="40dp"
+                        android:layout_height="34dp"
                         android:layout_centerInParent="true"
                         android:background="@drawable/check"
                         android:focusable="false"
@@ -130,8 +130,8 @@
 
                     <ToggleButton
                         android:id="@+id/lock3"
-                        android:layout_width="45dp"
-                        android:layout_height="45dp"
+                        android:layout_width="40dp"
+                        android:layout_height="34dp"
                         android:layout_centerInParent="true"
                         android:background="@drawable/check"
                         android:focusable="false"
@@ -147,8 +147,8 @@
 
                     <ToggleButton
                         android:id="@+id/lock4"
-                        android:layout_width="45dp"
-                        android:layout_height="45dp"
+                        android:layout_width="40dp"
+                        android:layout_height="34dp"
                         android:layout_centerInParent="true"
                         android:background="@drawable/check"
                         android:focusable="false"
