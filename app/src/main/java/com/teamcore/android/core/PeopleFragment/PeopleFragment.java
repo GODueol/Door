@@ -181,6 +181,7 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
                 // grid에 사진, distance추가
 
                 if (imageAdapter != null) {
+                    Log.d(getTag(), "addItemToGrid, key : " + key);
                     imageAdapter.addItem(new GridItem(distance, key, summary, summary.getPictureUrl()));
                     imageAdapter.notifyDataSetChanged();
 //                    gridView.invalidateViews();

@@ -87,9 +87,8 @@ public class AccountActivity extends BaseActivity implements View.OnClickListene
 
     private void deleteAccount() {
 
-        ArrayList<String> array = DataContainer.getInstance().getUser().getPicUrls().toArrayAll();
-
-        UiUtil.getInstance().showDialog(this, "계정 삭제", "아직은 채팅 이미지파일 삭제 기능이 개발되지 않았습니다!!! 정말 계정을 삭제 하시겠습니까?", (dialog, whichButton) -> deleteMyAccount(DataContainer.getInstance().getUid()), null);
+        return; // TODO : 일단 개발 중단, 클라우드 펑션 문제 해결되면 클라우드 펑션으로 구현할것!
+        //UiUtil.getInstance().showDialog(this, "계정 삭제", "아직은 채팅 이미지파일 삭제 기능이 개발되지 않았습니다!!! 정말 계정을 삭제 하시겠습니까?", (dialog, whichButton) -> deleteMyAccount(DataContainer.getInstance().getUid()), null);
     }
 
     private void checkPostPrevent(Runnable runnable) {
