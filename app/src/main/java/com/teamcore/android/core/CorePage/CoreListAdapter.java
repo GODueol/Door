@@ -44,7 +44,6 @@ import com.teamcore.android.core.Util.FireBaseUtil;
 import com.teamcore.android.core.Util.GlideApp;
 import com.teamcore.android.core.Util.UiUtil;
 import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.reward.RewardItem;
 import com.google.android.gms.ads.reward.RewardedVideoAd;
@@ -613,10 +612,10 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
         if(coreListItem.getCorePost().isCloud()){
             msg = "클라우드된 게시물입니다. 정말 게시물을 삭제하시겠습니까?";
         }
-        UiUtil.getInstance().showDialog(context, "Delete", msg
-                , (dialogInterface, i) -> FireBaseUtil.getInstance().deletePostExcution(coreListItem, postsRef, coreListItem.getcUuid()), (dialogInterface, i) -> {
-
-                }
+        UiUtil.getInstance().showDialog(context, "Delete", msg, (dialogInterface, i) ->
+                        FireBaseUtil.getInstance().deletePostExecution(coreListItem, postsRef, coreListItem.getcUuid(), () -> {
+                            Toast.makeText(context, "삭제 완료되었습니다", Toast.LENGTH_SHORT).show();
+                        })
         );
     }
 

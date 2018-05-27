@@ -156,7 +156,7 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
                             }
                         } catch (NotSetAutoTimeException e) {
                             e.printStackTrace();
-                        }
+                        } catch (Exception e ){ Log.d("KBJ", "onKeyEntered Exception oUuid : " + oUuid);}
 
                         Log.d(getClass().toString(), String.format("Key %s entered the search area at [%f,%f]", oUuid, geoLocation.latitude, geoLocation.longitude));
                         addItemToGrid(oUuid, geoLocation, oSummary);

@@ -74,6 +74,10 @@ public class UiUtil {
         }
     }
 
+    public void showDialog(Context context, String title, String message, DialogInterface.OnClickListener okListener) {
+        showDialog(context, title, message, okListener, null, "OK", "Cancel");
+    }
+
     public void showDialog(Context context, String title, String message, DialogInterface.OnClickListener okListener, DialogInterface.OnClickListener cancelListener) {
         showDialog(context, title, message, okListener, cancelListener, "OK", "Cancel");
     }

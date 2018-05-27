@@ -85,24 +85,33 @@ public class PictureUrls implements Serializable {
         this.picUrl4 = picUrl4;
     }
 
-    public ArrayList<String> toArrayAll() {
-        ArrayList<String> array = toArray();
+    void putPicUrl(ArrayList<String> array, String uri){
+        if(uri != null && uri != "") array.add(uri);
+    }
 
-        array.add(getThumbNail_picUrl1());
-        array.add(getThumbNail_picUrl2());
-        array.add(getThumbNail_picUrl3());
-        array.add(getThumbNail_picUrl4());
+    public ArrayList<String> toArrayAll() {
+        ArrayList<String> array = new ArrayList<>();
+
+        putPicUrl(array, getPicUrl1());
+        putPicUrl(array, getPicUrl2());
+        putPicUrl(array, getPicUrl3());
+        putPicUrl(array, getPicUrl4());
+
+        putPicUrl(array, getThumbNail_picUrl1());
+        putPicUrl(array, getThumbNail_picUrl2());
+        putPicUrl(array, getThumbNail_picUrl3());
+        putPicUrl(array, getThumbNail_picUrl4());
 
         return array;
     }
 
     public ArrayList<String> toArray() {
-        ArrayList<String> booleans = new ArrayList<>();
-        booleans.add(getPicUrl1());
-        booleans.add(getPicUrl2());
-        booleans.add(getPicUrl3());
-        booleans.add(getPicUrl4());
-        return booleans;
+        ArrayList<String> array = new ArrayList<>();
+        array.add(getPicUrl1());
+        array.add(getPicUrl2());
+        array.add(getPicUrl3());
+        array.add(getPicUrl4());
+        return array;
     }
 
     public ArrayList<String> toNotNullArrayThumbNail(IsLockPictures isLockPictures, Map<String, Long> unLockUsers, String uuid) {

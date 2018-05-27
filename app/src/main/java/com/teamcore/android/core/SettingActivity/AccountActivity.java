@@ -22,6 +22,8 @@ import com.teamcore.android.core.Util.BaseActivity.BaseActivity;
 import com.teamcore.android.core.Util.DataContainer;
 import com.teamcore.android.core.Util.UiUtil;
 
+import java.util.ArrayList;
+
 /**
  * Created by Kwon on 2018-01-04.
  */
@@ -84,6 +86,9 @@ public class AccountActivity extends BaseActivity implements View.OnClickListene
     }
 
     private void deleteAccount() {
+
+        ArrayList<String> array = DataContainer.getInstance().getUser().getPicUrls().toArrayAll();
+
         UiUtil.getInstance().showDialog(this, "계정 삭제", "아직은 채팅 이미지파일 삭제 기능이 개발되지 않았습니다!!! 정말 계정을 삭제 하시겠습니까?", (dialog, whichButton) -> deleteMyAccount(DataContainer.getInstance().getUid()), null);
     }
 

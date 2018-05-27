@@ -267,7 +267,7 @@ public class FireBaseUtil {
         return mDatabase.updateChildren(childUpdate);
     }
 
-    public void deletePostExcution(final CoreListItem coreListItem, DatabaseReference postsRef, final String cUuid) {
+    public void deletePostExecution(final CoreListItem coreListItem, DatabaseReference postsRef, final String cUuid, Runnable runnable) {
         postsRef.child(cUuid).child(coreListItem.getPostKey())
                 .removeValue().addOnSuccessListener(aVoid -> {
 
@@ -293,7 +293,9 @@ public class FireBaseUtil {
             for (Task task : deleteTasks) {
                 task.addOnCompleteListener(mTask -> {
                     for (Task t : deleteTasks) {
-                        if (!t.isComplete()) return;
+                        if (!t.isComplete()) {
+                            runnable.run();
+                        }
 //                                                UiUtil.getInstance().stopProgressDialog();
                     }
                 });
