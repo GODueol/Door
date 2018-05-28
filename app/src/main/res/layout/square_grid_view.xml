@@ -16,7 +16,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:background="#55000000"
+        android:padding="1dp"
         android:gravity="right"
-        android:textColor="@android:color/white" />
+        android:textColor="@color/white"
+        />
 
 </FrameLayout>

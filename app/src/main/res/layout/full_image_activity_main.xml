@@ -53,7 +53,7 @@
                 android:text="00"
                 android:textColor="@color/skyblue"
                 android:textSize="18dp"
-                android:textStyle="bold" />
+                android:textStyle="italic|bold" />
 
             <TextView
                 android:id="@+id/ex_header"
@@ -65,7 +65,7 @@
                 android:text="CORE"
                 android:textColor="@color/skyblue"
                 android:textSize="18sp"
-                android:textStyle="bold" />
+                android:textStyle="italic|bold" />
 
         </RelativeLayout>
 
@@ -165,7 +165,7 @@
                     android:layout_height="wrap_content"
                     android:text="nickname"
                     android:textColor="@android:color/white"
-                    android:textSize="15.5dp"
+                    android:textSize="16dp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -176,7 +176,9 @@
                     android:paddingTop="5dp"
                     android:text="age/heig/weig/bt"
                     android:textColor="@android:color/white"
-                    android:textSize="13.5dp" />
+                    android:textSize="13.5dp"
+                    android:textStyle="italic|bold"
+                    />
 
             </LinearLayout>
 

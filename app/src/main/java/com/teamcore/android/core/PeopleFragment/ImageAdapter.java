@@ -2,6 +2,7 @@ package com.teamcore.android.core.PeopleFragment;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -82,6 +83,7 @@ public class ImageAdapter extends BaseAdapter {
             holder = new ViewHolder();
             holder.imageView = v.findViewById(R.id.picture);
             holder.textView = v.findViewById(R.id.text);
+
             v.setTag(holder);
         } else {
             holder = (ViewHolder) v.getTag();
@@ -93,9 +95,12 @@ public class ImageAdapter extends BaseAdapter {
                 .placeholder(R.drawable.a)
                 .into(holder.imageView);
 
-        // 거리 출력
-        holder.textView.setText(item.getSummaryUser().getCorePostCount() + " CORE");
+        // 코어 카운트 출력
+        holder.textView.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD_ITALIC));
+        holder.textView.setText(item.getSummaryUser().getCorePostCount() + " CORE ");
         holder.textView.setTextSize((float) 15.5);
+
+
 
         return v;
     }
