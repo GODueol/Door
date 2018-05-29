@@ -286,7 +286,7 @@ public class User implements Serializable {
     }
 
     public String getTotalProfile() {
-        return getAge() + " / " + getHeight() + " / " + getWeight() + " / " + getBodyType();
+        return getAge() + " /" + getHeight() + " /" + getWeight() + " /" + getBodyType();
     }
 
 }
