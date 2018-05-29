@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Handler;
@@ -365,9 +366,11 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
         holder.core_img.setVisibility(View.GONE);
         holder.core_media.setVisibility(View.GONE);
 
-        holder.core_pic.setImageResource(R.drawable.a);
-        holder.core_id.setText(R.string.unknown);
-        holder.core_subProfile.setText("");
+        holder.core_pic.setImageResource(R.drawable.a_1);
+        holder.core_unknownid.setText(R.string.unknown);
+        holder.core_unknownid.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD_ITALIC));
+        holder.core_id.setText(null);
+        holder.core_subProfile.setText(null);
 
         if (coreListItem.getcUuid().equals(mUuid)) {   // 주인이 봤을때
             holder.btn_yes.setOnCheckedChangeListener(null);
@@ -430,7 +433,10 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                 .placeholder(R.drawable.a)
                 .into(holder.core_pic);
         holder.core_id.setText(user.getId());
+        holder.core_id.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+        holder.core_unknownid.setText(null);
         holder.core_subProfile.setText(UiUtil.getInstance().setSubProfile(user));
+
 
         if (holder.core_img != null)
             Glide.with(context)
@@ -654,7 +660,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
         ImageView core_pic, core_img;
 
         ImageButton core_setting;
-        TextView core_id, core_subProfile, core_date, core_contents, core_heart_count;
+        TextView core_id, core_unknownid, core_subProfile, core_date, core_contents, core_heart_count;
         LikeButton core_heart_btn;
         LinearLayout replyBtnLayout;
         ToggleButton btn_yes, btn_pass, btn_no;
@@ -677,6 +683,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
             core_img = itemView.findViewById(R.id.core_img);
 
             core_id = itemView.findViewById(R.id.core_id);
+            core_unknownid = itemView.findViewById(R.id.unknown);
             core_subProfile = itemView.findViewById(R.id.sub_profile);
             core_date = itemView.findViewById(R.id.core_date);
             core_contents = itemView.findViewById(R.id.core_contents);
