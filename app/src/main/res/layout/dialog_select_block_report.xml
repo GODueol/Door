@@ -16,6 +16,7 @@
             android:layout_centerInParent="true"
             android:text="차단"
             android:textColor="@color/black"
+            android:textSize="16dp"
             />
 
     </RelativeLayout>
@@ -47,6 +48,7 @@
             android:layout_centerInParent="true"
             android:text="신고"
             android:textColor="@color/black"
+            android:textSize="16dp"
             />
 
     </RelativeLayout>
