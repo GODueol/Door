@@ -26,7 +26,7 @@ public class CoreHeartCountActivity extends UserListBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.core_heart_count_activity_main);
 
-        toolbar = findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         final String postKey = getIntent().getStringExtra("postKey");
@@ -37,7 +37,7 @@ public class CoreHeartCountActivity extends UserListBaseActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true); //홈 아이콘을 숨김처리합니다.
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
 
-        final RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
 
         // 리사이클뷰
         ArrayList<UserListAdapter.Item> items = new ArrayList<>();

@@ -121,6 +121,7 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
 
     User mUser;
     private RewardedVideoAd mRewardedVideoAd;
+    private InterstitialAd mInterstitialAd;
 
     @SuppressLint("DefaultLocale")
     @Override
@@ -138,6 +139,7 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //액션바 아이콘을 업 네비게이션 형태로 표시합니다.
         getSupportActionBar().setDisplayShowHomeEnabled(true); //홈 아이콘을 숨김처리합니다.
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
+        setmInterstitialAd();
 
         //Tab Fragment 1에서 받아온 썸네일 이미지를 이 액티비티로 받아옴
         page1 = (ImageView) findViewById(R.id.image1);
@@ -210,6 +212,7 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
                     intent.putExtra("userUuid", item.getUuid());
                     intent.putExtra("userPicuri", item.getPicUrl());
                     startActivity(intent);
+                    SPUtil.increaseAds(mInterstitialAd, "profileChat");
                 }
             });
         }
@@ -743,6 +746,17 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
                         .build());
     }
 
+    public void setmInterstitialAd(){
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+        mInterstitialAd.setAdListener(new AdListener(){
+            @Override
+            public void onAdClosed() {
+                mInterstitialAd.loadAd(new AdRequest.Builder().build());
+            }
+        });
+    }
 //    @Subscribe
 //    public void FinishActivity(TargetUserBlocksMeEvent someoneBlocksMeEvent){
 //        Intent intent = new Intent(getApplication(), MainActivity.class);

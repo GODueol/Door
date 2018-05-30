@@ -12,6 +12,7 @@ import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -23,16 +24,11 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.bumptech.glide.Glide;
-import com.teamcore.android.core.Entity.CorePost;
-import com.teamcore.android.core.Event.TargetUserBlocksMeEvent;
-import com.teamcore.android.core.Exception.NotSetAutoTimeException;
-import com.teamcore.android.core.R;
-import com.teamcore.android.core.Util.AlarmUtil;
-import com.teamcore.android.core.Util.BaseActivity.BlockBaseActivity;
-import com.teamcore.android.core.Util.DataContainer;
-import com.teamcore.android.core.Util.FireBaseUtil;
-import com.teamcore.android.core.Util.GalleryPick;
-import com.teamcore.android.core.Util.UiUtil;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.reward.RewardItem;
+import com.google.android.gms.ads.reward.RewardedVideoAd;
+import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
@@ -44,6 +40,16 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.otto.Subscribe;
+import com.teamcore.android.core.Entity.CorePost;
+import com.teamcore.android.core.Event.TargetUserBlocksMeEvent;
+import com.teamcore.android.core.Exception.NotSetAutoTimeException;
+import com.teamcore.android.core.R;
+import com.teamcore.android.core.Util.AlarmUtil;
+import com.teamcore.android.core.Util.BaseActivity.BlockBaseActivity;
+import com.teamcore.android.core.Util.DataContainer;
+import com.teamcore.android.core.Util.FireBaseUtil;
+import com.teamcore.android.core.Util.GalleryPick;
+import com.teamcore.android.core.Util.UiUtil;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -99,6 +105,7 @@ public class CoreWriteActivity extends BlockBaseActivity {
     private MediaPlayer mediaPlayer;
     private GalleryPick galleryPick;
 
+    private RewardedVideoAd mRewardedVideoAd;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -141,6 +148,9 @@ public class CoreWriteActivity extends BlockBaseActivity {
 
         sound_x_btn = (ImageButton) findViewById(R.id.sound_x_btn);
 
+        // Use an activity context to get the rewarded video instance.
+        mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this);
+        loadRewardedVideoAd();
         // 본인, 타인 구분
         if (isAnonymousPost()) {    // 타인
             fab.setVisibility(View.GONE);
@@ -186,7 +196,94 @@ public class CoreWriteActivity extends BlockBaseActivity {
                             return;
                         }
                     }
-                    saveCore();
+
+
+                    if (!isAnonymousPost()) {
+                        mRewardedVideoAd.setRewardedVideoAdListener(new RewardedVideoAdListener() {
+                            @Override
+                            public void onRewardedVideoAdLoaded() {
+
+                            }
+
+                            @Override
+                            public void onRewardedVideoAdOpened() {
+
+                            }
+
+                            @Override
+                            public void onRewardedVideoStarted() {
+
+                            }
+
+                            @Override
+                            public void onRewardedVideoAdClosed() {
+                                loadRewardedVideoAd();
+                                FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("mCorePostCount").addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        if (dataSnapshot.exists()) {
+                                            int value = Integer.valueOf(dataSnapshot.getValue().toString());
+                                            Log.d("test", "몇개 : " + value);
+                                            if (value > 0) {
+                                                FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("mCorePostCount").setValue(value - 1);
+                                                saveCore();
+
+                                            }
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+
+                                    }
+                                });
+                                Log.d("test", "onRewardedVideoAdClosed");
+                            }
+
+                            @Override
+                            public void onRewarded(RewardItem rewardItem) {
+                                FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("mCorePostCount").setValue(rewardItem.getAmount());
+                            }
+
+                            @Override
+                            public void onRewardedVideoAdLeftApplication() {
+
+                            }
+
+                            @Override
+                            public void onRewardedVideoAdFailedToLoad(int i) {
+
+                            }
+                        });
+
+
+                        FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("mCorePostCount").addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                int value;
+                                try {
+                                    value = Integer.valueOf(dataSnapshot.getValue().toString());
+                                } catch (Exception e) {
+                                    value = 0;
+                                }
+                                Log.d("test", "몇개 : " + value);
+                                if (value > 0) {
+                                    FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("mCorePostCount").setValue(value - 1);
+                                    saveCore();
+                                } else {
+                                    mRewardedVideoAd.show();
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+                    } else {
+                        saveCore();
+                    }
+
                 }
 
                 @Override
@@ -322,7 +419,7 @@ public class CoreWriteActivity extends BlockBaseActivity {
         } else if (editImageUri != null) {
             try {
                 uploadPicture();
-            } catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
                 Toast.makeText(CoreWriteActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
@@ -343,9 +440,9 @@ public class CoreWriteActivity extends BlockBaseActivity {
                 for (Task task1 : tasks.keySet()) {
                     if (!task1.isComplete()) return;
                 }
-                if(isAnonymousPost()){
-                   // 익명게시글이면
-                    AlarmUtil.getInstance().sendAlarm(getApplicationContext(),"Post","UnKnown",corePost,postKey,cUuid,cUuid);
+                if (isAnonymousPost()) {
+                    // 익명게시글이면
+                    AlarmUtil.getInstance().sendAlarm(getApplicationContext(), "Post", "UnKnown", corePost, postKey, cUuid, cUuid);
                 }
 
                 // 클라우드
@@ -586,7 +683,7 @@ public class CoreWriteActivity extends BlockBaseActivity {
     }
 
     @Subscribe
-    public void FinishActivity(TargetUserBlocksMeEvent someoneBlocksMeEvent){
+    public void FinishActivity(TargetUserBlocksMeEvent someoneBlocksMeEvent) {
         finish();
     }
 
@@ -594,5 +691,12 @@ public class CoreWriteActivity extends BlockBaseActivity {
     protected void onDestroy() {
         UiUtil.getInstance().stopProgressDialog();
         super.onDestroy();
+    }
+
+    private void loadRewardedVideoAd() {
+        mRewardedVideoAd.loadAd("ca-app-pub-3940256099942544/5224354917",
+                new AdRequest.Builder().addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                        .addTestDevice("0D525D9C92269D80384121978C3C4267")
+                        .build());
     }
 }

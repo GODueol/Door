@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,7 +18,18 @@ import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.reward.RewardItem;
+import com.google.android.gms.ads.reward.RewardedVideoAd;
+import com.google.android.gms.ads.reward.RewardedVideoAdListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.teamcore.android.core.R;
+import com.teamcore.android.core.Util.DataContainer;
 import com.teamcore.android.core.Util.GPSInfo;
 import com.teamcore.android.core.Util.addrConvertor;
 import com.google.android.gms.common.ConnectionResult;
@@ -43,6 +55,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleApiClient.O
     public SearchView addrText;
     public ImageButton search;
     private Toolbar toolbar;
+    private RewardedVideoAd mRewardedVideoAd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +69,19 @@ public class MapsActivity extends AppCompatActivity implements GoogleApiClient.O
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //액션바 아이콘을 업 네비게이션 형태로 표시합니다.
         getSupportActionBar().setDisplayShowHomeEnabled(true); //홈 아이콘을 숨김처리합니다.
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
+        // Use an activity context to get the rewarded video instance.
+        mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this);
+        loadRewardedVideoAd();
+
+        AdView mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                .addTestDevice("0D525D9C92269D80384121978C3C4267")
+                .build();
+        mAdView.loadAd(adRequest);
+
+
+
 
 
         addrText = (SearchView) findViewById(R.id.addrText);
@@ -167,9 +193,88 @@ public class MapsActivity extends AppCompatActivity implements GoogleApiClient.O
         LatLng latLng = marker.getPosition();
         Intent p = new Intent(getApplicationContext(), MainActivity.class);
         p.putExtra("latLng", latLng);
-        startActivity(p);
-        Toast.makeText(getApplicationContext(), "스와이프하시면 현재 위치로 되돌아갑니다.", Toast.LENGTH_LONG).show();
 
+        mRewardedVideoAd.setRewardedVideoAdListener(new RewardedVideoAdListener() {
+            @Override
+            public void onRewardedVideoAdLoaded() {
+
+            }
+
+            @Override
+            public void onRewardedVideoAdOpened() {
+
+            }
+
+            @Override
+            public void onRewardedVideoStarted() {
+
+            }
+
+            @Override
+            public void onRewardedVideoAdClosed() {
+                loadRewardedVideoAd();
+                FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("mapSearchCount").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            int value = Integer.valueOf(dataSnapshot.getValue().toString());
+                            Log.d("test", "몇개 : " + value);
+                            if (value > 0) {
+                                FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("mapSearchCount").setValue(value - 1);
+                                startActivity(p);
+                                Toast.makeText(getApplicationContext(), "스와이프하시면 현재 위치로 되돌아갑니다.", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+                Log.d("test", "onRewardedVideoAdClosed");
+            }
+
+            @Override
+            public void onRewarded(RewardItem rewardItem) {
+                FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("mapSearchCount").setValue(rewardItem.getAmount());
+            }
+
+            @Override
+            public void onRewardedVideoAdLeftApplication() {
+
+            }
+
+            @Override
+            public void onRewardedVideoAdFailedToLoad(int i) {
+
+            }
+        });
+
+        FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("mapSearchCount").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                int value;
+                try {
+                    value = Integer.valueOf(dataSnapshot.getValue().toString());
+                } catch (Exception e) {
+                    value = 0;
+                }
+                Log.d("test", "몇개 : " + value);
+                if (value > 0) {
+                    FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("mapSearchCount").setValue(value - 1);
+                    startActivity(p);
+                    Toast.makeText(getApplicationContext(), "스와이프하시면 현재 위치로 되돌아갑니다.", Toast.LENGTH_LONG).show();
+                } else {
+                    mRewardedVideoAd.show();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     public void setMarker(LatLng latLng, String address){
@@ -213,6 +318,13 @@ public class MapsActivity extends AppCompatActivity implements GoogleApiClient.O
                 return info;
             }
         });
+    }
+
+    private void loadRewardedVideoAd() {
+        mRewardedVideoAd.loadAd("ca-app-pub-3940256099942544/5224354917",
+                new AdRequest.Builder().addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                        .addTestDevice("0D525D9C92269D80384121978C3C4267")
+                        .build());
     }
 
     View.OnClickListener search_addr = new View.OnClickListener() {

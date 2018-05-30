@@ -77,7 +77,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 
     private String currentPlayUrl = "";
     private RewardedVideoAd mRewardedVideoAd;
-
+    private RewardedVideoAd mRewardedVideoAd2;
     CoreListAdapter(List<CoreListItem> coreListItems, Context context) {
         this.coreListItems = coreListItems;
         this.context = context;
@@ -86,6 +86,11 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
         postsRef = FirebaseDatabase.getInstance().getReference().child("posts");
         mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(context);
         loadRewardedVideoAd();
+
+        // Use an activity context to get the rewarded video instance.
+        mRewardedVideoAd2 = MobileAds.getRewardedVideoAdInstance(context);
+        loadRewardedVideoAd2();
+
     }
 
     @Override
@@ -454,7 +459,87 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 
                 Intent p = new Intent(context.getApplicationContext(), FullImageActivity.class);
                 p.putExtra("item", new GridItem(0, corePost.getUuid(), user.getSummaryUser(), ""));
-                context.startActivity(p);
+                mRewardedVideoAd2.setRewardedVideoAdListener(new RewardedVideoAdListener() {
+                    @Override
+                    public void onRewardedVideoAdLoaded() {
+
+                    }
+
+                    @Override
+                    public void onRewardedVideoAdOpened() {
+
+                    }
+
+                    @Override
+                    public void onRewardedVideoStarted() {
+
+                    }
+
+                    @Override
+                    public void onRewardedVideoAdClosed() {
+                        loadRewardedVideoAd2();
+                        FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("coreCloudProfileCount").addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                if (dataSnapshot.exists()) {
+                                    int value = Integer.valueOf(dataSnapshot.getValue().toString());
+                                    Log.d("test", "몇개 : " + value);
+                                    if (value > 0) {
+                                        FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("coreCloudProfileCount").setValue(value - 1);
+                                        context.startActivity(p);
+
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+                        Log.d("test", "onRewardedVideoAdClosed");
+                    }
+
+                    @Override
+                    public void onRewarded(RewardItem rewardItem) {
+                        FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("coreCloudProfileCount").setValue(rewardItem.getAmount());
+                    }
+
+                    @Override
+                    public void onRewardedVideoAdLeftApplication() {
+
+                    }
+
+                    @Override
+                    public void onRewardedVideoAdFailedToLoad(int i) {
+
+                    }
+                });
+
+
+                FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("coreCloudProfileCount").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        int value;
+                        try {
+                            value = Integer.valueOf(dataSnapshot.getValue().toString());
+                        } catch (Exception e) {
+                            value = 0;
+                        }
+                        Log.d("test", "몇개 : " + value);
+                        if (value > 0) {
+                            FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("coreCloudProfileCount").setValue(value - 1);
+                            context.startActivity(p);
+                        } else {
+                            mRewardedVideoAd2.show();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
 
             });
         } else {
@@ -837,5 +922,11 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                         .build());
     }
 
+    private void loadRewardedVideoAd2() {
+        mRewardedVideoAd.loadAd("ca-app-pub-3940256099942544/5224354917",
+                new AdRequest.Builder().addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                        .addTestDevice("0D525D9C92269D80384121978C3C4267")
+                        .build());
+    }
 
 }

@@ -47,7 +47,6 @@ public class NavAlarmAdapter extends RecyclerView.Adapter<NavAlarmAdapter.ViewHo
     private List<AlarmSummary> items;
     private Context context;
 
-
     private RewardedVideoAd mRewardedVideoAd;
 
     NavAlarmAdapter(Context context, List<AlarmSummary> items) {
@@ -172,6 +171,7 @@ public class NavAlarmAdapter extends RecyclerView.Adapter<NavAlarmAdapter.ViewHo
                         Log.d("test", "onRewardedVideoAdFailedToLoad" + i);
                     }
                 });
+
                 FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("navAlarmCount").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -195,11 +195,6 @@ public class NavAlarmAdapter extends RecyclerView.Adapter<NavAlarmAdapter.ViewHo
 
                     }
                 });
-
-                //}else {
-                    /*Log.d("test", "로드안됨" + AdRequest.DEVICE_ID_EMULATOR);
-
-                }*/
             }
         });
 

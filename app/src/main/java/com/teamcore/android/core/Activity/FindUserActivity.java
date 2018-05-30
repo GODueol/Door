@@ -10,6 +10,10 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.SearchView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.reward.RewardedVideoAd;
 import com.teamcore.android.core.FriendsActivity.UserListAdapter;
 import com.teamcore.android.core.R;
 import com.teamcore.android.core.Util.BaseActivity.UserListBaseActivity;
@@ -27,13 +31,14 @@ public class FindUserActivity extends UserListBaseActivity {
     private UserListAdapter adapter;
 
     private ArrayList<UserListAdapter.Item> items;
+    private RewardedVideoAd mRewardedVideoAd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.find_user_activity);
 
-        toolbar = findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         // 툴바 뒤로가기 버튼
@@ -41,8 +46,19 @@ public class FindUserActivity extends UserListBaseActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true); //홈 아이콘을 숨김처리합니다.
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
 
+        // Use an activity context to get the rewarded video instance.
+        mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this);
+        loadRewardedVideoAd();
+
+        AdView mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                .addTestDevice("0D525D9C92269D80384121978C3C4267")
+                .build();
+        mAdView.loadAd(adRequest);
+
         // 리사이클뷰
-        final RecyclerView recyclerView = findViewById(R.id.friendsRecyclerView);
+        final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.friendsRecyclerView);
         items = new ArrayList<>();
 
         adapter = new UserListAdapter(this, items);
@@ -53,7 +69,7 @@ public class FindUserActivity extends UserListBaseActivity {
         // setRecyclerView (default)
 
 
-        final SearchView search_view = findViewById(R.id.search_view);
+        final SearchView search_view = (SearchView) findViewById(R.id.search_view);
         search_view.onActionViewExpanded();
         search_view.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -68,7 +84,7 @@ public class FindUserActivity extends UserListBaseActivity {
             }
         });
 
-        ImageButton save = findViewById(R.id.save);
+        ImageButton save = (ImageButton) findViewById(R.id.save);
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -89,6 +105,14 @@ public class FindUserActivity extends UserListBaseActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    private void loadRewardedVideoAd() {
+        mRewardedVideoAd.loadAd("ca-app-pub-3940256099942544/5224354917",
+                new AdRequest.Builder().addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                        .addTestDevice("0D525D9C92269D80384121978C3C4267")
+                        .build());
+    }
+
 
 
 }

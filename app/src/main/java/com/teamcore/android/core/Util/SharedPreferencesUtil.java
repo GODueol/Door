@@ -204,11 +204,12 @@ public class SharedPreferencesUtil {
         editor_notice.putLong("coreNoticeCheckDate", UiUtil.getInstance().getCurrentTime(context)).apply();
     }
 
-    // 현재 접속한 채팅방 설정
+    // 처음 접속시 광고 횟수 초기화
     public void initAds() {
         editor_ad.putInt("mainGrid", 0).apply();
         editor_ad.putInt("chat", 0).apply();
         editor_ad.putInt("friends", 0).apply();
+        editor_ad.putInt("profileChat", 0).apply();
     }
     // 각 채팅방 별개 뱃지
     public void increaseAds(InterstitialAd mInterstitialAd, String str) {
@@ -224,6 +225,9 @@ public class SharedPreferencesUtil {
                 break;
             case "friends" :
                 count=3;
+                break;
+            case "profileChat" :
+                count=0;
                 break;
         }
 
