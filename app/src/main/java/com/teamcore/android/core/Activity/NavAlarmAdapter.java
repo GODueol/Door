@@ -78,13 +78,13 @@ public class NavAlarmAdapter extends RecyclerView.Adapter<NavAlarmAdapter.ViewHo
         DateUtil dateUtil = new DateUtil(item.getTime());
         // 날짜 설정
         String time = dateUtil.getTime();
-        String dateStr = dateUtil.getDate();
+        String dateStr = dateUtil.msgDate();
         holder.alarmTime.setText(time);
 
         // 날짜선 위한  이전날짜 가져오기
         if (position != 0) {
             dateUtil.setDate(items.get(position - 1).getTime());
-            String dateStr2 = dateUtil.getDate();
+            String dateStr2 = dateUtil.msgDate();
             if (!dateStr.equals(dateStr2)) {
                 holder.dTextview.setText(dateStr);
                 holder.linearLayout.setVisibility(View.VISIBLE);

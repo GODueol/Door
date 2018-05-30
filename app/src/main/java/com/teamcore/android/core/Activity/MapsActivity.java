@@ -168,6 +168,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleApiClient.O
         Intent p = new Intent(getApplicationContext(), MainActivity.class);
         p.putExtra("latLng", latLng);
         startActivity(p);
+        Toast.makeText(getApplicationContext(), "스와이프하시면 현재 위치로 되돌아갑니다.", Toast.LENGTH_LONG).show();
+
     }
 
     public void setMarker(LatLng latLng, String address){
@@ -201,7 +203,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleApiClient.O
                 TextView snippet = new TextView(getApplicationContext());
                 snippet.setTextColor(getResources().getColor(R.color.skyblue));
                 snippet.setGravity(Gravity.CENTER);
-                snippet.setTypeface(null, Typeface.BOLD);
+                snippet.setTextSize(17);
+                snippet.setTypeface(null, Typeface.BOLD_ITALIC);
                 snippet.setText(marker.getSnippet());
 
                 info.addView(title);
@@ -220,7 +223,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleApiClient.O
             Location loc = addrConvertor.findGeoPoint(getApplicationContext(), str);
             LatLng latLng = new LatLng(loc.getLatitude(), loc.getLongitude());
             if (latLng.longitude == 0 && latLng.latitude == 0) {
-                Toast.makeText(getApplicationContext(), "검색 실패", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "검색이 되지 않습니다. 지역명을 다시 입력해주세요.", Toast.LENGTH_LONG).show();
             } else {
                 String address = addrConvertor.getAddress(getApplicationContext(), latLng);
                 mGoogleMap.clear();

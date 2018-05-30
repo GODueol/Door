@@ -464,6 +464,8 @@ public class MainActivity extends AppCompatActivity
         Bitmap bitmap = null;
         Bitmap bitmap2 = null;
         Bitmap bitmap3 = null;
+
+
         if (drawable != null) {
             bitmap = ((BitmapDrawable) drawable).getBitmap();
         }

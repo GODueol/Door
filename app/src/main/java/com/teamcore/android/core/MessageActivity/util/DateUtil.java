@@ -53,6 +53,7 @@ public class DateUtil {
         return  sdf.format(time);
     }
 
+
     public String getDateAndTime(){
         Date time = new Date(date);
         SimpleDateFormat  sdf = new SimpleDateFormat( "yyyy/MM/dd HH:mm", Locale.US );
