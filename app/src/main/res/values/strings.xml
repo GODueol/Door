@@ -145,6 +145,10 @@
 
     <string name="deleteImage">삭제된 이미지 입니다</string>
 
+    <string name="GP_LICENSE_KEY">MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAjb/FDQu9+r3v/4z+N5y19B9KzIxivZY5DBQst1DA7FIbWuE/x4cUdqccJFhO6crKU8/i4P9RRfeLJecm5HKnbfSruWlozSuYHEJwRY7FoS7ad5vlHbqq8mRQwOuHYlDiFczQMz7eeHYuduGmhOXI+bxEKNI7SLSmf2wTN/oy/OhG2rhONDiYUiXXO+Uk64/gVWJUktDvKrzczse9wHBu4jCWwMYweTFdDYfaNq+h6vcYy/olY1Ufk9X9AkpxH4n9e0NW+YnFgchz1B7mhUgmd78LFWbHpLfpxEQXRRVeu+Ale0Ewr2gYZVg3nP1zHxlts6/ee9eVrjCSSv4pbpB27wIDAQAB</string>
+    <string name="subscribe">test0001</string>
+    <string name="item">item0001</string>
+
     <string name="alertChat">새로운 메세지를 확인해보세요!</string>
     <string name="alertFolow">누군가가 당신을 팔로우 했어요!</string>
     <string name="alertFriend">새로운 친구가 생겼어요!</string>
@@ -153,7 +157,7 @@
     <string name="alertUnlockPic">누군가 당신에게 비공개 사진을 열었어요!</string>
     <string name="alertAnswer">당신이 작성한 질문글에 답이 왔네요!</string>
     <string name="msgUnlockPic">비공개 사진을 확인해보세요!</string>
-    //
+
     <string name="mapSpiner">눌러서 이곳 회원 검색</string>
     <string name="heartCountUser">하트 누른 유저들</string>
     <string name="cannotOver5Mb">5MB가 넘는 파일은 업로드 할 수 없습니다</string>

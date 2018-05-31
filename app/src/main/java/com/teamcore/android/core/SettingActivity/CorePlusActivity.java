@@ -1,17 +1,19 @@
 package com.teamcore.android.core.SettingActivity;
 
-import android.content.ComponentName;
 import android.os.Bundle;
-import android.os.IBinder;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
-import com.android.vending.billing.IInAppBillingService;
-import android.content.ServiceConnection;
-import android.content.Intent;
-import android.content.Context;
-
+import com.anjlab.android.iab.v3.BillingProcessor;
+import com.anjlab.android.iab.v3.SkuDetails;
+import com.anjlab.android.iab.v3.TransactionDetails;
 import com.teamcore.android.core.R;
 import com.teamcore.android.core.Util.GlideApp;
 import com.teamcore.android.core.Util.UiUtil;
@@ -20,10 +22,11 @@ import com.teamcore.android.core.Util.UiUtil;
  * Created by Kwon on 2018-01-04.
  */
 
-public class CorePlusActivity extends AppCompatActivity {
+public class CorePlusActivity extends AppCompatActivity implements BillingProcessor.IBillingHandler {
 
     Toolbar toolbar = null;
-    IInAppBillingService mService;
+    private BillingProcessor bp;
+    public static SkuDetails products;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,34 +56,27 @@ public class CorePlusActivity extends AppCompatActivity {
                 .into(img_cp_4);
 
 
-        Intent serviceIntent =
-                new Intent("com.android.vending.billing.InAppBillingService.BIND");
-        serviceIntent.setPackage("com.android.vending");
-        bindService(serviceIntent, mServiceConn, Context.BIND_AUTO_CREATE);
-
-
+        Button btn_cp_subs = (Button) findViewById(R.id.btn_cp_subs);
+        btn_cp_subs.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                subscribe();
+            }
+        });
 
     }
 
+    private void subscribe(){
+        if (bp.loadOwnedPurchasesFromGoogle()&&!bp.isSubscribed(getString(R.string.subscribe))) {
+            bp.purchase(this, getString(R.string.subscribe));
+        }else{
+            Toast.makeText(this, "이미 구독중", Toast.LENGTH_SHORT).show();
+        }
+    }
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (mService != null) {
-            unbindService(mServiceConn);
-        }
     }
-
-    ServiceConnection mServiceConn = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName componentName, IBinder service) {
-            mService = IInAppBillingService.Stub.asInterface(service);
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName componentName) {
-            mService = null;
-        }
-    };
 
     // 뒤로가기 버튼 기능
     public boolean onOptionsItemSelected(android.view.MenuItem item) {
@@ -94,4 +90,23 @@ public class CorePlusActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onProductPurchased(@NonNull String s, @Nullable TransactionDetails transactionDetails) {
+        Toast.makeText(this, "구매완료", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onPurchaseHistoryRestored() {
+
+    }
+
+    @Override
+    public void onBillingError(int i, @Nullable Throwable throwable) {
+
+    }
+
+    @Override
+    public void onBillingInitialized() {
+        products = bp.getSubscriptionListingDetails(getString(R.string.subscribe));
+    }
 }

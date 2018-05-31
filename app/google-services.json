@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:699214818051:android:56e83878d5bf7f27",
         "android_client_info": {
-          "package_name": "com.kwoncheolhyeok.core"
+          "package_name": "com.teamcore.android.core"
         }
       },
       "oauth_client": [
@@ -18,7 +18,7 @@
           "client_id": "699214818051-26i863r8fdvonsvf52foo3he4j7fvh0d.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.kwoncheolhyeok.core",
+            "package_name": "com.teamcore.android.core",
             "certificate_hash": "3f2650b1f24a714044f3f65b383e59df00b01982"
           }
         },
