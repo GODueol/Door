@@ -9,7 +9,6 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -28,10 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import com.anjlab.android.iab.v3.BillingProcessor;
-import com.anjlab.android.iab.v3.Constants;
-import com.anjlab.android.iab.v3.SkuDetails;
-import com.anjlab.android.iab.v3.TransactionDetails;
+import com.android.vending.billing.IInAppBillingService;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.MobileAds;
@@ -68,7 +64,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePostHolder> implements BillingProcessor.IBillingHandler {
+public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePostHolder> {
 
     private final DatabaseReference postsRef;
     private List<CoreListItem> coreListItems;
@@ -85,8 +81,9 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
     private RewardedVideoAd mRewardedVideoAd2;
 
     private Entity purchaseEntity;
-    private BillingProcessor bp;
-    public static SkuDetails products;
+
+    private String PUBLIC_KEY = "license key";
+    IInAppBillingService mService;
 
     CoreListAdapter(List<CoreListItem> coreListItems, Context context) {
         this.coreListItems = coreListItems;
@@ -94,7 +91,6 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
         this.mediaPlayer = new MediaPlayer();
         currentHolder = new CorePostHolder(new View(context));
         postsRef = FirebaseDatabase.getInstance().getReference().child("posts");
-        bp = new BillingProcessor(context, context.getString(R.string.GP_LICENSE_KEY), this);
 
         mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(context);
         loadRewardedVideoAd();
@@ -332,8 +328,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                     private void putCloudDialog(final String deletePostKey, String deleteCUuid) {
                         UiUtil.getInstance().showDialog(context, "Core Cloud", "코어를 클라우드에 추가합니다. 결재하시겠습니까",
                                 (dialogInterface, i) -> {
-                                    purchaseEntity = new Entity(coreListItem.getcUuid(), coreListItem,deletePostKey, deleteCUuid);
-                                    purchase();
+                                    purchaseEntity = new Entity(coreListItem.getcUuid(), coreListItem, deletePostKey, deleteCUuid);
                                 }, null
                         );
                     }
@@ -745,48 +740,6 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
         return coreListItems.size();
     }
 
-
-    private void purchase() {
-        bp.purchase((Activity) context, context.getString(R.string.purchase));
-    }
-
-
-    @Override
-    public void onProductPurchased(@NonNull String s, @Nullable TransactionDetails transactionDetails) {
-        UiUtil.getInstance().startProgressDialog((Activity) context);
-        try {
-            FireBaseUtil.getInstance().putCoreCloud(purchaseEntity.getCUuid(), purchaseEntity.getCoreListItem(), context, purchaseEntity.getDeletePostKey(), purchaseEntity.getDeleteCUuid()).addOnSuccessListener(o -> {
-                purchaseEntity = null;
-                Toast.makeText(context, "코어가 클라우드에 추가되었습니다", Toast.LENGTH_SHORT).show();
-                UiUtil.getInstance().stopProgressDialog();
-            });
-        } catch (NotSetAutoTimeException e) {
-            e.printStackTrace();
-            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-            ActivityCompat.finishAffinity(((Activity) context).getParent());
-        }
-
-        Toast.makeText(context, "구매완료", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onPurchaseHistoryRestored() {
-
-    }
-
-    @Override
-    public void onBillingError(int errorCode, @Nullable Throwable throwable) {
-        if (errorCode != Constants.BILLING_RESPONSE_RESULT_USER_CANCELED) {
-            String errorMessage = "에러발생(" + errorCode + ")";
-            Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    @Override
-    public void onBillingInitialized() {
-        products = bp.getPurchaseListingDetails(context.getString(R.string.purchase));
-    }
-
     static class CorePostHolder extends RecyclerView.ViewHolder {
         ImageView core_pic, core_img;
 
@@ -982,7 +935,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
         private String deletePostKey;
         private String deleteCUuid;
 
-        private Entity(String cUuid,CoreListItem coreListItem,String deletePostKey, String deleteCUuid){
+        private Entity(String cUuid, CoreListItem coreListItem, String deletePostKey, String deleteCUuid) {
             this.cUuid = cUuid;
             this.coreListItem = coreListItem;
             this.deletePostKey = deletePostKey;
