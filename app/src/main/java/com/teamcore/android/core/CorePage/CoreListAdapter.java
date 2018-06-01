@@ -9,6 +9,7 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -27,7 +28,23 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.anjlab.android.iab.v3.BillingProcessor;
+import com.anjlab.android.iab.v3.Constants;
+import com.anjlab.android.iab.v3.SkuDetails;
+import com.anjlab.android.iab.v3.TransactionDetails;
 import com.bumptech.glide.Glide;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.reward.RewardItem;
+import com.google.android.gms.ads.reward.RewardedVideoAd;
+import com.google.android.gms.ads.reward.RewardedVideoAdListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.like.LikeButton;
+import com.like.OnLikeListener;
 import com.teamcore.android.core.CorePage.CoreCloudPayDialog.DealDialogFragment;
 import com.teamcore.android.core.Entity.CoreCloud;
 import com.teamcore.android.core.Entity.CoreListItem;
@@ -44,18 +61,6 @@ import com.teamcore.android.core.Util.DataContainer;
 import com.teamcore.android.core.Util.FireBaseUtil;
 import com.teamcore.android.core.Util.GlideApp;
 import com.teamcore.android.core.Util.UiUtil;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.reward.RewardItem;
-import com.google.android.gms.ads.reward.RewardedVideoAd;
-import com.google.android.gms.ads.reward.RewardedVideoAdListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.like.LikeButton;
-import com.like.OnLikeListener;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -63,7 +68,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePostHolder> {
+public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePostHolder> implements BillingProcessor.IBillingHandler {
 
     private final DatabaseReference postsRef;
     private List<CoreListItem> coreListItems;
@@ -78,12 +83,19 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
     private String currentPlayUrl = "";
     private RewardedVideoAd mRewardedVideoAd;
     private RewardedVideoAd mRewardedVideoAd2;
+
+    private Entity purchaseEntity;
+    private BillingProcessor bp;
+    public static SkuDetails products;
+
     CoreListAdapter(List<CoreListItem> coreListItems, Context context) {
         this.coreListItems = coreListItems;
         this.context = context;
         this.mediaPlayer = new MediaPlayer();
         currentHolder = new CorePostHolder(new View(context));
         postsRef = FirebaseDatabase.getInstance().getReference().child("posts");
+        bp = new BillingProcessor(context, context.getString(R.string.GP_LICENSE_KEY), this);
+
         mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(context);
         loadRewardedVideoAd();
 
@@ -108,7 +120,8 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
         final String mUuid = DataContainer.getInstance().getUid();
 
         // 코어 클라우드는 일단 빈값으로 순서를 채움 => 클라우드에 한해서 빈값이 허용되도록
-        if(context instanceof CoreCloudActivity && (corePost == null || coreListItem.getUser() == null)) return;
+        if (context instanceof CoreCloudActivity && (corePost == null || coreListItem.getUser() == null))
+            return;
 
         // 보이는 방식 결정
         setPostViewDiff(holder, coreListItem, corePost, mUuid);
@@ -119,7 +132,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
         } catch (NotSetAutoTimeException e) {
             e.printStackTrace();
             Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-            ActivityCompat.finishAffinity((Activity)context);
+            ActivityCompat.finishAffinity((Activity) context);
         }
         holder.core_contents.setText(corePost.getText());
 
@@ -140,19 +153,19 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                     postsRef.child(coreListItem.getcUuid())
                             .child(coreListItem.getPostKey())
                             .child("likeUsers").child(mUuid).setValue(UiUtil.getInstance().getCurrentTime(context)).addOnSuccessListener(aVoid -> {
-                                // cloud 반영
-                                UiUtil.getInstance().noticeModifyToCloud(corePost, coreListItem.getPostKey(),(Activity)context);
+                        // cloud 반영
+                        UiUtil.getInstance().noticeModifyToCloud(corePost, coreListItem.getPostKey(), (Activity) context);
 
-                                if (!corePost.getUuid().equals(mUuid)) {    // 자신이 자신의 포스트에 좋아요한 경우를 제외
-                                    final String NickName = DataContainer.getInstance().getUser().getId();
-                                    AlarmUtil.getInstance().sendAlarm(context, "Like", NickName, corePost, coreListItem.getPostKey(), corePost.getUuid(), coreListItem.getcUuid());
-                                }
+                        if (!corePost.getUuid().equals(mUuid)) {    // 자신이 자신의 포스트에 좋아요한 경우를 제외
+                            final String NickName = DataContainer.getInstance().getUser().getId();
+                            AlarmUtil.getInstance().sendAlarm(context, "Like", NickName, corePost, coreListItem.getPostKey(), corePost.getUuid(), coreListItem.getcUuid());
+                        }
 
-                            });
+                    });
                 } catch (NotSetAutoTimeException e) {
                     e.printStackTrace();
                     Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-                    ActivityCompat.finishAffinity((Activity)context);
+                    ActivityCompat.finishAffinity((Activity) context);
                 }
             }
 
@@ -161,9 +174,9 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                 postsRef.child(coreListItem.getcUuid())
                         .child(coreListItem.getPostKey())
                         .child("likeUsers").child(mUuid).setValue(null).addOnSuccessListener(aVoid -> {
-                            // cloud 반영
-                            UiUtil.getInstance().noticeModifyToCloud(corePost, coreListItem.getPostKey(),(Activity)context);
-                        });
+                    // cloud 반영
+                    UiUtil.getInstance().noticeModifyToCloud(corePost, coreListItem.getPostKey(), (Activity) context);
+                });
 
             }
         });
@@ -191,7 +204,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
         holder.seekBar.setEnabled(false);
 
         // 클라우드 체크
-        if(corePost.isCloud() && !(context instanceof CoreCloudActivity)){
+        if (corePost.isCloud() && !(context instanceof CoreCloudActivity)) {
             holder.check_cloud.setVisibility(View.VISIBLE);
         } else {
             holder.check_cloud.setVisibility(View.INVISIBLE);
@@ -202,7 +215,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
         holder.core_cloud.setVisibility(View.INVISIBLE);
 
         // Notice
-        if(corePost.getUuid() == null || coreListItem.getcUuid() == null){
+        if (corePost.getUuid() == null || coreListItem.getcUuid() == null) {
             // Picture
             if (holder.core_img != null)
                 Glide.with(context /* context */)
@@ -221,7 +234,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
             holder.core_media.setVisibility(View.VISIBLE);
             holder.heart_btn_layout.setVisibility(View.VISIBLE);
         }
-        
+
         User user = coreListItem.getUser();
         // 주인글
         if (user != null) {
@@ -234,19 +247,19 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 
         // 본인 게시물
         if (corePost.getUuid().equals(mUuid)) {
-            
+
             // 수정 삭제 가능
-            if(user == null && corePost.getReply() != null){    // 답변이 달린 익명글일 때
+            if (user == null && corePost.getReply() != null) {    // 답변이 달린 익명글일 때
                 setPostMenu(holder, coreListItem, R.menu.core_post_only_delete_menu);
-            } else if(context instanceof CoreCloudActivity) {
+            } else if (context instanceof CoreCloudActivity) {
                 setPostMenu(holder, coreListItem, R.menu.core_post_cloud_menu);
             } else {
                 setPostMenu(holder, coreListItem, R.menu.core_post_normal_menu);
             }
 
             // 본인 게시물이 주인일 때만 클라우드 가능
-            if(user != null && !(context instanceof CoreCloudActivity)){
-                if(context instanceof CoreActivity && ((CoreActivity)context).postId != null) {
+            if (user != null && !(context instanceof CoreCloudActivity)) {
+                if (context instanceof CoreActivity && ((CoreActivity) context).postId != null) {
                     // 알람에서 들어갔을 경우
                     holder.core_cloud.setVisibility(View.INVISIBLE);
                     return;
@@ -263,8 +276,8 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                         view.setClickable(false);
 
                         // 이미 코어가 올라가 있는 게시물인지 확인
-                        for(CoreListItem item : coreListItems){
-                            if(item.getCorePost().isCloud()) {
+                        for (CoreListItem item : coreListItems) {
+                            if (item.getCorePost().isCloud()) {
                                 Toast.makeText(context, "이미 코어 클라우드 게시하였습니다", Toast.LENGTH_SHORT).show();
                                 view.setClickable(true);
                                 return;
@@ -283,7 +296,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                                 String deleteCUuid = null;
 
                                 // 코어 클라우드 최대한계를 넘을 때
-                                if(dataSnapshot.getChildrenCount() >= DataContainer.CoreCloudMax) {
+                                if (dataSnapshot.getChildrenCount() >= DataContainer.CoreCloudMax) {
 
                                     // 순회
                                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
@@ -299,7 +312,8 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 
                                 // 코어클라우드 결제 가능
                                 //★☆★☆★☆★☆여기입니다요★☆★☆★☆★☆
-                                if (dealDialogFragment != null && dealDialogFragment.getDialog() != null && dealDialogFragment.getDialog().isShowing()) return;
+                                if (dealDialogFragment != null && dealDialogFragment.getDialog() != null && dealDialogFragment.getDialog().isShowing())
+                                    return;
                                 final String finalDeletePostKey = (oldestPostDate == Long.MAX_VALUE ? null : deletePostKey);
                                 String finalDeleteCUuid = deleteCUuid;
                                 dealDialogFragment = new DealDialogFragment(oldestPostDate, () -> putCloudDialog(finalDeletePostKey, finalDeleteCUuid));
@@ -318,17 +332,8 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                     private void putCloudDialog(final String deletePostKey, String deleteCUuid) {
                         UiUtil.getInstance().showDialog(context, "Core Cloud", "코어를 클라우드에 추가합니다. 결재하시겠습니까",
                                 (dialogInterface, i) -> {
-                                    UiUtil.getInstance().startProgressDialog((Activity)context);
-                                    try {
-                                        FireBaseUtil.getInstance().putCoreCloud(coreListItem.getcUuid(), coreListItem, context, deletePostKey, deleteCUuid).addOnSuccessListener(o -> {
-                                            Toast.makeText(context, "코어가 클라우드에 추가되었습니다", Toast.LENGTH_SHORT).show();
-                                            UiUtil.getInstance().stopProgressDialog();
-                                        });
-                                    } catch (NotSetAutoTimeException e) {
-                                        e.printStackTrace();
-                                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-                                        ActivityCompat.finishAffinity(((Activity) context).getParent());
-                                    }
+                                    purchaseEntity = new Entity(coreListItem.getcUuid(), coreListItem,deletePostKey, deleteCUuid);
+                                    purchase();
                                 }, null
                         );
                     }
@@ -362,7 +367,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
     }
 
     private void setAnonymousPost(CorePostHolder holder, CoreListItem coreListItem, CorePost corePost, String mUuid) {
-        if(coreListItem.getcUuid() == null){
+        if (coreListItem.getcUuid() == null) {
             // Notice
             return;
         }
@@ -445,15 +450,15 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 
         if (holder.core_img != null)
             Glide.with(context)
-                .load(corePost.getPictureUrl())
-                .into(holder.core_img);
+                    .load(corePost.getPictureUrl())
+                    .into(holder.core_img);
 
         // cloud 일 경우는 프사 클릭시 프로필 액티비티로 들어가지게
-        if(context instanceof CoreCloudActivity){
+        if (context instanceof CoreCloudActivity) {
             holder.core_pic.setOnClickListener(view -> {
 
                 // block 확인
-                if(DataContainer.getInstance().isBlockWithMe(corePost.getUuid())){
+                if (DataContainer.getInstance().isBlockWithMe(corePost.getUuid())) {
                     return;
                 }
 
@@ -557,9 +562,9 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 
                 switch (i) {
                     case R.id.edit:
-                        UiUtil.getInstance().checkPostPrevent(context, (isRelease, releaseDate)->{
+                        UiUtil.getInstance().checkPostPrevent(context, (isRelease, releaseDate) -> {
 
-                            if(!isRelease) {
+                            if (!isRelease) {
                                 Toast.makeText(context,
                                         "포스트 사진 제재 당하셨기 때문에 " +
                                                 releaseDate + " 까지 프로필을 업로드 할 수 없습니다"
@@ -578,7 +583,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 
                     case R.id.detach_cloud:
                         // 클라우드 내리기
-                        if(context instanceof CoreCloudActivity){
+                        if (context instanceof CoreCloudActivity) {
                             UiUtil.getInstance().showDialog(context, "클라우드 내리기", "정말 클라우드를 내리겠습니까?"
                                     , (dialogInterface, i1) -> {
                                         Map<String, Object> childUpdate = new HashMap<>();
@@ -589,7 +594,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                                         childUpdate.put("coreCloud/" + coreListItem.getPostKey(), null);
 
                                         FirebaseDatabase.getInstance().getReference().updateChildren(childUpdate).addOnCompleteListener(task -> {
-                                            if(task.isSuccessful()){
+                                            if (task.isSuccessful()) {
                                                 Toast.makeText(context, "코어 포스트를 내렸습니다", Toast.LENGTH_SHORT).show();
                                             }
                                         });
@@ -685,7 +690,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 
                     case R.id.report:
                         // 신고 다이얼로그
-                        new ReportDialog(context, coreListItem.getCorePost().getUuid(), coreListItem.getcUuid() , coreListItem.getPostKey()).show();
+                        new ReportDialog(context, coreListItem.getCorePost().getUuid(), coreListItem.getcUuid(), coreListItem.getPostKey()).show();
                         break;
 
                     default:
@@ -700,13 +705,13 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 
     private void deletePost(final CoreListItem coreListItem) {
         String msg = "게시물을 삭제하시겠습니까?";
-        if(coreListItem.getCorePost().isCloud()){
+        if (coreListItem.getCorePost().isCloud()) {
             msg = "클라우드된 게시물입니다. 정말 게시물을 삭제하시겠습니까?";
         }
         UiUtil.getInstance().showDialog(context, "Delete", msg, (dialogInterface, i) ->
-                        FireBaseUtil.getInstance().deletePostExecution(coreListItem, postsRef, coreListItem.getcUuid(), () -> {
-                            Toast.makeText(context, "삭제 완료되었습니다", Toast.LENGTH_SHORT).show();
-                        })
+                FireBaseUtil.getInstance().deletePostExecution(coreListItem, postsRef, coreListItem.getcUuid(), () -> {
+                    Toast.makeText(context, "삭제 완료되었습니다", Toast.LENGTH_SHORT).show();
+                })
         );
     }
 
@@ -714,22 +719,21 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
     private CompoundButton.OnCheckedChangeListener getListener(final CoreListItem coreListItem, final String value) {
         return (buttonView, isChecked) -> {
             if (isChecked) {
-                 boolean isReplyFirst = false;
-                if(coreListItem.getCorePost().getReply() == null) {
+                boolean isReplyFirst = false;
+                if (coreListItem.getCorePost().getReply() == null) {
                     isReplyFirst = true;
                 }
                 final boolean finalIsReplyFirst = isReplyFirst;
                 postsRef.child(coreListItem.getcUuid()).child(coreListItem.getPostKey())
                         .child("reply").setValue(value).addOnSuccessListener(aVoid -> {
 
-                            if(!finalIsReplyFirst || DataContainer.getInstance().isBlockWithMe(coreListItem.getCorePost().getUuid())) return;
+                    if (!finalIsReplyFirst || DataContainer.getInstance().isBlockWithMe(coreListItem.getCorePost().getUuid()))
+                        return;
 
-                            final String NickName = DataContainer.getInstance().getUser().getId();
-                            AlarmUtil.getInstance().sendAlarm(context,"Answer",NickName,coreListItem.getCorePost(),coreListItem.getPostKey(),coreListItem.getCorePost().getUuid(),coreListItem.getcUuid());
-                        });
-            }
-
-            else {
+                    final String NickName = DataContainer.getInstance().getUser().getId();
+                    AlarmUtil.getInstance().sendAlarm(context, "Answer", NickName, coreListItem.getCorePost(), coreListItem.getPostKey(), coreListItem.getCorePost().getUuid(), coreListItem.getcUuid());
+                });
+            } else {
                 //취소 못하게
                 buttonView.setChecked(true);
             }
@@ -739,6 +743,48 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
     @Override
     public int getItemCount() {
         return coreListItems.size();
+    }
+
+
+    private void purchase() {
+        bp.purchase((Activity) context, context.getString(R.string.purchase));
+    }
+
+
+    @Override
+    public void onProductPurchased(@NonNull String s, @Nullable TransactionDetails transactionDetails) {
+        UiUtil.getInstance().startProgressDialog((Activity) context);
+        try {
+            FireBaseUtil.getInstance().putCoreCloud(purchaseEntity.getCUuid(), purchaseEntity.getCoreListItem(), context, purchaseEntity.getDeletePostKey(), purchaseEntity.getDeleteCUuid()).addOnSuccessListener(o -> {
+                purchaseEntity = null;
+                Toast.makeText(context, "코어가 클라우드에 추가되었습니다", Toast.LENGTH_SHORT).show();
+                UiUtil.getInstance().stopProgressDialog();
+            });
+        } catch (NotSetAutoTimeException e) {
+            e.printStackTrace();
+            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+            ActivityCompat.finishAffinity(((Activity) context).getParent());
+        }
+
+        Toast.makeText(context, "구매완료", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onPurchaseHistoryRestored() {
+
+    }
+
+    @Override
+    public void onBillingError(int errorCode, @Nullable Throwable throwable) {
+        if (errorCode != Constants.BILLING_RESPONSE_RESULT_USER_CANCELED) {
+            String errorMessage = "에러발생(" + errorCode + ")";
+            Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onBillingInitialized() {
+        products = bp.getPurchaseListingDetails(context.getString(R.string.purchase));
     }
 
     static class CorePostHolder extends RecyclerView.ViewHolder {
@@ -929,4 +975,36 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                         .build());
     }
 
+
+    private class Entity {
+        private String cUuid;
+        private CoreListItem coreListItem;
+        private String deletePostKey;
+        private String deleteCUuid;
+
+        private Entity(String cUuid,CoreListItem coreListItem,String deletePostKey, String deleteCUuid){
+            this.cUuid = cUuid;
+            this.coreListItem = coreListItem;
+            this.deletePostKey = deletePostKey;
+            this.deleteCUuid = deleteCUuid;
+        }
+
+        public String getCUuid() {
+            return cUuid;
+        }
+
+        public CoreListItem getCoreListItem() {
+            return coreListItem;
+        }
+
+
+        public String getDeletePostKey() {
+            return deletePostKey;
+        }
+
+
+        public String getDeleteCUuid() {
+            return deleteCUuid;
+        }
+    }
 }
