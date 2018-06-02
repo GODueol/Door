@@ -323,7 +323,7 @@ public class CoreActivity extends BlockBaseActivity {
         } else if (cUuid != null && cUuid.equals(dc.getUid())) {
             profile.setVisible(false);
             prohibition.setVisible(true);
-            menu.getItem(0).setChecked(dc.getUser().isAnonymityProhibition());
+            menu.getItem(0).setChecked(dc.getUser(() -> finish()).isAnonymityProhibition());
         }
 
         return super.onPrepareOptionsMenu(menu);

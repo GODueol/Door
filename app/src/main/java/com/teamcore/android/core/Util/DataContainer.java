@@ -1,5 +1,6 @@
 package com.teamcore.android.core.Util;
 
+import android.app.Activity;
 import android.content.Context;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -52,6 +53,13 @@ public class DataContainer {
 
     public User getUser() {
         return user;
+    }
+
+    public User getUser(Runnable userNullAction) {
+        if(user == null){
+            userNullAction.run();
+        }
+        return getUser();
     }
 
     public void setUser(User user) {
