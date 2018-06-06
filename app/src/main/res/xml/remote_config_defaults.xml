@@ -29,6 +29,23 @@
         <key>MAX_ALARM_COUNT</key>
         <value>5</value>
     </entry>
+    <entry>
+        <key>MainGridAdCount</key>
+        <value>7</value>
+    </entry>
+    <entry>
+        <key>ChatAdCount</key>
+        <value>2</value>
+    </entry>
+    <entry>
+        <key>FriendsAdCount</key>
+        <value>3</value>
+    </entry>
+    <entry>
+        <key>ProfileChatAdCount</key>
+        <value>0</value>
+    </entry>
+
 
 </defaultsMap>
     <!-- END xml_defaults -->

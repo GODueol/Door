@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 
 import com.teamcore.android.core.Exception.NotSetAutoTimeException;
 import com.teamcore.android.core.R;
-import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 
 /**
@@ -218,16 +217,16 @@ public class SharedPreferencesUtil {
 
         switch (str){
             case "mainGrid" :
-                count=7;
+                count=RemoteConfig.MainGridAdCount;
                 break;
             case "chat" :
-                count=2;
+                count=RemoteConfig.ChatAdCount;
                 break;
             case "friends" :
-                count=3;
+                count=RemoteConfig.FriendsAdCount;
                 break;
             case "profileChat" :
-                count=0;
+                count=RemoteConfig.ProfileChatAdCount;
                 break;
         }
 

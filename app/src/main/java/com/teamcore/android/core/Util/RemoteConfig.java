@@ -1,7 +1,7 @@
 package com.teamcore.android.core.Util;
 
 import android.app.Activity;
-import android.widget.Toast;
+import android.util.Log;
 
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
@@ -16,6 +16,11 @@ public class RemoteConfig {
     public static int MessageCount = 30;
     public static int LIMIT_MB = 5;
     public static int MAX_ALARM_COUNT = 5;
+
+    public static int MainGridAdCount = 7;
+    public static int ChatAdCount = 2;
+    public static int FriendsAdCount = 3;
+    public static int ProfileChatAdCount = 0;
 
     static public void getConfig(Activity activity){
         // Remote Config
@@ -33,15 +38,13 @@ public class RemoteConfig {
         mFirebaseRemoteConfig.fetch(0)   // 요청 주기 , 0이면 실행할때마다
                 .addOnCompleteListener(activity, task -> {
                     if (task.isSuccessful()) {
-                        Toast.makeText(activity, "Fetch Succeeded",
-                                Toast.LENGTH_SHORT).show();
+                        Log.d("KBJ","Fetch Succeeded");
 
                         // After config data is successfully fetched, it must be activated before newly fetched
                         // values are returned.
                         mFirebaseRemoteConfig.activateFetched();
                     } else {
-                        Toast.makeText(activity, "Fetch Failed",
-                                Toast.LENGTH_SHORT).show();
+                        Log.d("KBJ","Fetch Failed");
                     }
                     displayWelcomeMessage(mFirebaseRemoteConfig);
 
@@ -57,5 +60,10 @@ public class RemoteConfig {
         MessageCount = (int) mFirebaseRemoteConfig.getLong("MessageCount");
         LIMIT_MB = (int) mFirebaseRemoteConfig.getLong("LIMIT_MB");
         MAX_ALARM_COUNT = (int) mFirebaseRemoteConfig.getLong("MAX_ALARM_COUNT");
+
+        MainGridAdCount = (int) mFirebaseRemoteConfig.getLong("MainGridAdCount");
+        ChatAdCount = (int) mFirebaseRemoteConfig.getLong("ChatAdCount");
+        FriendsAdCount = (int) mFirebaseRemoteConfig.getLong("FriendsAdCount");
+        ProfileChatAdCount = (int) mFirebaseRemoteConfig.getLong("ProfileChatAdCount");
     }
 }
