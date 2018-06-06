@@ -20,6 +20,15 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+import com.squareup.otto.Subscribe;
 import com.teamcore.android.core.Entity.CoreListItem;
 import com.teamcore.android.core.Entity.CorePost;
 import com.teamcore.android.core.Entity.User;
@@ -30,18 +39,10 @@ import com.teamcore.android.core.PeopleFragment.GridItem;
 import com.teamcore.android.core.R;
 import com.teamcore.android.core.Util.BaseActivity.BlockBaseActivity;
 import com.teamcore.android.core.Util.DataContainer;
+import com.teamcore.android.core.Util.RemoteConfig;
 import com.teamcore.android.core.Util.SharedPreferencesUtil;
 import com.teamcore.android.core.Util.UiUtil;
 import com.teamcore.android.core.Util.WrapContentLinearLayoutManager;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
-import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
 
@@ -62,8 +63,6 @@ public class CoreActivity extends BlockBaseActivity {
     public String postId;
 
     public CheckBox dontShowAgain;
-    private AdView mAdView;
-
 
 
     @SuppressLint("LogNotTimber")
@@ -137,7 +136,7 @@ public class CoreActivity extends BlockBaseActivity {
     public void setContentView() {
         setContentView(R.layout.core_activity);
 
-        mAdView = (AdView) findViewById(R.id.adView);
+        AdView mAdView = (AdView) findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder()
                 .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
                 .addTestDevice("0D525D9C92269D80384121978C3C4267")
@@ -189,14 +188,14 @@ public class CoreActivity extends BlockBaseActivity {
                                     // CORE 주인 일반 회원
                                     if (cUser.getAccountType() == null || cUser.getAccountType().equals(DataContainer.ACCOUNT_TYPE.NORMAL)) {
                                         // 100개 제한
-                                        if (cUser.getCorePostCount() >= DataContainer.NORMAL_CORE_LIMIT) {
-                                            Toast.makeText(CoreActivity.this, "Core 주인이 일반 계정이기 때문에 " + DataContainer.NORMAL_CORE_LIMIT + "초과하여 글을 추가할수 없습니다", Toast.LENGTH_SHORT).show();
+                                        if (cUser.getCorePostCount() >= RemoteConfig.NORMAL_CORE_LIMIT) {
+                                            Toast.makeText(CoreActivity.this, "Core 주인이 일반 계정이기 때문에 " + RemoteConfig.NORMAL_CORE_LIMIT + "초과하여 글을 추가할수 없습니다", Toast.LENGTH_SHORT).show();
                                             return;
                                         }
                                     } else {
                                         // 300개 제한
-                                        if (cUser.getCorePostCount() >= DataContainer.PLUS_CORE_LIMIT) {
-                                            Toast.makeText(CoreActivity.this, DataContainer.NORMAL_CORE_LIMIT + "초과하여 글을 추가할수 없습니다", Toast.LENGTH_SHORT).show();
+                                        if (cUser.getCorePostCount() >= RemoteConfig.PLUS_CORE_LIMIT) {
+                                            Toast.makeText(CoreActivity.this, RemoteConfig.NORMAL_CORE_LIMIT + "초과하여 글을 추가할수 없습니다", Toast.LENGTH_SHORT).show();
                                             return;
                                         }
                                     }
@@ -323,7 +322,7 @@ public class CoreActivity extends BlockBaseActivity {
         } else if (cUuid != null && cUuid.equals(dc.getUid())) {
             profile.setVisible(false);
             prohibition.setVisible(true);
-            menu.getItem(0).setChecked(dc.getUser(() -> finish()).isAnonymityProhibition());
+            menu.getItem(0).setChecked(dc.getUser(this::finish).isAnonymityProhibition());
         }
 
         return super.onPrepareOptionsMenu(menu);

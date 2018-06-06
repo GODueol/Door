@@ -7,23 +7,17 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.teamcore.android.core.Entity.AlarmSummary;
-import com.teamcore.android.core.R;
-import com.teamcore.android.core.Util.DataContainer;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.reward.RewardItem;
-import com.google.android.gms.ads.reward.RewardedVideoAd;
-import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.teamcore.android.core.Entity.AlarmSummary;
+import com.teamcore.android.core.R;
+import com.teamcore.android.core.Util.DataContainer;
+import com.teamcore.android.core.Util.RemoteConfig;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -47,7 +41,6 @@ public class NavAlarmDialog extends Dialog  {
     TextView nonText;
 
 
-    private static int MAXIUM_ALARM_COUNT = 5;
     private NavAlarmAdapter navAlarmAdapter;
     private List<AlarmSummary> items;
 
@@ -95,7 +88,7 @@ public class NavAlarmDialog extends Dialog  {
                     DataSnapshot data = iterator.next();
                     String key = data.getKey();
                     AlarmSummary alarmSummary = data.child("alarmSummary").getValue(AlarmSummary.class);
-                    if(count >= MAXIUM_ALARM_COUNT) {
+                    if(count >= RemoteConfig.MAX_ALARM_COUNT) {
                         FirebaseDatabase.getInstance().getReference("Alarm").child(Uuid).child(items.remove(items.size()-1).getKey()).removeValue();
                     }
                     // 포스트키를 잘라줌 (뒤에 Post,Like,Answer)

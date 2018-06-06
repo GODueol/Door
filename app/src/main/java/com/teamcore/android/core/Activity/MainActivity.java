@@ -61,6 +61,7 @@ import com.teamcore.android.core.Util.CloseActivityHandler;
 import com.teamcore.android.core.Util.DataContainer;
 import com.teamcore.android.core.Util.FirebaseIDService;
 import com.teamcore.android.core.Util.GlideApp;
+import com.teamcore.android.core.Util.RemoteConfig;
 import com.teamcore.android.core.Util.SharedPreferencesUtil;
 import com.teamcore.android.core.Util.UiUtil;
 
@@ -265,6 +266,9 @@ public class MainActivity extends AppCompatActivity
 
             }
         });
+
+        // remoteConfig
+        RemoteConfig.getConfig(this);
 
     }
 

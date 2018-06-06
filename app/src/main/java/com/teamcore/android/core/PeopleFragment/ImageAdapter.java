@@ -14,6 +14,7 @@ import com.teamcore.android.core.R;
 import com.teamcore.android.core.Util.DataContainer;
 import com.teamcore.android.core.Util.GlideApp;
 import com.teamcore.android.core.Util.IndexedTreeSet;
+import com.teamcore.android.core.Util.RemoteConfig;
 
 import java.util.HashMap;
 
@@ -112,7 +113,7 @@ public class ImageAdapter extends BaseAdapter {
         mItems.add(item);
         itemHashMap.put(item.getUuid(), item);
 
-        if(getCount() > DataContainer.GridMax) {
+        if(getCount() > RemoteConfig.GridMax) {
             // remove 맨 뒤에꺼
             remove(mItems.last().uuid);
         }

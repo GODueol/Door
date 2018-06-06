@@ -27,6 +27,7 @@ import com.teamcore.android.core.Util.FireBaseUtil;
 import com.teamcore.android.core.Util.FirebaseSendPushMsg;
 import com.teamcore.android.core.Util.GPSInfo;
 import com.teamcore.android.core.Util.GalleryPick;
+import com.teamcore.android.core.Util.RemoteConfig;
 import com.teamcore.android.core.Util.SharedPreferencesUtil;
 import com.teamcore.android.core.Util.UiUtil;
 import com.firebase.geofire.GeoFire;
@@ -61,7 +62,6 @@ public class ChatFirebaseUtil {
     private final static String chat = "chat";
     private final static String image = "image";
     private final static String strDelete = "DELETE";
-    private final static int MessageCount = 30;
 
     private Context context;
     private String userUuid, targetUuid;
@@ -325,7 +325,7 @@ public class ChatFirebaseUtil {
                 });
                 chatDatabaseRef.removeEventListener(this);
                 // 그후 메세지 통신
-                chatDatabaseRef.limitToLast(MessageCount).addChildEventListener(chatInitListener);
+                chatDatabaseRef.limitToLast(RemoteConfig.MessageCount).addChildEventListener(chatInitListener);
 
             }
 
@@ -528,7 +528,7 @@ public class ChatFirebaseUtil {
     public void addChatLog() {
         if (!childKeyList.isEmpty() && childKeyList.size() != 1) {
             chattingRecyclerview.removeOnScrollListener(detectTopPosition);
-            if (childKeyList.size() < MessageCount) {
+            if (childKeyList.size() < RemoteConfig.MessageCount) {
                 detectTopPosition = null;
             }
             // 마지막으로 불러온 채팅 아이디
@@ -543,7 +543,7 @@ public class ChatFirebaseUtil {
                 context.getApplicationContext().startActivity(p);
             }
             messageWeight *= 1;
-            chatDatabaseRef.orderByKey().endAt(lastChildChatKey).limitToLast(MessageCount * messageWeight).addValueEventListener(chatLoadListener);
+            chatDatabaseRef.orderByKey().endAt(lastChildChatKey).limitToLast(RemoteConfig.MessageCount * messageWeight).addValueEventListener(chatLoadListener);
         }
     }
 

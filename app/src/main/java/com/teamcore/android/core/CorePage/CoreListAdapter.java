@@ -56,6 +56,7 @@ import com.teamcore.android.core.Util.AlarmUtil;
 import com.teamcore.android.core.Util.DataContainer;
 import com.teamcore.android.core.Util.FireBaseUtil;
 import com.teamcore.android.core.Util.GlideApp;
+import com.teamcore.android.core.Util.RemoteConfig;
 import com.teamcore.android.core.Util.UiUtil;
 
 import java.io.IOException;
@@ -292,7 +293,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                                 String deleteCUuid = null;
 
                                 // 코어 클라우드 최대한계를 넘을 때
-                                if (dataSnapshot.getChildrenCount() >= DataContainer.CoreCloudMax) {
+                                if (dataSnapshot.getChildrenCount() >= RemoteConfig.CoreCloudMax) {
 
                                     // 순회
                                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {

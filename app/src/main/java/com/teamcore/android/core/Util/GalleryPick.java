@@ -41,7 +41,6 @@ public class GalleryPick {
     private Bitmap bitmap;
     public static final int REQUEST_GALLERY = 2;
     private static final int THUMB_NAIL_RATIO = 35;
-    private static final int LIMIT_MB = 5;
 
     private String imgPath;
 
@@ -71,7 +70,7 @@ public class GalleryPick {
     private int getQuality() throws Exception {
         int quality = 100;
         long mb = getFileSizeInMB();
-        if(mb >= LIMIT_MB){
+        if(mb >= RemoteConfig.LIMIT_MB){
             // 업로드 방지
             throw new Exception(activity.getString(R.string.cannotOver5Mb));
         }
@@ -286,7 +285,7 @@ public class GalleryPick {
 
     @NonNull
     private UploadTask getUploadTask(StorageReference ref, Uri uri) throws Exception {
-        if (getFileSizeInMB() >= LIMIT_MB) {
+        if (getFileSizeInMB() >= RemoteConfig.LIMIT_MB) {
             throw new GifException(activity.getString(R.string.cannotOver5Mb));
         }
         if (isGif()) {
@@ -323,7 +322,7 @@ public class GalleryPick {
 
 
     public void setImage(ImageView editImage) throws Exception {
-        if (getFileSizeInMB() >= LIMIT_MB) throw new Exception("파일이 5MB를 넘어서 불가능합니다");
+        if (getFileSizeInMB() >= RemoteConfig.LIMIT_MB) throw new Exception("파일이 5MB를 넘어서 불가능합니다");
         // Gif 파일인 경우
         if (isGif()) {
             //Uri

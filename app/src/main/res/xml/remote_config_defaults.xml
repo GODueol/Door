@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- START xml_defaults -->
+<defaultsMap>
+    <entry>
+        <key>NORMAL_CORE_LIMIT</key>
+        <value>300</value>
+    </entry>
+    <entry>
+        <key>PLUS_CORE_LIMIT</key>
+        <value>300</value>
+    </entry>
+    <entry>
+        <key>CoreCloudMax</key>
+        <value>7</value>
+    </entry>
+    <entry>
+        <key>GridMax</key>
+        <value>800</value>
+    </entry>
+    <entry>
+        <key>MessageCount</key>
+        <value>30</value>
+    </entry>
+    <entry>
+        <key>LIMIT_MB</key>
+        <value>5</value>
+    </entry>
+    <entry>
+        <key>MAX_ALARM_COUNT</key>
+        <value>5</value>
+    </entry>
+
+</defaultsMap>
+    <!-- END xml_defaults -->
