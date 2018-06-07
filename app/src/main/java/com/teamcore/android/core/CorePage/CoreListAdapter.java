@@ -27,7 +27,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import com.android.vending.billing.IInAppBillingService;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.MobileAds;
@@ -42,6 +41,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.like.LikeButton;
 import com.like.OnLikeListener;
 import com.teamcore.android.core.CorePage.CoreCloudPayDialog.DealDialogFragment;
+import com.teamcore.android.core.Entity.CloudeEntity;
 import com.teamcore.android.core.Entity.CoreCloud;
 import com.teamcore.android.core.Entity.CoreListItem;
 import com.teamcore.android.core.Entity.CorePost;
@@ -80,25 +80,27 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
     private String currentPlayUrl = "";
     private RewardedVideoAd mRewardedVideoAd;
     private RewardedVideoAd mRewardedVideoAd2;
+    private CloudeEntity purchaseEntity;
 
-    private Entity purchaseEntity;
+    private OnUploadColudCallback onUploadColudCallback;
 
-    private String PUBLIC_KEY = "license key";
-    IInAppBillingService mService;
-
-    CoreListAdapter(List<CoreListItem> coreListItems, Context context) {
+    public interface OnUploadColudCallback{
+        void upload(CloudeEntity c);
+    }
+    CoreListAdapter(List<CoreListItem> coreListItems, Context context,OnUploadColudCallback onUploadColudCallback) {
         this.coreListItems = coreListItems;
         this.context = context;
         this.mediaPlayer = new MediaPlayer();
         currentHolder = new CorePostHolder(new View(context));
         postsRef = FirebaseDatabase.getInstance().getReference().child("posts");
-
+        this.onUploadColudCallback = onUploadColudCallback;
         mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(context);
         loadRewardedVideoAd();
 
         // Use an activity context to get the rewarded video instance.
         mRewardedVideoAd2 = MobileAds.getRewardedVideoAdInstance(context);
         loadRewardedVideoAd2();
+
 
     }
 
@@ -329,7 +331,9 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                     private void putCloudDialog(final String deletePostKey, String deleteCUuid) {
                         UiUtil.getInstance().showDialog(context, "Core Cloud", "코어를 클라우드에 추가합니다. 결재하시겠습니까",
                                 (dialogInterface, i) -> {
-                                    purchaseEntity = new Entity(coreListItem.getcUuid(), coreListItem, deletePostKey, deleteCUuid);
+                                    purchaseEntity = new CloudeEntity(coreListItem.getcUuid(), coreListItem, deletePostKey, deleteCUuid);
+                                    onUploadColudCallback.upload(purchaseEntity);
+                                    //buyItem(context.getString(R.string.purchase));
                                 }, null
                         );
                     }
@@ -361,6 +365,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
         currentHolder.textView_maxTime = holder.textView_maxTime;
         currentHolder.startAndPause = holder.startAndPause;
     }
+
 
     private void setAnonymousPost(CorePostHolder holder, CoreListItem coreListItem, CorePost corePost, String mUuid) {
         if (coreListItem.getcUuid() == null) {
@@ -929,36 +934,4 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                         .build());
     }
 
-
-    private class Entity {
-        private String cUuid;
-        private CoreListItem coreListItem;
-        private String deletePostKey;
-        private String deleteCUuid;
-
-        private Entity(String cUuid, CoreListItem coreListItem, String deletePostKey, String deleteCUuid) {
-            this.cUuid = cUuid;
-            this.coreListItem = coreListItem;
-            this.deletePostKey = deletePostKey;
-            this.deleteCUuid = deleteCUuid;
-        }
-
-        public String getCUuid() {
-            return cUuid;
-        }
-
-        public CoreListItem getCoreListItem() {
-            return coreListItem;
-        }
-
-
-        public String getDeletePostKey() {
-            return deletePostKey;
-        }
-
-
-        public String getDeleteCUuid() {
-            return deleteCUuid;
-        }
-    }
 }

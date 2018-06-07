@@ -4,10 +4,17 @@ package com.teamcore.android.core.CorePage;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.os.RemoteException;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
@@ -20,6 +27,7 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.Toast;
 
+import com.android.vending.billing.IInAppBillingService;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.firebase.database.ChildEventListener;
@@ -29,6 +37,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.otto.Subscribe;
+import com.teamcore.android.core.Entity.CloudeEntity;
 import com.teamcore.android.core.Entity.CoreListItem;
 import com.teamcore.android.core.Entity.CorePost;
 import com.teamcore.android.core.Entity.User;
@@ -44,6 +53,10 @@ import com.teamcore.android.core.Util.RemoteConfig;
 import com.teamcore.android.core.Util.SharedPreferencesUtil;
 import com.teamcore.android.core.Util.UiUtil;
 import com.teamcore.android.core.Util.WrapContentLinearLayoutManager;
+import com.teamcore.android.core.Util.bilingUtil.IabHelper;
+import com.teamcore.android.core.Util.bilingUtil.IabResult;
+import com.teamcore.android.core.Util.bilingUtil.Inventory;
+import com.teamcore.android.core.Util.bilingUtil.Purchase;
 
 import java.util.ArrayList;
 
@@ -66,6 +79,14 @@ public class CoreActivity extends BlockBaseActivity {
     public CheckBox dontShowAgain;
 
 
+    private AdView mAdView;
+
+    private String PUBLIC_KEY;
+    IInAppBillingService mService;
+    ServiceConnection mServiceConn;
+    IabHelper iaphelper;
+    private CloudeEntity cloudeEntity;
+
     @SuppressLint("LogNotTimber")
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -78,7 +99,7 @@ public class CoreActivity extends BlockBaseActivity {
         postId = intent.getStringExtra("postId");
 
         // 일반유저, 가장 오래된 친구 3명 이외에 다른 회원 코어 확인 불가능
-        if(!FireBaseUtil.getInstance().isOldFriends(cUuid) && !DataContainer.getInstance().getUid().equals(cUuid)){
+        if (!FireBaseUtil.getInstance().isOldFriends(cUuid) && !DataContainer.getInstance().getUid().equals(cUuid)) {
             Toast.makeText(this, "가장 오래된 친구 3명 이외에 다른 회원 코어 확인 불가능합니다", Toast.LENGTH_SHORT).show();
             finish();
         }
@@ -171,7 +192,7 @@ public class CoreActivity extends BlockBaseActivity {
 
     @NonNull
     private CoreListAdapter getCoreListAdapter(ArrayList<CoreListItem> list) {
-        return new CoreListAdapter(list, this);
+        return new CoreListAdapter(list, this,cloudLitener);
     }
 
     public void setFab() {
@@ -426,13 +447,218 @@ public class CoreActivity extends BlockBaseActivity {
         if (requestCode == WRITE_SUCC) {
             if (resultCode == Activity.RESULT_OK) recyclerView.scrollToPosition(0);
         }
+
+        if (iaphelper == null) return;
+        if (!iaphelper.handleActivityResult(requestCode, resultCode, data)) {
+            //처리할 결과물이 아닐 경우 이곳으로 빠져 기본처리를 하도록한다
+            Toast.makeText(this,"지금",Toast.LENGTH_SHORT).show();
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     @Override
     protected void onDestroy() {
         if (postQuery != null && listener != null) postQuery.removeEventListener(listener);
+        if (mService != null) {
+            unbindService(mServiceConn);
+        }
+
         super.onDestroy();
     }
+
+
+    private void setBilingService() {
+        PUBLIC_KEY = getString(R.string.GP_LICENSE_KEY);
+
+        mServiceConn = new ServiceConnection() {
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+                mService = null;
+            }
+
+            @Override
+            public void onServiceConnected(ComponentName name,
+                                           IBinder service) {
+                mService = IInAppBillingService.Stub.asInterface(service);
+            }
+        };
+
+        // 결제 서비스를 위한 인텐트 초기화
+        Intent intent = new Intent("com.android.vending.billing.InAppBillingService.BIND");
+        intent.setPackage("com.android.vending");
+        bindService(intent, mServiceConn, Context.BIND_AUTO_CREATE);
+
+        // 핼퍼 setup
+        iaphelper = new IabHelper(this, PUBLIC_KEY);
+        iaphelper.startSetup(result -> {
+            if (!result.isSuccess()) {
+                Toast.makeText(getApplicationContext(), "문제발생", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (iaphelper == null) return;
+            try {
+                iaphelper.queryInventoryAsync(mGotInventoryListener);
+            } catch (IabHelper.IabAsyncInProgressException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+
+    IabHelper.OnConsumeFinishedListener mConsumeFinishedListener = new IabHelper.OnConsumeFinishedListener() {
+        public void onConsumeFinished(Purchase purchase, IabResult result) {
+
+            // mHelper가 소거되었다면 종료
+            if (iaphelper == null) return;
+
+            // 이 샘플에서는 "관리되지 않는 제품"은 "가스" 한가지뿐이므로 상품에 대한 체크를 하지 않습니다.
+            // 하지만 다수의 제품이 있을 경우 상품 아이디를 비교하여 처리할 필요가 있습니다.
+            if (result.isSuccess()) {
+                Toast.makeText(getApplicationContext(), "소비성공??", Toast.LENGTH_SHORT).show();
+                UiUtil.getInstance().startProgressDialog(CoreActivity.this);
+                try {
+
+                    FireBaseUtil.getInstance().putCoreCloud(cloudeEntity.getCUuid(),cloudeEntity.getCoreListItem(), getApplicationContext(), cloudeEntity.getDeletePostKey(),cloudeEntity.getDeletePostKey()).addOnSuccessListener(o -> {
+                        Toast.makeText(getApplicationContext(), "코어가 클라우드에 추가되었습니다", Toast.LENGTH_SHORT).show();
+                        UiUtil.getInstance().stopProgressDialog();
+                    });
+                } catch (NotSetAutoTimeException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                    ActivityCompat.finishAffinity((Activity) getApplicationContext());
+                }
+                // 성공적으로 소진되었다면 상품의 효과를 게임상에 적용합니다. 여기서는 가스를 충전합니다.
+            } else {
+            }
+        }
+    };
+
+    private void buyItem(String item) {
+        try {
+            String payLoad = DataContainer.getInstance().getUid();
+
+            Bundle buyIntentBundle = mService.getBuyIntent(3, getPackageName(), item, "inapp", payLoad);
+            PendingIntent pendingIntent = buyIntentBundle.getParcelable("BUY_INTENT");
+            if (pendingIntent != null) {
+                iaphelper.launchPurchaseFlow(this, getString(R.string.purchase), 1001, mPurchaseFinishedListener, payLoad);
+            } else {
+                // 결제가 막혔다면 왜 결제가 막혀있찌 대체????
+                Toast.makeText(getApplicationContext(), "구매실패", Toast.LENGTH_SHORT).show();
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        } catch (IabHelper.IabAsyncInProgressException e) {
+            e.printStackTrace();
+        }
+    }
+
+    boolean verifyDeveloperPayload(Purchase p) {
+        String payload = p.getDeveloperPayload();
+
+        if (payload.equals(DataContainer.getInstance().getUid())) {
+            return true;
+        } else {
+            return false;
+        }
+        /*
+         * TODO: 위의 그림에서 설명하였듯이 로컬 저장소 또는 원격지로부터 미리 저장해둔 developerPayload값을 꺼내 변조되지 않았는지 여부를 확인합니다.
+         *
+         * 이 payload의 값은 구매가 시작될 때 랜덤한 문자열을 생성하는것은 충분히 좋은 접근입니다.
+         * 하지만 두개의 디바이스를 가진 유저가 하나의 디바이스에서 결제를 하고 다른 디바이스에서 검증을 하는 경우가 발생할 수 있습니다.
+         * 이 경우 검증을 실패하게 될것입니다. 그러므로 개발시에 다음의 상황을 고려하여야 합니다.
+         *
+         * 1. 두명의 유저가 같은 아이템을 구매할 때, payload는 같은 아이템일지라도 달라야 합니다.
+         *    두명의 유저간 구매가 이어져서는 안됩니다.
+         *
+         * 2. payload는 앱을 두대를 사용하는 유저의 경우에도 정상적으로 동작할 수 있어야 합니다.
+         *    이 payload값을 저장하고 검증할 수 있는 자체적인 서버를 구축하는것을 권장합니다.
+         */
+    }
+
+    /**
+     * 보유중인 아이템 체크
+     */
+    IabHelper.QueryInventoryFinishedListener mGotInventoryListener = new IabHelper.QueryInventoryFinishedListener() {
+        @Override
+        public void onQueryInventoryFinished(IabResult result, Inventory inv) {
+            Toast.makeText(getApplicationContext(), "onQueryInventoryFinished", Toast.LENGTH_SHORT).show();
+            if (iaphelper == null) return;
+            if (result.isFailure()) {
+                Toast.makeText(getApplicationContext(), "onQueryInventoryFinished 실패", Toast.LENGTH_SHORT).show();
+                //getPurchases() 실패했을때
+
+                return;
+            }
+            //해당 아이템 구매 여부 체크
+            Purchase purchase = inv.getPurchase(getString(R.string.purchase));
+
+            if (purchase != null && verifyDeveloperPayload(purchase)) {
+                //해당 아이템을 가지고 있는 경우.
+                //아이템에대한 처리를 한다.
+                //alreadyBuyedItem();
+
+                Toast.makeText(getApplicationContext(), "onQueryInventoryFinished 이미 보유중", Toast.LENGTH_SHORT).show();
+                /**
+                 * 재구매가 가능한 경우는 아래와 같이 구매 목록을 소비와 동시에 그에 맞는 이벤트를 실행해
+                 * 사용자가 같은 아이템을 재 구매 가능하도록 해야합니다.
+                 * 저는 1회성 아이템이므로 소비과정은 생략하겠습니다.
+                 */
+                try {
+                    iaphelper.consumeAsync(inv.getPurchase(getString(R.string.purchase)), mConsumeFinishedListener);
+                } catch (IabHelper.IabAsyncInProgressException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }
+    };
+
+    IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener = new IabHelper.OnIabPurchaseFinishedListener() {
+        @Override
+        public void onIabPurchaseFinished(IabResult result, Purchase info) {
+            Toast.makeText(getApplicationContext(), "onIabPurchaseFinished 진입", Toast.LENGTH_SHORT).show();
+            if (iaphelper == null) {
+                Toast.makeText(getApplicationContext(), "iaphelper null", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (result.isFailure()) {
+                Toast.makeText(getApplicationContext(), "구매 실패, 정상 경로를 이용해주세요.", Toast.LENGTH_SHORT).show();
+                return;
+            } else {
+
+                if (verifyDeveloperPayload(info)) {
+                    //보낸 신호와 맞는경우
+                    if (info.getSku().equals(getString(R.string.purchase))) {
+                        Toast.makeText(getApplicationContext(), "구매 성공", Toast.LENGTH_SHORT).show();
+
+                        try {
+                            iaphelper.consumeAsync(info, mConsumeFinishedListener);
+                        } catch (IabHelper.IabAsyncInProgressException e) {
+                            e.printStackTrace();
+                        }
+                        //alreadyBuyedItem();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "구매 실패, 정상 경로를 이용해주세요.", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(getApplicationContext(), "구매 실패, 정상 경로를 이용해주세요.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
+        }
+    };
+
+    CoreListAdapter.OnUploadColudCallback cloudLitener = new CoreListAdapter.OnUploadColudCallback() {
+        @Override
+        public void upload(CloudeEntity c) {
+            cloudeEntity = c;
+            buyItem(getString(R.string.purchase));
+
+        }
+    };
+
 
     @Subscribe
     public void FinishActivity(TargetUserBlocksMeEvent someoneBlocksMeEvent) {

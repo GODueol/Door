@@ -1,14 +1,5 @@
 package com.teamcore.android.core.CorePage;
 
-import com.teamcore.android.core.Entity.CoreCloud;
-import com.teamcore.android.core.Entity.CoreListItem;
-import com.teamcore.android.core.Entity.CorePost;
-import com.teamcore.android.core.Entity.User;
-import com.teamcore.android.core.Event.SomeoneBlocksMeEvent;
-import com.teamcore.android.core.Exception.NotSetAutoTimeException;
-import com.teamcore.android.core.R;
-import com.teamcore.android.core.Util.DataContainer;
-import com.teamcore.android.core.Util.UiUtil;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.firebase.database.ChildEventListener;
@@ -17,11 +8,16 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.otto.Subscribe;
+import com.teamcore.android.core.Entity.CoreCloud;
+import com.teamcore.android.core.Entity.CoreListItem;
+import com.teamcore.android.core.Entity.CorePost;
+import com.teamcore.android.core.Entity.User;
+import com.teamcore.android.core.Event.SomeoneBlocksMeEvent;
+import com.teamcore.android.core.R;
+import com.teamcore.android.core.Util.DataContainer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import static com.teamcore.android.core.Util.DataContainer.SecToDay;
 
 /**
  * Created by Kwon on 2018-03-16.
@@ -43,7 +39,7 @@ public class CoreCloudActivity extends CoreActivity {
 
     }
 
-    public void setFab(){
+    public void setFab() {
         // Fab 버튼 없음
     }
 
@@ -68,7 +64,7 @@ public class CoreCloudActivity extends CoreActivity {
 //                if(diff > (SecToDay)) return;
 
                 // 블럭된 유저는 안보이도록
-                if(DataContainer.getInstance().isBlockWithMe(coreCloud.getcUuid())){
+                if (DataContainer.getInstance().isBlockWithMe(coreCloud.getcUuid())) {
                     return;
                 }
 
@@ -79,7 +75,7 @@ public class CoreCloudActivity extends CoreActivity {
                 list.add(0, coreListItemMap.get(postKey)); // 최신순
 //                list.add(coreListItemMap.get(postKey)); // 오래된순
 
-                if(coreCloud != null && postKey != null) setData(dataSnapshot, coreCloud, postKey);
+                if (coreCloud != null && postKey != null) setData(dataSnapshot, coreCloud, postKey);
             }
 
             @Override
@@ -115,7 +111,7 @@ public class CoreCloudActivity extends CoreActivity {
             private void setData(DataSnapshot dataSnapshot, final CoreCloud coreCloud, final String postKey) {
 
                 // Set Post 데이터
-                if(coreCloud.getcUuid() == null) return;
+                if (coreCloud.getcUuid() == null) return;
                 FirebaseDatabase.getInstance().getReference().child("posts").child(coreCloud.getcUuid()).child(dataSnapshot.getKey())
                         .addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
@@ -124,7 +120,8 @@ public class CoreCloudActivity extends CoreActivity {
                                 int position = list.lastIndexOf(coreListItem);
                                 coreListItem.setCorePost(dataSnapshot.getValue(CorePost.class));
                                 //coreListItem.getCorePost().setWriteDate(coreCloud.getAttachDate()); // 날짜 표현을 Attach 시간으로 변경
-                                if(coreListItem.getUser() != null) coreListAdapter.notifyItemChanged(position);
+                                if (coreListItem.getUser() != null)
+                                    coreListAdapter.notifyItemChanged(position);
                             }
 
                             @Override
@@ -141,7 +138,8 @@ public class CoreCloudActivity extends CoreActivity {
                                 CoreListItem coreListItem = coreListItemMap.get(postKey);
                                 int position = list.lastIndexOf(coreListItem);
                                 coreListItem.setUser(dataSnapshot.getValue(User.class));
-                                if(coreListItem.getCorePost() != null) coreListAdapter.notifyItemChanged(position);
+                                if (coreListItem.getCorePost() != null)
+                                    coreListAdapter.notifyItemChanged(position);
                             }
 
                             @Override
