@@ -74,7 +74,7 @@ public class CorePlusActivity extends AppCompatActivity {
         btn_cp_subs.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                buyItem(getString(R.string.purchase));
+                buyItem(getString(R.string.subscribe));
             }
         });
 
@@ -128,7 +128,6 @@ public class CorePlusActivity extends AppCompatActivity {
             // 하지만 다수의 제품이 있을 경우 상품 아이디를 비교하여 처리할 필요가 있습니다.
             if (result.isSuccess()) {
                 Toast.makeText(getApplicationContext(),"소비성공??",Toast.LENGTH_SHORT).show();
-                // 성공적으로 소진되었다면 상품의 효과를 게임상에 적용합니다. 여기서는 가스를 충전합니다.
             }
             else {
             }
@@ -139,10 +138,10 @@ public class CorePlusActivity extends AppCompatActivity {
         try {
             String payLoad = DataContainer.getInstance().getUid();
 
-            Bundle buyIntentBundle = mService.getBuyIntent(3, getPackageName(), item, "inapp", payLoad);
+            Bundle buyIntentBundle = mService.getBuyIntent(3, getPackageName(), item, "subs", payLoad);
             PendingIntent pendingIntent = buyIntentBundle.getParcelable("BUY_INTENT");
             if (pendingIntent != null) {
-                iaphelper.launchPurchaseFlow(this, getString(R.string.purchase), 1001, mPurchaseFinishedListener, payLoad);
+                iaphelper.launchPurchaseFlow(this, getString(R.string.subscribe), 1001, mPurchaseFinishedListener, payLoad);
             } else {
                 // 결제가 막혔다면 왜 결제가 막혀있찌 대체????
                 Toast.makeText(CorePlusActivity.this, "구매실패", Toast.LENGTH_SHORT).show();
@@ -162,19 +161,6 @@ public class CorePlusActivity extends AppCompatActivity {
         }else{
             return false;
         }
-        /*
-         * TODO: 위의 그림에서 설명하였듯이 로컬 저장소 또는 원격지로부터 미리 저장해둔 developerPayload값을 꺼내 변조되지 않았는지 여부를 확인합니다.
-         *
-         * 이 payload의 값은 구매가 시작될 때 랜덤한 문자열을 생성하는것은 충분히 좋은 접근입니다.
-         * 하지만 두개의 디바이스를 가진 유저가 하나의 디바이스에서 결제를 하고 다른 디바이스에서 검증을 하는 경우가 발생할 수 있습니다.
-         * 이 경우 검증을 실패하게 될것입니다. 그러므로 개발시에 다음의 상황을 고려하여야 합니다.
-         *
-         * 1. 두명의 유저가 같은 아이템을 구매할 때, payload는 같은 아이템일지라도 달라야 합니다.
-         *    두명의 유저간 구매가 이어져서는 안됩니다.
-         *
-         * 2. payload는 앱을 두대를 사용하는 유저의 경우에도 정상적으로 동작할 수 있어야 합니다.
-         *    이 payload값을 저장하고 검증할 수 있는 자체적인 서버를 구축하는것을 권장합니다.
-         */
     }
 
     @Override
@@ -224,7 +210,7 @@ public class CorePlusActivity extends AppCompatActivity {
                 return;
             }
             //해당 아이템 구매 여부 체크
-            Purchase purchase = inv.getPurchase(getString(R.string.purchase));
+            Purchase purchase = inv.getPurchase(getString(R.string.subscribe));
 
             if (purchase != null && verifyDeveloperPayload(purchase)) {
                 //해당 아이템을 가지고 있는 경우.
@@ -232,16 +218,7 @@ public class CorePlusActivity extends AppCompatActivity {
                 //alreadyBuyedItem();
 
                 Toast.makeText(getApplicationContext(),"onQueryInventoryFinished 이미 보유중",Toast.LENGTH_SHORT).show();
-                /**
-                 * 재구매가 가능한 경우는 아래와 같이 구매 목록을 소비와 동시에 그에 맞는 이벤트를 실행해
-                 * 사용자가 같은 아이템을 재 구매 가능하도록 해야합니다.
-                 * 저는 1회성 아이템이므로 소비과정은 생략하겠습니다.
-                 */
-                try {
-                    iaphelper.consumeAsync(inv.getPurchase(getString(R.string.purchase)),mConsumeFinishedListener);
-                } catch (IabHelper.IabAsyncInProgressException e) {
-                    e.printStackTrace();
-                }
+
 
             }
         }
@@ -253,13 +230,12 @@ public class CorePlusActivity extends AppCompatActivity {
             if (iaphelper == null) return;
 
             if (result.isFailure()) {
-                Toast.makeText(CorePlusActivity.this, "구매 실패, 정상 경로를 이용해주세요.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(CorePlusActivity.this, "구매 실패, 정상 경로를 이용해주세요.111", Toast.LENGTH_SHORT).show();
                 return;
             } else {
-
                 if(verifyDeveloperPayload(info)){
                     //보낸 신호와 맞는경우
-                    if(info.getSku().equals(getString(R.string.purchase))){
+                    if(info.getSku().equals(getString(R.string.subscribe))){
                         Toast.makeText(CorePlusActivity.this, "구매 성공", Toast.LENGTH_SHORT).show();
 
                         try {
@@ -269,10 +245,10 @@ public class CorePlusActivity extends AppCompatActivity {
                         }
                         //alreadyBuyedItem();
                     }else{
-                        Toast.makeText(CorePlusActivity.this, "구매 실패, 정상 경로를 이용해주세요.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CorePlusActivity.this, "구매 실패, 정상 경로를 이용해주세요.222", Toast.LENGTH_SHORT).show();
                     }
                 }else{
-                    Toast.makeText(CorePlusActivity.this, "구매 실패, 정상 경로를 이용해주세요.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CorePlusActivity.this, "구매 실패, 정상 경로를 이용해주세요.333", Toast.LENGTH_SHORT).show();
                     return;
                 }
             }

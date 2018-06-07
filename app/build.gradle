@@ -8,6 +8,7 @@ buildscript {
     }
 }
 
+
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
 apply plugin: 'me.tatarka.retrolambda'
@@ -21,7 +22,7 @@ android {
         minSdkVersion 16
         //noinspection OldTargetApi
         targetSdkVersion 26
-        versionCode 41
+        versionCode 45
         versionName "1.0"
 
         // Enabling multidex support.

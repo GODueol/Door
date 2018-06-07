@@ -78,9 +78,6 @@ public class CoreActivity extends BlockBaseActivity {
 
     public CheckBox dontShowAgain;
 
-
-    private AdView mAdView;
-
     private String PUBLIC_KEY;
     IInAppBillingService mService;
     ServiceConnection mServiceConn;
@@ -119,7 +116,7 @@ public class CoreActivity extends BlockBaseActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //w액션바 아이콘을 업 네비게이션 형태로 표시합니다.
         getSupportActionBar().setDisplayShowHomeEnabled(true); //홈 아이콘을 숨김처리합니다.
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
-
+        setBilingService();
         recyclerView = (RecyclerView) findViewById(R.id.core_listview);
 
         LinearLayoutManager layoutManager = new WrapContentLinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
@@ -561,19 +558,6 @@ public class CoreActivity extends BlockBaseActivity {
         } else {
             return false;
         }
-        /*
-         * TODO: 위의 그림에서 설명하였듯이 로컬 저장소 또는 원격지로부터 미리 저장해둔 developerPayload값을 꺼내 변조되지 않았는지 여부를 확인합니다.
-         *
-         * 이 payload의 값은 구매가 시작될 때 랜덤한 문자열을 생성하는것은 충분히 좋은 접근입니다.
-         * 하지만 두개의 디바이스를 가진 유저가 하나의 디바이스에서 결제를 하고 다른 디바이스에서 검증을 하는 경우가 발생할 수 있습니다.
-         * 이 경우 검증을 실패하게 될것입니다. 그러므로 개발시에 다음의 상황을 고려하여야 합니다.
-         *
-         * 1. 두명의 유저가 같은 아이템을 구매할 때, payload는 같은 아이템일지라도 달라야 합니다.
-         *    두명의 유저간 구매가 이어져서는 안됩니다.
-         *
-         * 2. payload는 앱을 두대를 사용하는 유저의 경우에도 정상적으로 동작할 수 있어야 합니다.
-         *    이 payload값을 저장하고 검증할 수 있는 자체적인 서버를 구축하는것을 권장합니다.
-         */
     }
 
     /**
@@ -624,7 +608,7 @@ public class CoreActivity extends BlockBaseActivity {
             }
 
             if (result.isFailure()) {
-                Toast.makeText(getApplicationContext(), "구매 실패, 정상 경로를 이용해주세요.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "구매 실패, 정상 경로를 이용해주세요.111", Toast.LENGTH_SHORT).show();
                 return;
             } else {
 
@@ -640,10 +624,10 @@ public class CoreActivity extends BlockBaseActivity {
                         }
                         //alreadyBuyedItem();
                     } else {
-                        Toast.makeText(getApplicationContext(), "구매 실패, 정상 경로를 이용해주세요.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "구매 실패, 정상 경로를 이용해주세요.222", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(getApplicationContext(), "구매 실패, 정상 경로를 이용해주세요.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "구매 실패, 정상 경로를 이용해주세요.333", Toast.LENGTH_SHORT).show();
                     return;
                 }
             }
