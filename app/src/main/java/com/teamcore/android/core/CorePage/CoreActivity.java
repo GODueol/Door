@@ -39,6 +39,7 @@ import com.teamcore.android.core.PeopleFragment.GridItem;
 import com.teamcore.android.core.R;
 import com.teamcore.android.core.Util.BaseActivity.BlockBaseActivity;
 import com.teamcore.android.core.Util.DataContainer;
+import com.teamcore.android.core.Util.FireBaseUtil;
 import com.teamcore.android.core.Util.RemoteConfig;
 import com.teamcore.android.core.Util.SharedPreferencesUtil;
 import com.teamcore.android.core.Util.UiUtil;
@@ -72,6 +73,16 @@ public class CoreActivity extends BlockBaseActivity {
         // Get the view from new_activity.xml
         setContentView();
 
+        Intent intent = getIntent();
+        cUuid = intent.getStringExtra("uuid");
+        postId = intent.getStringExtra("postId");
+
+        // 일반유저, 가장 오래된 친구 3명 이외에 다른 회원 코어 확인 불가능
+        if(!FireBaseUtil.getInstance().isOldFriends(cUuid) && !DataContainer.getInstance().getUid().equals(cUuid)){
+            Toast.makeText(this, "가장 오래된 친구 3명 이외에 다른 회원 코어 확인 불가능합니다", Toast.LENGTH_SHORT).show();
+            finish();
+        }
+
         dc = DataContainer.getInstance();
 
         //스크린샷 방지
@@ -92,9 +103,6 @@ public class CoreActivity extends BlockBaseActivity {
 
         LinearLayoutManager layoutManager = new WrapContentLinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
 
-        Intent intent = getIntent();
-        cUuid = intent.getStringExtra("uuid");
-        postId = intent.getStringExtra("postId");
 
         // 알람받은 포스트가 있는지 여부확인
         if (postId != null)

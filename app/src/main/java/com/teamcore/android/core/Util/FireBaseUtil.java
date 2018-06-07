@@ -3,15 +3,6 @@ package com.teamcore.android.core.Util;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.teamcore.android.core.Entity.CoreCloud;
-import com.teamcore.android.core.Entity.CoreListItem;
-import com.teamcore.android.core.Entity.CorePost;
-import com.teamcore.android.core.Entity.User;
-import com.teamcore.android.core.Exception.ChildSizeMaxException;
-import com.teamcore.android.core.Exception.NotSetAutoTimeException;
-import com.teamcore.android.core.MessageActivity.util.MessageVO;
-import com.teamcore.android.core.MessageActivity.util.RoomVO;
-import com.teamcore.android.core.R;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -22,10 +13,21 @@ import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.teamcore.android.core.Entity.CoreCloud;
+import com.teamcore.android.core.Entity.CoreListItem;
+import com.teamcore.android.core.Entity.CorePost;
+import com.teamcore.android.core.Entity.User;
+import com.teamcore.android.core.Exception.ChildSizeMaxException;
+import com.teamcore.android.core.Exception.NotSetAutoTimeException;
+import com.teamcore.android.core.MessageActivity.util.MessageVO;
+import com.teamcore.android.core.MessageActivity.util.RoomVO;
+import com.teamcore.android.core.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import io.reactivex.Observable;
 
 public class FireBaseUtil {
     public static final String currentLocationPath = "location/users";
@@ -357,5 +359,15 @@ public class FireBaseUtil {
     public DatabaseReference getPreventsPost(String uuid) {
         return FirebaseDatabase.getInstance().getReference().child("prevents/post").child(uuid);
     }
+
+    /* 가장 오래된 친구 3명인지 확인 */
+    public boolean isOldFriends(String uuid) {
+        return Observable.fromIterable(DataContainer.getInstance().getUser().getFriendUsers().entrySet())
+                .sorted((a, b) -> (int) (a.getValue() - b.getValue()))
+                .take(3)
+                .toMap(Map.Entry::getKey, Map.Entry::getValue).blockingGet()
+                .keySet().contains(uuid);
+    }
+
 
 }
