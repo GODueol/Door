@@ -96,10 +96,8 @@ public class CoreActivity extends BlockBaseActivity {
         postId = intent.getStringExtra("postId");
 
         // 일반유저, 가장 오래된 친구 3명 이외에 다른 회원 코어 확인 불가능
-        if (!FireBaseUtil.getInstance().isOldFriends(cUuid) && !DataContainer.getInstance().getUid().equals(cUuid)) {
-            Toast.makeText(this, "가장 오래된 친구 3명 이외에 다른 회원 코어 확인 불가능합니다", Toast.LENGTH_SHORT).show();
-            finish();
-        }
+
+        checkOldFriends();
 
         dc = DataContainer.getInstance();
 
@@ -157,6 +155,13 @@ public class CoreActivity extends BlockBaseActivity {
 
         addPostsToList(list);
 
+    }
+
+    public void checkOldFriends() {
+        if (!FireBaseUtil.getInstance().isOldFriends(cUuid) && !DataContainer.getInstance().getUid().equals(cUuid)) {
+            Toast.makeText(this, "가장 오래된 친구 3명 이외에 다른 회원 코어 확인 불가능합니다", Toast.LENGTH_SHORT).show();
+            finish();
+        }
     }
 
     public void setContentView() {
@@ -553,11 +558,7 @@ public class CoreActivity extends BlockBaseActivity {
     boolean verifyDeveloperPayload(Purchase p) {
         String payload = p.getDeveloperPayload();
 
-        if (payload.equals(DataContainer.getInstance().getUid())) {
-            return true;
-        } else {
-            return false;
-        }
+        return payload.equals(DataContainer.getInstance().getUid());
     }
 
     /**

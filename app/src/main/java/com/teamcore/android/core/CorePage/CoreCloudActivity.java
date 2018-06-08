@@ -26,11 +26,10 @@ import java.util.HashMap;
 public class CoreCloudActivity extends CoreActivity {
 
     HashMap<String, CoreListItem> coreListItemMap = new HashMap<>();
-    private AdView mAdView;
 
     public void setContentView() {
         setContentView(R.layout.core_cloud_activity_main);
-        mAdView = (AdView) findViewById(R.id.adView);
+        AdView mAdView = (AdView) findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder()
                 .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
                 .addTestDevice("0D525D9C92269D80384121978C3C4267")
@@ -39,9 +38,12 @@ public class CoreCloudActivity extends CoreActivity {
 
     }
 
-    public void setFab() {
-        // Fab 버튼 없음
-    }
+
+    // Friends check 안함
+    public void checkOldFriends() {}
+
+    // Fab 버튼 없음
+    public void setFab() {}
 
     public void addPostsToList(final ArrayList<CoreListItem> list) {
         list.clear();
@@ -51,19 +53,9 @@ public class CoreCloudActivity extends CoreActivity {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 CoreCloud coreCloud = dataSnapshot.getValue(CoreCloud.class);
-//
-//                // 하루 지난 포스트는 안보임
-//                long diff;
-//                try {
-//                    assert coreCloud != null;
-//                    diff = UiUtil.getInstance().getCurrentTime(CoreCloudActivity.this) - coreCloud.getAttachDate();
-//                } catch (NotSetAutoTimeException e) {
-//                    e.printStackTrace();
-//                    return;
-//                }
-//                if(diff > (SecToDay)) return;
 
                 // 블럭된 유저는 안보이도록
+                assert coreCloud != null;
                 if (DataContainer.getInstance().isBlockWithMe(coreCloud.getcUuid())) {
                     return;
                 }
@@ -75,7 +67,7 @@ public class CoreCloudActivity extends CoreActivity {
                 list.add(0, coreListItemMap.get(postKey)); // 최신순
 //                list.add(coreListItemMap.get(postKey)); // 오래된순
 
-                if (coreCloud != null && postKey != null) setData(dataSnapshot, coreCloud, postKey);
+                if (postKey != null) setData(dataSnapshot, coreCloud, postKey);
             }
 
             @Override
@@ -84,6 +76,7 @@ public class CoreCloudActivity extends CoreActivity {
                 final String postKey = dataSnapshot.getKey();
 
                 // Set Post 데이터
+                assert coreCloud != null;
                 setData(dataSnapshot, coreCloud, postKey);
             }
 
