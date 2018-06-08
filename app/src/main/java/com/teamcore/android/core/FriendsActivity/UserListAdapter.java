@@ -624,12 +624,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
         }
     }
 
-    private void loadRewardedVideoAd() {
-        mRewardedVideoAd.loadAd("ca-app-pub-3940256099942544/5224354917",
-                new AdRequest.Builder().addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                        .addTestDevice("0D525D9C92269D80384121978C3C4267")
-                        .build());
-    }
+
 
     public static class Item {
         User user;
@@ -682,9 +677,15 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
         });
     }
 
+    private void loadRewardedVideoAd() {
+        mRewardedVideoAd.loadAd("ca-app-pub-3940256099942544/5224354917",
+                new AdRequest.Builder().addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                        .addTestDevice("0D525D9C92269D80384121978C3C4267")
+                        .build());
+    }
 
     private void loadRewardedVideoAd2() {
-        mRewardedVideoAd.loadAd("ca-app-pub-3940256099942544/5224354917",
+        mRewardedVideoAd2.loadAd("ca-app-pub-3940256099942544/5224354917",
                 new AdRequest.Builder().addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
                         .addTestDevice("0D525D9C92269D80384121978C3C4267")
                         .build());

@@ -9,6 +9,7 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.provider.ContactsContract;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -141,7 +142,7 @@ public class CorePlusActivity extends AppCompatActivity {
             Bundle buyIntentBundle = mService.getBuyIntent(3, getPackageName(), item, "subs", payLoad);
             PendingIntent pendingIntent = buyIntentBundle.getParcelable("BUY_INTENT");
             if (pendingIntent != null) {
-                iaphelper.launchPurchaseFlow(this, getString(R.string.subscribe), 1001, mPurchaseFinishedListener, payLoad);
+                iaphelper.launchSubscriptionPurchaseFlow(this, getString(R.string.subscribe), 1001, mPurchaseFinishedListener, payLoad);
             } else {
                 // 결제가 막혔다면 왜 결제가 막혀있찌 대체????
                 Toast.makeText(CorePlusActivity.this, "구매실패", Toast.LENGTH_SHORT).show();
@@ -209,15 +210,23 @@ public class CorePlusActivity extends AppCompatActivity {
 
                 return;
             }
+            Bundle activeSubs;
+            try {
+                activeSubs = mService.getPurchases(3, getPackageName(), "subs", DataContainer.getInstance().getUid());
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+
+
             //해당 아이템 구매 여부 체크
             Purchase purchase = inv.getPurchase(getString(R.string.subscribe));
 
-            if (purchase != null && verifyDeveloperPayload(purchase)) {
+            if (purchase != null &&  verifyDeveloperPayload(purchase)) {
                 //해당 아이템을 가지고 있는 경우.
                 //아이템에대한 처리를 한다.
                 //alreadyBuyedItem();
 
-                Toast.makeText(getApplicationContext(),"onQueryInventoryFinished 이미 보유중",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),purchase.getPurchaseState()+"onQueryInventoryFinished 이미 보유중",Toast.LENGTH_SHORT).show();
 
 
             }
@@ -228,22 +237,14 @@ public class CorePlusActivity extends AppCompatActivity {
         @Override
         public void onIabPurchaseFinished(IabResult result, Purchase info) {
             if (iaphelper == null) return;
-
             if (result.isFailure()) {
-                Toast.makeText(CorePlusActivity.this, "구매 실패, 정상 경로를 이용해주세요.111", Toast.LENGTH_SHORT).show();
+                Toast.makeText(CorePlusActivity.this, result.getResponse()+"구매 실패, 정상 경로를 이용해주세요.111", Toast.LENGTH_SHORT).show();
                 return;
             } else {
                 if(verifyDeveloperPayload(info)){
                     //보낸 신호와 맞는경우
                     if(info.getSku().equals(getString(R.string.subscribe))){
-                        Toast.makeText(CorePlusActivity.this, "구매 성공", Toast.LENGTH_SHORT).show();
-
-                        try {
-                            iaphelper.consumeAsync(info,mConsumeFinishedListener);
-                        } catch (IabHelper.IabAsyncInProgressException e) {
-                            e.printStackTrace();
-                        }
-                        //alreadyBuyedItem();
+                        FirebaseDatabase.getInstance().getReference("subscribe").child(DataContainer.getInstance().getUid()).child(String.valueOf(info.getPurchaseTime())).setValue(info);
                     }else{
                         Toast.makeText(CorePlusActivity.this, "구매 실패, 정상 경로를 이용해주세요.222", Toast.LENGTH_SHORT).show();
                     }

@@ -116,7 +116,7 @@ public class CoreActivity extends BlockBaseActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //w액션바 아이콘을 업 네비게이션 형태로 표시합니다.
         getSupportActionBar().setDisplayShowHomeEnabled(true); //홈 아이콘을 숨김처리합니다.
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
-        setBilingService();
+
         recyclerView = (RecyclerView) findViewById(R.id.core_listview);
 
         LinearLayoutManager layoutManager = new WrapContentLinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
@@ -580,20 +580,18 @@ public class CoreActivity extends BlockBaseActivity {
             if (purchase != null && verifyDeveloperPayload(purchase)) {
                 //해당 아이템을 가지고 있는 경우.
                 //아이템에대한 처리를 한다.
-                //alreadyBuyedItem();
 
                 Toast.makeText(getApplicationContext(), "onQueryInventoryFinished 이미 보유중", Toast.LENGTH_SHORT).show();
-                /**
-                 * 재구매가 가능한 경우는 아래와 같이 구매 목록을 소비와 동시에 그에 맞는 이벤트를 실행해
-                 * 사용자가 같은 아이템을 재 구매 가능하도록 해야합니다.
-                 * 저는 1회성 아이템이므로 소비과정은 생략하겠습니다.
-                 */
+
                 try {
                     iaphelper.consumeAsync(inv.getPurchase(getString(R.string.purchase)), mConsumeFinishedListener);
                 } catch (IabHelper.IabAsyncInProgressException e) {
                     e.printStackTrace();
                 }
 
+            }else{
+                // 가지고있지 않다면 구입
+                buyItem(getString(R.string.purchase));
             }
         }
     };
@@ -637,8 +635,10 @@ public class CoreActivity extends BlockBaseActivity {
     CoreListAdapter.OnUploadColudCallback cloudLitener = new CoreListAdapter.OnUploadColudCallback() {
         @Override
         public void upload(CloudeEntity c) {
+
+            setBilingService();
             cloudeEntity = c;
-            buyItem(getString(R.string.purchase));
+
 
         }
     };
