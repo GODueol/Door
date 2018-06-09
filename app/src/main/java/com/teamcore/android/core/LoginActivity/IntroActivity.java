@@ -68,7 +68,6 @@ public class IntroActivity extends Activity {
         PermissionListener permissionListener = new PermissionListener() {
             @Override
             public void onPermissionGranted() {
-                Toast.makeText(getApplication(), "권한가져옴", Toast.LENGTH_SHORT).show();
                 if (isHaveAllPermission()) {
                     getUserInfo(FirebaseAuth.getInstance().getCurrentUser());
                 }

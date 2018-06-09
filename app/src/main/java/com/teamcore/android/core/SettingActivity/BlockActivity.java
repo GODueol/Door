@@ -1,8 +1,6 @@
 package com.teamcore.android.core.SettingActivity;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,6 +9,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 import com.teamcore.android.core.Entity.User;
 import com.teamcore.android.core.Event.RefreshLocationEvent;
 import com.teamcore.android.core.FriendsActivity.UserListAdapter;
@@ -20,12 +23,6 @@ import com.teamcore.android.core.Util.BusProvider;
 import com.teamcore.android.core.Util.DataContainer;
 import com.teamcore.android.core.Util.FireBaseUtil;
 import com.teamcore.android.core.Util.UiUtil;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -43,6 +40,15 @@ public class BlockActivity extends UserListBaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // 일반 유저 블럭 리스트 볼 수 없음
+        checkCorePlus().done(isPlus -> {
+           if(!isPlus){
+               Toast.makeText(BlockActivity.this, "일반 유저는 블럭 리스트를 볼 수 없습니다", Toast.LENGTH_SHORT).show();
+               finish();
+           }
+        });
+
         setContentView(R.layout.setting_block_activity);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -103,27 +109,15 @@ public class BlockActivity extends UserListBaseActivity {
 
                 // 다이얼로그
                 UiUtil.getInstance().showDialog(BlockActivity.this, "모든 유저 블락 해제",
-                        "모든 유저 대상으로 블럭을 해제하시겠습니까?", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                UiUtil.getInstance().startProgressDialog(BlockActivity.this);
+                        "모든 유저 대상으로 블럭을 해제하시겠습니까?", (dialog, whichButton) -> {
+                            UiUtil.getInstance().startProgressDialog(BlockActivity.this);
 
-                                FireBaseUtil.getInstance().allUnblock(user.getBlockUsers()).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        user.getBlockUsers().clear();
-                                        BusProvider.getInstance().post(new RefreshLocationEvent());
-                                    }
-                                }).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        UiUtil.getInstance().stopProgressDialog();
-                                    }
-                                });
+                            FireBaseUtil.getInstance().allUnblock(user.getBlockUsers()).addOnSuccessListener((OnSuccessListener<Void>) aVoid -> {
+                                user.getBlockUsers().clear();
+                                BusProvider.getInstance().post(new RefreshLocationEvent());
+                            }).addOnCompleteListener((OnCompleteListener<Void>) task -> UiUtil.getInstance().stopProgressDialog());
 
-                            }
-                        }, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                            }
+                        }, (dialog, whichButton) -> {
                         });
                 break;
             default:

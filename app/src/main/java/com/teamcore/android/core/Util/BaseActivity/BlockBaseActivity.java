@@ -2,18 +2,17 @@ package com.teamcore.android.core.Util.BaseActivity;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 
+import com.squareup.otto.Bus;
 import com.teamcore.android.core.Event.TargetUserBlocksMeEvent;
 import com.teamcore.android.core.Util.BusProvider;
 import com.teamcore.android.core.Util.SharedPreferencesUtil;
-import com.squareup.otto.Bus;
 
 /**
  * Created by Administrator on 2018-03-13.
  */
 
-public abstract class BlockBaseActivity extends AppCompatActivity{
+public abstract class BlockBaseActivity extends BaseActivity{
 
 
     protected SharedPreferencesUtil SPUtil;

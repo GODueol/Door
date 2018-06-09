@@ -37,7 +37,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.otto.Subscribe;
-import com.teamcore.android.core.Entity.CloudeEntity;
+import com.teamcore.android.core.Entity.CloudEntity;
 import com.teamcore.android.core.Entity.CoreListItem;
 import com.teamcore.android.core.Entity.CorePost;
 import com.teamcore.android.core.Entity.User;
@@ -78,11 +78,10 @@ public class CoreActivity extends BlockBaseActivity {
 
     public CheckBox dontShowAgain;
 
-    private String PUBLIC_KEY;
     IInAppBillingService mService;
     ServiceConnection mServiceConn;
     IabHelper iaphelper;
-    private CloudeEntity cloudeEntity;
+    private CloudEntity cloudEntity;
 
     @SuppressLint("LogNotTimber")
     @Override
@@ -96,7 +95,6 @@ public class CoreActivity extends BlockBaseActivity {
         postId = intent.getStringExtra("postId");
 
         // 일반유저, 가장 오래된 친구 3명 이외에 다른 회원 코어 확인 불가능
-
         checkOldFriends();
 
         dc = DataContainer.getInstance();
@@ -158,10 +156,14 @@ public class CoreActivity extends BlockBaseActivity {
     }
 
     public void checkOldFriends() {
-        if (!FireBaseUtil.getInstance().isOldFriends(cUuid) && !DataContainer.getInstance().getUid().equals(cUuid)) {
-            Toast.makeText(this, "가장 오래된 친구 3명 이외에 다른 회원 코어 확인 불가능합니다", Toast.LENGTH_SHORT).show();
-            finish();
-        }
+        // 코어 플러스 확인
+        startProgressDialog();
+        checkCorePlus().done(isPlus -> {
+            if (!isPlus && !FireBaseUtil.getInstance().isOldFriends(cUuid) && !DataContainer.getInstance().getUid().equals(cUuid)) {
+                Toast.makeText(this, "가장 오래된 친구 3명 이외에 다른 회원 코어 확인 불가능합니다", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        }).always((state, aBoolean, s) -> CoreActivity.this.stopProgressDialog());
     }
 
     public void setContentView() {
@@ -214,41 +216,41 @@ public class CoreActivity extends BlockBaseActivity {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 User cUser = dataSnapshot.getValue(User.class);
-
-                                if (cUser != null) {
-                                    // CORE 주인 일반 회원
-                                    if (cUser.getAccountType() == null || cUser.getAccountType().equals(DataContainer.ACCOUNT_TYPE.NORMAL)) {
-                                        // 100개 제한
-                                        if (cUser.getCorePostCount() >= RemoteConfig.NORMAL_CORE_LIMIT) {
-                                            Toast.makeText(CoreActivity.this, "Core 주인이 일반 계정이기 때문에 " + RemoteConfig.NORMAL_CORE_LIMIT + "초과하여 글을 추가할수 없습니다", Toast.LENGTH_SHORT).show();
-                                            return;
+                                checkCorePlus().done(isPlus -> {
+                                    if (cUser != null) {
+                                        // CORE 주인 일반 회원
+                                        if (cUser.getAccountType() == null || !isPlus) {
+                                            // 100개 제한
+                                            if (cUser.getCorePostCount() >= RemoteConfig.NORMAL_CORE_LIMIT) {
+                                                Toast.makeText(CoreActivity.this, "Core 주인이 일반 계정이기 때문에 " + RemoteConfig.NORMAL_CORE_LIMIT + "초과하여 글을 추가할수 없습니다", Toast.LENGTH_SHORT).show();
+                                                return;
+                                            }
+                                        } else {
+                                            // 300개 제한
+                                            if (cUser.getCorePostCount() >= RemoteConfig.PLUS_CORE_LIMIT) {
+                                                Toast.makeText(CoreActivity.this, RemoteConfig.NORMAL_CORE_LIMIT + "초과하여 글을 추가할수 없습니다", Toast.LENGTH_SHORT).show();
+                                                return;
+                                            }
                                         }
-                                    } else {
-                                        // 300개 제한
-                                        if (cUser.getCorePostCount() >= RemoteConfig.PLUS_CORE_LIMIT) {
-                                            Toast.makeText(CoreActivity.this, RemoteConfig.NORMAL_CORE_LIMIT + "초과하여 글을 추가할수 없습니다", Toast.LENGTH_SHORT).show();
+
+                                        // 블럭 관계 확인
+                                        if (cUser.getBlockUsers().containsKey(dc.getUid())) {
+                                            Toast.makeText(CoreActivity.this, "포스트를 작성할 수 없습니다.", Toast.LENGTH_SHORT).show();
+                                            finish();
+                                            return;
+                                        } else if (!cUuid.equals(dc.getUid()) && cUser.isAnonymityProhibition()) {
+                                            Toast.makeText(CoreActivity.this, "포스트를 작성할 수 없습니다.", Toast.LENGTH_SHORT).show();
                                             return;
                                         }
                                     }
 
-                                    // 블럭 관계 확인
-                                    if (cUser.getBlockUsers().containsKey(dc.getUid())) {
-                                        Toast.makeText(CoreActivity.this, "포스트를 작성할 수 없습니다.", Toast.LENGTH_SHORT).show();
-                                        finish();
-                                        return;
-                                    } else if (!cUuid.equals(dc.getUid()) && cUser.isAnonymityProhibition()) {
-                                        Toast.makeText(CoreActivity.this, "포스트를 작성할 수 없습니다.", Toast.LENGTH_SHORT).show();
-                                        return;
-                                    }
-                                }
+                                    // 자신, 타인 액티비티 구별
+                                    Intent i;
+                                    i = new Intent(CoreActivity.this, CoreWriteActivity.class);
+                                    i.putExtra("cUuid", cUuid);
 
-                                // 자신, 타인 액티비티 구별
-                                Intent i;
-                                i = new Intent(CoreActivity.this, CoreWriteActivity.class);
-                                i.putExtra("cUuid", cUuid);
-
-                                startActivityForResult(i, WRITE_SUCC);
-
+                                    startActivityForResult(i, WRITE_SUCC);
+                                });
                             }
 
                             @Override
@@ -470,7 +472,7 @@ public class CoreActivity extends BlockBaseActivity {
 
 
     private void setBilingService() {
-        PUBLIC_KEY = getString(R.string.GP_LICENSE_KEY);
+        String PUBLIC_KEY = getString(R.string.GP_LICENSE_KEY);
 
         mServiceConn = new ServiceConnection() {
             @Override
@@ -521,7 +523,7 @@ public class CoreActivity extends BlockBaseActivity {
                 UiUtil.getInstance().startProgressDialog(CoreActivity.this);
                 try {
 
-                    FireBaseUtil.getInstance().putCoreCloud(cloudeEntity.getCUuid(),cloudeEntity.getCoreListItem(), getApplicationContext(), cloudeEntity.getDeletePostKey(),cloudeEntity.getDeletePostKey()).addOnSuccessListener(o -> {
+                    FireBaseUtil.getInstance().putCoreCloud(cloudEntity.getCUuid(), cloudEntity.getCoreListItem(), getApplicationContext(), cloudEntity.getDeletePostKey(), cloudEntity.getDeletePostKey()).addOnSuccessListener(o -> {
                         Toast.makeText(getApplicationContext(), "코어가 클라우드에 추가되었습니다", Toast.LENGTH_SHORT).show();
                         UiUtil.getInstance().stopProgressDialog();
                     });
@@ -531,7 +533,6 @@ public class CoreActivity extends BlockBaseActivity {
                     ActivityCompat.finishAffinity((Activity) getApplicationContext());
                 }
                 // 성공적으로 소진되었다면 상품의 효과를 게임상에 적용합니다. 여기서는 가스를 충전합니다.
-            } else {
             }
         }
     };
@@ -567,7 +568,7 @@ public class CoreActivity extends BlockBaseActivity {
     IabHelper.QueryInventoryFinishedListener mGotInventoryListener = new IabHelper.QueryInventoryFinishedListener() {
         @Override
         public void onQueryInventoryFinished(IabResult result, Inventory inv) {
-            Toast.makeText(getApplicationContext(), "onQueryInventoryFinished", Toast.LENGTH_SHORT).show();
+            Log.d(getClass().getSimpleName(), "onQueryInventoryFinished");
             if (iaphelper == null) return;
             if (result.isFailure()) {
                 Toast.makeText(getApplicationContext(), "onQueryInventoryFinished 실패", Toast.LENGTH_SHORT).show();
@@ -608,7 +609,6 @@ public class CoreActivity extends BlockBaseActivity {
 
             if (result.isFailure()) {
                 Toast.makeText(getApplicationContext(), "구매 실패, 정상 경로를 이용해주세요.111", Toast.LENGTH_SHORT).show();
-                return;
             } else {
 
                 if (verifyDeveloperPayload(info)) {
@@ -627,18 +627,17 @@ public class CoreActivity extends BlockBaseActivity {
                     }
                 } else {
                     Toast.makeText(getApplicationContext(), "구매 실패, 정상 경로를 이용해주세요.333", Toast.LENGTH_SHORT).show();
-                    return;
                 }
             }
         }
     };
 
-    CoreListAdapter.OnUploadColudCallback cloudLitener = new CoreListAdapter.OnUploadColudCallback() {
+    CoreListAdapter.OnUploadCloudCallback cloudLitener = new CoreListAdapter.OnUploadCloudCallback() {
         @Override
-        public void upload(CloudeEntity c) {
+        public void upload(CloudEntity c) {
 
             setBilingService();
-            cloudeEntity = c;
+            cloudEntity = c;
 
 
         }

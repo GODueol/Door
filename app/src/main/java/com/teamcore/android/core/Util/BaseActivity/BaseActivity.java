@@ -1,18 +1,11 @@
 package com.teamcore.android.core.Util.BaseActivity;
 
 import android.annotation.SuppressLint;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
-import android.os.Bundle;
-import android.os.IBinder;
-import android.os.RemoteException;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.android.vending.billing.IInAppBillingService;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -29,14 +22,13 @@ import com.teamcore.android.core.LoginActivity.LoginActivity;
 import com.teamcore.android.core.R;
 import com.teamcore.android.core.Util.DataContainer;
 import com.teamcore.android.core.Util.FireBaseUtil;
+import com.teamcore.android.core.Util.UiUtil;
 import com.teamcore.android.core.Util.bilingUtil.IabHelper;
 import com.teamcore.android.core.Util.bilingUtil.Purchase;
 
 import org.jdeferred.Deferred;
 import org.jdeferred.DeferredManager;
-import org.jdeferred.DeferredRunnable;
 import org.jdeferred.Promise;
-import org.jdeferred.android.AndroidDeferredObject;
 import org.jdeferred.impl.DefaultDeferredManager;
 import org.jdeferred.impl.DeferredObject;
 
@@ -237,10 +229,8 @@ public class BaseActivity extends AppCompatActivity {
     }
 
 
-    // TODO : 구독 결제 확인
+    // 구독 결제 확인
     public Promise<Boolean, String, Integer> checkCorePlus(){
-
-
         DeferredObject deferred = new DeferredObject();
         Promise promise = deferred.promise();
 
@@ -291,5 +281,14 @@ public class BaseActivity extends AppCompatActivity {
         String payload = p.getDeveloperPayload();
         return payload.equals(DataContainer.getInstance().getUid());
     }
+
+    public void startProgressDialog(){
+        UiUtil.getInstance().startProgressDialog(BaseActivity.this);
+    }
+
+    public void stopProgressDialog(){
+        UiUtil.getInstance().stopProgressDialog();
+    }
+
 
 }

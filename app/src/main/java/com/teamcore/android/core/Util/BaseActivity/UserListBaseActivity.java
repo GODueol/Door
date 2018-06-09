@@ -1,19 +1,17 @@
 package com.teamcore.android.core.Util.BaseActivity;
 
 import android.annotation.SuppressLint;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.teamcore.android.core.Entity.User;
 import com.teamcore.android.core.FriendsActivity.UserListAdapter;
 import com.teamcore.android.core.Util.DataContainer;
 import com.teamcore.android.core.Util.FireBaseUtil;
 import com.teamcore.android.core.Util.SharedPreferencesUtil;
-import com.google.android.gms.ads.InterstitialAd;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,7 +21,7 @@ import java.util.HashMap;
  */
 
 @SuppressLint("Registered")
-public class UserListBaseActivity extends AppCompatActivity {
+public class UserListBaseActivity extends BaseActivity {
     public ValueEventListener listener;
     public Query ref;
     protected SharedPreferencesUtil SPUtil;
@@ -52,15 +50,12 @@ public class UserListBaseActivity extends AppCompatActivity {
                     for(final DataSnapshot snapshot : dataSnapshot.getChildren()){
                         final String oUuid = snapshot.getKey();
 
-                        FireBaseUtil.getInstance().syncUser(new FireBaseUtil.SyncUserListener() {
-                            @Override
-                            public void onSuccessSync(User mUser) {
-                                if(DataContainer.getInstance().isBlockWithMe(oUuid)) return;
-                                User oUser = snapshot.getValue(User.class);
-                                if(adapter.isReverse) items.add(new UserListAdapter.Item(oUser, oUser.getLoginDate(), oUuid));
-                                else items.add(1, new UserListAdapter.Item(oUser, oUser.getLoginDate(), oUuid));
-                                adapter.notifyDataSetChanged();
-                            }
+                        FireBaseUtil.getInstance().syncUser(mUser -> {
+                            if(DataContainer.getInstance().isBlockWithMe(oUuid)) return;
+                            User oUser = snapshot.getValue(User.class);
+                            if(adapter.isReverse) items.add(new UserListAdapter.Item(oUser, oUser.getLoginDate(), oUuid));
+                            else items.add(1, new UserListAdapter.Item(oUser, oUser.getLoginDate(), oUuid));
+                            adapter.notifyDataSetChanged();
                         });
 
                     }

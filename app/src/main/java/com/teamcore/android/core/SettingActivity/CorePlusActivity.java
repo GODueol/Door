@@ -10,7 +10,7 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -34,7 +34,6 @@ public class CorePlusActivity extends AppCompatActivity {
 
     Toolbar toolbar = null;
 
-    private String PUBLIC_KEY;
     IInAppBillingService mService;
     ServiceConnection mServiceConn;
     IabHelper iaphelper;
@@ -66,17 +65,12 @@ public class CorePlusActivity extends AppCompatActivity {
                 .into(img_cp_4);
         setBilingService();
         Button btn_cp_subs = (Button) findViewById(R.id.btn_cp_subs);
-        btn_cp_subs.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                buyItem(getString(R.string.subscribe));
-            }
-        });
+        btn_cp_subs.setOnClickListener(view -> buyItem(getString(R.string.subscribe)));
 
     }
 
     private void setBilingService() {
-        PUBLIC_KEY = getString(R.string.GP_LICENSE_KEY);
+        String PUBLIC_KEY = getString(R.string.GP_LICENSE_KEY);
 
         mServiceConn = new ServiceConnection() {
             @Override
@@ -137,11 +131,7 @@ public class CorePlusActivity extends AppCompatActivity {
     boolean verifyDeveloperPayload(Purchase p) {
         String payload = p.getDeveloperPayload();
 
-        if (payload.equals(DataContainer.getInstance().getUid())) {
-            return true;
-        } else {
-            return false;
-        }
+        return payload.equals(DataContainer.getInstance().getUid());
     }
 
     @Override
@@ -182,7 +172,7 @@ public class CorePlusActivity extends AppCompatActivity {
     IabHelper.QueryInventoryFinishedListener mGotInventoryListener = new IabHelper.QueryInventoryFinishedListener() {
         @Override
         public void onQueryInventoryFinished(IabResult result, Inventory inv) {
-            Toast.makeText(getApplicationContext(), "onQueryInventoryFinished", Toast.LENGTH_SHORT).show();
+            Log.d(getClass().getSimpleName(), "onQueryInventoryFinished");
             if (iaphelper == null) return;
             if (result.isFailure()) {
                 Toast.makeText(getApplicationContext(), "onQueryInventoryFinished 실패", Toast.LENGTH_SHORT).show();
@@ -214,7 +204,6 @@ public class CorePlusActivity extends AppCompatActivity {
             if (iaphelper == null) return;
             if (result.isFailure()) {
                 Toast.makeText(CorePlusActivity.this, result.getResponse() + "구매 실패, 정상 경로를 이용해주세요.111", Toast.LENGTH_SHORT).show();
-                return;
             } else {
                 if (verifyDeveloperPayload(info)) {
                     //보낸 신호와 맞는경우
@@ -225,7 +214,6 @@ public class CorePlusActivity extends AppCompatActivity {
                     }
                 } else {
                     Toast.makeText(CorePlusActivity.this, "구매 실패, 정상 경로를 이용해주세요.333", Toast.LENGTH_SHORT).show();
-                    return;
                 }
             }
         }

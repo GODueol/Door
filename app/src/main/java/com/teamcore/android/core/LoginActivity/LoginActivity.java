@@ -1,53 +1,36 @@
 package com.teamcore.android.core.LoginActivity;
 
-import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.drawable.AnimationDrawable;
-import android.graphics.drawable.ColorDrawable;
-import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AutoCompleteTextView;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.teamcore.android.core.Activity.MainActivity;
-import com.teamcore.android.core.Entity.User;
-import com.teamcore.android.core.R;
-import com.teamcore.android.core.Util.DataContainer;
-import com.teamcore.android.core.Util.GlideApp;
-import com.teamcore.android.core.Util.UiUtil;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
-
-import org.w3c.dom.Text;
+import com.teamcore.android.core.Activity.MainActivity;
+import com.teamcore.android.core.Entity.User;
+import com.teamcore.android.core.R;
+import com.teamcore.android.core.Util.DataContainer;
+import com.teamcore.android.core.Util.UiUtil;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -118,99 +101,72 @@ public class LoginActivity extends AppCompatActivity {
         } else {
             cb_save_id.setChecked(false);
         }
-        cb_save_id.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (!b) {
-                    SharedPreferences.Editor editor = pref.edit();
-                    editor.putString("email", "");
-                    editor.apply();
-                }
+        cb_save_id.setOnCheckedChangeListener((compoundButton, b) -> {
+            if (!b) {
+                SharedPreferences.Editor editor = pref.edit();
+                editor.putString("email", "");
+                editor.apply();
             }
         });
 
-        _loginButton.setOnClickListener(new View.OnClickListener() {
+        _loginButton.setOnClickListener(v -> {
+            String email = _emailText.getText().toString();
 
-            @SuppressLint("SetTextI18n")
-            @Override
-            public void onClick(View v) {
-                String email = _emailText.getText().toString();
-                // TODO : Test를 위한 코드
-                if (email.equals("")) {
-                    _emailText.setText("core@core.com");
-                    _passwordText.setText("0000000");
-                }
+            if (cb_save_id.isChecked()) {
+                // ID 저장 : Shared Preference
+                SharedPreferences.Editor editor = pref.edit();
+                editor.putString("email", _emailText.getText().toString());
+                editor.apply();
 
-                if (cb_save_id.isChecked()) {
-                    // ID 저장 : Shared Preference
-                    SharedPreferences.Editor editor = pref.edit();
-                    editor.putString("email", _emailText.getText().toString());
-                    editor.apply();
-
-                }
-
-                login();
             }
+
+            login();
         });
 
-        _signupLink.setOnClickListener(new View.OnClickListener() {
+        _signupLink.setOnClickListener(v -> {
+            // Start the Signup activity
+            Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
+            startActivityForResult(intent, REQUEST_SIGNUP);
 
-            @Override
-            public void onClick(View v) {
-                // Start the Signup activity
-                Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
-                startActivityForResult(intent, REQUEST_SIGNUP);
-
-                finish();
-                overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
-            }
+            finish();
+            overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
         });
 
         mAuth = FirebaseAuth.getInstance();
 
-        link_find_password.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("ResourceAsColor")
-            @Override
-            public void onClick(View view) {
-                final AutoCompleteTextView email = new AutoCompleteTextView(LoginActivity.this);
-                email.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
-                AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+        link_find_password.setOnClickListener(view -> {
+            final AutoCompleteTextView email = new AutoCompleteTextView(LoginActivity.this);
+            email.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+            AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
 
 
-                TextView title = new TextView(LoginActivity.this);
-                title.setText("[비밀번호 찾기]\n\n가입하신 메일을 알려주세요.\n비밀번호 변경 페이지를 메일로 보내드립니다.");
-                title.setGravity(Gravity.CENTER);
-                title.setPadding(0,90,0,40);
-                title.setTextSize(15);
+            TextView title = new TextView(LoginActivity.this);
+            title.setText("[비밀번호 찾기]\n\n가입하신 메일을 알려주세요.\n비밀번호 변경 페이지를 메일로 보내드립니다.");
+            title.setGravity(Gravity.CENTER);
+            title.setPadding(0,90,0,40);
+            title.setTextSize(15);
 
-                builder.setView(email)
-                        .setCustomTitle(title)
-                        .setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                String emailAddress = email.getText().toString();
+            builder.setView(email)
+                    .setCustomTitle(title)
+                    .setPositiveButton("확인", (dialog, which) -> {
+                        String emailAddress = email.getText().toString();
 
-                                if(!emailAddress.equals("")){
-                                    FirebaseAuth auth = FirebaseAuth.getInstance();
-                                    auth.sendPasswordResetEmail(emailAddress)
-                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<Void> task) {
-                                                    if(task.isSuccessful()){
-                                                        Toast.makeText(LoginActivity.this, "메일 전송 완료", Toast.LENGTH_SHORT).show();
-                                                    } else {
-                                                        Toast.makeText(LoginActivity.this, "메일 주소가 올바르지 않습니다", Toast.LENGTH_SHORT).show();
-                                                    }
+                        if(!emailAddress.equals("")){
+                            FirebaseAuth auth = FirebaseAuth.getInstance();
+                            auth.sendPasswordResetEmail(emailAddress)
+                                    .addOnCompleteListener(task -> {
+                                        if(task.isSuccessful()){
+                                            Toast.makeText(LoginActivity.this, "메일 전송 완료", Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            Toast.makeText(LoginActivity.this, "메일 주소가 올바르지 않습니다", Toast.LENGTH_SHORT).show();
+                                        }
 
-                                                }
-                                            });
-                                } else {
-                                    Toast.makeText(LoginActivity.this, "다시 시도해주세요", Toast.LENGTH_SHORT).show();
-                                }
+                                    });
+                        } else {
+                            Toast.makeText(LoginActivity.this, "다시 시도해주세요", Toast.LENGTH_SHORT).show();
+                        }
 
-                            }
-                        }).show();
-            }
+                    }).show();
         });
     }
 
@@ -235,22 +191,19 @@ public class LoginActivity extends AppCompatActivity {
 
         // firebase login
         mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
+                .addOnCompleteListener(this, task -> {
+                    Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
 
-                        if (task.isSuccessful()) {
-                            FirebaseUser user = mAuth.getCurrentUser();
+                    if (task.isSuccessful()) {
+                        FirebaseUser user = mAuth.getCurrentUser();
 
-                            getUserInfo(user);
+                        getUserInfo(user);
 
-                        } else {
-                            Log.w(TAG, "signInWithEmail:failed", task.getException());
-                            onLoginFailed(task.getException());
-                        }
-
+                    } else {
+                        Log.w(TAG, "signInWithEmail:failed", task.getException());
+                        onLoginFailed(task.getException());
                     }
+
                 });
 
     }

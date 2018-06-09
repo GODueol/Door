@@ -2,7 +2,6 @@ package com.teamcore.android.core.Activity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.graphics.Bitmap;
@@ -21,7 +20,6 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.style.TextAppearanceSpan;
@@ -35,7 +33,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.vending.billing.IInAppBillingService;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -72,8 +69,6 @@ import com.teamcore.android.core.Util.bilingUtil.IabResult;
 import com.teamcore.android.core.Util.bilingUtil.Inventory;
 import com.teamcore.android.core.Util.bilingUtil.Purchase;
 
-import org.jdeferred.DoneCallback;
-
 /**
  * drawer / viewpager drag duplication issue
  */
@@ -101,7 +96,6 @@ public class MainActivity extends BaseActivity
 
     private SharedPreferencesUtil SPUtil;
 
-    private String PUBLIC_KEY;
     IabHelper iaphelper;
     @SuppressLint("ClickableViewAccessibility")
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -119,12 +113,16 @@ public class MainActivity extends BaseActivity
 
         //툴바 이미지 붙이기 (코어 회원이면 drawable : tb_core / 코어플러스 회원이면 tb_coreplus)
         ImageView coreplus = (ImageView) findViewById(R.id.tb_coreplus);
-        GlideApp.with(this)
-                .load(UiUtil.resourceToUri(this, R.drawable.tb_coreplus))
-//                .override(80, 23)
+        checkCorePlus().done(isPlus -> {
+           DataContainer.getInstance().isPlus = isPlus;
+           int res;
+           if(isPlus)res = R.drawable.tb_coreplus;
+           else res = R.drawable.tb_core;
+           GlideApp.with(this)
+                .load(UiUtil.resourceToUri(this, res))
                 .fitCenter()
                 .into(coreplus);
-
+        });
 
         setSupportActionBar(toolbar);
 
@@ -278,7 +276,7 @@ public class MainActivity extends BaseActivity
         });
 
 
-        PUBLIC_KEY = getString(R.string.GP_LICENSE_KEY);
+        String PUBLIC_KEY = getString(R.string.GP_LICENSE_KEY);
         // 핼퍼 setup
         iaphelper = new IabHelper(this, PUBLIC_KEY);
         iaphelper.startSetup(result -> {
@@ -303,7 +301,7 @@ public class MainActivity extends BaseActivity
     IabHelper.QueryInventoryFinishedListener mGotInventoryListener = new IabHelper.QueryInventoryFinishedListener() {
         @Override
         public void onQueryInventoryFinished(IabResult result, Inventory inv) {
-            Toast.makeText(getApplicationContext(), "onQueryInventoryFinished", Toast.LENGTH_SHORT).show();
+            Log.d(getClass().getSimpleName(), "onQueryInventoryFinished");
             if (iaphelper == null) return;
             if (result.isFailure()) {
                 Toast.makeText(getApplicationContext(), "onQueryInventoryFinished 실패", Toast.LENGTH_SHORT).show();
@@ -332,11 +330,7 @@ public class MainActivity extends BaseActivity
     boolean verifyDeveloperPayload(Purchase p) {
         String payload = p.getDeveloperPayload();
 
-        if (payload.equals(DataContainer.getInstance().getUid())) {
-            return true;
-        } else {
-            return false;
-        }
+        return payload.equals(DataContainer.getInstance().getUid());
     }
 
 

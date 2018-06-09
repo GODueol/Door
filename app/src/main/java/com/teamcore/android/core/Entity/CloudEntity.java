@@ -1,13 +1,13 @@
 package com.teamcore.android.core.Entity;
 
-public class CloudeEntity {
+public class CloudEntity {
 
     private String cUuid;
     private CoreListItem coreListItem;
     private String deletePostKey;
     private String deleteCUuid;
 
-    public CloudeEntity(String cUuid, CoreListItem coreListItem, String deletePostKey, String deleteCUuid) {
+    public CloudEntity(String cUuid, CoreListItem coreListItem, String deletePostKey, String deleteCUuid) {
         this.cUuid = cUuid;
         this.coreListItem = coreListItem;
         this.deletePostKey = deletePostKey;

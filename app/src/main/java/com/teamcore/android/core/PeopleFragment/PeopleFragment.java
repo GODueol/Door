@@ -275,7 +275,7 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
                     Toast.makeText(getActivity(), "There was an error saving the location to GeoFire: " + error, Toast.LENGTH_SHORT).show();
             } else {
                 if (getActivity() != null)
-                    Toast.makeText(getActivity(), "Location saved on server successfully! ", Toast.LENGTH_SHORT).show();
+                   Log.d("KBJ","Location saved on server successfully! ");
             }
         });
     }

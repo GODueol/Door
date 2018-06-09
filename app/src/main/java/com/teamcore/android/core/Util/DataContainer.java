@@ -14,7 +14,7 @@ public class DataContainer {
     public static final int ViewedMeMax = 45;
     public static final long SecToDay = TIME_MAXIMUM.SEC*TIME_MAXIMUM.MIN*TIME_MAXIMUM.HOUR*1000;
     public static final int RadiusMax = 300;
-
+    public boolean isPlus = false;
 
     private static class TIME_MAXIMUM {
         static final int SEC = 60;
@@ -23,13 +23,6 @@ public class DataContainer {
         static final int DAY = 30;
         static final int MONTH = 12;
     }
-
-    public static class ACCOUNT_TYPE {
-        public static final String NORMAL = "Normal";
-        public static final String PLUS = "Plus";
-        public static final String ADMIN = "Admin";
-    }
-
 
     public static final String[] bodyTypes = {"Slim", "Light", "Normal", "Muscular", "Heavy", "Fat"};
 

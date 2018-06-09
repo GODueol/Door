@@ -41,7 +41,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.like.LikeButton;
 import com.like.OnLikeListener;
 import com.teamcore.android.core.CorePage.CoreCloudPayDialog.DealDialogFragment;
-import com.teamcore.android.core.Entity.CloudeEntity;
+import com.teamcore.android.core.Entity.CloudEntity;
 import com.teamcore.android.core.Entity.CoreCloud;
 import com.teamcore.android.core.Entity.CoreListItem;
 import com.teamcore.android.core.Entity.CorePost;
@@ -80,20 +80,20 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
     private String currentPlayUrl = "";
     private RewardedVideoAd mRewardedVideoAd;
     private RewardedVideoAd mRewardedVideoAd2;
-    private CloudeEntity purchaseEntity;
+    private CloudEntity purchaseEntity;
 
-    private OnUploadColudCallback onUploadColudCallback;
+    private OnUploadCloudCallback onUploadCloudCallback;
 
-    public interface OnUploadColudCallback{
-        void upload(CloudeEntity c);
+    public interface OnUploadCloudCallback {
+        void upload(CloudEntity c);
     }
-    CoreListAdapter(List<CoreListItem> coreListItems, Context context,OnUploadColudCallback onUploadColudCallback) {
+    CoreListAdapter(List<CoreListItem> coreListItems, Context context,OnUploadCloudCallback onUploadCloudCallback) {
         this.coreListItems = coreListItems;
         this.context = context;
         this.mediaPlayer = new MediaPlayer();
         currentHolder = new CorePostHolder(new View(context));
         postsRef = FirebaseDatabase.getInstance().getReference().child("posts");
-        this.onUploadColudCallback = onUploadColudCallback;
+        this.onUploadCloudCallback = onUploadCloudCallback;
         mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(context);
         loadRewardedVideoAd();
 
@@ -329,8 +329,8 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 
                     private void putCloudDialog(final String deletePostKey, String deleteCUuid) {
 
-                        purchaseEntity = new CloudeEntity(coreListItem.getcUuid(), coreListItem, deletePostKey, deleteCUuid);
-                        onUploadColudCallback.upload(purchaseEntity);
+                        purchaseEntity = new CloudEntity(coreListItem.getcUuid(), coreListItem, deletePostKey, deleteCUuid);
+                        onUploadCloudCallback.upload(purchaseEntity);
 
                     }
                 });
@@ -606,7 +606,12 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                         break;
 
                     case R.id.block:
-                        //
+                        // 일반 유저는 익명 유저를 차단 불가
+                        if(coreListItem.getUser() == null && !DataContainer.getInstance().isPlus){
+                            Toast.makeText(context, "일반 유저는 익명 유저를 차단할 수 없습니다", Toast.LENGTH_SHORT).show();
+                            break;
+                        }
+
                         UiUtil.getInstance().showDialog(context, "유저 차단", "해당 유저를 차단하시겠습니까?", (dialog, whichButton) -> {
                             final User mUser = DataContainer.getInstance().getUser();
                             if (mUser.getBlockUsers().size() >= DataContainer.ChildrenMax) {
@@ -706,9 +711,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
             msg = "클라우드된 게시물입니다. 정말 게시물을 삭제하시겠습니까?";
         }
         UiUtil.getInstance().showDialog(context, "Delete", msg, (dialogInterface, i) ->
-                FireBaseUtil.getInstance().deletePostExecution(coreListItem, postsRef, coreListItem.getcUuid(), () -> {
-                    Toast.makeText(context, "삭제 완료되었습니다", Toast.LENGTH_SHORT).show();
-                })
+                FireBaseUtil.getInstance().deletePostExecution(coreListItem, postsRef, coreListItem.getcUuid(), () -> Toast.makeText(context, "삭제 완료되었습니다", Toast.LENGTH_SHORT).show())
         );
     }
 

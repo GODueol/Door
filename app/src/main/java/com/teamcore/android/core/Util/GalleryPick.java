@@ -1,7 +1,6 @@
 package com.teamcore.android.core.Util;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.ContentUris;
 import android.content.Intent;
 import android.database.Cursor;
@@ -18,15 +17,18 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.ImageView;
 
-import com.teamcore.android.core.Exception.GifException;
-import com.teamcore.android.core.R;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.teamcore.android.core.Exception.GifException;
+import com.teamcore.android.core.R;
+import com.teamcore.android.core.Util.BaseActivity.BaseActivity;
+
+import org.jdeferred.Promise;
+import org.jdeferred.impl.DeferredObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -36,7 +38,7 @@ import java.util.regex.Pattern;
  * Created by gimbyeongjin on 2018. 1. 18..
  */
 public class GalleryPick {
-    private Activity activity;
+    private BaseActivity activity;
     private Uri uri;
     private Bitmap bitmap;
     public static final int REQUEST_GALLERY = 2;
@@ -58,7 +60,7 @@ public class GalleryPick {
         return strMimeType;
     }
 
-    public GalleryPick(Activity activity) {
+    public GalleryPick(BaseActivity activity) {
         this.activity = activity;
     }
 
@@ -289,6 +291,7 @@ public class GalleryPick {
             throw new GifException(activity.getString(R.string.cannotOver5Mb));
         }
         if (isGif()) {
+            if(!DataContainer.getInstance().isPlus) throw new GifException(activity.getString(R.string.possibleCorePlusGIF));
             return ref.putFile(uri);
         } else {
             return ref.putBytes(this.getResizeImageByteArray(bitmap));
@@ -302,7 +305,7 @@ public class GalleryPick {
         returnCursor.moveToFirst();
         return returnCursor.getLong(sizeIndex);
     }
-    private long getFileSizeInMB() throws IOException {
+    private long getFileSizeInMB() {
         long fileSizeInMB;// 크기 확인 : 5MB
 
         long fileSizeInBytes = getFileSizeInBytes();
@@ -321,21 +324,38 @@ public class GalleryPick {
     }
 
 
-    public void setImage(ImageView editImage) throws Exception {
-        if (getFileSizeInMB() >= RemoteConfig.LIMIT_MB) throw new Exception("파일이 5MB를 넘어서 불가능합니다");
+    public Promise<Void, String, Integer> setImage(ImageView editImage) {
+
+        DeferredObject deferred = new DeferredObject();
+        Promise promise = deferred.promise();
+
+        if (getFileSizeInMB() >= RemoteConfig.LIMIT_MB) deferred.reject("파일이 5MB를 넘어서 불가능합니다");
         // Gif 파일인 경우
         if (isGif()) {
-            //Uri
-            GlideApp.with(editImage.getContext())
-                    .load(uri)
-                    .placeholder(R.drawable.a)
-                    .into(editImage);
+
+            // Core Plus 검사
+            activity.checkCorePlus().done(isPlus -> {
+                //Uri
+                if(isPlus) {
+                    GlideApp.with(editImage.getContext())
+                            .load(uri)
+                            .placeholder(R.drawable.a)
+                            .into(editImage);
+                    deferred.resolve(null);
+                } else {
+                    deferred.reject(activity.getString(R.string.possibleCorePlusGIF));
+                }
+            });
+
         } else {
             //if (getFileSizeInMB() >= 5) throw new Exception("파일이 5MB를 넘어서 불가능합니다");
             // 5메가가 넘는건 해상도 줄임
             Bitmap originalBitmap = this.getBitmap();
             editImage.setImageBitmap(originalBitmap);
+            deferred.resolve(null);
         }
+
+        return promise;
     }
 
     public UploadTask makeThumbNail(StorageReference thumbNailSpaceRef, Uri uri) throws Exception {
