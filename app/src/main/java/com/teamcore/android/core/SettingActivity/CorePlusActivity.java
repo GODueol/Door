@@ -1,6 +1,5 @@
 package com.teamcore.android.core.SettingActivity;
 
-import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
@@ -9,11 +8,8 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
-import android.provider.ContactsContract;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -21,10 +17,8 @@ import android.widget.Toast;
 
 import com.android.vending.billing.IInAppBillingService;
 import com.google.firebase.database.FirebaseDatabase;
-import com.teamcore.android.core.Exception.NotSetAutoTimeException;
 import com.teamcore.android.core.R;
 import com.teamcore.android.core.Util.DataContainer;
-import com.teamcore.android.core.Util.FireBaseUtil;
 import com.teamcore.android.core.Util.GlideApp;
 import com.teamcore.android.core.Util.UiUtil;
 import com.teamcore.android.core.Util.bilingUtil.IabHelper;
@@ -81,7 +75,7 @@ public class CorePlusActivity extends AppCompatActivity {
 
     }
 
-    private void setBilingService(){
+    private void setBilingService() {
         PUBLIC_KEY = getString(R.string.GP_LICENSE_KEY);
 
         mServiceConn = new ServiceConnection() {
@@ -98,7 +92,7 @@ public class CorePlusActivity extends AppCompatActivity {
         };
 
         // 결제 서비스를 위한 인텐트 초기화
-        Intent intent=new Intent("com.android.vending.billing.InAppBillingService.BIND");
+        Intent intent = new Intent("com.android.vending.billing.InAppBillingService.BIND");
         intent.setPackage("com.android.vending");
         bindService(intent, mServiceConn, Context.BIND_AUTO_CREATE);
 
@@ -128,9 +122,8 @@ public class CorePlusActivity extends AppCompatActivity {
             // 이 샘플에서는 "관리되지 않는 제품"은 "가스" 한가지뿐이므로 상품에 대한 체크를 하지 않습니다.
             // 하지만 다수의 제품이 있을 경우 상품 아이디를 비교하여 처리할 필요가 있습니다.
             if (result.isSuccess()) {
-                Toast.makeText(getApplicationContext(),"소비성공??",Toast.LENGTH_SHORT).show();
-            }
-            else {
+                Toast.makeText(getApplicationContext(), "소비성공??", Toast.LENGTH_SHORT).show();
+            } else {
             }
         }
     };
@@ -157,9 +150,9 @@ public class CorePlusActivity extends AppCompatActivity {
     boolean verifyDeveloperPayload(Purchase p) {
         String payload = p.getDeveloperPayload();
 
-        if(payload.equals(DataContainer.getInstance().getUid())){
+        if (payload.equals(DataContainer.getInstance().getUid())) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }
@@ -170,7 +163,7 @@ public class CorePlusActivity extends AppCompatActivity {
         if (iaphelper == null) return;
         if (!iaphelper.handleActivityResult(requestCode, resultCode, data)) {
             //처리할 결과물이 아닐 경우 이곳으로 빠져 기본처리를 하도록한다
-            Toast.makeText(this,"지금",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "지금", Toast.LENGTH_SHORT).show();
             super.onActivityResult(requestCode, resultCode, data);
         }
 
@@ -202,33 +195,28 @@ public class CorePlusActivity extends AppCompatActivity {
     IabHelper.QueryInventoryFinishedListener mGotInventoryListener = new IabHelper.QueryInventoryFinishedListener() {
         @Override
         public void onQueryInventoryFinished(IabResult result, Inventory inv) {
-            Toast.makeText(getApplicationContext(),"onQueryInventoryFinished",Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "onQueryInventoryFinished", Toast.LENGTH_SHORT).show();
             if (iaphelper == null) return;
             if (result.isFailure()) {
-                Toast.makeText(getApplicationContext(),"onQueryInventoryFinished 실패",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "onQueryInventoryFinished 실패", Toast.LENGTH_SHORT).show();
                 //getPurchases() 실패했을때
-
                 return;
             }
+/*
             Bundle activeSubs;
             try {
                 activeSubs = mService.getPurchases(3, getPackageName(), "subs", DataContainer.getInstance().getUid());
             } catch (RemoteException e) {
                 e.printStackTrace();
-            }
-
+            }*/
 
             //해당 아이템 구매 여부 체크
             Purchase purchase = inv.getPurchase(getString(R.string.subscribe));
 
-            if (purchase != null &&  verifyDeveloperPayload(purchase)) {
+            if (purchase != null && purchase.getPurchaseState() ==0 && verifyDeveloperPayload(purchase)) {
                 //해당 아이템을 가지고 있는 경우.
                 //아이템에대한 처리를 한다.
-                //alreadyBuyedItem();
-
-                Toast.makeText(getApplicationContext(),purchase.getPurchaseState()+"onQueryInventoryFinished 이미 보유중",Toast.LENGTH_SHORT).show();
-
-
+                Toast.makeText(getApplicationContext(), purchase.getPurchaseState() + "onQueryInventoryFinished 이미 보유중", Toast.LENGTH_SHORT).show();
             }
         }
     };
@@ -238,17 +226,17 @@ public class CorePlusActivity extends AppCompatActivity {
         public void onIabPurchaseFinished(IabResult result, Purchase info) {
             if (iaphelper == null) return;
             if (result.isFailure()) {
-                Toast.makeText(CorePlusActivity.this, result.getResponse()+"구매 실패, 정상 경로를 이용해주세요.111", Toast.LENGTH_SHORT).show();
+                Toast.makeText(CorePlusActivity.this, result.getResponse() + "구매 실패, 정상 경로를 이용해주세요.111", Toast.LENGTH_SHORT).show();
                 return;
             } else {
-                if(verifyDeveloperPayload(info)){
+                if (verifyDeveloperPayload(info)) {
                     //보낸 신호와 맞는경우
-                    if(info.getSku().equals(getString(R.string.subscribe))){
+                    if (info.getSku().equals(getString(R.string.subscribe))) {
                         FirebaseDatabase.getInstance().getReference("subscribe").child(DataContainer.getInstance().getUid()).child(String.valueOf(info.getPurchaseTime())).setValue(info);
-                    }else{
+                    } else {
                         Toast.makeText(CorePlusActivity.this, "구매 실패, 정상 경로를 이용해주세요.222", Toast.LENGTH_SHORT).show();
                     }
-                }else{
+                } else {
                     Toast.makeText(CorePlusActivity.this, "구매 실패, 정상 경로를 이용해주세요.333", Toast.LENGTH_SHORT).show();
                     return;
                 }
