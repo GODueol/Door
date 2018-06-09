@@ -273,22 +273,6 @@ public class MainActivity extends BaseActivity
         // remoteConfig
         RemoteConfig.getConfig(this);
 
-        // checkCorePlus test
-//        checkCorePlus().done(isPlus -> {
-//            if(isPlus) {
-//                Toast.makeText(MainActivity.this, "구독중", Toast.LENGTH_SHORT).show();
-//                Log.d("KBJ", "구독중");
-//            }
-//            else {
-//                Toast.makeText(MainActivity.this, "구독중아님", Toast.LENGTH_SHORT).show();
-//                Log.d("KBJ", "구독중아님");
-//            }
-//        })
-//        .fail(errStr -> {
-//            Toast.makeText(MainActivity.this, "구독 체크 실패" + errStr, Toast.LENGTH_SHORT).show();
-//            Log.d("KBJ", "구독 체크 실패");
-//        });
-
     }
 
     private void navigationViewinitBadge(Menu menu) {

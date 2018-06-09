@@ -328,13 +328,10 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                     }
 
                     private void putCloudDialog(final String deletePostKey, String deleteCUuid) {
-                        UiUtil.getInstance().showDialog(context, "Core Cloud", "코어를 클라우드에 추가합니다. 결재하시겠습니까",
-                                (dialogInterface, i) -> {
-                                    purchaseEntity = new CloudeEntity(coreListItem.getcUuid(), coreListItem, deletePostKey, deleteCUuid);
-                                    onUploadColudCallback.upload(purchaseEntity);
-                                    //buyItem(context.getString(R.string.purchase));
-                                }, null
-                        );
+
+                        purchaseEntity = new CloudeEntity(coreListItem.getcUuid(), coreListItem, deletePostKey, deleteCUuid);
+                        onUploadColudCallback.upload(purchaseEntity);
+
                     }
                 });
             }

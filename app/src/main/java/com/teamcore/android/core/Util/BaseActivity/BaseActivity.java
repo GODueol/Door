@@ -208,6 +208,24 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     // TODO : 로케이션 삭제
+    /*
+    * // checkCorePlus test
+        checkCorePlus().done(isPlus -> {
+            if(isPlus) {
+                Toast.makeText(MainActivity.this, "구독중", Toast.LENGTH_SHORT).show();
+                Log.d("KBJ", "구독중");
+            }
+            else {
+                Toast.makeText(MainActivity.this, "구독중아님", Toast.LENGTH_SHORT).show();
+                Log.d("KBJ", "구독중아님");
+            }
+        })
+        .fail(errStr -> {
+            Toast.makeText(MainActivity.this, "구독 체크 실패" + errStr, Toast.LENGTH_SHORT).show();
+            Log.d("KBJ", "구독 체크 실패");
+        });
+    * */
+
     Promise deleteMyLocation(String uuid){
 
         Promise promise = getPromise(FirebaseDatabase.getInstance().getReference().child("location").child(uuid).removeValue());
@@ -220,7 +238,6 @@ public class BaseActivity extends AppCompatActivity {
 
 
     // TODO : 구독 결제 확인
-    IInAppBillingService mService;
     public Promise<Boolean, String, Integer> checkCorePlus(){
 
 
@@ -230,40 +247,12 @@ public class BaseActivity extends AppCompatActivity {
 
         // 핼퍼 setup
         IabHelper iaphelper = new IabHelper(this, getString(R.string.GP_LICENSE_KEY));
-        ServiceConnection mServiceConn = new ServiceConnection() {
-            @Override
-            public void onServiceDisconnected(ComponentName name) {
-                mService = null;
-            }
-
-            @Override
-            public void onServiceConnected(ComponentName name,
-                                           IBinder service) {
-                mService = IInAppBillingService.Stub.asInterface(service);
-            }
-        };
-
-        // 결제 서비스를 위한 인텐트 초기화
-        Intent intent=new Intent("com.android.vending.billing.InAppBillingService.BIND");
-        intent.setPackage("com.android.vending");
-        bindService(intent, mServiceConn, Context.BIND_AUTO_CREATE);
 
 
         IabHelper.QueryInventoryFinishedListener mGotInventoryListener = (result, inv) -> {
-            Toast.makeText(getApplicationContext(),"onQueryInventoryFinished",Toast.LENGTH_SHORT).show();
             if (result.isFailure()) {
-                Toast.makeText(getApplicationContext(),"onQueryInventoryFinished 실패",Toast.LENGTH_SHORT).show();
                 //getPurchases() 실패했을때
-
                 deferred.reject("getPurchases 실패");
-                return;
-            }
-            Bundle activeSubs;
-            try {
-                activeSubs = mService.getPurchases(3, getPackageName(), "subs", DataContainer.getInstance().getUid());
-            } catch (RemoteException e) {
-                e.printStackTrace();
-                deferred.reject(e.getMessage());
                 return;
             }
 
@@ -274,18 +263,15 @@ public class BaseActivity extends AppCompatActivity {
                 //해당 아이템을 가지고 있는 경우.
                 //아이템에대한 처리를 한다.
                 //alreadyBuyedItem();
-
-                Toast.makeText(getApplicationContext(),purchase.getPurchaseState()+"onQueryInventoryFinished 이미 보유중",Toast.LENGTH_SHORT).show();
-
                 deferred.resolve(true);
 
+            } else {
+                deferred.resolve(false);
             }
-            deferred.resolve(false);
         };
 
         iaphelper.startSetup(result -> {
             if (!result.isSuccess()) {
-                Toast.makeText(BaseActivity.this, "문제발생", Toast.LENGTH_SHORT).show();
                 deferred.reject(result.getMessage());
                 return;
             }
