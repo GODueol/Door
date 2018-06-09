@@ -56,6 +56,7 @@ import com.teamcore.android.core.ProfileModifyActivity.ProfileModifyActivity;
 import com.teamcore.android.core.R;
 import com.teamcore.android.core.SettingActivity.CorePlusActivity;
 import com.teamcore.android.core.SettingActivity.SettingActivity;
+import com.teamcore.android.core.Util.BaseActivity.BaseActivity;
 import com.teamcore.android.core.Util.BusProvider;
 import com.teamcore.android.core.Util.CloseActivityHandler;
 import com.teamcore.android.core.Util.DataContainer;
@@ -65,10 +66,12 @@ import com.teamcore.android.core.Util.RemoteConfig;
 import com.teamcore.android.core.Util.SharedPreferencesUtil;
 import com.teamcore.android.core.Util.UiUtil;
 
+import org.jdeferred.DoneCallback;
+
 /**
  * drawer / viewpager drag duplication issue
  */
-public class MainActivity extends AppCompatActivity
+public class MainActivity extends BaseActivity
         implements OnNavigationItemSelectedListener, OnSharedPreferenceChangeListener {
 
     private static final int SETTING = 4;
@@ -269,6 +272,22 @@ public class MainActivity extends AppCompatActivity
 
         // remoteConfig
         RemoteConfig.getConfig(this);
+
+        // checkCorePlus test
+//        checkCorePlus().done(isPlus -> {
+//            if(isPlus) {
+//                Toast.makeText(MainActivity.this, "구독중", Toast.LENGTH_SHORT).show();
+//                Log.d("KBJ", "구독중");
+//            }
+//            else {
+//                Toast.makeText(MainActivity.this, "구독중아님", Toast.LENGTH_SHORT).show();
+//                Log.d("KBJ", "구독중아님");
+//            }
+//        })
+//        .fail(errStr -> {
+//            Toast.makeText(MainActivity.this, "구독 체크 실패" + errStr, Toast.LENGTH_SHORT).show();
+//            Log.d("KBJ", "구독 체크 실패");
+//        });
 
     }
 

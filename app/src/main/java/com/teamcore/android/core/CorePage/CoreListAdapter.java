@@ -310,7 +310,6 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                                 }
 
                                 // 코어클라우드 결제 가능
-                                //★☆★☆★☆★☆여기입니다요★☆★☆★☆★☆
                                 if (dealDialogFragment != null && dealDialogFragment.getDialog() != null && dealDialogFragment.getDialog().isShowing())
                                     return;
                                 final String finalDeletePostKey = (oldestPostDate == Long.MAX_VALUE ? null : deletePostKey);
