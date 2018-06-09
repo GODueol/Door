@@ -202,8 +202,8 @@ public class ChatFirebaseUtil {
 
         StorageReference imagesRef = storage.getReference().child(chat);
         long currentTime = UiUtil.getInstance().getCurrentTime(context);
-        final String imageName = CryptoImeageName.md5(Long.toString(currentTime));
-        final StorageReference imageMessageRef = imagesRef.child(image + "/" + roomName + "/" + userUuid + "/" + imageName);
+        final String imageName = CryptoImeageName.md5(Long.toString(currentTime)+userUuid);
+        final StorageReference imageMessageRef = imagesRef.child(image + "/" + roomName + "/" + imageName);
 //        UploadTask uploadTask = imageMessageRef.putFile(outputFileUri);
 
         try {

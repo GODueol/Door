@@ -2,6 +2,7 @@ package com.teamcore.android.core.Activity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.graphics.Bitmap;
@@ -34,6 +35,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.vending.billing.IInAppBillingService;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -65,6 +67,10 @@ import com.teamcore.android.core.Util.GlideApp;
 import com.teamcore.android.core.Util.RemoteConfig;
 import com.teamcore.android.core.Util.SharedPreferencesUtil;
 import com.teamcore.android.core.Util.UiUtil;
+import com.teamcore.android.core.Util.bilingUtil.IabHelper;
+import com.teamcore.android.core.Util.bilingUtil.IabResult;
+import com.teamcore.android.core.Util.bilingUtil.Inventory;
+import com.teamcore.android.core.Util.bilingUtil.Purchase;
 
 import org.jdeferred.DoneCallback;
 
@@ -95,7 +101,8 @@ public class MainActivity extends BaseActivity
 
     private SharedPreferencesUtil SPUtil;
 
-
+    private String PUBLIC_KEY;
+    IabHelper iaphelper;
     @SuppressLint("ClickableViewAccessibility")
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
@@ -270,10 +277,68 @@ public class MainActivity extends BaseActivity
             }
         });
 
+
+        PUBLIC_KEY = getString(R.string.GP_LICENSE_KEY);
+        // 핼퍼 setup
+        iaphelper = new IabHelper(this, PUBLIC_KEY);
+        iaphelper.startSetup(result -> {
+            if (!result.isSuccess()) {
+                Toast.makeText(MainActivity.this, "문제발생", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (iaphelper == null) return;
+            try {
+                iaphelper.queryInventoryAsync(mGotInventoryListener);
+            } catch (IabHelper.IabAsyncInProgressException e) {
+                e.printStackTrace();
+            }
+        });
+
         // remoteConfig
         RemoteConfig.getConfig(this);
 
     }
+
+    IabHelper.QueryInventoryFinishedListener mGotInventoryListener = new IabHelper.QueryInventoryFinishedListener() {
+        @Override
+        public void onQueryInventoryFinished(IabResult result, Inventory inv) {
+            Toast.makeText(getApplicationContext(), "onQueryInventoryFinished", Toast.LENGTH_SHORT).show();
+            if (iaphelper == null) return;
+            if (result.isFailure()) {
+                Toast.makeText(getApplicationContext(), "onQueryInventoryFinished 실패", Toast.LENGTH_SHORT).show();
+                //getPurchases() 실패했을때
+                return;
+            }
+/*
+            Bundle activeSubs;
+            try {
+                activeSubs = mService.getPurchases(3, getPackageName(), "subs", DataContainer.getInstance().getUid());
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }*/
+
+            //해당 아이템 구매 여부 체크
+            Purchase purchase = inv.getPurchase(getString(R.string.subscribe));
+
+            if (purchase != null && purchase.getPurchaseState() ==0 && verifyDeveloperPayload(purchase)) {
+                //해당 아이템을 가지고 있는 경우.
+                //아이템에대한 처리를 한다.
+                Toast.makeText(getApplicationContext(), purchase.getPurchaseState() + "onQueryInventoryFinished 이미 보유중", Toast.LENGTH_SHORT).show();
+            }
+        }
+    };
+
+    boolean verifyDeveloperPayload(Purchase p) {
+        String payload = p.getDeveloperPayload();
+
+        if (payload.equals(DataContainer.getInstance().getUid())) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 
     private void navigationViewinitBadge(Menu menu) {
         //Gravity property aligns the text

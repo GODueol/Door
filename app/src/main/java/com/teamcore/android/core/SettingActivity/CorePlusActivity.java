@@ -113,21 +113,6 @@ public class CorePlusActivity extends AppCompatActivity {
         });
     }
 
-    IabHelper.OnConsumeFinishedListener mConsumeFinishedListener = new IabHelper.OnConsumeFinishedListener() {
-        public void onConsumeFinished(Purchase purchase, IabResult result) {
-
-            // mHelper가 소거되었다면 종료
-            if (iaphelper == null) return;
-
-            // 이 샘플에서는 "관리되지 않는 제품"은 "가스" 한가지뿐이므로 상품에 대한 체크를 하지 않습니다.
-            // 하지만 다수의 제품이 있을 경우 상품 아이디를 비교하여 처리할 필요가 있습니다.
-            if (result.isSuccess()) {
-                Toast.makeText(getApplicationContext(), "소비성공??", Toast.LENGTH_SHORT).show();
-            } else {
-            }
-        }
-    };
-
     private void buyItem(String item) {
         try {
             String payLoad = DataContainer.getInstance().getUid();
@@ -146,6 +131,8 @@ public class CorePlusActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
+
 
     boolean verifyDeveloperPayload(Purchase p) {
         String payload = p.getDeveloperPayload();

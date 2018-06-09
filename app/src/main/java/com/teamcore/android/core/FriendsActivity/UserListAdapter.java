@@ -223,8 +223,6 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
 
                             }
                         });
-
-                        view.getContext().startActivity(p);
                     } else if(context instanceof FriendsActivity){
                         view.getContext().startActivity(p);
                         SPUtil.increaseAds(mInterstitialAd, "friends");
