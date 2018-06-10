@@ -753,10 +753,14 @@ public class ProfileModifyActivity extends BaseActivity implements NumberPicker.
                         if (!task1.isComplete()) return;
                     }
                     // 성공시 백버튼
-                    onBackPressed();
+                    try {
+                        onBackPressed();
 
-                    getInstance().stopProgressDialog();
+                        getInstance().stopProgressDialog();
 
+                    } catch (Exception e){
+                        e.printStackTrace();
+                    }
                 });
             }
 

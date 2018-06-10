@@ -95,6 +95,7 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
                 if(mUser == null) return;
 
                 User compUser = DataContainer.getInstance().getUser();
+                if(compUser == null ) return;
 
                 // blockedMe 확인
                 boolean b = isEqualMap(mUser.getBlockMeUsers(), compUser.getBlockMeUsers());
