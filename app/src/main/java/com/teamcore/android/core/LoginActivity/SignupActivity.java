@@ -6,13 +6,9 @@ import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.provider.Settings.Secure;
-import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.text.SpannableString;
-import android.text.style.UnderlineSpan;
 import android.util.Log;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,6 +17,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.teamcore.android.core.Activity.MainActivity;
 import com.teamcore.android.core.Entity.User;
 import com.teamcore.android.core.Exception.NotSetAutoTimeException;
@@ -30,18 +33,6 @@ import com.teamcore.android.core.SettingActivity.AccessTerms2;
 import com.teamcore.android.core.SettingActivity.AccessTerms3;
 import com.teamcore.android.core.Util.DataContainer;
 import com.teamcore.android.core.Util.UiUtil;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -116,58 +107,36 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
         bodytype = (EditText) findViewById(R.id.input_bodytype);
         bodytype.setFocusable(false);
         bodytype.setClickable(false);
-        bodytype.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                show4();
-            }
-        });
+        bodytype.setOnClickListener(v -> show4());
 
         access_terms1.setPaintFlags(access_terms1.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         access_terms2.setPaintFlags(access_terms2.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         access_terms3.setPaintFlags(access_terms3.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 
-        access_terms1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(getApplicationContext(), AccessTerms1.class);
-                startActivity(i);
-            }
+        access_terms1.setOnClickListener(v -> {
+            Intent i = new Intent(getApplicationContext(), AccessTerms1.class);
+            startActivity(i);
         });
 
-        access_terms2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(getApplicationContext(), AccessTerms2.class);
-                startActivity(i);
-            }
+        access_terms2.setOnClickListener(v -> {
+            Intent i = new Intent(getApplicationContext(), AccessTerms2.class);
+            startActivity(i);
         });
 
-        access_terms3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(getApplicationContext(), AccessTerms3.class);
-                startActivity(i);
-            }
+        access_terms3.setOnClickListener(v -> {
+            Intent i = new Intent(getApplicationContext(), AccessTerms3.class);
+            startActivity(i);
         });
 
 
-        _signupButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                signup();
-            }
-        });
+        _signupButton.setOnClickListener(v -> signup());
 
-        _loginLink.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Finish the registration screen and return to the Login activity
-                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                startActivity(intent);
-                finish();
-                overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
-            }
+        _loginLink.setOnClickListener(v -> {
+            // Finish the registration screen and return to the Login activity
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(intent);
+            finish();
+            overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
         });
 
         mAuth = FirebaseAuth.getInstance();
@@ -183,19 +152,13 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
             // 선택 정보 입력
             // Write a message to the database
             userRef.child(user.getUid()).setValue(mUser)    // 파이어베이스 저장
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            DataContainer.getInstance().setUser(mUser);  // 로컬 저장
-                            onSignupSuccess();
-                        }
+                    .addOnSuccessListener(aVoid -> {
+                        DataContainer.getInstance().setUser(mUser);  // 로컬 저장
+                        onSignupSuccess();
                     })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            onSignupFailed(e);
-                            Log.d(getApplication().getClass().getName(), e.getMessage());
-                        }
+                    .addOnFailureListener(e -> {
+                        onSignupFailed(e);
+                        Log.d(getApplication().getClass().getName(), e.getMessage());
                     });
         } else {
             // User is signed out
@@ -231,23 +194,15 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
         np.setOnValueChangedListener(this);
 
 
-        b1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Value 위치 값을 숫자가 아닌 해당 텍스트로 가져옴
-                int pos = np.getValue();
-                bodytype.setText(values[pos]); //set the value to textview
-                d.dismiss();
+        b1.setOnClickListener(v -> {
+            //Value 위치 값을 숫자가 아닌 해당 텍스트로 가져옴
+            int pos = np.getValue();
+            bodytype.setText(values[pos]); //set the value to textview
+            d.dismiss();
 
-            }
         });
 
-        b2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                d.dismiss();
-            }
-        });
+        b2.setOnClickListener(v -> d.dismiss());
         d.show();
     }
 
@@ -287,12 +242,7 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
                     FirebaseDatabase.getInstance().getReference("identifier").child(deviceIdentifier).removeEventListener(this);
                     try {
                         FirebaseDatabase.getInstance().getReference().child("identifier").child(deviceIdentifier).setValue(UiUtil.getInstance().getCurrentTime(SignupActivity.this))
-                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        onSucccessIdentify(email,password);
-                                    }
-                                });
+                                .addOnSuccessListener(aVoid -> onSucccessIdentify(email,password));
                     } catch (NotSetAutoTimeException e) {
                         e.printStackTrace();
                         Toast.makeText(SignupActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -311,17 +261,14 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
     }
     public void onSucccessIdentify(String email,String password){
         mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
+                .addOnCompleteListener(this, task -> {
+                    Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
 
-                        if (task.isSuccessful()) {
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            setUserInfo(user);
-                        } else {
-                            onSignupFailed(task.getException());
-                        }
+                    if (task.isSuccessful()) {
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        setUserInfo(user);
+                    } else {
+                        onSignupFailed(task.getException());
                     }
                 });
     }
@@ -385,8 +332,7 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
             focusEditText(_weightText);
             throw new Exception("올바른 몸무게로 작성해주세요.");
         } else if (Bodytype.isEmpty()) {
-            _bodyType.setText("Normal");
-//            throw new Exception("바디타입을 설정해주세요.");
+            throw new Exception("바디타입을 설정해주세요.");
         }
         if (!access_agree.isChecked()){
             throw new Exception("약관에 동의합니다를 눌러주세요.");
