@@ -1,10 +1,12 @@
 package com.teamcore.android.core.SettingActivity;
 
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
@@ -17,12 +19,11 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.teamcore.android.core.LoginActivity.LoginActivity;
 import com.teamcore.android.core.R;
 import com.teamcore.android.core.Util.BaseActivity.BaseActivity;
 import com.teamcore.android.core.Util.DataContainer;
 import com.teamcore.android.core.Util.UiUtil;
-
-import java.util.ArrayList;
 
 /**
  * Created by Kwon on 2018-01-04.
@@ -87,8 +88,56 @@ public class AccountActivity extends BaseActivity implements View.OnClickListene
 
     private void deleteAccount() {
 
-        return; // TODO : 일단 개발 중단, 클라우드 펑션 문제 해결되면 클라우드 펑션으로 구현할것!
-        //UiUtil.getInstance().showDialog(this, "계정 삭제", "아직은 채팅 이미지파일 삭제 기능이 개발되지 않았습니다!!! 정말 계정을 삭제 하시겠습니까?", (dialog, whichButton) -> deleteMyAccount(DataContainer.getInstance().getUid()), null);
+        final EditText password = new EditText(AccountActivity.this);
+        password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        password.setSelection(password.getText().length());
+        password.setLines(2);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(AccountActivity.this);
+        TextView title = new TextView(AccountActivity.this);
+        title.setText("[계정 삭제]\n\n계정을 삭제하시려면, 비밀번호를 입력해주세요.");
+        title.setGravity(Gravity.CENTER);
+        title.setPadding(0,90,0,40);
+        title.setTextSize(15);
+
+        builder.setView(password)
+                .setCustomTitle(title)
+                .setPositiveButton("확인", (dialog, which) -> {
+
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+                    // Get auth credentials from the user for re-authentication. The example below shows
+                    // email and password credentials but there are multiple possible providers,
+                    // such as GoogleAuthProvider or FacebookAuthProvider.
+                    AuthCredential credential = EmailAuthProvider
+                            .getCredential(DataContainer.getInstance().getUser().getEmail(), password.getText().toString());
+
+                    startProgressDialog();
+                    // Prompt the user to re-provide their sign-in credentials
+                    user.reauthenticate(credential)
+                            .addOnCompleteListener(task -> {
+                                if(task.isSuccessful()){
+                                    FirebaseAuth.getInstance().getCurrentUser().delete().addOnCompleteListener(voidTask -> {
+
+                                        if (voidTask.isSuccessful()) {
+                                            deleteMyIdentifier();
+                                            FirebaseAuth.getInstance().signOut();
+                                            Intent homeIntent = new Intent(this, LoginActivity.class);
+                                            homeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                            startActivity(homeIntent);
+                                        } else {
+                                            Toast.makeText(this, voidTask.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                            Log.d("KBJ", voidTask.getException().getMessage());
+                                        }
+                                        stopProgressDialog();
+
+                                    });
+                                } else {
+                                    Toast.makeText(this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                    stopProgressDialog();
+                                }
+                            });
+                }).show();
     }
 
     private void checkPostPrevent(Runnable runnable) {

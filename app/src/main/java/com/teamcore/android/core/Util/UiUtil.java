@@ -54,15 +54,19 @@ public class UiUtil {
     }
 
     public void startProgressDialog(Activity activity) {
-        if(progressDialog != null && progressDialog.isShowing()) return;
-        //프로그레스 다이얼로그 이미지만 센터에서 돌아가게
-        progressDialog = new ProgressDialog(activity, R.style.MyTheme);
-        progressDialog.setIndeterminate(true);
-        progressDialog.setProgressStyle(android.R.style.Widget_ProgressBar_Small);
-        progressDialog.setIndeterminateDrawable(activity.getResources().getDrawable(R.drawable.progress_dialog_icon_drawable_animation));
-        progressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        progressDialog.setCancelable(false);
-        if(!progressDialog.isShowing())progressDialog.show();
+        try{
+            if(progressDialog != null && progressDialog.isShowing()) return;
+            //프로그레스 다이얼로그 이미지만 센터에서 돌아가게
+            progressDialog = new ProgressDialog(activity, R.style.MyTheme);
+            progressDialog.setIndeterminate(true);
+            progressDialog.setProgressStyle(android.R.style.Widget_ProgressBar_Small);
+            progressDialog.setIndeterminateDrawable(activity.getResources().getDrawable(R.drawable.progress_dialog_icon_drawable_animation));
+            progressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            progressDialog.setCancelable(false);
+            if(!progressDialog.isShowing())progressDialog.show();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public void stopProgressDialog() {

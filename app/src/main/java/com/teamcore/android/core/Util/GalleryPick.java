@@ -260,7 +260,7 @@ public class GalleryPick {
             if (isImageFromGoogleDrive) {
                 bitmap = BitmapFactory.decodeStream(activity.getContentResolver().openInputStream(uri));
             } else if ("com.android.providers.media.documents".equals(uri.getAuthority())) {
-                bitmap = BitmapUtil.rotateBitmap(imgPath, BitmapFactory.decodeFile(imgPath));
+                bitmap = BitmapUtil.rotateBitmap(imgPath, BitmapFactory.decodeFile(imgPath));   // TODO : 5메가 넘는 물개사진을 4장 올리면 가끔 OOM 생기는 버그
             } else {
 
                 File f = new File(imgPath);
