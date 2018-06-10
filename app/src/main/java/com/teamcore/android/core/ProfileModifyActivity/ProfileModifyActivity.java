@@ -581,7 +581,7 @@ public class ProfileModifyActivity extends BaseActivity implements NumberPicker.
             if (requestCode == GalleryPick.REQUEST_GALLERY && data != null && data.getData() != null) {
                 try {
                     galleryPick.invoke(data);
-                    galleryPick.setImage(modifyingPic).fail(errStr -> Toast.makeText(ProfileModifyActivity.this, errStr, Toast.LENGTH_SHORT).show());
+                    galleryPick.setImage(modifyingPic);
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                     Toast.makeText(ProfileModifyActivity.this, "Error : " + e.getMessage(), Toast.LENGTH_SHORT).show();

@@ -23,9 +23,6 @@ import com.teamcore.android.core.Exception.GifException;
 import com.teamcore.android.core.R;
 import com.teamcore.android.core.Util.BaseActivity.BaseActivity;
 
-import org.jdeferred.Promise;
-import org.jdeferred.impl.DeferredObject;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -69,20 +66,22 @@ public class GalleryPick {
     }
 
     // 용량 제한
-    private int getQuality() throws Exception {
+    private int getQuality() {
         int quality = 100;
         long mb = getFileSizeInMB();
         if(mb >= RemoteConfig.LIMIT_MB){
-            // 업로드 방지
-            throw new Exception(activity.getString(R.string.cannotOver5Mb));
+            // 퀄리티 계산
+            quality = (int) ((RemoteConfig.LIMIT_MB*1024*1204)*100/getFileSizeInBytes());
+
         }
+
         Log.d("kbj","quality : " +quality);
 
         return quality;
     }
 
     // 원본
-    private byte[] getResizeImageByteArray(Bitmap bitmap) throws Exception {
+    private byte[] getResizeImageByteArray(Bitmap bitmap) {
 
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         getResizeBitmap(bitmap).compress(Bitmap.CompressFormat.JPEG, getQuality(), stream);
@@ -93,7 +92,7 @@ public class GalleryPick {
     }
 
     // 썸네일
-    private byte[] getThumbNailImageByteArray(Bitmap bitmap) throws Exception {
+    private byte[] getThumbNailImageByteArray(Bitmap bitmap) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         getResizeBitmap(bitmap).compress(Bitmap.CompressFormat.JPEG, (getQuality()*THUMB_NAIL_RATIO)/100, stream);
         byte[] rst = stream.toByteArray();
@@ -287,9 +286,10 @@ public class GalleryPick {
 
     @NonNull
     private UploadTask getUploadTask(StorageReference ref, Uri uri) throws Exception {
-        if (getFileSizeInMB() >= RemoteConfig.LIMIT_MB) {
-            throw new GifException(activity.getString(R.string.cannotOver5Mb));
-        }
+//        if (getFileSizeInMB() >= RemoteConfig.LIMIT_MB) {
+//            throw new GifException(activity.getString(R.string.cannotOver5Mb));
+//        }
+
         if (isGif()) {
             if(!DataContainer.getInstance().isPlus) throw new GifException(activity.getString(R.string.possibleCorePlusGIF));
             return ref.putFile(uri);
@@ -323,39 +323,24 @@ public class GalleryPick {
         return rst.contains("gif");
     }
 
+    public void setImage(ImageView editImage) throws Exception {
 
-    public Promise<Void, String, Integer> setImage(ImageView editImage) {
+//        if (getFileSizeInMB() >= RemoteConfig.LIMIT_MB) throw new Exception("파일이 5MB를 넘어서 불가능합니다");
 
-        DeferredObject deferred = new DeferredObject();
-        Promise promise = deferred.promise();
-
-        if (getFileSizeInMB() >= RemoteConfig.LIMIT_MB) deferred.reject("파일이 5MB를 넘어서 불가능합니다");
         // Gif 파일인 경우
         if (isGif()) {
-
-            // Core Plus 검사
-            activity.checkCorePlus().done(isPlus -> {
-                //Uri
-                if(isPlus) {
-                    GlideApp.with(editImage.getContext())
-                            .load(uri)
-                            .placeholder(R.drawable.a)
-                            .into(editImage);
-                    deferred.resolve(null);
-                } else {
-                    deferred.reject(activity.getString(R.string.possibleCorePlusGIF));
-                }
-            });
-
+            if(!DataContainer.getInstance().isPlus) throw new Exception(activity.getString(R.string.possibleCorePlusGIF));
+            //Uri
+            GlideApp.with(editImage.getContext())
+                    .load(uri)
+                    .placeholder(R.drawable.a)
+                    .into(editImage);
         } else {
             //if (getFileSizeInMB() >= 5) throw new Exception("파일이 5MB를 넘어서 불가능합니다");
             // 5메가가 넘는건 해상도 줄임
             Bitmap originalBitmap = this.getBitmap();
             editImage.setImageBitmap(originalBitmap);
-            deferred.resolve(null);
         }
-
-        return promise;
     }
 
     public UploadTask makeThumbNail(StorageReference thumbNailSpaceRef, Uri uri) throws Exception {

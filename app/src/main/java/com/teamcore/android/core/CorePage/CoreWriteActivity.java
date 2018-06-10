@@ -552,7 +552,7 @@ public class CoreWriteActivity extends BlockBaseActivity {
 
                 try {
                     galleryPick.invoke(data);
-                    galleryPick.setImage(editImage).fail(errStr -> Toast.makeText(CoreWriteActivity.this, errStr, Toast.LENGTH_SHORT).show());
+                    galleryPick.setImage(editImage);
                     editImageUri = galleryPick.getUri();
                     image_edit_layout.setVisibility(View.VISIBLE);
                     closeFABMenu();
