@@ -1,5 +1,6 @@
 package com.teamcore.android.core.FriendsActivity;
 
+import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -23,6 +24,7 @@ import com.teamcore.android.core.R;
 import com.teamcore.android.core.Util.BaseActivity.UserListBaseActivity;
 import com.teamcore.android.core.Util.DataContainer;
 import com.teamcore.android.core.Util.SharedPreferencesUtil;
+import com.teamcore.android.core.Util.UiUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -117,6 +119,7 @@ public class FriendsActivity extends UserListBaseActivity implements SharedPrefe
         getSupportActionBar().setDisplayShowHomeEnabled(true); //홈 아이콘을 숨김처리합니다.
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
 
+
         DataContainer.getInstance().getMyUserRef().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -125,9 +128,17 @@ public class FriendsActivity extends UserListBaseActivity implements SharedPrefe
 
                 // 리사이클뷰
                 items = new ArrayList<>();
+                /*
+                이부분을 넣으면 비동기문제때문인지 널문제가 나버리네요.. 코어플러스때매 어뎁터에 넘겨주는방법 뿐인데 어떻게
+                바로 감이 안잡히네요 ㅜㅜ.. 핼프미..
+
                 checkCorePlus().done(isPlus -> {
-                    adapter = new UserListAdapter(FriendsActivity.this, items, isPlus);
+                                adapter = new UserListAdapter(FriendsActivity.this, items,isPlus);
                 });
+                */
+
+                adapter = new UserListAdapter(FriendsActivity.this, items);
+
                 LinearLayoutManager layoutManager = new LinearLayoutManager(FriendsActivity.this);
                 recyclerView.setLayoutManager(layoutManager);
                 recyclerView.setAdapter(adapter);
