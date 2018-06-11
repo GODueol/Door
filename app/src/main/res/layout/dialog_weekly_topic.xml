@@ -127,7 +127,6 @@
             android:layout_toLeftOf="@+id/check_access"
             android:layout_marginRight="20dp"
             android:layout_centerVertical="true"
-
             />
 
     </RelativeLayout>
