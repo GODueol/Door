@@ -16,7 +16,7 @@
                 android:layout_height="30dp"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="18dp"
-                android:background="@drawable/icon" />
+                android:background="@drawable/access_right" />
 
             <NumberPicker
                 android:id="@+id/typePicker"

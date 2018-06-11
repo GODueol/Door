@@ -14,6 +14,7 @@
     <string name="find_map">지도 검색</string>
     <string name="find_id">회원 검색</string>
     <string name="lock_to_all_user">공개한 사진 모두 잠금</string>
+    <string name="notOpenToday">오늘 하루 열지 않기</string>
 
     <string name="join_mail_1">이메일은 비밀번호를 잃어버렸을 때 변경할 수 있는 페이지를 전송해주는 중요한 정보입니다.</string>
     <string name="join_mail_2">코어는 기기당 한 계정만 가입할 수 있으므로 가급적 수신이 가능한 메일을 입력해주시기 바랍니다.</string>
@@ -85,7 +86,7 @@
     <string name="report">신고</string>
     <string name="ok">확인</string>
 
-    <string name="set_vibrate">진동</string>
+    <string name="set_vibrate">푸쉬 진동 설정</string>
     <string name="set_new_message">새 메세지를 받았을 때</string>
     <string name="set_new_follower">새 팔로워가 추가됐을 때</string>
     <string name="set_new_friends">새 친구가 생겼을 때</string>
@@ -110,7 +111,7 @@
     <string name="app_license">오픈소스 라이선스</string>
     <string name="app_bug_report">의견 보내기</string>
 
-    <string name="anonymityProhibition">익명 포스트 받지 않기</string>
+    <string name="anonymityProhibition">익명 질문 받지 않기</string>
     <string name="find_nickname_hint">닉네임을 검색하세요</string>
     <string name="find_map_hint">위치를 검색하세요</string>
 

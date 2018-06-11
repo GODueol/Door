@@ -143,7 +143,7 @@ public class ProfileModifyActivity extends BaseActivity implements NumberPicker.
     }
 
     private static final int minBoundary[] = {20, 100, 40};
-    private static final int maxBoundary[] = {99, 220, 140};
+    private static final int maxBoundary[] = {99, 220, 150};
 
     private ImageView modifyingPic;
 

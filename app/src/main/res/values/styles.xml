@@ -131,6 +131,11 @@
         <item name="colorControlActivated">@color/skyblue</item>
     </style>
 
+    <!--스위치 ON 컬러 변화-->
+    <style name="ColorSwitchStyle2">
+        <item name="colorControlActivated">@color/deep_purple_500</item>
+    </style>
+
     <!--네비게이션 드로워 아이템 텍스트 크기-->
     <style name="NavigationViewStyle">
         <item name="android:textSize">13dp</item> <!-- menu item text size-->

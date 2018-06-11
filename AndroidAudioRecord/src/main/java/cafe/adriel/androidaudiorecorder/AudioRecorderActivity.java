@@ -411,8 +411,8 @@ public class AudioRecorderActivity extends AppCompatActivity
             @Override
             public void run() {
                 if(isRecording) {
-                    // 최대 녹음 시간 5분
-                    if(recorderSecondsElapsed >= 60*5){
+                    // 최대 녹음 시간 3분
+                    if(recorderSecondsElapsed >= 60*3){
                         pauseRecording();
                         recordView.setVisibility(View.INVISIBLE);
                         return;

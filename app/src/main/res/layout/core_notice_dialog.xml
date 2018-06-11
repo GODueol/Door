@@ -169,7 +169,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginRight="20dp"
                     android:layout_toLeftOf="@+id/check_access"
-                    android:text="24시간 보지 않기"
+                    android:text="@string/notOpenToday"
                     android:textColor="@color/black"
                     android:textSize="16dp" />
 
