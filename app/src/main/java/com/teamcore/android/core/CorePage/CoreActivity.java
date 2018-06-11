@@ -86,6 +86,12 @@ public class CoreActivity extends BlockBaseActivity {
     @SuppressLint("LogNotTimber")
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        // 일반유저, 가장 오래된 친구 3명 이외에 다른 회원 코어 확인 불가능
+        if(!isOldFriends()) {
+            Toast.makeText(this, "가장 오래된 친구 3명 이외에 다른 회원 코어 확인 불가능합니다", Toast.LENGTH_SHORT).show();
+            finish();
+        }
+
         super.onCreate(savedInstanceState);
         // Get the view from new_activity.xml
         setContentView();
@@ -94,8 +100,6 @@ public class CoreActivity extends BlockBaseActivity {
         cUuid = intent.getStringExtra("uuid");
         postId = intent.getStringExtra("postId");
 
-        // 일반유저, 가장 오래된 친구 3명 이외에 다른 회원 코어 확인 불가능
-        checkOldFriends();
 
         dc = DataContainer.getInstance();
 
@@ -155,15 +159,8 @@ public class CoreActivity extends BlockBaseActivity {
 
     }
 
-    public void checkOldFriends() {
-        // 코어 플러스 확인
-        startProgressDialog();
-        checkCorePlus().done(isPlus -> {
-            if (!isPlus && !FireBaseUtil.getInstance().isOldFriends(cUuid) && !DataContainer.getInstance().getUid().equals(cUuid)) {
-                Toast.makeText(this, "가장 오래된 친구 3명 이외에 다른 회원 코어 확인 불가능합니다", Toast.LENGTH_SHORT).show();
-                finish();
-            }
-        }).always((state, aBoolean, s) -> CoreActivity.this.stopProgressDialog());
+    public boolean isOldFriends(){
+        return DataContainer.getInstance().isPlus || FireBaseUtil.getInstance().isOldFriends(cUuid) || DataContainer.getInstance().getUid().equals(cUuid);
     }
 
     public void setContentView() {
