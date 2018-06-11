@@ -32,6 +32,7 @@ import com.teamcore.android.core.Event.RefreshLocationEvent;
 import com.teamcore.android.core.Event.SomeoneBlocksMeEvent;
 import com.teamcore.android.core.Exception.NotSetAutoTimeException;
 import com.teamcore.android.core.R;
+import com.teamcore.android.core.Util.BaseActivity.BaseFragment;
 import com.teamcore.android.core.Util.BusProvider;
 import com.teamcore.android.core.Util.DataContainer;
 import com.teamcore.android.core.Util.FireBaseUtil;
@@ -42,7 +43,7 @@ import com.teamcore.android.core.Util.UiUtil;
 import java.util.Arrays;
 import java.util.Map;
 
-public class PeopleFragment extends android.support.v4.app.Fragment {
+public class PeopleFragment extends BaseFragment {
 
     GridView gridView = null;
     ImageAdapter imageAdapter;
@@ -71,7 +72,12 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
             p.putExtra("id", position);
             p.putExtra("item", item);
             startActivity(p);
-            SPUtil.increaseAds(mInterstitialAd, "mainGrid");
+            checkCorePlus().done(isPlus ->{
+                if(!isPlus){
+                    SPUtil.increaseAds(mInterstitialAd, "ProfileChat");
+                }
+            });
+
         });
 
         // 스와이프로 위치 새로고침
@@ -313,7 +319,7 @@ public class PeopleFragment extends android.support.v4.app.Fragment {
 
     public void setmInterstitialAd(){
         mInterstitialAd = new InterstitialAd(getContext());
-        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        mInterstitialAd.setAdUnitId(getString(R.string.adsProfileChating));
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
         mInterstitialAd.setAdListener(new AdListener(){
             @Override

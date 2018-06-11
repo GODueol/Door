@@ -148,7 +148,10 @@ public class CoreActivity extends BlockBaseActivity {
             SPUtil.setBlockMeUserCurrentActivity(getString(R.string.currentActivity), cUuid);
 
         list = new ArrayList<>();
-        coreListAdapter = getCoreListAdapter(list);
+        checkCorePlus().done(isPlus -> {
+           coreListAdapter = new CoreListAdapter(list, this, cloudLitener,isPlus);
+        });
+        //coreListAdapter = getCoreListAdapter(list);
 
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(coreListAdapter);
@@ -165,13 +168,16 @@ public class CoreActivity extends BlockBaseActivity {
 
     public void setContentView() {
         setContentView(R.layout.core_activity);
-
+        checkCorePlus().done(isPlus -> {
+           if(!isPlus){
         AdView mAdView = (AdView) findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder()
                 .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
                 .addTestDevice("0D525D9C92269D80384121978C3C4267")
                 .build();
         mAdView.loadAd(adRequest);
+        }
+        });
     }
 
     public void addPostsToList(final ArrayList<CoreListItem> list) {
@@ -190,12 +196,12 @@ public class CoreActivity extends BlockBaseActivity {
         SharedPreferencesUtil SPUtil = new SharedPreferencesUtil(getApplicationContext());
         SPUtil.removeBadge(getString(R.string.badgePost));
     }
-
+/*
     @NonNull
     private CoreListAdapter getCoreListAdapter(ArrayList<CoreListItem> list) {
-        return new CoreListAdapter(list, this,cloudLitener);
-    }
 
+    }
+*/
     public void setFab() {
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(view -> {

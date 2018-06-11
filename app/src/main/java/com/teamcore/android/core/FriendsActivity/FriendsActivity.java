@@ -14,18 +14,15 @@ import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
+import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.teamcore.android.core.Entity.User;
 import com.teamcore.android.core.R;
 import com.teamcore.android.core.Util.BaseActivity.UserListBaseActivity;
 import com.teamcore.android.core.Util.DataContainer;
 import com.teamcore.android.core.Util.SharedPreferencesUtil;
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.InterstitialAd;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.ValueEventListener;
-import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +38,7 @@ public class FriendsActivity extends UserListBaseActivity implements SharedPrefe
 
     private List<Badge> badges;
     boolean firstView;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,18 +74,18 @@ public class FriendsActivity extends UserListBaseActivity implements SharedPrefe
                             SPUtil.removeFriendsBadge(getString(R.string.badgeFollowing));
                             return true;
                         case R.id.navigation_recent:
-                            SPUtil.switchBadgeState(getString(R.string.badgeView),false);
+                            SPUtil.switchBadgeState(getString(R.string.badgeView), false);
                             return true;
                     }
 
                     return true;
                 }
-                Log.d("test","처음");
+                Log.d("test", "처음");
                 switch (item.getItemId()) {
                     case R.id.navigation_friends:
                         if (!firstView) {
                             SPUtil.removeFriendsBadge(getString(R.string.badgeFriend));
-                        }else {
+                        } else {
                             firstView = false;
                         }
                         setRecyclerView(items, adapter, "friendUsers", R.menu.friend_menu);
@@ -101,7 +99,7 @@ public class FriendsActivity extends UserListBaseActivity implements SharedPrefe
                         setRecyclerView(items, adapter, "followingUsers", R.menu.following_menu);
                         return true;
                     case R.id.navigation_recent:
-                        SPUtil.switchBadgeState(getString(R.string.badgeView),false);
+                        SPUtil.switchBadgeState(getString(R.string.badgeView), false);
                         setRecyclerView(items, adapter, "viewedMeUsers", R.menu.viewed_me_menu);
                         return true;
                 }
@@ -127,7 +125,9 @@ public class FriendsActivity extends UserListBaseActivity implements SharedPrefe
 
                 // 리사이클뷰
                 items = new ArrayList<>();
-                adapter = new UserListAdapter(FriendsActivity.this, items);
+                checkCorePlus().done(isPlus -> {
+                    adapter = new UserListAdapter(FriendsActivity.this, items, isPlus);
+                });
                 LinearLayoutManager layoutManager = new LinearLayoutManager(FriendsActivity.this);
                 recyclerView.setLayoutManager(layoutManager);
                 recyclerView.setAdapter(adapter);
@@ -184,9 +184,9 @@ public class FriendsActivity extends UserListBaseActivity implements SharedPrefe
 
     private void setQbadge(View view, boolean b, float x, float y) {
         String str;
-        if(b){
+        if (b) {
             str = "●";
-        }else{
+        } else {
             str = "";
         }
         badges.add(new QBadgeView(this).bindTarget(view)
@@ -195,11 +195,12 @@ public class FriendsActivity extends UserListBaseActivity implements SharedPrefe
                 .setGravityOffset(x, y, true)
                 .setExactMode(true)
                 .setBadgeText(str)
-                .setBadgeTextSize((float)6,true)
+                .setBadgeTextSize((float) 6, true)
                 .setShowShadow(false)
                 .setBadgeBackgroundColor(getResources().getColor(R.color.transparent))
         );
     }
+
     // 뒤로가기 버튼 기능
     public boolean onOptionsItemSelected(android.view.MenuItem item) {
         switch (item.getItemId()) {
@@ -229,9 +230,9 @@ public class FriendsActivity extends UserListBaseActivity implements SharedPrefe
             case "badgeView":
                 boolean badgeState = SPUtil.getBadgeState(key);
                 String str;
-                if(badgeState){
+                if (badgeState) {
                     str = "●";
-                }else{
+                } else {
                     str = "";
                 }
                 badges.get(3).setBadgeText(str);

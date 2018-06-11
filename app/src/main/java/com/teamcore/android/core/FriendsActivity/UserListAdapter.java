@@ -60,12 +60,12 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
     private Context context;
     private String field;
     public boolean isReverse = false;
+    private boolean isPlus = false;
     private RewardedVideoAd mRewardedVideoAd;
     private RewardedVideoAd mRewardedVideoAd2;
 
     private InterstitialAd mInterstitialAd;
     private SharedPreferencesUtil SPUtil;
-
 
     private class VIEW_TYPES {
         static final int Header = 1;
@@ -85,6 +85,11 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
 
         setmInterstitialAd();
         SPUtil = new SharedPreferencesUtil(context);
+    }
+
+    public UserListAdapter(Context context, List<Item> items,Boolean isPlus) {
+        this(context,items);
+        this.isPlus = isPlus;
     }
 
     public void setItemMenu(int itemMenu, String tabName) {
@@ -139,7 +144,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
                     p.putExtra("item", new GridItem(0, item.getUuid(), user.getSummaryUser(), ""));
 
                     if(context instanceof FindUserActivity){
-                        mRewardedVideoAd.setRewardedVideoAdListener(new RewardedVideoAdListener() {
+                        mRewardedVideoAd2.setRewardedVideoAdListener(new RewardedVideoAdListener() {
 
 
                             @Override
@@ -200,32 +205,40 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
                             }
                         });
 
-                        FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("findUserCount").addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                int value;
-                                try {
-                                    value = Integer.valueOf(dataSnapshot.getValue().toString());
-                                } catch (Exception e) {
-                                    value = 0;
-                                }
-                                Log.d("test", "몇개 : " + value);
-                                if (value > 0) {
-                                    FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("findUserCount").setValue(value - 1);
-                                    view.getContext().startActivity(p);
-                                } else {
-                                    mRewardedVideoAd2.show();
-                                }
-                            }
 
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
+                        if(!isPlus){
+                            FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("findUserCount").addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    int value;
+                                    try {
+                                        value = Integer.valueOf(dataSnapshot.getValue().toString());
+                                    } catch (Exception e) {
+                                        value = 0;
+                                    }
+                                    Log.d("test", "몇개 : " + value);
+                                    if (value > 0) {
+                                        FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("findUserCount").setValue(value - 1);
+                                        view.getContext().startActivity(p);
+                                    } else {
+                                        mRewardedVideoAd2.show();
+                                    }
+                                }
 
-                            }
-                        });
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
+                        }else{
+                            view.getContext().startActivity(p);
+                        }
+
                     } else if(context instanceof FriendsActivity){
                         view.getContext().startActivity(p);
-                        SPUtil.increaseAds(mInterstitialAd, "friends");
+                        if(!isPlus) {
+                            SPUtil.increaseAds(mInterstitialAd, "Friends");
+                        }
                     }else{
                         view.getContext().startActivity(p);
                     }
@@ -350,42 +363,56 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
                                             Log.d("test", "onRewardedVideoAdFailedToLoad" + i);
                                         }
                                     });
-
-                                    FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("blockCount").addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(DataSnapshot dataSnapshot) {
-                                            int value;
-                                            try {
-                                                value = Integer.valueOf(dataSnapshot.getValue().toString());
-                                            } catch (Exception e) {
-                                                value = 0;
-                                            }
-                                            Log.d("test", "몇개 : " + value);
-                                            if (value > 0) {
-                                                FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("blockCount").setValue(value - 1);
-
-                                                UiUtil.getInstance().startProgressDialog((Activity) context);
+                                    if(!isPlus) {
+                                        FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("blockCount").addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                                int value;
                                                 try {
-                                                    FireBaseUtil.getInstance().block(item.getUuid()).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                        @Override
-                                                        public void onComplete(@NonNull Task<Void> task) {
-                                                            UiUtil.getInstance().stopProgressDialog();
-                                                        }
-                                                    });
-                                                } catch (ChildSizeMaxException e) {
-                                                    Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                    value = Integer.valueOf(dataSnapshot.getValue().toString());
+                                                } catch (Exception e) {
+                                                    value = 0;
+                                                }
+                                                Log.d("test", "몇개 : " + value);
+                                                if (value > 0) {
+                                                    FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("blockCount").setValue(value - 1);
+
+                                                    UiUtil.getInstance().startProgressDialog((Activity) context);
+                                                    try {
+                                                        FireBaseUtil.getInstance().block(item.getUuid()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                            @Override
+                                                            public void onComplete(@NonNull Task<Void> task) {
+                                                                UiUtil.getInstance().stopProgressDialog();
+                                                            }
+                                                        });
+                                                    } catch (ChildSizeMaxException e) {
+                                                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                        UiUtil.getInstance().stopProgressDialog();
+                                                    }
+                                                } else {
+                                                    mRewardedVideoAd.show();
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onCancelled(DatabaseError databaseError) {
+
+                                            }
+                                        });
+                                    }else{
+                                        UiUtil.getInstance().startProgressDialog((Activity) context);
+                                        try {
+                                            FireBaseUtil.getInstance().block(item.getUuid()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
                                                     UiUtil.getInstance().stopProgressDialog();
                                                 }
-                                            } else {
-                                                mRewardedVideoAd.show();
-                                            }
+                                            });
+                                        } catch (ChildSizeMaxException e) {
+                                            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                            UiUtil.getInstance().stopProgressDialog();
                                         }
-
-                                        @Override
-                                        public void onCancelled(DatabaseError databaseError) {
-
-                                        }
-                                    });
+                                    }
                                 }
                             }, new DialogInterface.OnClickListener() {
                                 @Override
@@ -665,7 +692,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
 
     public void setmInterstitialAd(){
         mInterstitialAd = new InterstitialAd(context);
-        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        mInterstitialAd.setAdUnitId(context.getString(R.string.adsFriendsTab));
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
         mInterstitialAd.setAdListener(new AdListener(){
             @Override
@@ -676,14 +703,14 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
     }
 
     private void loadRewardedVideoAd() {
-        mRewardedVideoAd.loadAd("ca-app-pub-3940256099942544/5224354917",
+        mRewardedVideoAd.loadAd(context.getString(R.string.adsBlockUser),
                 new AdRequest.Builder().addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
                         .addTestDevice("0D525D9C92269D80384121978C3C4267")
                         .build());
     }
 
     private void loadRewardedVideoAd2() {
-        mRewardedVideoAd2.loadAd("ca-app-pub-3940256099942544/5224354917",
+        mRewardedVideoAd2.loadAd(context.getString(R.string.adsUserSearching),
                 new AdRequest.Builder().addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
                         .addTestDevice("0D525D9C92269D80384121978C3C4267")
                         .build());

@@ -15,14 +15,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.teamcore.android.core.CorePage.CoreActivity;
-import com.teamcore.android.core.Entity.AlarmSummary;
-import com.teamcore.android.core.Exception.NotSetAutoTimeException;
-import com.teamcore.android.core.MessageActivity.util.DateUtil;
-import com.teamcore.android.core.R;
-import com.teamcore.android.core.Util.DataContainer;
-import com.teamcore.android.core.Util.GlideApp;
-import com.teamcore.android.core.Util.UiUtil;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.reward.RewardItem;
@@ -32,6 +24,14 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.teamcore.android.core.CorePage.CoreActivity;
+import com.teamcore.android.core.Entity.AlarmSummary;
+import com.teamcore.android.core.Exception.NotSetAutoTimeException;
+import com.teamcore.android.core.MessageActivity.util.DateUtil;
+import com.teamcore.android.core.R;
+import com.teamcore.android.core.Util.DataContainer;
+import com.teamcore.android.core.Util.GlideApp;
+import com.teamcore.android.core.Util.UiUtil;
 
 import java.util.List;
 
@@ -46,13 +46,13 @@ public class NavAlarmAdapter extends RecyclerView.Adapter<NavAlarmAdapter.ViewHo
 
     private List<AlarmSummary> items;
     private Context context;
-
+    private boolean isPlus;
     private RewardedVideoAd mRewardedVideoAd;
 
-    NavAlarmAdapter(Context context, List<AlarmSummary> items) {
+    NavAlarmAdapter(Context context, List<AlarmSummary> items, boolean isPlus) {
         this.context = context;
         this.items = items;
-
+        this.isPlus = isPlus;
         // Use an activity context to get the rewarded video instance.
         mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(context);
         loadRewardedVideoAd();
@@ -171,30 +171,33 @@ public class NavAlarmAdapter extends RecyclerView.Adapter<NavAlarmAdapter.ViewHo
                         Log.d("test", "onRewardedVideoAdFailedToLoad" + i);
                     }
                 });
-
-                FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("navAlarmCount").addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        int value;
-                        try {
-                            value = Integer.valueOf(dataSnapshot.getValue().toString());
-                        } catch (Exception e) {
-                            value = 0;
+                if (!isPlus) {
+                    FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("navAlarmCount").addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            int value;
+                            try {
+                                value = Integer.valueOf(dataSnapshot.getValue().toString());
+                            } catch (Exception e) {
+                                value = 0;
+                            }
+                            Log.d("test", "몇개 : " + value);
+                            if (value > 0) {
+                                FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("navAlarmCount").setValue(value - 1);
+                                showCorePost(item, position);
+                            } else {
+                                mRewardedVideoAd.show();
+                            }
                         }
-                        Log.d("test", "몇개 : " + value);
-                        if (value > 0) {
-                            FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("navAlarmCount").setValue(value - 1);
-                            showCorePost(item, position);
-                        } else {
-                            mRewardedVideoAd.show();
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
                         }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
+                    });
+                } else {
+                    showCorePost(item, position);
+                }
             }
         });
 
@@ -273,7 +276,7 @@ public class NavAlarmAdapter extends RecyclerView.Adapter<NavAlarmAdapter.ViewHo
 
 
     private void loadRewardedVideoAd() {
-        mRewardedVideoAd.loadAd("ca-app-pub-3940256099942544/5224354917",
+        mRewardedVideoAd.loadAd(context.getString(R.string.adsNavAlarm),
                 new AdRequest.Builder().addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
                         .addTestDevice("0D525D9C92269D80384121978C3C4267")
                         .build());

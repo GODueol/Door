@@ -43,9 +43,11 @@ public class NavAlarmDialog extends Dialog  {
 
     private NavAlarmAdapter navAlarmAdapter;
     private List<AlarmSummary> items;
+    private boolean isPlus;
 
-    public NavAlarmDialog(@NonNull Context context) {
+    public NavAlarmDialog(@NonNull Context context,boolean isPlus) {
         super(context);
+        this.isPlus =  isPlus;
     }
 
     // 포스트 아이디로 받아온다면? (
@@ -61,13 +63,12 @@ public class NavAlarmDialog extends Dialog  {
 
         setRecyclerView();
         setItems();
-
     }
 
     private void setRecyclerView(){
         items = new ArrayList<AlarmSummary>();
 
-        navAlarmAdapter = new NavAlarmAdapter(getContext(),items);
+        navAlarmAdapter = new NavAlarmAdapter(getContext(),items,isPlus);
         recyclerView.setAdapter(navAlarmAdapter);
 
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL)); //리사이클뷰 구분선
@@ -75,7 +76,6 @@ public class NavAlarmDialog extends Dialog  {
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(mLayoutManager);
     }
-
 
     private void setItems(){
         final String Uuid = DataContainer.getInstance().getUid();
@@ -121,8 +121,5 @@ public class NavAlarmDialog extends Dialog  {
 
             }
         });
-
     }
-
-
 }

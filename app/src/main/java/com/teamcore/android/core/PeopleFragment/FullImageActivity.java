@@ -16,20 +16,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.teamcore.android.core.Entity.User;
-import com.teamcore.android.core.Event.TargetUserBlocksMeEvent;
-import com.teamcore.android.core.Exception.ChildSizeMaxException;
-import com.teamcore.android.core.Exception.NotSetAutoTimeException;
-import com.teamcore.android.core.MessageActivity.ChattingActivity;
-import com.teamcore.android.core.PeopleFragment.FullImageViewPager.DetailImageActivity;
-import com.teamcore.android.core.R;
-import com.teamcore.android.core.Util.BaseActivity.BlockBaseActivity;
-import com.teamcore.android.core.Util.DataContainer;
-import com.teamcore.android.core.Util.FireBaseUtil;
-import com.teamcore.android.core.Util.FirebaseSendPushMsg;
-import com.teamcore.android.core.Util.GPSInfo;
-import com.teamcore.android.core.Util.GlideApp;
-import com.teamcore.android.core.Util.UiUtil;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.LocationCallback;
@@ -54,6 +40,20 @@ import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.otto.Subscribe;
+import com.teamcore.android.core.Entity.User;
+import com.teamcore.android.core.Event.TargetUserBlocksMeEvent;
+import com.teamcore.android.core.Exception.ChildSizeMaxException;
+import com.teamcore.android.core.Exception.NotSetAutoTimeException;
+import com.teamcore.android.core.MessageActivity.ChattingActivity;
+import com.teamcore.android.core.PeopleFragment.FullImageViewPager.DetailImageActivity;
+import com.teamcore.android.core.R;
+import com.teamcore.android.core.Util.BaseActivity.BlockBaseActivity;
+import com.teamcore.android.core.Util.DataContainer;
+import com.teamcore.android.core.Util.FireBaseUtil;
+import com.teamcore.android.core.Util.FirebaseSendPushMsg;
+import com.teamcore.android.core.Util.GPSInfo;
+import com.teamcore.android.core.Util.GlideApp;
+import com.teamcore.android.core.Util.UiUtil;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -156,7 +156,7 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
         mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(getApplicationContext());
         loadRewardedVideoAd();
         // 엑티비티 Uuid 저장
-        SPUtil.setBlockMeUserCurrentActivity(getString(R.string.currentActivity),item.getUuid());
+        SPUtil.setBlockMeUserCurrentActivity(getString(R.string.currentActivity), item.getUuid());
         DataContainer.getInstance().getMyUserRef().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -206,13 +206,17 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
             message.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(DataContainer.getInstance().isBlockWithMe(item.getUuid())) return;
+                    if (DataContainer.getInstance().isBlockWithMe(item.getUuid())) return;
                     Intent intent = new Intent(getApplicationContext(), ChattingActivity.class);
                     intent.putExtra("user", oUser);
                     intent.putExtra("userUuid", item.getUuid());
                     intent.putExtra("userPicuri", item.getPicUrl());
                     startActivity(intent);
-                    SPUtil.increaseAds(mInterstitialAd, "profileChat");
+                    checkCorePlus().done(isPlus -> {
+                        if (!isPlus) {
+                            SPUtil.increaseAds(mInterstitialAd, "FMainGrid");
+                        }
+                    });
                 }
             });
         }
@@ -221,7 +225,7 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
         core_enter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(DataContainer.getInstance().isBlockWithMe(item.getUuid())) return;
+                if (DataContainer.getInstance().isBlockWithMe(item.getUuid())) return;
                 UiUtil.getInstance().goToCoreActivity(FullImageActivity.this, item.getUuid());
             }
         });
@@ -267,7 +271,7 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
 
         // 사진 출력
         ImageView profilePics[] = {page1, page2, page3, page4};
-        ImageView imagelocks[]  = {null,image2lock,image3lock,image4lock};
+        ImageView imagelocks[] = {null, image2lock, image3lock, image4lock};
         picUrlList = oUser.getPicUrls().toNotNullArrayThumbNail(oUser.getIsLockPics(), oUser.getUnLockUsers(), item.getUuid());
         int i;
         for (i = 0; i < picUrlList.size(); i++) {
@@ -280,24 +284,25 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
                     .into(profilePics[i]);
 
             // Lock인 사진 표현
-            if(i==0) continue;
-            if(url.equals(oUser.getPicUrls().getThumbNail_picUrl2())) {
-                if(oUser.getIsLockPics().getIsLockPic2()) imagelocks[i].setVisibility(View.VISIBLE);
+            if (i == 0) continue;
+            if (url.equals(oUser.getPicUrls().getThumbNail_picUrl2())) {
+                if (oUser.getIsLockPics().getIsLockPic2())
+                    imagelocks[i].setVisibility(View.VISIBLE);
                 else imagelocks[i].setVisibility(View.INVISIBLE);
-            }
-            else if(url.equals(oUser.getPicUrls().getThumbNail_picUrl3())) {
-                if(oUser.getIsLockPics().getIsLockPic3()) imagelocks[i].setVisibility(View.VISIBLE);
+            } else if (url.equals(oUser.getPicUrls().getThumbNail_picUrl3())) {
+                if (oUser.getIsLockPics().getIsLockPic3())
+                    imagelocks[i].setVisibility(View.VISIBLE);
                 else imagelocks[i].setVisibility(View.INVISIBLE);
-            }
-            else if(url.equals(oUser.getPicUrls().getThumbNail_picUrl4())) {
-                if(oUser.getIsLockPics().getIsLockPic4()) imagelocks[i].setVisibility(View.VISIBLE);
+            } else if (url.equals(oUser.getPicUrls().getThumbNail_picUrl4())) {
+                if (oUser.getIsLockPics().getIsLockPic4())
+                    imagelocks[i].setVisibility(View.VISIBLE);
                 else imagelocks[i].setVisibility(View.INVISIBLE);
             }
         }
 
-        for(; i< profilePics.length; i++){
+        for (; i < profilePics.length; i++) {
             profilePics[i].setImageResource(R.drawable.a);
-            if(imagelocks[i] != null) imagelocks[i].setVisibility(View.INVISIBLE);
+            if (imagelocks[i] != null) imagelocks[i].setVisibility(View.INVISIBLE);
         }
 
         // 큰사진
@@ -363,7 +368,7 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
                 Log.d(getClass().getName(), "viewedMeUsersTransaction:onComplete:" + databaseError);
 
                 // Viewed me
-                FirebaseSendPushMsg.sendPostToFCM("View",item.getUuid(), mUser.getId(),"");
+                FirebaseSendPushMsg.sendPostToFCM("View", item.getUuid(), mUser.getId(), "");
                 // 데이터 추가
                 try {
                     viewedMeUsersRef.child(mUuid).setValue(UiUtil.getInstance().getCurrentTime(FullImageActivity.this));
@@ -392,7 +397,7 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
         addFriends.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(DataContainer.getInstance().isBlockWithMe(item.getUuid())) return;
+                if (DataContainer.getInstance().isBlockWithMe(item.getUuid())) return;
                 String title, message;
                 final boolean isFollow = oUser.getFollowerUsers().containsKey(myUuid);  // 이미 팔로우한 유저
                 if (isFollow) {
@@ -461,7 +466,7 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
         blockFriends.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(DataContainer.getInstance().isBlockWithMe(item.getUuid())) return;
+                if (DataContainer.getInstance().isBlockWithMe(item.getUuid())) return;
 
                 new BlockReportSelectDialog(FullImageActivity.this, new BlockReportSelectDialog.BlockReportSelectDialogListener() {
                     @Override
@@ -560,7 +565,67 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
                                 Log.d("test", "onRewardedVideoAdFailedToLoad" + i);
                             }
                         });
-                        mRewardedVideoAd.show();
+
+                        checkCorePlus().done(isPlus -> {
+                            if (!isPlus) {
+                                FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("blockCount").addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        if (dataSnapshot.exists()) {
+                                            int value = Integer.valueOf(dataSnapshot.getValue().toString());
+                                            Log.d("test", "몇개 : " + value);
+                                            if (value > 0) {
+                                                FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("blockCount").setValue(value - 1);
+                                                UiUtil.getInstance().startProgressDialog(FullImageActivity.this);
+                                                // blockUsers 추가
+                                                try {
+                                                    FireBaseUtil.getInstance().block(item.getUuid()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                        @Override
+                                                        public void onSuccess(Void aVoid) {
+                                                            finish();
+                                                        }
+                                                    }).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                            UiUtil.getInstance().stopProgressDialog();
+                                                        }
+                                                    });
+                                                } catch (ChildSizeMaxException e) {
+                                                    Toast.makeText(FullImageActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                    UiUtil.getInstance().stopProgressDialog();
+                                                }
+                                            } else {
+                                                mRewardedVideoAd.show();
+                                            }
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+
+                                    }
+                                });
+                            } else {
+                                UiUtil.getInstance().startProgressDialog(FullImageActivity.this);
+                                // blockUsers 추가
+                                try {
+                                    FireBaseUtil.getInstance().block(item.getUuid()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            finish();
+                                        }
+                                    }).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            UiUtil.getInstance().stopProgressDialog();
+                                        }
+                                    });
+                                } catch (ChildSizeMaxException e) {
+                                    Toast.makeText(FullImageActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    UiUtil.getInstance().stopProgressDialog();
+                                }
+                            }
+                        });
                     }
                 }, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
@@ -570,9 +635,9 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
         });
     }
 
-    private boolean isHaveLockPic(){
-        for(boolean b : mUser.getIsLockPics().toArray()){
-            if(b) return true;
+    private boolean isHaveLockPic() {
+        for (boolean b : mUser.getIsLockPics().toArray()) {
+            if (b) return true;
         }
         return false;
     }
@@ -589,7 +654,7 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
         }
 
         // 잠근사진이 없으면 리턴
-        if(!isHaveLockPic()) return;
+        if (!isHaveLockPic()) return;
 
         // 아이콘 크기 설정
         picOpen.getLayoutParams().width = (int) getResources().getDimension(R.dimen.image_lock_height);
@@ -603,7 +668,7 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
         picOpen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(DataContainer.getInstance().isBlockWithMe(item.getUuid())) return;
+                if (DataContainer.getInstance().isBlockWithMe(item.getUuid())) return;
                 String title, message;
                 final boolean isLock = !mUser.getUnLockUsers().containsKey(item.getUuid());  // 이미 해제한 유저
                 if (isLock) {
@@ -637,7 +702,7 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
                                         if (isLock) {
                                             picOpen.setImageResource(R.drawable.picture_lock);    // 해제하기 (현재 사진이 잠겼다는 것을 암시함)
                                             Toast.makeText(FullImageActivity.this, "잠긴 사진을 열었습니다.", Toast.LENGTH_SHORT).show();
-                                            sendEventMessage(myUuid,mUser.getId(),item.getUuid(),getString(R.string.alertUnlockPic), FullImageActivity.this);
+                                            sendEventMessage(myUuid, mUser.getId(), item.getUuid(), getString(R.string.alertUnlockPic), FullImageActivity.this);
                                         } else {
                                             picOpen.setImageResource(R.drawable.picture_unlock);  // 잠금 (현재 사진이 해제되어 있다는 암시함)
                                             Toast.makeText(FullImageActivity.this, "사진을 비공개 합니다.", Toast.LENGTH_SHORT).show();
@@ -692,7 +757,7 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
 
     @Override
     public void onClick(View view) {
-        if(DataContainer.getInstance().isBlockWithMe(item.getUuid())) return;
+        if (DataContainer.getInstance().isBlockWithMe(item.getUuid())) return;
         Intent myIntent = new Intent(getApplicationContext(), DetailImageActivity.class);
 
         // 큰 사진으로 넘김
@@ -740,17 +805,17 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
     }
 
     private void loadRewardedVideoAd() {
-        mRewardedVideoAd.loadAd("ca-app-pub-3940256099942544/5224354917",
+        mRewardedVideoAd.loadAd(getString(R.string.adsBlockUser),
                 new AdRequest.Builder().addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
                         .addTestDevice("0D525D9C92269D80384121978C3C4267")
                         .build());
     }
 
-    public void setmInterstitialAd(){
+    public void setmInterstitialAd() {
         mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        mInterstitialAd.setAdUnitId(getString(R.string.adsFMainGrid));
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
-        mInterstitialAd.setAdListener(new AdListener(){
+        mInterstitialAd.setAdListener(new AdListener() {
             @Override
             public void onAdClosed() {
                 mInterstitialAd.loadAd(new AdRequest.Builder().build());
@@ -765,7 +830,7 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
 //    }
 
     @Subscribe
-    public void FinishActivity(TargetUserBlocksMeEvent someoneBlocksMeEvent){
+    public void FinishActivity(TargetUserBlocksMeEvent someoneBlocksMeEvent) {
         finish();
     }
 

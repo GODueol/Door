@@ -29,6 +29,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.teamcore.android.core.R;
+import com.teamcore.android.core.Util.BaseActivity.BaseActivity;
 import com.teamcore.android.core.Util.DataContainer;
 import com.teamcore.android.core.Util.GPSInfo;
 import com.teamcore.android.core.Util.addrConvertor;
@@ -46,7 +47,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
  * Created by KwonCheolHyeok on 2016-11-25.
  */
 
-public class MapsActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, OnMapReadyCallback, GoogleMap.OnMapClickListener, GoogleMap.OnInfoWindowClickListener {
+public class MapsActivity extends BaseActivity implements GoogleApiClient.OnConnectionFailedListener, OnMapReadyCallback, GoogleMap.OnMapClickListener, GoogleMap.OnInfoWindowClickListener {
 
 
     private GoogleMap mGoogleMap;
@@ -73,12 +74,16 @@ public class MapsActivity extends AppCompatActivity implements GoogleApiClient.O
         mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this);
         loadRewardedVideoAd();
 
-        AdView mAdView = (AdView) findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder()
-                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                .addTestDevice("0D525D9C92269D80384121978C3C4267")
-                .build();
-        mAdView.loadAd(adRequest);
+        checkCorePlus().done(isPlus -> {
+            if (!isPlus) {
+                AdView mAdView = (AdView) findViewById(R.id.adView);
+                AdRequest adRequest = new AdRequest.Builder()
+                        .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                        .addTestDevice("0D525D9C92269D80384121978C3C4267")
+                        .build();
+                mAdView.loadAd(adRequest);
+            }
+        });
 
 
 
@@ -250,29 +255,35 @@ public class MapsActivity extends AppCompatActivity implements GoogleApiClient.O
 
             }
         });
+        checkCorePlus().done(isPlus -> {
+            if (!isPlus) {
+                FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("mapSearchCount").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        int value;
+                        try {
+                            value = Integer.valueOf(dataSnapshot.getValue().toString());
+                        } catch (Exception e) {
+                            value = 0;
+                        }
+                        Log.d("test", "몇개 : " + value);
+                        if (value > 0) {
+                            FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("mapSearchCount").setValue(value - 1);
+                            startActivity(p);
+                            Toast.makeText(getApplicationContext(), "스와이프하시면 현재 위치로 되돌아갑니다.", Toast.LENGTH_LONG).show();
+                        } else {
+                            mRewardedVideoAd.show();
+                        }
+                    }
 
-        FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("mapSearchCount").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                int value;
-                try {
-                    value = Integer.valueOf(dataSnapshot.getValue().toString());
-                } catch (Exception e) {
-                    value = 0;
-                }
-                Log.d("test", "몇개 : " + value);
-                if (value > 0) {
-                    FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("mapSearchCount").setValue(value - 1);
-                    startActivity(p);
-                    Toast.makeText(getApplicationContext(), "스와이프하시면 현재 위치로 되돌아갑니다.", Toast.LENGTH_LONG).show();
-                } else {
-                    mRewardedVideoAd.show();
-                }
-            }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
+                    }
+                });
+            }else{
+                startActivity(p);
+                Toast.makeText(getApplicationContext(), "스와이프하시면 현재 위치로 되돌아갑니다.", Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -321,7 +332,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleApiClient.O
     }
 
     private void loadRewardedVideoAd() {
-        mRewardedVideoAd.loadAd("ca-app-pub-3940256099942544/5224354917",
+        mRewardedVideoAd.loadAd(getString(R.string.adsMapSearching),
                 new AdRequest.Builder().addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
                         .addTestDevice("0D525D9C92269D80384121978C3C4267")
                         .build());

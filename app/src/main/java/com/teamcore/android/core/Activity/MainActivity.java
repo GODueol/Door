@@ -97,6 +97,7 @@ public class MainActivity extends BaseActivity
     private SharedPreferencesUtil SPUtil;
 
     IabHelper iaphelper;
+
     @SuppressLint("ClickableViewAccessibility")
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
@@ -113,8 +114,8 @@ public class MainActivity extends BaseActivity
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         Intent p = getIntent();
-        String chatFlag = (String)p.getSerializableExtra("chat");
-        if(chatFlag !=null &&chatFlag.equals("chat")){
+        String chatFlag = (String) p.getSerializableExtra("chat");
+        if (chatFlag != null && chatFlag.equals("chat")) {
             Intent intent = new Intent(this, MessageActivity.class);
             startActivity(intent);
         }
@@ -122,24 +123,27 @@ public class MainActivity extends BaseActivity
         //툴바 이미지 붙이기 (코어 회원이면 drawable : tb_core / 코어플러스 회원이면 tb_coreplus)
         ImageView coreplus = (ImageView) findViewById(R.id.tb_coreplus);
         checkCorePlus().done(isPlus -> {
-           DataContainer.getInstance().isPlus = isPlus;
-           int res;
-           if(isPlus)res = R.drawable.tb_coreplus;
-           else res = R.drawable.tb_core;
-           GlideApp.with(this)
-                .load(UiUtil.resourceToUri(this, res))
-                .fitCenter()
-                .into(coreplus);
+            DataContainer.getInstance().isPlus = isPlus;
+            int res;
+            if (isPlus) res = R.drawable.tb_coreplus;
+            else res = R.drawable.tb_core;
+            GlideApp.with(this)
+                    .load(UiUtil.resourceToUri(this, res))
+                    .fitCenter()
+                    .into(coreplus);
         });
 
         setSupportActionBar(toolbar);
-
-        AdView mAdView = (AdView) findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder()
-                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                .addTestDevice("0D525D9C92269D80384121978C3C4267")
-                .build();
-        mAdView.loadAd(adRequest);
+        checkCorePlus().done(isPlus -> {
+            if (!isPlus) {
+                AdView mAdView = (AdView) findViewById(R.id.adView);
+                AdRequest adRequest = new AdRequest.Builder()
+                        .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                        .addTestDevice("0D525D9C92269D80384121978C3C4267")
+                        .build();
+                mAdView.loadAd(adRequest);
+            }
+        });
 
 
         ToggleIconSet();
@@ -208,8 +212,10 @@ public class MainActivity extends BaseActivity
             nav_alarm.setBackgroundResource(R.drawable.nav_alarm_on);
         }
         nav_alarm.setOnClickListener(v -> {
-            SPUtil.setAlarmIcon(getString(R.string.navAlarm),false);
-            new NavAlarmDialog(MainActivity.this).show();
+            SPUtil.setAlarmIcon(getString(R.string.navAlarm), false);
+            checkCorePlus().done(isPlus ->{
+                new NavAlarmDialog(MainActivity.this,isPlus).show();
+            });
         });
 
         // Set Profile Pic
@@ -326,7 +332,7 @@ public class MainActivity extends BaseActivity
             //해당 아이템 구매 여부 체크
             Purchase purchase = inv.getPurchase(getString(R.string.subscribe));
 
-            if (purchase != null && purchase.getPurchaseState() ==0 && verifyDeveloperPayload(purchase)) {
+            if (purchase != null && purchase.getPurchaseState() == 0 && verifyDeveloperPayload(purchase)) {
                 //해당 아이템을 가지고 있는 경우.
                 //아이템에대한 처리를 한다.
                 Toast.makeText(getApplicationContext(), purchase.getPurchaseState() + "onQueryInventoryFinished 이미 보유중", Toast.LENGTH_SHORT).show();
@@ -642,7 +648,8 @@ public class MainActivity extends BaseActivity
                 }
                 break;
             case "navAlarm":
-                boolean navState = sharedPreferences.getBoolean(key,false);{
+                boolean navState = sharedPreferences.getBoolean(key, false);
+            {
                 if (!navState) {
                     nav_alarm.setBackgroundResource(R.drawable.nav_alarm_off);
                 } else {
@@ -659,7 +666,7 @@ public class MainActivity extends BaseActivity
             if (messageBadge.getText().equals("") && coreBadge.getText().equals("") && friendBadge.getText().equals("")) {
                 SPUtil.setMainIcon(getString(R.string.mainAlarm), false);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             SPUtil.setMainIcon(getString(R.string.mainAlarm), false);
         }
     }

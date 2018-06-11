@@ -81,13 +81,14 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
     private RewardedVideoAd mRewardedVideoAd;
     private RewardedVideoAd mRewardedVideoAd2;
     private CloudEntity purchaseEntity;
-
+    private boolean isPlus;
     private OnUploadCloudCallback onUploadCloudCallback;
 
     public interface OnUploadCloudCallback {
         void upload(CloudEntity c);
     }
-    CoreListAdapter(List<CoreListItem> coreListItems, Context context,OnUploadCloudCallback onUploadCloudCallback) {
+
+    CoreListAdapter(List<CoreListItem> coreListItems, Context context, OnUploadCloudCallback onUploadCloudCallback) {
         this.coreListItems = coreListItems;
         this.context = context;
         this.mediaPlayer = new MediaPlayer();
@@ -100,8 +101,11 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
         // Use an activity context to get the rewarded video instance.
         mRewardedVideoAd2 = MobileAds.getRewardedVideoAdInstance(context);
         loadRewardedVideoAd2();
+    }
 
-
+    CoreListAdapter(List<CoreListItem> coreListItems, Context context, OnUploadCloudCallback onUploadCloudCallback, boolean isPlus) {
+        this(coreListItems, context, onUploadCloudCallback);
+        this.isPlus = isPlus;
     }
 
     @Override
@@ -518,30 +522,33 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                     }
                 });
 
-
-                FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("coreCloudProfileCount").addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        int value;
-                        try {
-                            value = Integer.valueOf(dataSnapshot.getValue().toString());
-                        } catch (Exception e) {
-                            value = 0;
+                if (!isPlus) {
+                    FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("coreCloudProfileCount").addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            int value;
+                            try {
+                                value = Integer.valueOf(dataSnapshot.getValue().toString());
+                            } catch (Exception e) {
+                                value = 0;
+                            }
+                            Log.d("test", "몇개 : " + value);
+                            if (value > 0) {
+                                FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("coreCloudProfileCount").setValue(value - 1);
+                                context.startActivity(p);
+                            } else {
+                                mRewardedVideoAd2.show();
+                            }
                         }
-                        Log.d("test", "몇개 : " + value);
-                        if (value > 0) {
-                            FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("coreCloudProfileCount").setValue(value - 1);
-                            context.startActivity(p);
-                        } else {
-                            mRewardedVideoAd2.show();
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
                         }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
+                    });
+                } else {
+                    context.startActivity(p);
+                }
 
             });
         } else {
@@ -607,7 +614,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 
                     case R.id.block:
                         // 일반 유저는 익명 유저를 차단 불가
-                        if(coreListItem.getUser() == null && !DataContainer.getInstance().isPlus){
+                        if (coreListItem.getUser() == null && !DataContainer.getInstance().isPlus) {
                             Toast.makeText(context, "일반 유저는 익명 유저를 차단할 수 없습니다", Toast.LENGTH_SHORT).show();
                             break;
                         }
@@ -685,7 +692,45 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                                     Log.d("test", "onRewardedVideoAdFailedToLoad" + i);
                                 }
                             });
-                            mRewardedVideoAd.show();
+
+                            if (!isPlus) {
+                                FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("blockCount").addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        if (dataSnapshot.exists()) {
+                                            int value = Integer.valueOf(dataSnapshot.getValue().toString());
+                                            Log.d("test", "몇개 : " + value);
+                                            if (value > 0) {
+                                                FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("blockCount").setValue(value - 1);
+
+                                                UiUtil.getInstance().startProgressDialog((Activity) context);
+                                                // blockUsers 추가
+                                                try {
+                                                    FireBaseUtil.getInstance().block(coreListItem.getCorePost().getUuid()).addOnSuccessListener(aVoid -> Toast.makeText(context, "차단되었습니다", Toast.LENGTH_SHORT).show()).addOnCompleteListener(task -> UiUtil.getInstance().stopProgressDialog());
+                                                } catch (ChildSizeMaxException e) {
+                                                    Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                    UiUtil.getInstance().stopProgressDialog();
+                                                }
+                                            } else {
+                                                mRewardedVideoAd.show();
+                                            }
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+                                    }
+                                });
+                            } else {
+                                UiUtil.getInstance().startProgressDialog((Activity) context);
+                                // blockUsers 추가
+                                try {
+                                    FireBaseUtil.getInstance().block(coreListItem.getCorePost().getUuid()).addOnSuccessListener(aVoid -> Toast.makeText(context, "차단되었습니다", Toast.LENGTH_SHORT).show()).addOnCompleteListener(task -> UiUtil.getInstance().stopProgressDialog());
+                                } catch (ChildSizeMaxException e) {
+                                    Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    UiUtil.getInstance().stopProgressDialog();
+                                }
+                            }
                         }, (dialog, whichButton) -> {
                         });
                         break;
@@ -920,14 +965,14 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 
 
     private void loadRewardedVideoAd() {
-        mRewardedVideoAd.loadAd("ca-app-pub-3940256099942544/5224354917",
+        mRewardedVideoAd.loadAd(context.getString(R.string.adsBlockUser),
                 new AdRequest.Builder().addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
                         .addTestDevice("0D525D9C92269D80384121978C3C4267")
                         .build());
     }
 
     private void loadRewardedVideoAd2() {
-        mRewardedVideoAd.loadAd("ca-app-pub-3940256099942544/5224354917",
+        mRewardedVideoAd2.loadAd(context.getString(R.string.adsEnteredCore),
                 new AdRequest.Builder().addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
                         .addTestDevice("0D525D9C92269D80384121978C3C4267")
                         .build());

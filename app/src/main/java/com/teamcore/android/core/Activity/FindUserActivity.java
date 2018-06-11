@@ -31,7 +31,6 @@ public class FindUserActivity extends UserListBaseActivity {
     private UserListAdapter adapter;
 
     private ArrayList<UserListAdapter.Item> items;
-    private RewardedVideoAd mRewardedVideoAd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,17 +45,16 @@ public class FindUserActivity extends UserListBaseActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true); //홈 아이콘을 숨김처리합니다.
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
 
-        // Use an activity context to get the rewarded video instance.
-        mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this);
-        loadRewardedVideoAd();
-
-        AdView mAdView = (AdView) findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder()
-                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                .addTestDevice("0D525D9C92269D80384121978C3C4267")
-                .build();
-        mAdView.loadAd(adRequest);
-
+        checkCorePlus().done(isPlus -> {
+            if (!isPlus) {
+                AdView mAdView = (AdView) findViewById(R.id.adView);
+                AdRequest adRequest = new AdRequest.Builder()
+                        .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                        .addTestDevice("0D525D9C92269D80384121978C3C4267")
+                        .build();
+                mAdView.loadAd(adRequest);
+            }
+        });
         // 리사이클뷰
         final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.friendsRecyclerView);
         items = new ArrayList<>();
@@ -105,14 +103,5 @@ public class FindUserActivity extends UserListBaseActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
-    private void loadRewardedVideoAd() {
-        mRewardedVideoAd.loadAd("ca-app-pub-3940256099942544/5224354917",
-                new AdRequest.Builder().addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                        .addTestDevice("0D525D9C92269D80384121978C3C4267")
-                        .build());
-    }
-
-
 
 }

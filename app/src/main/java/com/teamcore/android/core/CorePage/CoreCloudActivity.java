@@ -29,21 +29,26 @@ public class CoreCloudActivity extends CoreActivity {
 
     public void setContentView() {
         setContentView(R.layout.core_cloud_activity_main);
-        AdView mAdView = (AdView) findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder()
-                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                .addTestDevice("0D525D9C92269D80384121978C3C4267")
-                .build();
-        mAdView.loadAd(adRequest);
-
+        checkCorePlus().done(isPlus -> {
+            if (!isPlus) {
+                AdView mAdView = (AdView) findViewById(R.id.adView);
+                AdRequest adRequest = new AdRequest.Builder()
+                        .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                        .addTestDevice("0D525D9C92269D80384121978C3C4267")
+                        .build();
+                mAdView.loadAd(adRequest);
+            }
+        });
     }
 
 
     // Friends check 안함
-    public void checkOldFriends() {}
+    public void checkOldFriends() {
+    }
 
     // Fab 버튼 없음
-    public void setFab() {}
+    public void setFab() {
+    }
 
     public void addPostsToList(final ArrayList<CoreListItem> list) {
         list.clear();

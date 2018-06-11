@@ -216,16 +216,16 @@ public class SharedPreferencesUtil {
         int count=0;
 
         switch (str){
-            case "mainGrid" :
+            case "FMainGrid" :
                 count=RemoteConfig.MainGridAdCount;
                 break;
-            case "chat" :
+            case "ChatList" :
                 count=RemoteConfig.ChatAdCount;
                 break;
-            case "friends" :
+            case "Friends" :
                 count=RemoteConfig.FriendsAdCount;
                 break;
-            case "profileChat" :
+            case "ProfileChat" :
                 count=RemoteConfig.ProfileChatAdCount;
                 break;
         }

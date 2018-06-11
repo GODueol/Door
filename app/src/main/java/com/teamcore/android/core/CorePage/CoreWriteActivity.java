@@ -256,28 +256,33 @@ public class CoreWriteActivity extends BlockBaseActivity {
                             }
                         });
 
+                        checkCorePlus().done(isPlus -> {
+                            if (!isPlus) {
+                                FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("mCorePostCount").addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        int value;
+                                        try {
+                                            value = Integer.valueOf(dataSnapshot.getValue().toString());
+                                        } catch (Exception e) {
+                                            value = 0;
+                                        }
+                                        Log.d("test", "몇개 : " + value);
+                                        if (value > 0) {
+                                            FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("mCorePostCount").setValue(value - 1);
+                                            saveCore();
+                                        } else {
+                                            mRewardedVideoAd.show();
+                                        }
+                                    }
 
-                        FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("mCorePostCount").addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                int value;
-                                try {
-                                    value = Integer.valueOf(dataSnapshot.getValue().toString());
-                                } catch (Exception e) {
-                                    value = 0;
-                                }
-                                Log.d("test", "몇개 : " + value);
-                                if (value > 0) {
-                                    FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("mCorePostCount").setValue(value - 1);
-                                    saveCore();
-                                } else {
-                                    mRewardedVideoAd.show();
-                                }
-                            }
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
 
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-
+                                    }
+                                });
+                            } else {
+                                saveCore();
                             }
                         });
                     } else {
@@ -694,7 +699,7 @@ public class CoreWriteActivity extends BlockBaseActivity {
     }
 
     private void loadRewardedVideoAd() {
-        mRewardedVideoAd.loadAd("ca-app-pub-3940256099942544/5224354917",
+        mRewardedVideoAd.loadAd(getString(R.string.adsWriteCorePost),
                 new AdRequest.Builder().addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
                         .addTestDevice("0D525D9C92269D80384121978C3C4267")
                         .build());

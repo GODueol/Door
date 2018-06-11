@@ -28,13 +28,14 @@ import com.teamcore.android.core.MessageActivity.messageRecyclerAdapter.OnRemove
 import com.teamcore.android.core.MessageActivity.util.MessageVO;
 import com.teamcore.android.core.MessageActivity.util.RoomVO;
 import com.teamcore.android.core.R;
+import com.teamcore.android.core.Util.BaseActivity.BaseActivity;
 import com.teamcore.android.core.Util.FireBaseUtil;
 import com.teamcore.android.core.Util.SharedPreferencesUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MessageActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class MessageActivity extends BaseActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     Toolbar toolbar = null;
 
@@ -88,7 +89,11 @@ public class MessageActivity extends AppCompatActivity implements SharedPreferen
                                     intent.putExtra("userUuid", item.getTargetUuid());
                                     SPUtil.removeChatRoomBadge(item.getChatRoomid());
                                     startActivity(intent);
-                                    SPUtil.increaseAds(mInterstitialAd, "chat");
+                                    checkCorePlus().done(isPlus -> {
+                                        if (!isPlus) {
+                                            SPUtil.increaseAds(mInterstitialAd,"ChatList");
+                                        }
+                                    });
                                 }
 
                                 @Override
@@ -319,7 +324,7 @@ public class MessageActivity extends AppCompatActivity implements SharedPreferen
 
     public void setmInterstitialAd() {
         mInterstitialAd = new InterstitialAd(getApplicationContext());
-        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        mInterstitialAd.setAdUnitId(getString(R.string.adsChatingList));
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
         mInterstitialAd.setAdListener(new AdListener() {
             @Override
