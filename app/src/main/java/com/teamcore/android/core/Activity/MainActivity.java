@@ -134,17 +134,19 @@ public class MainActivity extends BaseActivity
         });
 
         setSupportActionBar(toolbar);
+        AdView mAdView = (AdView) findViewById(R.id.adView);
         checkCorePlus().done(isPlus -> {
             if (!isPlus) {
-                AdView mAdView = (AdView) findViewById(R.id.adView);
                 AdRequest adRequest = new AdRequest.Builder()
                         .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
                         .addTestDevice("0D525D9C92269D80384121978C3C4267")
                         .build();
                 mAdView.loadAd(adRequest);
+            } else {
+                mAdView.destroy();
+                mAdView.setVisibility(View.GONE);
             }
         });
-
 
         ToggleIconSet();
         toggle = new ActionBarDrawerToggle(
@@ -213,8 +215,8 @@ public class MainActivity extends BaseActivity
         }
         nav_alarm.setOnClickListener(v -> {
             SPUtil.setAlarmIcon(getString(R.string.navAlarm), false);
-            checkCorePlus().done(isPlus ->{
-                new NavAlarmDialog(MainActivity.this,isPlus).show();
+            checkCorePlus().done(isPlus -> {
+                new NavAlarmDialog(MainActivity.this, isPlus).show();
             });
         });
 

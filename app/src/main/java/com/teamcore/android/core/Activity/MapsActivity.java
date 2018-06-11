@@ -6,7 +6,6 @@ import android.graphics.Typeface;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
@@ -24,15 +23,6 @@ import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.reward.RewardItem;
 import com.google.android.gms.ads.reward.RewardedVideoAd;
 import com.google.android.gms.ads.reward.RewardedVideoAdListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.teamcore.android.core.R;
-import com.teamcore.android.core.Util.BaseActivity.BaseActivity;
-import com.teamcore.android.core.Util.DataContainer;
-import com.teamcore.android.core.Util.GPSInfo;
-import com.teamcore.android.core.Util.addrConvertor;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -42,6 +32,15 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.teamcore.android.core.R;
+import com.teamcore.android.core.Util.BaseActivity.BaseActivity;
+import com.teamcore.android.core.Util.DataContainer;
+import com.teamcore.android.core.Util.GPSInfo;
+import com.teamcore.android.core.Util.addrConvertor;
 
 /**
  * Created by KwonCheolHyeok on 2016-11-25.
@@ -74,24 +73,22 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.OnConn
         mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this);
         loadRewardedVideoAd();
 
+        AdView mAdView = (AdView) findViewById(R.id.adView);
         checkCorePlus().done(isPlus -> {
             if (!isPlus) {
-                AdView mAdView = (AdView) findViewById(R.id.adView);
                 AdRequest adRequest = new AdRequest.Builder()
                         .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
                         .addTestDevice("0D525D9C92269D80384121978C3C4267")
                         .build();
                 mAdView.loadAd(adRequest);
+            } else {
+                mAdView.destroy();
+                mAdView.setVisibility(View.GONE);
             }
         });
 
-
-
-
-
         addrText = (SearchView) findViewById(R.id.addrText);
         addrText.onActionViewExpanded();
-
 
         search = (ImageButton) findViewById(R.id.search_map);
         mGPSInfo = new GPSInfo(getApplicationContext());
@@ -179,7 +176,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.OnConn
         mGoogleMap.clear();
         mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mLatLng, zlevel));
         setMarkerCustom();
-        setMarker(latLng,address);
+        setMarker(latLng, address);
         mGoogleMap.setOnInfoWindowClickListener(this);
     }
 
@@ -190,7 +187,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.OnConn
 
         mGoogleMap.clear();
         mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, zlevel));
-        setMarker(latLng,address);
+        setMarker(latLng, address);
     }
 
     @Override
@@ -281,20 +278,21 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.OnConn
 
                     }
                 });
-            }else{
+            } else {
                 startActivity(p);
                 Toast.makeText(getApplicationContext(), "스와이프하시면 현재 위치로 되돌아갑니다.", Toast.LENGTH_LONG).show();
             }
         });
     }
 
-    public void setMarker(LatLng latLng, String address){
+    public void setMarker(LatLng latLng, String address) {
         mGoogleMap.addMarker(new MarkerOptions()
                 .position(latLng)
                 .title(address)
                 .snippet(getString(R.string.mapSpiner))
         ).showInfoWindow();
     }
+
     public void setMarkerCustom() {
         mGoogleMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
 
@@ -352,7 +350,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.OnConn
                 mGoogleMap.clear();
                 mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, zlevel));
 
-                setMarker(latLng,address);
+                setMarker(latLng, address);
             }
         }
     };

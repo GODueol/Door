@@ -12,7 +12,6 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
-import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -87,7 +86,7 @@ public class CoreActivity extends BlockBaseActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         // 일반유저, 가장 오래된 친구 3명 이외에 다른 회원 코어 확인 불가능
-        if(!isOldFriends()) {
+        if (!isOldFriends()) {
             Toast.makeText(this, "가장 오래된 친구 3명 이외에 다른 회원 코어 확인 불가능합니다", Toast.LENGTH_SHORT).show();
             finish();
         }
@@ -149,7 +148,7 @@ public class CoreActivity extends BlockBaseActivity {
 
         list = new ArrayList<>();
         checkCorePlus().done(isPlus -> {
-           coreListAdapter = new CoreListAdapter(list, this, cloudLitener,isPlus);
+            coreListAdapter = new CoreListAdapter(list, this, cloudLitener, isPlus);
         });
         //coreListAdapter = getCoreListAdapter(list);
 
@@ -162,21 +161,24 @@ public class CoreActivity extends BlockBaseActivity {
 
     }
 
-    public boolean isOldFriends(){
+    public boolean isOldFriends() {
         return DataContainer.getInstance().isPlus || FireBaseUtil.getInstance().isOldFriends(cUuid) || DataContainer.getInstance().getUid().equals(cUuid);
     }
 
     public void setContentView() {
         setContentView(R.layout.core_activity);
-        checkCorePlus().done(isPlus -> {
-           if(!isPlus){
         AdView mAdView = (AdView) findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder()
-                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                .addTestDevice("0D525D9C92269D80384121978C3C4267")
-                .build();
-        mAdView.loadAd(adRequest);
-        }
+        checkCorePlus().done(isPlus -> {
+            if (!isPlus) {
+                AdRequest adRequest = new AdRequest.Builder()
+                        .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                        .addTestDevice("0D525D9C92269D80384121978C3C4267")
+                        .build();
+                mAdView.loadAd(adRequest);
+            } else {
+                mAdView.destroy();
+                mAdView.setVisibility(View.GONE);
+            }
         });
     }
 
@@ -196,12 +198,13 @@ public class CoreActivity extends BlockBaseActivity {
         SharedPreferencesUtil SPUtil = new SharedPreferencesUtil(getApplicationContext());
         SPUtil.removeBadge(getString(R.string.badgePost));
     }
-/*
-    @NonNull
-    private CoreListAdapter getCoreListAdapter(ArrayList<CoreListItem> list) {
 
-    }
-*/
+    /*
+        @NonNull
+        private CoreListAdapter getCoreListAdapter(ArrayList<CoreListItem> list) {
+
+        }
+    */
     public void setFab() {
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(view -> {
@@ -458,7 +461,7 @@ public class CoreActivity extends BlockBaseActivity {
         if (iaphelper == null) return;
         if (!iaphelper.handleActivityResult(requestCode, resultCode, data)) {
             //처리할 결과물이 아닐 경우 이곳으로 빠져 기본처리를 하도록한다
-            Toast.makeText(this,"지금",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "지금", Toast.LENGTH_SHORT).show();
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
@@ -594,7 +597,7 @@ public class CoreActivity extends BlockBaseActivity {
                     e.printStackTrace();
                 }
 
-            }else{
+            } else {
                 // 가지고있지 않다면 구입
                 buyItem(getString(R.string.purchase));
             }
