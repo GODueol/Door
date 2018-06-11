@@ -31,21 +31,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.teamcore.android.core.Entity.User;
-import com.teamcore.android.core.Event.TargetUserBlocksMeEvent;
-import com.teamcore.android.core.Exception.ChildSizeMaxException;
-import com.teamcore.android.core.Exception.NotSetAutoTimeException;
-import com.teamcore.android.core.MessageActivity.ChattingMessageAdapter.OnImesageLoadingCallback;
-import com.teamcore.android.core.MessageActivity.util.MessageVO;
-import com.teamcore.android.core.PeopleFragment.FullImageActivity;
-import com.teamcore.android.core.R;
-import com.teamcore.android.core.Util.BaseActivity.BlockBaseActivity;
-import com.teamcore.android.core.Util.DataContainer;
-import com.teamcore.android.core.Util.FireBaseUtil;
-import com.teamcore.android.core.Util.GalleryPick;
-import com.teamcore.android.core.Util.UiUtil;
 import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.reward.RewardItem;
 import com.google.android.gms.ads.reward.RewardedVideoAd;
@@ -59,6 +45,19 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.otto.Subscribe;
+import com.teamcore.android.core.Entity.User;
+import com.teamcore.android.core.Event.TargetUserBlocksMeEvent;
+import com.teamcore.android.core.Exception.ChildSizeMaxException;
+import com.teamcore.android.core.Exception.NotSetAutoTimeException;
+import com.teamcore.android.core.MessageActivity.ChattingMessageAdapter.OnImesageLoadingCallback;
+import com.teamcore.android.core.MessageActivity.util.MessageVO;
+import com.teamcore.android.core.PeopleFragment.FullImageActivity;
+import com.teamcore.android.core.R;
+import com.teamcore.android.core.Util.BaseActivity.BlockBaseActivity;
+import com.teamcore.android.core.Util.DataContainer;
+import com.teamcore.android.core.Util.FireBaseUtil;
+import com.teamcore.android.core.Util.GalleryPick;
+import com.teamcore.android.core.Util.UiUtil;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -138,7 +137,7 @@ public class ChattingActivity extends BlockBaseActivity {
         send_message_layout = (LinearLayout) findViewById(R.id.send_message_layout);
 
         // TeamCore 메세지의 경우
-       if(targetUuid.equals(getApplicationContext().getString(R.string.TeamCore))){
+        if (targetUuid.equals(getApplicationContext().getString(R.string.TeamCore))) {
             send_message_layout.setVisibility(View.GONE);
         }
         send_message_layout.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);

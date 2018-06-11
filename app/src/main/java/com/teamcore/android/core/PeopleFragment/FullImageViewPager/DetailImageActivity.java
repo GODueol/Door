@@ -33,12 +33,12 @@ public class DetailImageActivity extends BlockBaseActivity {
 
         int pagenumber = intent.getIntExtra("PagerPage", 1);
         mAdapter = new DetailImageViewPagerAdapter(getSupportFragmentManager(), picUrlList);
-        ViewPagerFixed viewPager = findViewById(R.id.viewpager);        //Viewpager 선언 및 초기화
+        ViewPagerFixed viewPager = (ViewPagerFixed) findViewById(R.id.viewpager);        //Viewpager 선언 및 초기화
         viewPager.setAdapter(mAdapter);     //선언한 viewpager에 adapter를 연결
         viewPager.setCurrentItem(pagenumber);
 
         // Viewpager indicator
-        tabLayout = findViewById(R.id.tabDots);
+        tabLayout = (TabLayout) findViewById(R.id.tabDots);
         tabLayout.setupWithViewPager(viewPager, true);
 
     }

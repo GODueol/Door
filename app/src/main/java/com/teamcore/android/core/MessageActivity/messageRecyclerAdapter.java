@@ -5,7 +5,6 @@ import android.content.Context;
 import android.graphics.Color;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,8 +22,6 @@ import com.teamcore.android.core.R;
 import com.teamcore.android.core.Util.GlideApp;
 
 import java.util.List;
-
-import static android.view.View.GONE;
 
 /**
  * Created by Administrator on 2017-12-04.
@@ -78,7 +75,7 @@ public class messageRecyclerAdapter extends RecyclerView.Adapter<messageRecycler
         } catch (NotSetAutoTimeException e) {
             e.printStackTrace();
             Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-            ActivityCompat.finishAffinity((Activity)context);
+            ActivityCompat.finishAffinity((Activity) context);
         }
         holder.date.setText(preTime);
 
@@ -111,7 +108,7 @@ public class messageRecyclerAdapter extends RecyclerView.Adapter<messageRecycler
             }
         });
 
-        if(room.getTargetUuid().equals(context.getString(R.string.TeamCore))){
+        if (room.getTargetUuid().equals(context.getString(R.string.TeamCore))) {
             holder.nickname.setText(context.getString(R.string.TeamCore));
             holder.edit_message.setVisibility(View.INVISIBLE);
             GlideApp.with(holder.img.getContext())

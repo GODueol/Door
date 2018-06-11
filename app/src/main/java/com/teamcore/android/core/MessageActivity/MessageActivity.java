@@ -12,13 +12,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 
-import com.teamcore.android.core.Entity.User;
-import com.teamcore.android.core.MessageActivity.messageRecyclerAdapter.OnRemoveChattingListCallback;
-import com.teamcore.android.core.MessageActivity.util.MessageVO;
-import com.teamcore.android.core.MessageActivity.util.RoomVO;
-import com.teamcore.android.core.R;
-import com.teamcore.android.core.Util.FireBaseUtil;
-import com.teamcore.android.core.Util.SharedPreferencesUtil;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
@@ -30,6 +23,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
+import com.teamcore.android.core.Entity.User;
+import com.teamcore.android.core.MessageActivity.messageRecyclerAdapter.OnRemoveChattingListCallback;
+import com.teamcore.android.core.MessageActivity.util.MessageVO;
+import com.teamcore.android.core.MessageActivity.util.RoomVO;
+import com.teamcore.android.core.R;
+import com.teamcore.android.core.Util.FireBaseUtil;
+import com.teamcore.android.core.Util.SharedPreferencesUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -278,7 +278,7 @@ public class MessageActivity extends AppCompatActivity implements SharedPreferen
                 roomList.setTargetUrl(target.getPicUrls().getThumbNail_picUrl1());
                 chatRoomListRef.child(userId).child(roomList.getTargetUuid()).child("targetUrl").setValue(target.getPicUrls().getThumbNail_picUrl1());
             }
-        }catch (Exception e){
+        } catch (Exception e) {
 
         }
 
@@ -317,11 +317,11 @@ public class MessageActivity extends AppCompatActivity implements SharedPreferen
         }
     }
 
-    public void setmInterstitialAd(){
+    public void setmInterstitialAd() {
         mInterstitialAd = new InterstitialAd(getApplicationContext());
         mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
-        mInterstitialAd.setAdListener(new AdListener(){
+        mInterstitialAd.setAdListener(new AdListener() {
             @Override
             public void onAdClosed() {
                 mInterstitialAd.loadAd(new AdRequest.Builder().build());

@@ -104,12 +104,20 @@ public class MainActivity extends BaseActivity
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         SPUtil = new SharedPreferencesUtil(getApplicationContext());
 //        ScreenshotSetApplication.getInstance().allowUserSaveScreenshot(true);
         // 블락 탐지 엑티비티 Uuid 초기화
         // (Main View)네비게이션바 관련
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        Intent p = getIntent();
+        String chatFlag = (String)p.getSerializableExtra("chat");
+        if(chatFlag !=null &&chatFlag.equals("chat")){
+            Intent intent = new Intent(this, MessageActivity.class);
+            startActivity(intent);
+        }
 
         //툴바 이미지 붙이기 (코어 회원이면 drawable : tb_core / 코어플러스 회원이면 tb_coreplus)
         ImageView coreplus = (ImageView) findViewById(R.id.tb_coreplus);
@@ -170,7 +178,6 @@ public class MainActivity extends BaseActivity
 
         // people,board,club 스와이프 탭 view 관련
         // final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
-        Intent p = getIntent();
         viewPager = (ViewPager) findViewById(R.id.pager);
         TabPagerAdapter tabPagerAdapter = new TabPagerAdapter(
                 getSupportFragmentManager(),

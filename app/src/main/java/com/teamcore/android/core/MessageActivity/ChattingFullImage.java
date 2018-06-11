@@ -5,9 +5,9 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
+import com.github.chrisbanes.photoview.PhotoView;
 import com.teamcore.android.core.R;
 import com.teamcore.android.core.Util.GlideApp;
-import com.github.chrisbanes.photoview.PhotoView;
 
 
 /**

@@ -11,10 +11,12 @@ import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
-import com.teamcore.android.core.Activity.MainActivity;
-import com.teamcore.android.core.R;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.teamcore.android.core.Activity.MainActivity;
+import com.teamcore.android.core.LoginActivity.IntroActivity;
+import com.teamcore.android.core.MessageActivity.MessageActivity;
+import com.teamcore.android.core.R;
 
 /**
  * Created by godueol on 2018. 2. 24..
@@ -52,7 +54,7 @@ public class FirebaseRcevPushMsg extends FirebaseMessagingService {
                         SPUtil.increaseChatRoomBadge(room);
 
                         if (isCheck) {
-                            sendNotification(remoteMessage.getData().get("nick"), remoteMessage.getData().get("message"));
+                            sendNotification(remoteMessage.getData().get("nick"), remoteMessage.getData().get("message"), room);
                         }
                     }
                     break;
@@ -61,7 +63,7 @@ public class FirebaseRcevPushMsg extends FirebaseMessagingService {
                     SPUtil.increaseBadgeCount(getString(R.string.badgeFollow));
 
                     if (isCheck) {
-                        sendNotification(remoteMessage.getData().get("nick"), remoteMessage.getData().get("message"));
+                        sendNotification(remoteMessage.getData().get("nick"), remoteMessage.getData().get("message"), null);
                     }
                     break;
                 case "friend":
@@ -69,7 +71,7 @@ public class FirebaseRcevPushMsg extends FirebaseMessagingService {
                     SPUtil.increaseBadgeCount(getString(R.string.badgeFriend));
 
                     if (isCheck) {
-                        sendNotification(remoteMessage.getData().get("nick"), remoteMessage.getData().get("message"));
+                        sendNotification(remoteMessage.getData().get("nick"), remoteMessage.getData().get("message"), null);
                     }
                     break;
                 case "Like":
@@ -77,7 +79,7 @@ public class FirebaseRcevPushMsg extends FirebaseMessagingService {
                     SPUtil.setMainIcon(getString(R.string.mainAlarm), true);
                     SPUtil.setAlarmIcon(getString(R.string.navAlarm), true);
                     if (isCheck) {
-                        sendNotification(remoteMessage.getData().get("nick"), remoteMessage.getData().get("message"));
+                        sendNotification(remoteMessage.getData().get("nick"), remoteMessage.getData().get("message"), null);
                     }
                     break;
                 case "Post":
@@ -85,7 +87,7 @@ public class FirebaseRcevPushMsg extends FirebaseMessagingService {
                     SPUtil.increaseBadgeCount(getString(R.string.badgePost));
                     SPUtil.setAlarmIcon(getString(R.string.navAlarm), true);
                     if (isCheck) {
-                        sendNotification(remoteMessage.getData().get("nick"), remoteMessage.getData().get("message"));
+                        sendNotification(remoteMessage.getData().get("nick"), remoteMessage.getData().get("message"), null);
                     }
                     break;
                 case "Answer":
@@ -93,7 +95,7 @@ public class FirebaseRcevPushMsg extends FirebaseMessagingService {
                     SPUtil.setMainIcon(getString(R.string.mainAlarm), true);
                     SPUtil.setAlarmIcon(getString(R.string.navAlarm), true);
                     if (isCheck) {
-                        sendNotification(remoteMessage.getData().get("nick"), remoteMessage.getData().get("message"));
+                        sendNotification(remoteMessage.getData().get("nick"), remoteMessage.getData().get("message"), null);
                     }
                     break;
                 case "View":
@@ -116,11 +118,20 @@ public class FirebaseRcevPushMsg extends FirebaseMessagingService {
      *
      * @param messageBody FCM message body received.
      */
-    private void sendNotification(String title, String messageBody) {
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
-                PendingIntent.FLAG_ONE_SHOT);
+    private void sendNotification(String title, String messageBody, String roomId) {
+        Intent intent;
+        PendingIntent pendingIntent;
+
+        if (roomId == null) {
+            intent = new Intent(this, MainActivity.class);
+            pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT);
+        } else {
+            intent = new Intent(this, MainActivity.class);
+            intent.putExtra("chat","chat");
+            pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT);
+        }
 
         String channelId = "notification";
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -132,6 +143,14 @@ public class FirebaseRcevPushMsg extends FirebaseMessagingService {
                         .setAutoCancel(true)
                         .setSound(defaultSoundUri)
                         .setContentIntent(pendingIntent);
+
+
+        boolean isCheck = SPUtil.getSwitchState(getString(R.string.set_vibrate));
+        // 진동 제거
+        if (!isCheck) {
+            notificationBuilder.setVibrate(new long[]{0L});
+        }
+
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -145,4 +164,5 @@ public class FirebaseRcevPushMsg extends FirebaseMessagingService {
 
         notificationManager.notify(NotificationID.getID() /* ID of notification */, notificationBuilder.build());
     }
+
 }

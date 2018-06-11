@@ -41,7 +41,7 @@ public class ChatMessage {
         this.item = item;
         try {
             this.profileImage = item.getPicUrl();
-        }catch (Exception e){
+        } catch (Exception e) {
 
         }
     }

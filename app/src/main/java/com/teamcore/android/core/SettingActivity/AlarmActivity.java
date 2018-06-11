@@ -34,6 +34,7 @@ public class AlarmActivity extends AppCompatActivity implements CompoundButton.O
 
         SPUtil = new SharedPreferencesUtil(getApplicationContext());
 
+        Switch switch_vibrate = (Switch) findViewById(R.id.switch0);
         Switch switch_chat = (Switch) findViewById(R.id.switch1);
         Switch switch_follow = (Switch) findViewById(R.id.switch2);
         Switch switch_friend = (Switch) findViewById(R.id.switch3);
@@ -57,7 +58,10 @@ public class AlarmActivity extends AppCompatActivity implements CompoundButton.O
         switch_answer.setChecked(isCheck);
         isCheck = SPUtil.getSwitchState(getString(R.string.alertLike));
         switch_like.setChecked(isCheck);
+        isCheck = SPUtil.getSwitchState(getString(R.string.set_vibrate));
+        switch_vibrate.setChecked(isCheck);
 
+        switch_vibrate.setOnCheckedChangeListener(this);
         switch_chat.setOnCheckedChangeListener(this);
         switch_follow.setOnCheckedChangeListener(this);
         switch_friend.setOnCheckedChangeListener(this);
@@ -72,6 +76,9 @@ public class AlarmActivity extends AppCompatActivity implements CompoundButton.O
         int button = compoundButton.getId();
         String switch_name = null;
         switch (button) {
+            case R.id.switch0:
+                switch_name = getString(R.string.set_vibrate);
+                break;
             case R.id.switch1:
                 switch_name = getString(R.string.alertChat);
                 break;

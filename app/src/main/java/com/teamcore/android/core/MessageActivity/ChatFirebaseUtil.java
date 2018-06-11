@@ -16,20 +16,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.teamcore.android.core.Entity.User;
-import com.teamcore.android.core.Exception.NotSetAutoTimeException;
-import com.teamcore.android.core.MessageActivity.util.CryptoImeageName;
-import com.teamcore.android.core.MessageActivity.util.MessageVO;
-import com.teamcore.android.core.MessageActivity.util.RoomVO;
-import com.teamcore.android.core.PeopleFragment.GridItem;
-import com.teamcore.android.core.R;
-import com.teamcore.android.core.Util.FireBaseUtil;
-import com.teamcore.android.core.Util.FirebaseSendPushMsg;
-import com.teamcore.android.core.Util.GPSInfo;
-import com.teamcore.android.core.Util.GalleryPick;
-import com.teamcore.android.core.Util.RemoteConfig;
-import com.teamcore.android.core.Util.SharedPreferencesUtil;
-import com.teamcore.android.core.Util.UiUtil;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.LocationCallback;
@@ -44,6 +30,20 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.teamcore.android.core.Entity.User;
+import com.teamcore.android.core.Exception.NotSetAutoTimeException;
+import com.teamcore.android.core.MessageActivity.util.CryptoImeageName;
+import com.teamcore.android.core.MessageActivity.util.MessageVO;
+import com.teamcore.android.core.MessageActivity.util.RoomVO;
+import com.teamcore.android.core.PeopleFragment.GridItem;
+import com.teamcore.android.core.R;
+import com.teamcore.android.core.Util.FireBaseUtil;
+import com.teamcore.android.core.Util.FirebaseSendPushMsg;
+import com.teamcore.android.core.Util.GPSInfo;
+import com.teamcore.android.core.Util.GalleryPick;
+import com.teamcore.android.core.Util.RemoteConfig;
+import com.teamcore.android.core.Util.SharedPreferencesUtil;
+import com.teamcore.android.core.Util.UiUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -104,7 +104,7 @@ public class ChatFirebaseUtil {
         try {
             userPickurl = currentUser.getPicUrls().getThumbNail_picUrl1();
             targetPicurl = targetUser.getPicUrls().getThumbNail_picUrl1();
-        }catch (Exception e){
+        } catch (Exception e) {
 
         }
         SPUtil = new SharedPreferencesUtil(context);
@@ -123,7 +123,7 @@ public class ChatFirebaseUtil {
                     } catch (NotSetAutoTimeException e) {
                         e.printStackTrace();
                         Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-                        ActivityCompat.finishAffinity((Activity)context);
+                        ActivityCompat.finishAffinity((Activity) context);
                     }
                     databaseRef.child(chatRoomList).child(userUuid).child(targetUuid).child("lastViewTime").setValue(currentTime);
                 }
@@ -137,7 +137,7 @@ public class ChatFirebaseUtil {
 
     }
 
-    public void clearChatLog(){
+    public void clearChatLog() {
 
         final String roomId = roomName;
         SPUtil.removeChatRoomBadge(roomId);
@@ -163,6 +163,7 @@ public class ChatFirebaseUtil {
             }
         });
     }
+
     public void sendMessage(MessageVO message) throws NotSetAutoTimeException {
 
         String room = roomName;
@@ -180,7 +181,7 @@ public class ChatFirebaseUtil {
 
             childUpdates.put("/" + chatRoomList + "/" + userUuid + "/" + targetUuid + "/" + "lastViewTime", currentTime);
             childUpdates.put("/" + chatRoomList + "/" + userUuid + "/" + targetUuid + "/" + "lastChat", message.getContent());
-        } else if (message.getContent() == null) {          // 이미지일 경우
+        } else {          // 이미지일 경우
 
             childUpdates.put("/" + chat + "/" + room + "/" + key, message);
 
@@ -202,7 +203,7 @@ public class ChatFirebaseUtil {
 
         StorageReference imagesRef = storage.getReference().child(chat);
         long currentTime = UiUtil.getInstance().getCurrentTime(context);
-        final String imageName = CryptoImeageName.md5(Long.toString(currentTime)+userUuid);
+        final String imageName = CryptoImeageName.md5(Long.toString(currentTime) + userUuid);
         final StorageReference imageMessageRef = imagesRef.child(image + "/" + roomName + "/" + imageName);
 //        UploadTask uploadTask = imageMessageRef.putFile(outputFileUri);
 
@@ -223,12 +224,12 @@ public class ChatFirebaseUtil {
                             long currentTime = 0;
                             try {
                                 currentTime = getTime();
-                                MessageVO message = new MessageVO(uri.toString(), userUuid, currentUser.getId(), null, currentTime, 1, 1);
+                                MessageVO message = new MessageVO(uri.toString(), userUuid, currentUser.getId(), imageName, currentTime, 1, 1);
                                 sendMessage(message);
                             } catch (NotSetAutoTimeException e) {
                                 e.printStackTrace();
                                 Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-                                ActivityCompat.finishAffinity((Activity)context);
+                                ActivityCompat.finishAffinity((Activity) context);
                             }
 
                         }
@@ -238,7 +239,7 @@ public class ChatFirebaseUtil {
                             // Handle any errors
                         }
                     });
-    
+
                 }
             });
         } catch (Exception e) {
@@ -297,8 +298,8 @@ public class ChatFirebaseUtil {
                         public void onCancelled(DatabaseError databaseError) {
                         }
                     });
-                }catch (Exception e){
-                    item = new GridItem(0,null,null,null);
+                } catch (Exception e) {
+                    item = new GridItem(0, null, null, null);
                     item.setUuid(targetUuid);
                 }
 
@@ -436,7 +437,7 @@ public class ChatFirebaseUtil {
             }
         } else if (!message.getWriter().equals(userUuid) && message.getImage() == null) {
             chatMessage = new ChatMessage(message, false, false, item);
-        } else if (message.getWriter().equals(userUuid) && message.getContent() == null) {
+        } else if (message.getWriter().equals(userUuid)) {
             chatMessage = new ChatMessage(message, true, true);
             if (chatMessage.getCheck() == 1) {
                 uncheckMessageList.add(chatMessage);
@@ -457,9 +458,9 @@ public class ChatFirebaseUtil {
         chattingMessageAdapter.notifyDataSetChanged();
 
 
-        if (pos <= visiblieCompLastPosition ||  first && !key.equals(lastMessage) ) {
+        if (pos <= visiblieCompLastPosition || first && !key.equals(lastMessage)) {
             //맨마지막에서 2이내에 있을경우
-            chattingRecyclerview.scrollToPosition(chattingMessageAdapter.getItemCount()-1);
+            chattingRecyclerview.scrollToPosition(chattingMessageAdapter.getItemCount() - 1);
         } else if (!chatMessage.isMine() && !chatMessage.isImage()) {
             // 내것이 아니고 텍스트
             hideText.setText(message.getContent());
@@ -468,13 +469,13 @@ public class ChatFirebaseUtil {
             // 내것이 아니고 이미지
             hideText.setText("사진");
             overlay.setVisibility(View.VISIBLE);
-        } else  {
+        } else {
             // 내 메세지일경우
-            chattingRecyclerview.scrollToPosition(chattingMessageAdapter.getItemCount()-1);
+            chattingRecyclerview.scrollToPosition(chattingMessageAdapter.getItemCount() - 1);
         }
 
-        if(key.equals(lastMessage)){
-            chattingRecyclerview.scrollToPosition(chattingMessageAdapter.getItemCount()-1);
+        if (key.equals(lastMessage)) {
+            chattingRecyclerview.scrollToPosition(chattingMessageAdapter.getItemCount() - 1);
             first = false;
         }
     }
@@ -617,7 +618,7 @@ public class ChatFirebaseUtil {
                 } catch (NotSetAutoTimeException e) {
                     e.printStackTrace();
                     Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-                    ActivityCompat.finishAffinity((Activity)context);
+                    ActivityCompat.finishAffinity((Activity) context);
                 }
 
                 if (dataSnapshot.exists()) {

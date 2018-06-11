@@ -85,6 +85,7 @@
     <string name="report">신고</string>
     <string name="ok">확인</string>
 
+    <string name="set_vibrate">진동</string>
     <string name="set_new_message">새 메세지를 받았을 때</string>
     <string name="set_new_follower">새 팔로워가 추가됐을 때</string>
     <string name="set_new_friends">새 친구가 생겼을 때</string>
