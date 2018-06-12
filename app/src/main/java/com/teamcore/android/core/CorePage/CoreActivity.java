@@ -85,8 +85,12 @@ public class CoreActivity extends BlockBaseActivity {
     @SuppressLint("LogNotTimber")
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Intent intent = getIntent();
+        cUuid = intent.getStringExtra("uuid");
+        postId = intent.getStringExtra("postId");
+
         // 일반유저, 가장 오래된 친구 3명 이외에 다른 회원 코어 확인 불가능
-        if (!isOldFriends()) {
+        if (!isOldFriends(cUuid)) {
             Toast.makeText(this, "가장 오래된 친구 3명 이외에 다른 회원 코어 확인 불가능합니다", Toast.LENGTH_SHORT).show();
             finish();
         }
@@ -94,11 +98,6 @@ public class CoreActivity extends BlockBaseActivity {
         super.onCreate(savedInstanceState);
         // Get the view from new_activity.xml
         setContentView();
-
-        Intent intent = getIntent();
-        cUuid = intent.getStringExtra("uuid");
-        postId = intent.getStringExtra("postId");
-
 
         dc = DataContainer.getInstance();
 
@@ -147,9 +146,7 @@ public class CoreActivity extends BlockBaseActivity {
             SPUtil.setBlockMeUserCurrentActivity(getString(R.string.currentActivity), cUuid);
 
         list = new ArrayList<>();
-        checkCorePlus().done(isPlus -> {
-            coreListAdapter = new CoreListAdapter(list, this, cloudLitener, isPlus);
-        });
+        checkCorePlus().done(isPlus -> coreListAdapter = new CoreListAdapter(list, this, cloudLitener, isPlus));
         //coreListAdapter = getCoreListAdapter(list);
 
         recyclerView.setLayoutManager(layoutManager);
@@ -161,7 +158,7 @@ public class CoreActivity extends BlockBaseActivity {
 
     }
 
-    public boolean isOldFriends() {
+    public boolean isOldFriends(String cUuid) {
         return DataContainer.getInstance().isPlus || FireBaseUtil.getInstance().isOldFriends(cUuid) || DataContainer.getInstance().getUid().equals(cUuid);
     }
 

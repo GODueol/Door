@@ -48,7 +48,8 @@ public class CoreCloudActivity extends CoreActivity {
 
 
     // Friends check 안함
-    public void checkOldFriends() {
+    public boolean isOldFriends(String uuid) {
+        return true;
     }
 
     // Fab 버튼 없음
