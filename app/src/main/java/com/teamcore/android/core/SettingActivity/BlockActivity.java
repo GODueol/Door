@@ -42,12 +42,11 @@ public class BlockActivity extends UserListBaseActivity {
         super.onCreate(savedInstanceState);
 
         // 일반 유저 블럭 리스트 볼 수 없음
-        checkCorePlus().done(isPlus -> {
-           if(!isPlus){
-               Toast.makeText(BlockActivity.this, "일반 유저는 블럭 리스트를 볼 수 없습니다", Toast.LENGTH_SHORT).show();
-               finish();
-           }
-        });
+        if(!DataContainer.getInstance().isPlus)
+        {
+            Toast.makeText(BlockActivity.this, "일반 유저는 블럭 리스트를 볼 수 없습니다", Toast.LENGTH_SHORT).show();
+            finish();
+        }
 
         setContentView(R.layout.setting_block_activity);
 
@@ -89,7 +88,7 @@ public class BlockActivity extends UserListBaseActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.clear();
-        getMenuInflater().inflate(R.menu.block_activity_menu, menu);
+//        getMenuInflater().inflate(R.menu.block_activity_menu, menu);
         return super.onPrepareOptionsMenu(menu);
     }
 
