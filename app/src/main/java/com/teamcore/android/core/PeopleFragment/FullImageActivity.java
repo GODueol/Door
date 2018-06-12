@@ -1,11 +1,9 @@
 package com.teamcore.android.core.PeopleFragment;
 
 import android.annotation.SuppressLint;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -26,8 +24,6 @@ import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.reward.RewardItem;
 import com.google.android.gms.ads.reward.RewardedVideoAd;
 import com.google.android.gms.ads.reward.RewardedVideoAdListener;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.appindexing.Action;
 import com.google.firebase.appindexing.FirebaseUserActions;
@@ -54,6 +50,7 @@ import com.teamcore.android.core.Util.FirebaseSendPushMsg;
 import com.teamcore.android.core.Util.GPSInfo;
 import com.teamcore.android.core.Util.GlideApp;
 import com.teamcore.android.core.Util.UiUtil;
+import com.teamcore.android.core.WaterMark.ScreenshotSetApplication;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -128,7 +125,7 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.full_image_activity_main);
-//        ScreenshotSetApplication.getInstance().allowUserSaveScreenshot(true);
+        ScreenshotSetApplication.getInstance().allowUserSaveScreenshot(true);
 
         ButterKnife.bind(this);
 
@@ -203,31 +200,25 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
         if (item.getUuid().equals(DataContainer.getInstance().getUid())) {  // 본인
             message.setVisibility(View.INVISIBLE);  // 가림
         } else {
-            message.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (DataContainer.getInstance().isBlockWithMe(item.getUuid())) return;
-                    Intent intent = new Intent(getApplicationContext(), ChattingActivity.class);
-                    intent.putExtra("user", oUser);
-                    intent.putExtra("userUuid", item.getUuid());
-                    intent.putExtra("userPicuri", item.getPicUrl());
-                    startActivity(intent);
-                    checkCorePlus().done(isPlus -> {
-                        if (!isPlus) {
-                            SPUtil.increaseAds(mInterstitialAd, "FMainGrid");
-                        }
-                    });
-                }
+            message.setOnClickListener(v -> {
+                if (DataContainer.getInstance().isBlockWithMe(item.getUuid())) return;
+                Intent intent = new Intent(getApplicationContext(), ChattingActivity.class);
+                intent.putExtra("user", oUser);
+                intent.putExtra("userUuid", item.getUuid());
+                intent.putExtra("userPicuri", item.getPicUrl());
+                startActivity(intent);
+                checkCorePlus().done(isPlus -> {
+                    if (!isPlus) {
+                        SPUtil.increaseAds(mInterstitialAd, "FMainGrid");
+                    }
+                });
             });
         }
         //개인 화면에서 코어 액티비티로 넘어감
         core_enter = (RelativeLayout) findViewById(R.id.core_enter_layout);
-        core_enter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (DataContainer.getInstance().isBlockWithMe(item.getUuid())) return;
-                UiUtil.getInstance().goToCoreActivity(FullImageActivity.this, item.getUuid());
-            }
+        core_enter.setOnClickListener(v -> {
+            if (DataContainer.getInstance().isBlockWithMe(item.getUuid())) return;
+            UiUtil.getInstance().goToCoreActivity(FullImageActivity.this, item.getUuid());
         });
 
         // 개인정보 Set
@@ -394,66 +385,51 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
             addFriends.setImageResource(R.drawable.follow); // 팔로우 버튼
         }
 
-        addFriends.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (DataContainer.getInstance().isBlockWithMe(item.getUuid())) return;
-                String title, message;
-                final boolean isFollow = oUser.getFollowerUsers().containsKey(myUuid);  // 이미 팔로우한 유저
-                if (isFollow) {
-                    title = "팔로우 해제";
-                    message = "해당유저를 팔로우해제하시겠습니까?";
-                } else {
-                    title = "팔로우 신청";
-                    message = "해당유저를 팔로우하시겠습니까?";
-                }
-
-                UiUtil.getInstance().showDialog(FullImageActivity.this, title, message, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        UiUtil.getInstance().startProgressDialog(FullImageActivity.this);
-
-                        // 내 following 추가, 유저 follower c추가
-                        Task<Void> task = null;
-                        try {
-                            try {
-                                task = FireBaseUtil.getInstance().follow(FullImageActivity.this, oUser, item.getUuid(), isFollow);
-                            } catch (NotSetAutoTimeException e) {
-                                e.printStackTrace();
-                                Toast.makeText(FullImageActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                                ActivityCompat.finishAffinity(FullImageActivity.this);
-                            }
-                        } catch (ChildSizeMaxException e) {
-                            Toast.makeText(FullImageActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                            UiUtil.getInstance().stopProgressDialog();
-                            return;
-                        }
-                        if (task == null) {
-                            Toast.makeText(getBaseContext(), "오류 발생", Toast.LENGTH_SHORT).show();
-                            UiUtil.getInstance().stopProgressDialog();
-                            return;
-                        }
-                        task.addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                if (oUser.getFollowerUsers().containsKey(myUuid)) {   //  이미 팔로우함
-                                    addFriends.setImageResource(R.drawable.unfollow); // 팔로우 취소 버튼
-                                } else {
-                                    addFriends.setImageResource(R.drawable.follow); // 팔로우 버튼
-                                }
-                            }
-                        }).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                UiUtil.getInstance().stopProgressDialog();
-                            }
-                        });
-
-                    }
-                }, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                    }
-                });
+        addFriends.setOnClickListener(view -> {
+            if (DataContainer.getInstance().isBlockWithMe(item.getUuid())) return;
+            String title, message;
+            final boolean isFollow = oUser.getFollowerUsers().containsKey(myUuid);  // 이미 팔로우한 유저
+            if (isFollow) {
+                title = "팔로우 해제";
+                message = "해당유저를 팔로우해제하시겠습니까?";
+            } else {
+                title = "팔로우 신청";
+                message = "해당유저를 팔로우하시겠습니까?";
             }
+
+            UiUtil.getInstance().showDialog(FullImageActivity.this, title, message, (dialog, whichButton) -> {
+                UiUtil.getInstance().startProgressDialog(FullImageActivity.this);
+
+                // 내 following 추가, 유저 follower c추가
+                Task<Void> task = null;
+                try {
+                    try {
+                        task = FireBaseUtil.getInstance().follow(FullImageActivity.this, oUser, item.getUuid(), isFollow);
+                    } catch (NotSetAutoTimeException e) {
+                        e.printStackTrace();
+                        Toast.makeText(FullImageActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                        ActivityCompat.finishAffinity(FullImageActivity.this);
+                    }
+                } catch (ChildSizeMaxException e) {
+                    Toast.makeText(FullImageActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    UiUtil.getInstance().stopProgressDialog();
+                    return;
+                }
+                if (task == null) {
+                    Toast.makeText(getBaseContext(), "오류 발생", Toast.LENGTH_SHORT).show();
+                    UiUtil.getInstance().stopProgressDialog();
+                    return;
+                }
+                task.addOnSuccessListener(aVoid -> {
+                    if (oUser.getFollowerUsers().containsKey(myUuid)) {   //  이미 팔로우함
+                        addFriends.setImageResource(R.drawable.unfollow); // 팔로우 취소 버튼
+                    } else {
+                        addFriends.setImageResource(R.drawable.follow); // 팔로우 버튼
+                    }
+                }).addOnCompleteListener(task1 -> UiUtil.getInstance().stopProgressDialog());
+
+            }, (dialog, whichButton) -> {
+            });
         });
     }
 
@@ -484,152 +460,118 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
             }
 
             private void showBlockDialog() {
-                UiUtil.getInstance().showDialog(FullImageActivity.this, "유저 차단", "해당 유저를 차단하시겠습니까?", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        if (mUser.getBlockUsers().size() >= DataContainer.ChildrenMax) {
-                            Toast.makeText(FullImageActivity.this, DataContainer.ChildrenMax + "명을 초과할 수 없습니다", Toast.LENGTH_SHORT).show();
-                            return;
+                UiUtil.getInstance().showDialog(FullImageActivity.this, "유저 차단", "해당 유저를 차단하시겠습니까?", (dialog, whichButton) -> {
+                    if (mUser.getBlockUsers().size() >= DataContainer.ChildrenMax) {
+                        Toast.makeText(FullImageActivity.this, DataContainer.ChildrenMax + "명을 초과할 수 없습니다", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    mRewardedVideoAd.setRewardedVideoAdListener(new RewardedVideoAdListener() {
+                        @Override
+                        public void onRewardedVideoAdLoaded() {
+                            Log.d("test", "onRewardedVideoAdLoaded");
                         }
-                        mRewardedVideoAd.setRewardedVideoAdListener(new RewardedVideoAdListener() {
-                            @Override
-                            public void onRewardedVideoAdLoaded() {
-                                Log.d("test", "onRewardedVideoAdLoaded");
-                            }
 
-                            @Override
-                            public void onRewardedVideoAdOpened() {
-                                Log.d("test", "onRewardedVideoAdOpened" +
-                                        "");
+                        @Override
+                        public void onRewardedVideoAdOpened() {
+                            Log.d("test", "onRewardedVideoAdOpened" +
+                                    "");
 
-                            }
+                        }
 
-                            @Override
-                            public void onRewardedVideoStarted() {
-                                Log.d("test", "onRewardedVideoStarted");
-                            }
+                        @Override
+                        public void onRewardedVideoStarted() {
+                            Log.d("test", "onRewardedVideoStarted");
+                        }
 
-                            @Override
-                            public void onRewardedVideoAdClosed() {
-                                loadRewardedVideoAd();
-                                FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("blockCount").addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
-                                        if (dataSnapshot.exists()) {
-                                            int value = Integer.valueOf(dataSnapshot.getValue().toString());
-                                            Log.d("test", "몇개 : " + value);
-                                            if (value > 0) {
-                                                FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("blockCount").setValue(value - 1);
-                                                UiUtil.getInstance().startProgressDialog(FullImageActivity.this);
-                                                // blockUsers 추가
-                                                try {
-                                                    FireBaseUtil.getInstance().block(item.getUuid()).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                        @Override
-                                                        public void onSuccess(Void aVoid) {
-                                                            finish();
-                                                        }
-                                                    }).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                        @Override
-                                                        public void onComplete(@NonNull Task<Void> task) {
-                                                            UiUtil.getInstance().stopProgressDialog();
-                                                        }
-                                                    });
-                                                } catch (ChildSizeMaxException e) {
-                                                    Toast.makeText(FullImageActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                                                    UiUtil.getInstance().stopProgressDialog();
-                                                }
+                        @Override
+                        public void onRewardedVideoAdClosed() {
+                            loadRewardedVideoAd();
+                            FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("blockCount").addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    if (dataSnapshot.exists()) {
+                                        int value = Integer.valueOf(dataSnapshot.getValue().toString());
+                                        Log.d("test", "몇개 : " + value);
+                                        if (value > 0) {
+                                            FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("blockCount").setValue(value - 1);
+                                            UiUtil.getInstance().startProgressDialog(FullImageActivity.this);
+                                            // blockUsers 추가
+                                            try {
+                                                FireBaseUtil.getInstance().block(item.getUuid()).addOnSuccessListener(aVoid -> finish()).addOnCompleteListener(task -> UiUtil.getInstance().stopProgressDialog());
+                                            } catch (ChildSizeMaxException e) {
+                                                Toast.makeText(FullImageActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                UiUtil.getInstance().stopProgressDialog();
                                             }
                                         }
                                     }
-
-                                    @Override
-                                    public void onCancelled(DatabaseError databaseError) {
-
-                                    }
-                                });
-                                Log.d("test", "onRewardedVideoAdClosed");
-                            }
-
-                            @Override
-                            public void onRewarded(RewardItem rewardItem) {
-                                FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("blockCount").setValue(rewardItem.getAmount());
-                            }
-
-                            @Override
-                            public void onRewardedVideoAdLeftApplication() {
-
-                                Log.d("test", "onRewardedVideoAdLeftApplication");
-                            }
-
-                            @Override
-                            public void onRewardedVideoAdFailedToLoad(int i) {
-                                Log.d("test", "onRewardedVideoAdFailedToLoad" + i);
-                            }
-                        });
-
-                        checkCorePlus().done(isPlus -> {
-                            if (!isPlus) {
-                                FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("blockCount").addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
-                                        if (dataSnapshot.exists()) {
-                                            int value = Integer.valueOf(dataSnapshot.getValue().toString());
-                                            Log.d("test", "몇개 : " + value);
-                                            if (value > 0) {
-                                                FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("blockCount").setValue(value - 1);
-                                                UiUtil.getInstance().startProgressDialog(FullImageActivity.this);
-                                                // blockUsers 추가
-                                                try {
-                                                    FireBaseUtil.getInstance().block(item.getUuid()).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                        @Override
-                                                        public void onSuccess(Void aVoid) {
-                                                            finish();
-                                                        }
-                                                    }).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                        @Override
-                                                        public void onComplete(@NonNull Task<Void> task) {
-                                                            UiUtil.getInstance().stopProgressDialog();
-                                                        }
-                                                    });
-                                                } catch (ChildSizeMaxException e) {
-                                                    Toast.makeText(FullImageActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                                                    UiUtil.getInstance().stopProgressDialog();
-                                                }
-                                            } else {
-                                                mRewardedVideoAd.show();
-                                            }
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onCancelled(DatabaseError databaseError) {
-
-                                    }
-                                });
-                            } else {
-                                UiUtil.getInstance().startProgressDialog(FullImageActivity.this);
-                                // blockUsers 추가
-                                try {
-                                    FireBaseUtil.getInstance().block(item.getUuid()).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            finish();
-                                        }
-                                    }).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            UiUtil.getInstance().stopProgressDialog();
-                                        }
-                                    });
-                                } catch (ChildSizeMaxException e) {
-                                    Toast.makeText(FullImageActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                                    UiUtil.getInstance().stopProgressDialog();
                                 }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
+                            Log.d("test", "onRewardedVideoAdClosed");
+                        }
+
+                        @Override
+                        public void onRewarded(RewardItem rewardItem) {
+                            FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("blockCount").setValue(rewardItem.getAmount());
+                        }
+
+                        @Override
+                        public void onRewardedVideoAdLeftApplication() {
+
+                            Log.d("test", "onRewardedVideoAdLeftApplication");
+                        }
+
+                        @Override
+                        public void onRewardedVideoAdFailedToLoad(int i) {
+                            Log.d("test", "onRewardedVideoAdFailedToLoad" + i);
+                        }
+                    });
+
+                    checkCorePlus().done(isPlus -> {
+                        if (!isPlus) {
+                            FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("blockCount").addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    if (dataSnapshot.exists()) {
+                                        int value = Integer.valueOf(dataSnapshot.getValue().toString());
+                                        Log.d("test", "몇개 : " + value);
+                                        if (value > 0) {
+                                            FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("blockCount").setValue(value - 1);
+                                            UiUtil.getInstance().startProgressDialog(FullImageActivity.this);
+                                            // blockUsers 추가
+                                            try {
+                                                FireBaseUtil.getInstance().block(item.getUuid()).addOnSuccessListener(aVoid -> finish()).addOnCompleteListener(task -> UiUtil.getInstance().stopProgressDialog());
+                                            } catch (ChildSizeMaxException e) {
+                                                Toast.makeText(FullImageActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                UiUtil.getInstance().stopProgressDialog();
+                                            }
+                                        } else {
+                                            mRewardedVideoAd.show();
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
+                        } else {
+                            UiUtil.getInstance().startProgressDialog(FullImageActivity.this);
+                            // blockUsers 추가
+                            try {
+                                FireBaseUtil.getInstance().block(item.getUuid()).addOnSuccessListener(aVoid -> finish()).addOnCompleteListener(task -> UiUtil.getInstance().stopProgressDialog());
+                            } catch (ChildSizeMaxException e) {
+                                Toast.makeText(FullImageActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                UiUtil.getInstance().stopProgressDialog();
                             }
-                        });
-                    }
-                }, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                    }
+                        }
+                    });
+                }, (dialog, whichButton) -> {
                 });
             }
         });
@@ -665,61 +607,46 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
         } else {
             picOpen.setImageResource(R.drawable.picture_lock); // "이 아이콘을 클릭하면 사진을 잠그겠다"
         }
-        picOpen.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (DataContainer.getInstance().isBlockWithMe(item.getUuid())) return;
-                String title, message;
-                final boolean isLock = !mUser.getUnLockUsers().containsKey(item.getUuid());  // 이미 해제한 유저
-                if (isLock) {
-                    title = "사진 해제";
-                    message = "이 회원에게 당신의 잠긴 사진을 공개하시겠습니까?";
-                } else {
-                    title = "사진 잠금";
-                    message = "이 회원에게 당신의 사진을 잠그시겠습니까?";
-                }
-
-                UiUtil.getInstance().showDialog(FullImageActivity.this, title, message, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        UiUtil.getInstance().startProgressDialog(FullImageActivity.this);
-                        if (isLock) {
-                            try {
-                                mUser.getUnLockUsers().put(item.getUuid(), UiUtil.getInstance().getCurrentTime(FullImageActivity.this)); // 해제
-                            } catch (NotSetAutoTimeException e) {
-                                e.printStackTrace();
-                                Toast.makeText(FullImageActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                                ActivityCompat.finishAffinity(FullImageActivity.this);
-                            }
-
-                        } else {
-                            mUser.getUnLockUsers().remove(item.getUuid());  // 잠금
-
-                        }
-                        DataContainer.getInstance().getUsersRef().child(myUuid).setValue(mUser)
-                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        if (isLock) {
-                                            picOpen.setImageResource(R.drawable.picture_lock);    // 해제하기 (현재 사진이 잠겼다는 것을 암시함)
-                                            Toast.makeText(FullImageActivity.this, "잠긴 사진을 열었습니다.", Toast.LENGTH_SHORT).show();
-                                            sendEventMessage(myUuid, mUser.getId(), item.getUuid(), getString(R.string.alertUnlockPic), FullImageActivity.this);
-                                        } else {
-                                            picOpen.setImageResource(R.drawable.picture_unlock);  // 잠금 (현재 사진이 해제되어 있다는 암시함)
-                                            Toast.makeText(FullImageActivity.this, "사진을 비공개 합니다.", Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
-                                }).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                UiUtil.getInstance().stopProgressDialog();
-                            }
-                        });
-                    }
-                }, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                    }
-                });
+        picOpen.setOnClickListener(view -> {
+            if (DataContainer.getInstance().isBlockWithMe(item.getUuid())) return;
+            String title, message;
+            final boolean isLock = !mUser.getUnLockUsers().containsKey(item.getUuid());  // 이미 해제한 유저
+            if (isLock) {
+                title = "사진 해제";
+                message = "이 회원에게 당신의 잠긴 사진을 공개하시겠습니까?";
+            } else {
+                title = "사진 잠금";
+                message = "이 회원에게 당신의 사진을 잠그시겠습니까?";
             }
+
+            UiUtil.getInstance().showDialog(FullImageActivity.this, title, message, (dialog, whichButton) -> {
+                UiUtil.getInstance().startProgressDialog(FullImageActivity.this);
+                if (isLock) {
+                    try {
+                        mUser.getUnLockUsers().put(item.getUuid(), UiUtil.getInstance().getCurrentTime(FullImageActivity.this)); // 해제
+                    } catch (NotSetAutoTimeException e) {
+                        e.printStackTrace();
+                        Toast.makeText(FullImageActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                        ActivityCompat.finishAffinity(FullImageActivity.this);
+                    }
+
+                } else {
+                    mUser.getUnLockUsers().remove(item.getUuid());  // 잠금
+
+                }
+                DataContainer.getInstance().getUsersRef().child(myUuid).setValue(mUser)
+                        .addOnSuccessListener(aVoid -> {
+                            if (isLock) {
+                                picOpen.setImageResource(R.drawable.picture_lock);    // 해제하기 (현재 사진이 잠겼다는 것을 암시함)
+                                Toast.makeText(FullImageActivity.this, "잠긴 사진을 열었습니다.", Toast.LENGTH_SHORT).show();
+                                sendEventMessage(myUuid, mUser.getId(), item.getUuid(), getString(R.string.alertUnlockPic), FullImageActivity.this);
+                            } else {
+                                picOpen.setImageResource(R.drawable.picture_unlock);  // 잠금 (현재 사진이 해제되어 있다는 암시함)
+                                Toast.makeText(FullImageActivity.this, "사진을 비공개 합니다.", Toast.LENGTH_SHORT).show();
+                            }
+                        }).addOnCompleteListener(task -> UiUtil.getInstance().stopProgressDialog());
+            }, (dialog, whichButton) -> {
+            });
         });
     }
 
@@ -789,13 +716,13 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
     public void onResume() {
         super.onResume();
 
-//        ScreenshotSetApplication.getInstance().registerScreenshotObserver();
+        ScreenshotSetApplication.getInstance().registerScreenshotObserver();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-//        ScreenshotSetApplication.getInstance().unregisterScreenshotObserver();
+        ScreenshotSetApplication.getInstance().unregisterScreenshotObserver();
     }
 
     @Override

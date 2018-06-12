@@ -56,6 +56,7 @@ import com.teamcore.android.core.Util.bilingUtil.IabHelper;
 import com.teamcore.android.core.Util.bilingUtil.IabResult;
 import com.teamcore.android.core.Util.bilingUtil.Inventory;
 import com.teamcore.android.core.Util.bilingUtil.Purchase;
+import com.teamcore.android.core.WaterMark.ScreenshotSetApplication;
 
 import java.util.ArrayList;
 
@@ -102,7 +103,7 @@ public class CoreActivity extends BlockBaseActivity {
         dc = DataContainer.getInstance();
 
         //스크린샷 방지
-//        ScreenshotSetApplication.getInstance().allowUserSaveScreenshot(false);
+        ScreenshotSetApplication.getInstance().allowUserSaveScreenshot(false);
 
         toolbar = (Toolbar) findViewById(
                 R.id.toolbar);
@@ -433,13 +434,13 @@ public class CoreActivity extends BlockBaseActivity {
         }
 
         super.onResume();
-//        ScreenshotSetApplication.getInstance().registerScreenshotObserver();
+        ScreenshotSetApplication.getInstance().registerScreenshotObserver();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-//        ScreenshotSetApplication.getInstance().unregisterScreenshotObserver();
+        ScreenshotSetApplication.getInstance().unregisterScreenshotObserver();
         coreListAdapter.clickPause();
     }
 

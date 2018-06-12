@@ -68,6 +68,7 @@ import com.teamcore.android.core.Util.bilingUtil.IabHelper;
 import com.teamcore.android.core.Util.bilingUtil.IabResult;
 import com.teamcore.android.core.Util.bilingUtil.Inventory;
 import com.teamcore.android.core.Util.bilingUtil.Purchase;
+import com.teamcore.android.core.WaterMark.ScreenshotSetApplication;
 
 /**
  * drawer / viewpager drag duplication issue
@@ -107,7 +108,7 @@ public class MainActivity extends BaseActivity
         setContentView(R.layout.activity_main);
 
         SPUtil = new SharedPreferencesUtil(getApplicationContext());
-//        ScreenshotSetApplication.getInstance().allowUserSaveScreenshot(true);
+        ScreenshotSetApplication.getInstance().allowUserSaveScreenshot(true);
         // 블락 탐지 엑티비티 Uuid 초기화
         // (Main View)네비게이션바 관련
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -215,9 +216,7 @@ public class MainActivity extends BaseActivity
         }
         nav_alarm.setOnClickListener(v -> {
             SPUtil.setAlarmIcon(getString(R.string.navAlarm), false);
-            checkCorePlus().done(isPlus -> {
-                new NavAlarmDialog(MainActivity.this, isPlus).show();
-            });
+            checkCorePlus().done(isPlus -> new NavAlarmDialog(MainActivity.this, isPlus).show());
         });
 
         // Set Profile Pic
@@ -594,13 +593,13 @@ public class MainActivity extends BaseActivity
         super.onResume();
         SPUtil.setBlockMeUserCurrentActivity(getString(R.string.currentActivity), null);
         checkMainToggle();
-//        ScreenshotSetApplication.getInstance().registerScreenshotObserver();
+        ScreenshotSetApplication.getInstance().registerScreenshotObserver();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-//        ScreenshotSetApplication.getInstance().unregisterScreenshotObserver();
+        ScreenshotSetApplication.getInstance().unregisterScreenshotObserver();
     }
 
     @Override

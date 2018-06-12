@@ -5,11 +5,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 
+import com.squareup.otto.Subscribe;
 import com.teamcore.android.core.Event.TargetUserBlocksMeEvent;
 import com.teamcore.android.core.R;
 import com.teamcore.android.core.Util.BaseActivity.BlockBaseActivity;
 import com.teamcore.android.core.Util.ViewPagerFixed;
-import com.squareup.otto.Subscribe;
+import com.teamcore.android.core.WaterMark.ScreenshotSetApplication;
 
 import java.util.ArrayList;
 
@@ -26,7 +27,7 @@ public class DetailImageActivity extends BlockBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.full_image_4_activity);
 
-//        ScreenshotSetApplication.getInstance().allowUserSaveScreenshot(true);
+        ScreenshotSetApplication.getInstance().allowUserSaveScreenshot(true);
 
         Intent intent = getIntent();
         picUrlList = intent.getStringArrayListExtra("picUrlList");
@@ -46,13 +47,13 @@ public class DetailImageActivity extends BlockBaseActivity {
     @Override
     public void onResume() {
         super.onResume();
-//        ScreenshotSetApplication.getInstance().registerScreenshotObserver();
+        ScreenshotSetApplication.getInstance().registerScreenshotObserver();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-//        ScreenshotSetApplication.getInstance().unregisterScreenshotObserver();
+        ScreenshotSetApplication.getInstance().unregisterScreenshotObserver();
     }
 
     @Subscribe
