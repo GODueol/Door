@@ -29,6 +29,8 @@ import java.util.Map;
 
 import io.reactivex.Observable;
 
+import static com.teamcore.android.core.Util.RemoteConfig.CorePossibleOldFriendCount;
+
 public class FireBaseUtil {
     public static final String currentLocationPath = "location/users";
     private static final FireBaseUtil ourInstance = new FireBaseUtil();
@@ -154,7 +156,6 @@ public class FireBaseUtil {
         childUpdate.put("/" + oUuid + "/viewedMeUsers/" + mUuid, null);
 
         // 채팅 관계 모두 삭제(DB)
-        //TODO:미완성
         FirebaseDatabase.getInstance().getReference("chatRoomList").child(mUuid).child(oUuid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -360,11 +361,11 @@ public class FireBaseUtil {
         return FirebaseDatabase.getInstance().getReference().child("prevents/post").child(uuid);
     }
 
-    /* 가장 오래된 친구 3명인지 확인 */
+    /* 가장 오래된 친구 CorePossibleOldFriendCount 명인지 확인 */
     public boolean isOldFriends(String uuid) {
         return Observable.fromIterable(DataContainer.getInstance().getUser().getFriendUsers().entrySet())
                 .sorted((a, b) -> (int) (a.getValue() - b.getValue()))
-                .take(3)
+                .take(CorePossibleOldFriendCount)
                 .toMap(Map.Entry::getKey, Map.Entry::getValue).blockingGet()
                 .keySet().contains(uuid);
     }

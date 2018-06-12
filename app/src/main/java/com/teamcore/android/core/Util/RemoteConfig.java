@@ -22,6 +22,8 @@ public class RemoteConfig {
     public static int FriendsAdCount = 3;
     public static int ProfileChatAdCount = 0;
 
+    public static int CorePossibleOldFriendCount = 3;
+
     static public void getConfig(Activity activity){
         // Remote Config
         FirebaseRemoteConfig mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
@@ -65,5 +67,6 @@ public class RemoteConfig {
         ChatAdCount = (int) mFirebaseRemoteConfig.getLong("ChatAdCount");
         FriendsAdCount = (int) mFirebaseRemoteConfig.getLong("FriendsAdCount");
         ProfileChatAdCount = (int) mFirebaseRemoteConfig.getLong("ProfileChatAdCount");
+        CorePossibleOldFriendCount = (int) mFirebaseRemoteConfig.getLong("CorePossibleOldFriendCount");
     }
 }

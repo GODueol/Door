@@ -60,6 +60,8 @@ import com.teamcore.android.core.WaterMark.ScreenshotSetApplication;
 
 import java.util.ArrayList;
 
+import static com.teamcore.android.core.Util.RemoteConfig.CorePossibleOldFriendCount;
+
 
 public class CoreActivity extends BlockBaseActivity {
 
@@ -92,7 +94,7 @@ public class CoreActivity extends BlockBaseActivity {
 
         // 일반유저, 가장 오래된 친구 3명 이외에 다른 회원 코어 확인 불가능
         if (!isOldFriends(cUuid)) {
-            Toast.makeText(this, "가장 오래된 친구 3명 이외에 다른 회원 코어 확인 불가능합니다", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "가장 오래된 친구 " + CorePossibleOldFriendCount + "명 이외에 다른 회원 코어 확인 불가능합니다", Toast.LENGTH_SHORT).show();
             finish();
         }
 

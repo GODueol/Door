@@ -45,7 +45,10 @@
         <key>ProfileChatAdCount</key>
         <value>0</value>
     </entry>
-
+    <entry>
+        <key>CorePossibleOldFriendCount</key>
+        <value>3</value>
+    </entry>
 
 </defaultsMap>
     <!-- END xml_defaults -->

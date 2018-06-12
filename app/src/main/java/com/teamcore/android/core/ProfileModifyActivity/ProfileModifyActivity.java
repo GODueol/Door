@@ -214,7 +214,6 @@ public class ProfileModifyActivity extends BaseActivity implements NumberPicker.
         introEditText.setText(user.getIntro());
 
         // 제재 시, 개인정보 바꾸지 못하도록
-        // TODO : 눌렀을 때 제재조치기간인지 표시하는 기능을 넣어야하는지 알아보기
         UiUtil.getInstance().checkUserPrevent(ProfileModifyActivity.this,(isRelease, releaseDate) ->{
             _idText.setEnabled(isRelease);
             agePick.setEnabled(isRelease);
