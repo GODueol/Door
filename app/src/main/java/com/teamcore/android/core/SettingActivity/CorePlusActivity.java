@@ -1,5 +1,6 @@
 package com.teamcore.android.core.SettingActivity;
 
+import android.annotation.SuppressLint;
 import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
@@ -13,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.vending.billing.IInAppBillingService;
@@ -38,10 +40,13 @@ public class CorePlusActivity extends AppCompatActivity {
     ServiceConnection mServiceConn;
     IabHelper iaphelper;
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.setting_coreplus_activity);
+
+        int contentView = (DataContainer.getInstance().isPlus ? R.layout.setting_coreplus_activity : R.layout.setting_normal_activity);
+        setContentView(contentView);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -66,6 +71,9 @@ public class CorePlusActivity extends AppCompatActivity {
         setBilingService();
         Button btn_cp_subs = (Button) findViewById(R.id.btn_cp_subs);
         btn_cp_subs.setOnClickListener(view -> buyItem(getString(R.string.subscribe)));
+
+        TextView sub_txt2 = (TextView) findViewById(R.id.sub_txt2);
+        sub_txt2.setText(DataContainer.getInstance().getUser().getId() + sub_txt2.getText().toString());
 
     }
 
