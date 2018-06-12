@@ -4,9 +4,9 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.google.android.gms.ads.InterstitialAd;
 import com.teamcore.android.core.Exception.NotSetAutoTimeException;
 import com.teamcore.android.core.R;
-import com.google.android.gms.ads.InterstitialAd;
 
 /**
  * Created by Administrator on 2018-03-08.
@@ -20,6 +20,7 @@ public class SharedPreferencesUtil {
     private SharedPreferences sharedPref_badge;
     private SharedPreferences sharedPref_friends;
     private SharedPreferences sharedPref_notice;
+
     private SharedPreferences sharedPref_ad;
 
     private SharedPreferences.Editor editor;
@@ -189,18 +190,29 @@ public class SharedPreferencesUtil {
         editor_notice.putBoolean(key, true).apply();
     }
 
-
-
     // 코어 공지 가능 여부
     public boolean isCoreNoticePossible(Context context) throws NotSetAutoTimeException {
+        return isPossibleView(sharedPref_notice.getLong("coreNoticeCheckDate", -1));
+    }
+
+    // 코어 공지 가능 여부
+    public boolean isWeeklyTopicPossible(Context context) throws NotSetAutoTimeException {
+        return isPossibleView(sharedPref_notice.getLong("weeklyTopicDate", -1));
+    }
+
+    private boolean isPossibleView(long checkDate) throws NotSetAutoTimeException {
         long currentDate = UiUtil.getInstance().getCurrentTime(context);
-        long checkDate = sharedPref_notice.getLong("coreNoticeCheckDate", -1);
         return checkDate == -1 || currentDate - checkDate > DataContainer.SecToDay;
     }
 
     // 코어 공지 읽은 날짜 저장
     public void putCoreNoticeCheck(Context context) throws NotSetAutoTimeException {
         editor_notice.putLong("coreNoticeCheckDate", UiUtil.getInstance().getCurrentTime(context)).apply();
+    }
+
+    // 코어 공지 읽은 날짜 저장
+    public void putWeeklyTopicCheck(Context context) throws NotSetAutoTimeException {
+        editor_notice.putLong("weeklyTopicDate", UiUtil.getInstance().getCurrentTime(context)).apply();
     }
 
     // 처음 접속시 광고 횟수 초기화

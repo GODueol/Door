@@ -1,9 +1,7 @@
 package com.teamcore.android.core.FriendsActivity;
 
-import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.internal.BottomNavigationMenuView;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.widget.DividerItemDecoration;
@@ -12,7 +10,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.MenuItem;
 import android.view.View;
 
 import com.google.firebase.database.DataSnapshot;
@@ -24,7 +21,6 @@ import com.teamcore.android.core.R;
 import com.teamcore.android.core.Util.BaseActivity.UserListBaseActivity;
 import com.teamcore.android.core.Util.DataContainer;
 import com.teamcore.android.core.Util.SharedPreferencesUtil;
-import com.teamcore.android.core.Util.UiUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,52 +57,49 @@ public class FriendsActivity extends UserListBaseActivity implements SharedPrefe
 
         BottomNavigationMenuView bottomNavigationMenuView = (BottomNavigationMenuView) navigation.getChildAt(0);
 
-        BottomNavigationView.OnNavigationItemSelectedListener selectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                if (items.size() != 0 && navigation.getMenu().findItem(navigation.getSelectedItemId()).equals(item)) {
-                    switch (item.getItemId()) {
-                        case R.id.navigation_friends:
-                            SPUtil.removeFriendsBadge(getString(R.string.badgeFriend));
-                            return true;
-                        case R.id.navigation_receive:
-                            SPUtil.removeFriendsBadge(getString(R.string.badgeFollow));
-                            return true;
-                        case R.id.navigation_send:
-                            SPUtil.removeFriendsBadge(getString(R.string.badgeFollowing));
-                            return true;
-                        case R.id.navigation_recent:
-                            SPUtil.switchBadgeState(getString(R.string.badgeView), false);
-                            return true;
-                    }
-
-                    return true;
-                }
-                Log.d("test", "처음");
+        BottomNavigationView.OnNavigationItemSelectedListener selectedListener = item -> {
+            if (items.size() != 0 && navigation.getMenu().findItem(navigation.getSelectedItemId()).equals(item)) {
                 switch (item.getItemId()) {
                     case R.id.navigation_friends:
-                        if (!firstView) {
-                            SPUtil.removeFriendsBadge(getString(R.string.badgeFriend));
-                        } else {
-                            firstView = false;
-                        }
-                        setRecyclerView(items, adapter, "friendUsers", R.menu.friend_menu);
+                        SPUtil.removeFriendsBadge(getString(R.string.badgeFriend));
                         return true;
                     case R.id.navigation_receive:
                         SPUtil.removeFriendsBadge(getString(R.string.badgeFollow));
-                        setRecyclerView(items, adapter, "followerUsers", R.menu.follower_menu);
                         return true;
                     case R.id.navigation_send:
                         SPUtil.removeFriendsBadge(getString(R.string.badgeFollowing));
-                        setRecyclerView(items, adapter, "followingUsers", R.menu.following_menu);
                         return true;
                     case R.id.navigation_recent:
                         SPUtil.switchBadgeState(getString(R.string.badgeView), false);
-                        setRecyclerView(items, adapter, "viewedMeUsers", R.menu.viewed_me_menu);
                         return true;
                 }
-                return false;
+
+                return true;
             }
+            Log.d("test", "처음");
+            switch (item.getItemId()) {
+                case R.id.navigation_friends:
+                    if (!firstView) {
+                        SPUtil.removeFriendsBadge(getString(R.string.badgeFriend));
+                    } else {
+                        firstView = false;
+                    }
+                    setRecyclerView(items, adapter, "friendUsers", R.menu.friend_menu);
+                    return true;
+                case R.id.navigation_receive:
+                    SPUtil.removeFriendsBadge(getString(R.string.badgeFollow));
+                    setRecyclerView(items, adapter, "followerUsers", R.menu.follower_menu);
+                    return true;
+                case R.id.navigation_send:
+                    SPUtil.removeFriendsBadge(getString(R.string.badgeFollowing));
+                    setRecyclerView(items, adapter, "followingUsers", R.menu.following_menu);
+                    return true;
+                case R.id.navigation_recent:
+                    SPUtil.switchBadgeState(getString(R.string.badgeView), false);
+                    setRecyclerView(items, adapter, "viewedMeUsers", R.menu.viewed_me_menu);
+                    return true;
+            }
+            return false;
         };
         navigation.setOnNavigationItemSelectedListener(selectedListener);
 
@@ -128,17 +121,7 @@ public class FriendsActivity extends UserListBaseActivity implements SharedPrefe
 
                 // 리사이클뷰
                 items = new ArrayList<>();
-                /*
-                이부분을 넣으면 비동기문제때문인지 널문제가 나버리네요.. 코어플러스때매 어뎁터에 넘겨주는방법 뿐인데 어떻게
-                바로 감이 안잡히네요 ㅜㅜ.. 핼프미..
-
-                checkCorePlus().done(isPlus -> {
-                                adapter = new UserListAdapter(FriendsActivity.this, items,isPlus);
-                });
-                */
-
-                adapter = new UserListAdapter(FriendsActivity.this, items);
-
+                adapter = new UserListAdapter(FriendsActivity.this, items, DataContainer.getInstance().isPlus);
                 LinearLayoutManager layoutManager = new LinearLayoutManager(FriendsActivity.this);
                 recyclerView.setLayoutManager(layoutManager);
                 recyclerView.setAdapter(adapter);

@@ -13,13 +13,6 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.teamcore.android.core.Activity.MainActivity;
-import com.teamcore.android.core.Entity.User;
-import com.teamcore.android.core.R;
-import com.teamcore.android.core.Util.DataContainer;
-import com.teamcore.android.core.Util.SharedPreferencesUtil;
-import com.teamcore.android.core.Util.UiUtil;
-import com.teamcore.android.core.Util.setPermission;
 import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -27,6 +20,13 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.gun0912.tedpermission.PermissionListener;
+import com.teamcore.android.core.Activity.MainActivity;
+import com.teamcore.android.core.Entity.User;
+import com.teamcore.android.core.R;
+import com.teamcore.android.core.Util.DataContainer;
+import com.teamcore.android.core.Util.SharedPreferencesUtil;
+import com.teamcore.android.core.Util.UiUtil;
+import com.teamcore.android.core.Util.setPermission;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -3,6 +3,7 @@ package com.teamcore.android.core.Util;
 import android.app.Activity;
 import android.util.Log;
 
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.teamcore.android.core.BuildConfig;
@@ -24,7 +25,13 @@ public class RemoteConfig {
 
     public static int CorePossibleOldFriendCount = 3;
 
-    static public void getConfig(Activity activity){
+    public static String WtBigTitle = "";
+    public static String WtTitleKo = "";
+    public static String WtTitleEn = "";
+    public static String WtSubKo = "";
+    public static String WtSubEn = "";
+
+    static public Task<Void> getConfig(Activity activity){
         // Remote Config
         FirebaseRemoteConfig mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
 
@@ -37,7 +44,7 @@ public class RemoteConfig {
         // default
         mFirebaseRemoteConfig.setDefaults(R.xml.remote_config_defaults);
 
-        mFirebaseRemoteConfig.fetch(0)   // 요청 주기 , 0이면 실행할때마다
+        return mFirebaseRemoteConfig.fetch(0)   // 요청 주기 , 0이면 실행할때마다
                 .addOnCompleteListener(activity, task -> {
                     if (task.isSuccessful()) {
                         Log.d("KBJ","Fetch Succeeded");
@@ -68,5 +75,11 @@ public class RemoteConfig {
         FriendsAdCount = (int) mFirebaseRemoteConfig.getLong("FriendsAdCount");
         ProfileChatAdCount = (int) mFirebaseRemoteConfig.getLong("ProfileChatAdCount");
         CorePossibleOldFriendCount = (int) mFirebaseRemoteConfig.getLong("CorePossibleOldFriendCount");
+
+        WtBigTitle = mFirebaseRemoteConfig.getString("WtBigTitle");
+        WtTitleKo = mFirebaseRemoteConfig.getString("WtTitleKo");
+        WtTitleEn = mFirebaseRemoteConfig.getString("WtTitleEn");
+        WtSubKo = mFirebaseRemoteConfig.getString("WtSubKo");
+        WtSubEn = mFirebaseRemoteConfig.getString("WtSubEn");
     }
 }

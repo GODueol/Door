@@ -1,6 +1,7 @@
 package com.teamcore.android.core.Activity;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
@@ -25,9 +26,11 @@ import android.text.SpannableString;
 import android.text.style.TextAppearanceSpan;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -308,8 +311,7 @@ public class MainActivity extends BaseActivity
         });
 
         // remoteConfig
-        RemoteConfig.getConfig(this);
-
+        RemoteConfig.getConfig(this).addOnCompleteListener(task -> showWeeklyTopicDialog());
     }
 
     IabHelper.QueryInventoryFinishedListener mGotInventoryListener = new IabHelper.QueryInventoryFinishedListener() {
@@ -594,6 +596,46 @@ public class MainActivity extends BaseActivity
         SPUtil.setBlockMeUserCurrentActivity(getString(R.string.currentActivity), null);
         checkMainToggle();
         ScreenshotSetApplication.getInstance().registerScreenshotObserver();
+    }
+
+    private void showWeeklyTopicDialog() {
+        try {
+            if (SPUtil.isWeeklyTopicPossible(MainActivity.this)) {
+
+                AlertDialog.Builder adb = new AlertDialog.Builder(this);
+                LayoutInflater adbInflater = LayoutInflater.from(this);
+                @SuppressLint("InflateParams")
+
+                View v = adbInflater.inflate(R.layout.dialog_weekly_topic, null);
+                CheckBox dontShowAgain = v.findViewById(R.id.check_access);
+
+                TextView wtBigTitle = v.findViewById(R.id.wtBigTitle);
+                TextView wtTitleKo = v.findViewById(R.id.wtTitleKo);
+                TextView wtTitleEn = v.findViewById(R.id.wtTitleEn);
+                TextView wtSubKo = v.findViewById(R.id.wtSubKo);
+                TextView wtSubEn = v.findViewById(R.id.wtSubEn);
+
+                wtBigTitle.setText(RemoteConfig.WtBigTitle);
+                wtTitleKo.setText(RemoteConfig.WtTitleKo);
+                wtTitleEn.setText(RemoteConfig.WtTitleEn);
+                wtSubKo.setText(RemoteConfig.WtSubKo);
+                wtSubEn.setText(RemoteConfig.WtSubEn);
+
+                adb.setView(v);
+                adb.setPositiveButton("Ok", (dialog, which) -> {
+                    if (dontShowAgain.isChecked()) {
+                        try {
+                            SPUtil.putWeeklyTopicCheck(MainActivity.this);
+                        } catch (NotSetAutoTimeException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+                adb.show();
+            }
+        } catch (NotSetAutoTimeException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

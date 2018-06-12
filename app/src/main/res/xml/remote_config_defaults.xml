@@ -50,5 +50,26 @@
         <value>3</value>
     </entry>
 
+    <entry>
+        <key>WtBigTitle</key>
+        <value>큰제목</value>
+    </entry>
+    <entry>
+        <key>WtTitleKo</key>
+        <value>제목</value>
+    </entry>
+    <entry>
+        <key>WtTitleEn</key>
+        <value>Title</value>
+    </entry>
+    <entry>
+        <key>WtSubKo</key>
+        <value>소제목</value>
+    </entry>
+    <entry>
+        <key>WtSubEn</key>
+        <value>Sub</value>
+    </entry>
+
 </defaultsMap>
     <!-- END xml_defaults -->
