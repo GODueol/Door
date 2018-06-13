@@ -210,7 +210,7 @@ public class SharedPreferencesUtil {
         editor_notice.putLong("coreNoticeCheckDate", UiUtil.getInstance().getCurrentTime(context)).apply();
     }
 
-    // 코어 공지 읽은 날짜 저장
+    // 위클리 토픽 읽은 날짜 저장
     public void putWeeklyTopicCheck(Context context) throws NotSetAutoTimeException {
         editor_notice.putLong("weeklyTopicDate", UiUtil.getInstance().getCurrentTime(context)).apply();
     }

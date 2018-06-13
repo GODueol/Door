@@ -9,6 +9,8 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
@@ -18,11 +20,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.Toast;
 
@@ -418,6 +422,7 @@ public class CoreActivity extends BlockBaseActivity {
                 @SuppressLint("InflateParams")
 
                 View v = adbInflater.inflate(R.layout.core_notice_dialog, null);
+
                 dontShowAgain = v.findViewById(R.id.check_access);
                 adb.setView(v);
                 adb.setPositiveButton("Ok", (dialog, which) -> {
@@ -429,7 +434,23 @@ public class CoreActivity extends BlockBaseActivity {
                         }
                     }
                 });
-                adb.show();
+                AlertDialog dialog = adb.create();
+                dialog.show();
+                //Dialog 사이즈 조절 (dialog.show() 밑에 있어야함)
+                DisplayMetrics displayMetrics = new DisplayMetrics();
+                getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.WHITE)); //다이얼로그 배경 색을 설정해줌으로써 다이얼로그 가로를 매치로 맞췄을 때 패딩이 안보이게 해줌
+                int displayWidth = displayMetrics.widthPixels;
+                int displayHeight = displayMetrics.heightPixels;
+                WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+                layoutParams.copyFrom(dialog.getWindow().getAttributes());
+                int dialogWindowWidth = WindowManager.LayoutParams.MATCH_PARENT;
+                int dialogWindowHeight = (int) (displayHeight * 0.85f);
+                layoutParams.width = dialogWindowWidth;
+                layoutParams.height = dialogWindowHeight;
+                dialog.getWindow().setAttributes(layoutParams);
+
+
             }
         } catch (NotSetAutoTimeException e) {
             e.printStackTrace();
