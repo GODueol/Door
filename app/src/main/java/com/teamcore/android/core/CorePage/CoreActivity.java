@@ -149,7 +149,7 @@ public class CoreActivity extends BlockBaseActivity {
             SPUtil.setBlockMeUserCurrentActivity(getString(R.string.currentActivity), cUuid);
 
         list = new ArrayList<>();
-        checkCorePlus().done(isPlus -> coreListAdapter = new CoreListAdapter(list, this, cloudLitener, isPlus));
+        coreListAdapter = new CoreListAdapter(list, this, cloudLitener, DataContainer.getInstance().isPlus);
         //coreListAdapter = getCoreListAdapter(list);
 
         recyclerView.setLayoutManager(layoutManager);
@@ -168,18 +168,17 @@ public class CoreActivity extends BlockBaseActivity {
     public void setContentView() {
         setContentView(R.layout.core_activity);
         AdView mAdView = (AdView) findViewById(R.id.adView);
-        checkCorePlus().done(isPlus -> {
-            if (!isPlus) {
-                AdRequest adRequest = new AdRequest.Builder()
-                        .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                        .addTestDevice("0D525D9C92269D80384121978C3C4267")
-                        .build();
-                mAdView.loadAd(adRequest);
-            } else {
-                mAdView.destroy();
-                mAdView.setVisibility(View.GONE);
-            }
-        });
+
+        if (!DataContainer.getInstance().isPlus) {
+            AdRequest adRequest = new AdRequest.Builder()
+                    .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                    .addTestDevice("0D525D9C92269D80384121978C3C4267")
+                    .build();
+            mAdView.loadAd(adRequest);
+        } else {
+            mAdView.destroy();
+            mAdView.setVisibility(View.GONE);
+        }
     }
 
     public void addPostsToList(final ArrayList<CoreListItem> list) {
@@ -222,41 +221,41 @@ public class CoreActivity extends BlockBaseActivity {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 User cUser = dataSnapshot.getValue(User.class);
-                                checkCorePlus().done(isPlus -> {
-                                    if (cUser != null) {
-                                        // CORE 주인 일반 회원
-                                        if (cUser.getAccountType() == null || !isPlus) {
-                                            // 100개 제한
-                                            if (cUser.getCorePostCount() >= RemoteConfig.NORMAL_CORE_LIMIT) {
-                                                Toast.makeText(CoreActivity.this, "Core 주인이 일반 계정이기 때문에 " + RemoteConfig.NORMAL_CORE_LIMIT + "초과하여 글을 추가할수 없습니다", Toast.LENGTH_SHORT).show();
-                                                return;
-                                            }
-                                        } else {
-                                            // 300개 제한
-                                            if (cUser.getCorePostCount() >= RemoteConfig.PLUS_CORE_LIMIT) {
-                                                Toast.makeText(CoreActivity.this, RemoteConfig.NORMAL_CORE_LIMIT + "초과하여 글을 추가할수 없습니다", Toast.LENGTH_SHORT).show();
-                                                return;
-                                            }
-                                        }
 
-                                        // 블럭 관계 확인
-                                        if (cUser.getBlockUsers().containsKey(dc.getUid())) {
-                                            Toast.makeText(CoreActivity.this, "포스트를 작성할 수 없습니다.", Toast.LENGTH_SHORT).show();
-                                            finish();
+                                Boolean isPlus = DataContainer.getInstance().isPlus;
+                                if (cUser != null) {
+                                    // CORE 주인 일반 회원
+                                    if (cUser.getAccountType() == null || !isPlus) {
+                                        // 100개 제한
+                                        if (cUser.getCorePostCount() >= RemoteConfig.NORMAL_CORE_LIMIT) {
+                                            Toast.makeText(CoreActivity.this, "Core 주인이 일반 계정이기 때문에 " + RemoteConfig.NORMAL_CORE_LIMIT + "초과하여 글을 추가할수 없습니다", Toast.LENGTH_SHORT).show();
                                             return;
-                                        } else if (!cUuid.equals(dc.getUid()) && cUser.isAnonymityProhibition()) {
-                                            Toast.makeText(CoreActivity.this, "포스트를 작성할 수 없습니다.", Toast.LENGTH_SHORT).show();
+                                        }
+                                    } else {
+                                        // 300개 제한
+                                        if (cUser.getCorePostCount() >= RemoteConfig.PLUS_CORE_LIMIT) {
+                                            Toast.makeText(CoreActivity.this, RemoteConfig.NORMAL_CORE_LIMIT + "초과하여 글을 추가할수 없습니다", Toast.LENGTH_SHORT).show();
                                             return;
                                         }
                                     }
 
-                                    // 자신, 타인 액티비티 구별
-                                    Intent i;
-                                    i = new Intent(CoreActivity.this, CoreWriteActivity.class);
-                                    i.putExtra("cUuid", cUuid);
+                                    // 블럭 관계 확인
+                                    if (cUser.getBlockUsers().containsKey(dc.getUid())) {
+                                        Toast.makeText(CoreActivity.this, "포스트를 작성할 수 없습니다.", Toast.LENGTH_SHORT).show();
+                                        finish();
+                                        return;
+                                    } else if (!cUuid.equals(dc.getUid()) && cUser.isAnonymityProhibition()) {
+                                        Toast.makeText(CoreActivity.this, "포스트를 작성할 수 없습니다.", Toast.LENGTH_SHORT).show();
+                                        return;
+                                    }
+                                }
 
-                                    startActivityForResult(i, WRITE_SUCC);
-                                });
+                                // 자신, 타인 액티비티 구별
+                                Intent i;
+                                i = new Intent(CoreActivity.this, CoreWriteActivity.class);
+                                i.putExtra("cUuid", cUuid);
+
+                                startActivityForResult(i, WRITE_SUCC);
                             }
 
                             @Override

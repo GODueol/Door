@@ -256,35 +256,34 @@ public class CoreWriteActivity extends BlockBaseActivity {
                             }
                         });
 
-                        checkCorePlus().done(isPlus -> {
-                            if (!isPlus) {
-                                FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("mCorePostCount").addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
-                                        int value;
-                                        try {
-                                            value = Integer.valueOf(dataSnapshot.getValue().toString());
-                                        } catch (Exception e) {
-                                            value = 0;
-                                        }
-                                        Log.d("test", "몇개 : " + value);
-                                        if (value > 0) {
-                                            FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("mCorePostCount").setValue(value - 1);
-                                            saveCore();
-                                        } else {
-                                            mRewardedVideoAd.show();
-                                        }
+                        boolean isPlus = DataContainer.getInstance().isPlus;
+                        if (!isPlus) {
+                            FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("mCorePostCount").addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    int value;
+                                    try {
+                                        value = Integer.valueOf(dataSnapshot.getValue().toString());
+                                    } catch (Exception e) {
+                                        value = 0;
                                     }
-
-                                    @Override
-                                    public void onCancelled(DatabaseError databaseError) {
-
+                                    Log.d("test", "몇개 : " + value);
+                                    if (value > 0) {
+                                        FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("mCorePostCount").setValue(value - 1);
+                                        saveCore();
+                                    } else {
+                                        mRewardedVideoAd.show();
                                     }
-                                });
-                            } else {
-                                saveCore();
-                            }
-                        });
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
+                        } else {
+                            saveCore();
+                        }
                     } else {
                         saveCore();
                     }
