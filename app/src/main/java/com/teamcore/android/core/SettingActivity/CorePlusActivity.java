@@ -69,6 +69,7 @@ public class CorePlusActivity extends AppCompatActivity {
                 .fitCenter()
                 .into(img_cp_4);
         setBilingService();
+
         Button btn_cp_subs = (Button) findViewById(R.id.btn_cp_subs);
         btn_cp_subs.setOnClickListener(view -> buyItem(getString(R.string.subscribe)));
 
