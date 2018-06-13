@@ -1,134 +1,145 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="280dp"
+    android:layout_height="wrap_content"
+
     >
 
-    <RelativeLayout
-        android:id="@+id/layout1"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="35dp">
+        android:paddingTop="30dp">
 
-        <ImageView
-            android:id="@+id/logo"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginLeft="35dp"
-            android:background="@drawable/access_right" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/wtBigTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:gravity="center"
-            android:text="WEEKLY TOPIC"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            android:textStyle="italic|bold" />
+            <RelativeLayout
+                android:id="@+id/layout1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-    </RelativeLayout>
+                <ImageView
+                    android:id="@+id/logo"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginLeft="35dp"
+                    android:background="@drawable/access_right" />
 
-    <RelativeLayout
-        android:id="@+id/layout2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        >
+                <TextView
+                    android:id="@+id/wtBigTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:gravity="center"
+                    android:text="WEEKLY TOPIC"
+                    android:textColor="@color/black"
+                    android:textSize="16.5sp"
+                    android:textStyle="italic|bold" />
 
-        <TextView
-            android:id="@+id/wtTitleKo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:gravity="center"
-            android:text="title_kor"
-            android:textColor="@color/black"
-            android:textSize="17sp"
-            android:textStyle="bold" />
+            </RelativeLayout>
 
-        <TextView
-            android:id="@+id/wtTitleEn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/wtTitleKo"
-            android:layout_marginTop="8dp"
-            android:gravity="center"
-            android:text="title_eng"
-            android:textSize="17sp"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            android:layout_centerHorizontal="true"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            />
+            <RelativeLayout
+                android:id="@+id/layout2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/layout1"
+                android:layout_centerVertical="true"
+                android:layout_marginTop="50dp"
 
-    </RelativeLayout>
+                >
 
-    <RelativeLayout
-        android:id="@+id/layout3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/layout2"
-        android:layout_marginTop="35dp"
-        >
+                <TextView
+                    android:id="@+id/wtTitleKo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:gravity="center"
+                    android:text="title_kor"
+                    android:textColor="@color/black"
+                    android:textSize="17sp"
+                    android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/wtSubKo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="sub_kor"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:textSize="13sp"
-            android:layout_centerHorizontal="true"
-            />
+                <TextView
+                    android:id="@+id/wtTitleEn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/wtTitleKo"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center"
+                    android:text="title_eng"
+                    android:textColor="@color/black"
+                    android:textSize="17sp"
+                    android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/wtSubEn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/wtSubKo"
-            android:layout_marginTop="5dp"
-            android:gravity="center"
-            android:text="sub_eng"
-            android:textSize="13sp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_centerHorizontal="true"
-            />
-    </RelativeLayout>
+            </RelativeLayout>
 
-    <RelativeLayout
-        android:id="@+id/layout4"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        >
+            <RelativeLayout
+                android:id="@+id/layout3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/layout2"
+                android:layout_marginTop="40dp">
 
-        <CheckBox
-            android:id="@+id/check_access"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="20dp"
-            android:backgroundTint="@color/skyblue"
-            android:layout_centerVertical="true"
-            />
+                <TextView
+                    android:id="@+id/wtSubKo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:gravity="center"
+                    android:text="sub_kor"
+                    android:textSize="13sp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/notOpenToday"
-            android:textColor="@color/skyblue"
-            android:layout_toLeftOf="@+id/check_access"
-            android:layout_marginRight="20dp"
-            android:layout_centerVertical="true"
-            />
+                <TextView
+                    android:id="@+id/wtSubEn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/wtSubKo"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginTop="2dp"
+                    android:gravity="center"
+                    android:text="sub_eng"
+                    android:textSize="13sp" />
+            </RelativeLayout>
 
-    </RelativeLayout>
+            <!--<RelativeLayout-->
+            <!--android:id="@+id/layout4"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_below="@+id/layout3"-->
+            <!--android:layout_marginTop="10dp"-->
+            <!--&gt;-->
+
+            <!--<CheckBox-->
+            <!--android:id="@+id/check_access"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_alignParentRight="true"-->
+            <!--android:layout_centerVertical="true"-->
+            <!--android:layout_marginRight="10dp"-->
+            <!--android:backgroundTint="@color/skyblue" />-->
+
+            <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_centerVertical="true"-->
+            <!--android:layout_marginRight="7dp"-->
+            <!--android:layout_toLeftOf="@+id/check_access"-->
+            <!--android:text="@string/notOpenToday"-->
+            <!--android:textColor="@color/skyblue"-->
+            <!--android:textStyle="bold" />-->
+
+            <!--</RelativeLayout>-->
+        </RelativeLayout>
+
+    </ScrollView>
 
 </RelativeLayout>

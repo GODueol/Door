@@ -6,8 +6,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,12 +26,14 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.style.TextAppearanceSpan;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -607,7 +611,7 @@ public class MainActivity extends BaseActivity
                 @SuppressLint("InflateParams")
 
                 View v = adbInflater.inflate(R.layout.dialog_weekly_topic, null);
-                CheckBox dontShowAgain = v.findViewById(R.id.check_access);
+//                CheckBox dontShowAgain = v.findViewById(R.id.check_access);
 
                 TextView wtBigTitle = v.findViewById(R.id.wtBigTitle);
                 TextView wtTitleKo = v.findViewById(R.id.wtTitleKo);
@@ -622,16 +626,33 @@ public class MainActivity extends BaseActivity
                 wtSubEn.setText(RemoteConfig.WtSubEn);
 
                 adb.setView(v);
-                adb.setPositiveButton("Ok", (dialog, which) -> {
-                    if (dontShowAgain.isChecked()) {
+                adb.setPositiveButton("오늘 하루 열지 않기", (dialog, which) -> {
+//                    if (dontShowAgain.isChecked()) {
                         try {
                             SPUtil.putWeeklyTopicCheck(MainActivity.this);
                         } catch (NotSetAutoTimeException e) {
                             e.printStackTrace();
                         }
-                    }
+//                    }
                 });
-                adb.show();
+                AlertDialog dialog = adb.create();
+                dialog.show();
+
+                //Dialog 사이즈 조절 (dialog.show() 밑에 있어야함)
+                DisplayMetrics displayMetrics = new DisplayMetrics();
+                getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.WHITE)); //다이얼로그 배경 색을 설정해줌으로써 다이얼로그 가로를 매치로 맞췄을 때 패딩이 안보이게 해줌
+                int displayWidth = displayMetrics.widthPixels;
+                int displayHeight = displayMetrics.heightPixels;
+                WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+                layoutParams.copyFrom(dialog.getWindow().getAttributes());
+                int dialogWindowWidth = WindowManager.LayoutParams.MATCH_PARENT;
+                int dialogWindowHeight = (int) (displayHeight * 0.45f);
+                layoutParams.width = dialogWindowWidth;
+                layoutParams.height = dialogWindowHeight;
+                dialog.getWindow().setAttributes(layoutParams);
+
+
             }
         } catch (NotSetAutoTimeException e) {
             e.printStackTrace();
