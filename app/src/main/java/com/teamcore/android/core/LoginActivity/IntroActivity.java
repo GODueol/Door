@@ -1,7 +1,6 @@
 package com.teamcore.android.core.LoginActivity;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -23,6 +22,7 @@ import com.gun0912.tedpermission.PermissionListener;
 import com.teamcore.android.core.Activity.MainActivity;
 import com.teamcore.android.core.Entity.User;
 import com.teamcore.android.core.R;
+import com.teamcore.android.core.Util.BaseActivity.BaseActivity;
 import com.teamcore.android.core.Util.DataContainer;
 import com.teamcore.android.core.Util.SharedPreferencesUtil;
 import com.teamcore.android.core.Util.UiUtil;
@@ -36,7 +36,7 @@ import java.util.List;
  * Created by Kwon on 2017-09-27.
  */
 
-public class IntroActivity extends Activity {
+public class IntroActivity extends BaseActivity {
     private static final int ACCESS_RIGHT_REQUEST = 0;
     /**
      * Called when the activity is first created.
@@ -69,7 +69,8 @@ public class IntroActivity extends Activity {
             @Override
             public void onPermissionGranted() {
                 if (isHaveAllPermission()) {
-                    getUserInfo(FirebaseAuth.getInstance().getCurrentUser());
+                    checkCorePlus().done(isPlus -> getUserInfo(FirebaseAuth.getInstance().getCurrentUser())).fail(str -> Toast.makeText(IntroActivity.this, "구글 플레이 스토어 계정을 연결하고 다시 시도해주세요", Toast.LENGTH_SHORT).show());
+                    finish();
                 }
             }
 

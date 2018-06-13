@@ -51,7 +51,6 @@
         <activity
             android:name=".LoginActivity.IntroActivity"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"
             tools:ignore="InnerclassSeparator">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
