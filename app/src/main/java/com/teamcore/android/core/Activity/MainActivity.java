@@ -34,7 +34,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -128,18 +127,7 @@ public class MainActivity extends BaseActivity
             startActivity(intent);
         }
 
-        //툴바 이미지 붙이기 (코어 회원이면 drawable : tb_core / 코어플러스 회원이면 tb_coreplus)
-        ImageView coreplus = (ImageView) findViewById(R.id.tb_coreplus);
-        checkCorePlus().done(isPlus -> {
-            DataContainer.getInstance().isPlus = isPlus;
-            int res;
-            if (isPlus) res = R.drawable.tb_coreplus;
-            else res = R.drawable.tb_core;
-            GlideApp.with(this)
-                    .load(UiUtil.resourceToUri(this, res))
-                    .fitCenter()
-                    .into(coreplus);
-        });
+
 
         setSupportActionBar(toolbar);
         AdView mAdView = (AdView) findViewById(R.id.adView);
@@ -600,6 +588,17 @@ public class MainActivity extends BaseActivity
         SPUtil.setBlockMeUserCurrentActivity(getString(R.string.currentActivity), null);
         checkMainToggle();
         ScreenshotSetApplication.getInstance().registerScreenshotObserver();
+
+        //툴바 이미지 붙이기 (코어 회원이면 drawable : tb_core / 코어플러스 회원이면 tb_coreplus)
+        checkCorePlus().done(isPlus -> {
+            int res;
+            if (isPlus) res = R.drawable.tb_coreplus;
+            else res = R.drawable.tb_core;
+            GlideApp.with(this)
+                    .load(UiUtil.resourceToUri(this, res))
+                    .fitCenter()
+                    .into((ImageView) findViewById(R.id.tb_coreplus));
+        });
     }
 
     private void showWeeklyTopicDialog() {

@@ -45,8 +45,8 @@ public class CorePlusActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        int contentView = (DataContainer.getInstance().isPlus ? R.layout.setting_coreplus_activity : R.layout.setting_normal_activity);
-        setContentView(contentView);
+        setContentViewByPlus();
+
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -76,6 +76,11 @@ public class CorePlusActivity extends AppCompatActivity {
         TextView sub_txt2 = (TextView) findViewById(R.id.sub_txt2);
         sub_txt2.setText(DataContainer.getInstance().getUser().getId() + sub_txt2.getText().toString());
 
+    }
+
+    private void setContentViewByPlus() {
+        int contentView = (DataContainer.getInstance().isPlus ? R.layout.setting_coreplus_activity : R.layout.setting_normal_activity);
+        setContentView(contentView);
     }
 
     private void setBilingService() {
@@ -217,6 +222,9 @@ public class CorePlusActivity extends AppCompatActivity {
                 if (verifyDeveloperPayload(info)) {
                     //보낸 신호와 맞는경우
                     if (info.getSku().equals(getString(R.string.subscribe))) {
+                        // 구매 성공
+                        DataContainer.getInstance().isPlus = true;
+                        setContentViewByPlus();
                         FirebaseDatabase.getInstance().getReference("subscribe").child(DataContainer.getInstance().getUid()).child(String.valueOf(info.getPurchaseTime())).setValue(info);
                     } else {
                         Toast.makeText(CorePlusActivity.this, "구매 실패, 정상 경로를 이용해주세요.222", Toast.LENGTH_SHORT).show();

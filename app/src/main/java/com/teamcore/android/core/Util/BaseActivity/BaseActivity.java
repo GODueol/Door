@@ -62,7 +62,7 @@ public class BaseActivity extends AppCompatActivity {
             }
         });
 
-        return promise;
+        return promise.done(isPlus -> DataContainer.getInstance().isPlus = (boolean) isPlus);
     }
 
     boolean verifyDeveloperPayload(Purchase p) {
