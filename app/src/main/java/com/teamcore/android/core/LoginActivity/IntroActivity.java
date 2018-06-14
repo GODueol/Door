@@ -69,8 +69,12 @@ public class IntroActivity extends BaseActivity {
             @Override
             public void onPermissionGranted() {
                 if (isHaveAllPermission()) {
-                    checkCorePlus().done(isPlus -> getUserInfo(FirebaseAuth.getInstance().getCurrentUser())).fail(str -> Toast.makeText(IntroActivity.this, "구글 플레이 스토어 계정을 연결하고 다시 시도해주세요", Toast.LENGTH_SHORT).show());
-                    finish();
+                    checkCorePlus()
+                            .done(isPlus -> getUserInfo(FirebaseAuth.getInstance().getCurrentUser()))
+                            .fail(str -> {
+                                Toast.makeText(IntroActivity.this, "구글 플레이 스토어 계정을 연결하고 다시 시도해주세요", Toast.LENGTH_SHORT).show();
+                                finish();
+                            });
                 }
             }
 
