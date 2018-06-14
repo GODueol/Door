@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -26,6 +27,10 @@ import com.teamcore.android.core.Util.BaseActivity.BaseActivity;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -84,7 +89,7 @@ public class GalleryPick {
     private byte[] getResizeImageByteArray(Bitmap bitmap) {
 
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        getResizeBitmap(bitmap).compress(Bitmap.CompressFormat.JPEG, getQuality(), stream);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, getQuality(), stream);
         byte[] rst = stream.toByteArray();
         Log.d("kbj","ori length : " +rst.length);
 
@@ -94,7 +99,7 @@ public class GalleryPick {
     // 썸네일
     private byte[] getThumbNailImageByteArray(Bitmap bitmap) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        getResizeBitmap(bitmap).compress(Bitmap.CompressFormat.JPEG, (getQuality()*THUMB_NAIL_RATIO)/100, stream);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, (getQuality()*THUMB_NAIL_RATIO)/100, stream);
         byte[] rst = stream.toByteArray();
         Log.d("kbj","thum length : " +rst.length);
         return stream.toByteArray();
@@ -102,11 +107,14 @@ public class GalleryPick {
 
     // 용량 제한
     private Bitmap getResizeBitmap(Bitmap bitmap) {
-        return bitmap;
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, getQuality(), stream);
+        byte[] bitmapData = stream.toByteArray();
+        return BitmapFactory.decodeByteArray(bitmapData, 0, bitmapData.length);
     }
 
     public Bitmap getBitmap() {
-        return getResizeBitmap(bitmap);
+        return bitmap;
     }
 
     public GalleryPick goToGallery() {
@@ -260,7 +268,7 @@ public class GalleryPick {
             if (isImageFromGoogleDrive) {
                 bitmap = BitmapFactory.decodeStream(activity.getContentResolver().openInputStream(uri));
             } else if ("com.android.providers.media.documents".equals(uri.getAuthority())) {
-                bitmap = BitmapUtil.rotateBitmap(imgPath, BitmapFactory.decodeFile(imgPath));   // TODO : 5메가 넘는 물개사진을 4장 올리면 가끔 OOM 생기는 버그
+                bitmap = rotateBitmap(imgPath, BitmapFactory.decodeFile(imgPath));
             } else {
 
                 File f = new File(imgPath);
@@ -349,4 +357,85 @@ public class GalleryPick {
         }
 
     }
+
+    private Bitmap rotateBitmap(String src, Bitmap bitmap) {
+        bitmap = getResizeBitmap(bitmap);
+        int orientation = getExifOrientation(src);
+
+        if (orientation == 1) {
+            return bitmap;
+        }
+
+        Matrix matrix = new Matrix();
+        switch (orientation) {
+            case 2:
+                matrix.setScale(-1, 1);
+                break;
+            case 3:
+                matrix.setRotate(180);
+                break;
+            case 4:
+                matrix.setRotate(180);
+                matrix.postScale(-1, 1);
+                break;
+            case 5:
+                matrix.setRotate(90);
+                matrix.postScale(-1, 1);
+                break;
+            case 6:
+                matrix.setRotate(90);
+                break;
+            case 7:
+                matrix.setRotate(-90);
+                matrix.postScale(-1, 1);
+                break;
+            case 8:
+                matrix.setRotate(-90);
+                break;
+            default:
+                return bitmap;
+        }
+
+        try {
+            Bitmap oriented = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+            bitmap.recycle();
+            return oriented;
+        } catch (OutOfMemoryError e) {
+            e.printStackTrace();
+            return bitmap;
+        }
+    }
+
+    private static int getExifOrientation(String src) {
+        int orientation = 1;
+
+        try {
+            Class<?> exifClass = Class.forName("android.media.ExifInterface");
+            Constructor<?> exifConstructor = exifClass.getConstructor(String.class);
+            Object exifInstance = exifConstructor.newInstance(src);
+            Method getAttributeInt = exifClass.getMethod("getAttributeInt", String.class, int.class);
+            Field tagOrientationField = exifClass.getField("TAG_ORIENTATION");
+            String tagOrientation = (String) tagOrientationField.get(null);
+            orientation = (Integer) getAttributeInt.invoke(exifInstance, new Object[]{tagOrientation, 1});
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+
+        return orientation;
+    }
+
 }
