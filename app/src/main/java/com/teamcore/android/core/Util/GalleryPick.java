@@ -286,12 +286,9 @@ public class GalleryPick {
 
     @NonNull
     private UploadTask getUploadTask(StorageReference ref, Uri uri) throws Exception {
-//        if (getFileSizeInMB() >= RemoteConfig.LIMIT_MB) {
-//            throw new GifException(activity.getString(R.string.cannotOver5Mb));
-//        }
-
         if (isGif()) {
             if(!DataContainer.getInstance().isPlus) throw new GifException(activity.getString(R.string.possibleCorePlusGIF));
+            if (getFileSizeInMB() >= RemoteConfig.LIMIT_MB) throw new GifException(activity.getString(R.string.cannotOver5Mb));
             return ref.putFile(uri);
         } else {
             return ref.putBytes(this.getResizeImageByteArray(bitmap));
@@ -325,11 +322,11 @@ public class GalleryPick {
 
     public void setImage(ImageView editImage) throws Exception {
 
-//        if (getFileSizeInMB() >= RemoteConfig.LIMIT_MB) throw new Exception("파일이 5MB를 넘어서 불가능합니다");
-
         // Gif 파일인 경우
         if (isGif()) {
             if(!DataContainer.getInstance().isPlus) throw new Exception(activity.getString(R.string.possibleCorePlusGIF));
+            if (getFileSizeInMB() >= RemoteConfig.LIMIT_MB) throw new Exception("파일이 5MB를 넘어서 불가능합니다");
+
             //Uri
             GlideApp.with(editImage.getContext())
                     .load(uri)
