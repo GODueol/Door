@@ -299,7 +299,7 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
         // 큰사진
         GlideApp.with(getBaseContext())
                 .load(oUser.getPicUrls().getPicUrl1())
-                .placeholder(R.drawable.a)
+                .placeholder(null)
                 .into(fullImageView);
 
         // 사진 잠금 해제
