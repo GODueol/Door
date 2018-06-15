@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/framelayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+    android:layout_height="match_parent">
 
     <ImageView
         android:id="@+id/milkyway"
@@ -18,21 +16,16 @@
     <!--배경 저작권 문제 생겼을 시 해당 이미지뷰 지우고 최상단 렐러티브 레이아웃에 android:background=@drawable/login_back 붙이기-->
 
     <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none">
+
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scrollbars="none"
-            >
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                >
 
-                <RelativeLayout
-                    android:id="@+id/layout_logo"
-                    android:layout_width="match_parent"
-                    android:layout_height="100dp">
 
                 <ImageView
                     android:id="@+id/CORE_LOGO"
@@ -40,20 +33,24 @@
                     android:layout_height="wrap_content"
                     android:paddingLeft="50dp"
                     android:paddingRight="50dp"
-                    android:layout_centerInParent="true"
+
                     />
 
-                </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/layout_center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+
+                >
 
                 <RelativeLayout
                     android:id="@+id/layout0"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    android:layout_below="@+id/layout_logo"
-                    android:layout_marginTop="50dp"
-                    >
+                    android:layout_alignParentStart="true">
 
                     <!--  Email Label -->
                     <android.support.design.widget.TextInputLayout
@@ -101,8 +98,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/layout0"
-                    android:layout_marginTop="-27dp"
-                    >
+                    android:layout_marginTop="-27dp">
 
                     <TextView
                         android:id="@+id/txt_saveid"
@@ -128,9 +124,9 @@
                         android:id="@+id/txt_find_pw"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/txt_saveid"
-                        android:layout_alignRight="@+id/txt_saveid"
                         android:layout_alignParentBottom="true"
+                        android:layout_alignRight="@+id/txt_saveid"
+                        android:layout_below="@+id/txt_saveid"
                         android:paddingBottom="3.5dp"
                         android:text="비밀번호 찾기"
                         android:textColor="@color/login_text" />
@@ -139,25 +135,28 @@
                         android:id="@+id/link_find_password"
                         android:layout_width="22dp"
                         android:layout_height="22dp"
-                        android:layout_below="@+id/cb_save_id"
-                        android:layout_alignRight="@+id/cb_save_id"
-                        android:layout_marginTop="35dp"
                         android:layout_alignParentRight="true"
+                        android:layout_alignRight="@+id/cb_save_id"
+                        android:layout_below="@+id/cb_save_id"
                         android:layout_marginRight="12dp"
-                        android:background="@drawable/find_pw"
-                        />
-
-
+                        android:layout_marginTop="35dp"
+                        android:background="@drawable/find_pw" />
 
                 </RelativeLayout>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/layout_center"
+                android:layout_marginTop="180dp"
+                >
 
                 <TextView
                     android:id="@+id/btn_login"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/layout2"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="55dp"
                     android:text="로그인"
                     android:textColor="@color/text_white"
                     android:textSize="19dp"
@@ -173,14 +172,12 @@
                     android:text="회원가입"
                     android:textColor="@color/text_white"
                     android:textSize="19dp"
-                    android:textStyle="bold"
-
-                    />
-
-
-
+                    android:textStyle="bold" />
             </RelativeLayout>
 
-        </ScrollView>
+
+        </RelativeLayout>
+
+    </ScrollView>
 
 </RelativeLayout>
