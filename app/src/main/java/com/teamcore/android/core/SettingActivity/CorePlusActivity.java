@@ -9,6 +9,7 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -18,7 +19,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.vending.billing.IInAppBillingService;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.FirebaseDatabase;
+import com.teamcore.android.core.Activity.MainActivity;
 import com.teamcore.android.core.R;
 import com.teamcore.android.core.Util.DataContainer;
 import com.teamcore.android.core.Util.GlideApp;
@@ -141,7 +145,6 @@ public class CorePlusActivity extends AppCompatActivity {
     }
 
 
-
     boolean verifyDeveloperPayload(Purchase p) {
         String payload = p.getDeveloperPayload();
 
@@ -204,7 +207,7 @@ public class CorePlusActivity extends AppCompatActivity {
             //해당 아이템 구매 여부 체크
             Purchase purchase = inv.getPurchase(getString(R.string.subscribe));
 
-            if (purchase != null && purchase.getPurchaseState() ==0 && verifyDeveloperPayload(purchase)) {
+            if (purchase != null && purchase.getPurchaseState() == 0 && verifyDeveloperPayload(purchase)) {
                 //해당 아이템을 가지고 있는 경우.
                 //아이템에대한 처리를 한다.
                 Toast.makeText(getApplicationContext(), purchase.getPurchaseState() + "onQueryInventoryFinished 이미 보유중", Toast.LENGTH_SHORT).show();
@@ -225,7 +228,13 @@ public class CorePlusActivity extends AppCompatActivity {
                         // 구매 성공
                         DataContainer.getInstance().isPlus = true;
                         setContentViewByPlus();
-                        FirebaseDatabase.getInstance().getReference("subscribe").child(DataContainer.getInstance().getUid()).child(String.valueOf(info.getPurchaseTime())).setValue(info);
+                        FirebaseDatabase.getInstance().getReference("subscribe").child(DataContainer.getInstance().getUid()).child(String.valueOf(info.getPurchaseTime())).setValue(info).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                Intent p = new Intent(getApplicationContext(),MainActivity.class);
+                                startActivity(p);
+                            }
+                        });
                     } else {
                         Toast.makeText(CorePlusActivity.this, "구매 실패, 정상 경로를 이용해주세요.222", Toast.LENGTH_SHORT).show();
                     }
