@@ -2,6 +2,7 @@ package com.teamcore.android.core.Util;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
