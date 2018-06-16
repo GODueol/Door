@@ -229,20 +229,25 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
         final int weight = Integer.parseInt(_weightText.getText().toString());
         final String bodyType = _bodyType.getText().toString();
         mUser = new User(email, id, age, height, weight, bodyType);
-        FirebaseDatabase.getInstance().getReference("identifier").child(deviceIdentifier).addValueEventListener(new ValueEventListener() {
+        FirebaseDatabase.getInstance().getReference("identifier").child(deviceIdentifier).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     // 이미 회원가입한 디바이스
-                    FirebaseDatabase.getInstance().getReference("identifier").child(deviceIdentifier).removeEventListener(this);
                     Toast.makeText(getApplicationContext(),"이미 회원가입한 디바이스입니다.",Toast.LENGTH_SHORT).show();
                     UiUtil.getInstance().stopProgressDialog();
                 } else {
                     // 회원가입 하지 않은 디바이스
-                    FirebaseDatabase.getInstance().getReference("identifier").child(deviceIdentifier).removeEventListener(this);
                     try {
                         FirebaseDatabase.getInstance().getReference().child("identifier").child(deviceIdentifier).setValue(UiUtil.getInstance().getCurrentTime(SignupActivity.this))
-                                .addOnSuccessListener(aVoid -> onSucccessIdentify(email,password));
+                                .addOnCompleteListener(task -> {
+                                    if(task.isSuccessful()){
+                                        onSucccessIdentify(email,password);
+                                    } else {
+                                        onSignupFailed(task.getException());
+                                    }
+
+                                });
                     } catch (NotSetAutoTimeException e) {
                         e.printStackTrace();
                         Toast.makeText(SignupActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -250,6 +255,7 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
 
                     }
                 }
+
             }
 
             @Override
