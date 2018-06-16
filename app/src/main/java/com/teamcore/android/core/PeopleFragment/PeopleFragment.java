@@ -20,6 +20,7 @@ import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -98,7 +99,10 @@ public class PeopleFragment extends BaseFragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 mUser = dataSnapshot.getValue(User.class);
-                if(mUser == null) return;
+                if(mUser == null) {
+                    UiUtil.getInstance().restartApp(getContext());
+                    return;
+                }
 
                 User compUser = DataContainer.getInstance().getUser();
                 if(compUser == null ) return;
@@ -187,7 +191,7 @@ public class PeopleFragment extends BaseFragment {
 
                 // grid에 사진, distance추가
 
-                if (imageAdapter != null) {
+                if (imageAdapter != null && summary!= null) {
                     Log.d(getTag(), "addItemToGrid, key : " + key);
                     imageAdapter.addItem(new GridItem(distance, key, summary, summary.getPictureUrl()));
                     imageAdapter.notifyDataSetChanged();
@@ -273,6 +277,10 @@ public class PeopleFragment extends BaseFragment {
         Location location = GPSInfo.getmInstance(getActivity()).getGPSLocation();
 
         // 데이터베이스에 저장
+        if(FirebaseAuth.getInstance().getCurrentUser() == null) {
+            UiUtil.getInstance().restartApp(getContext());
+            return;
+        }
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(FireBaseUtil.currentLocationPath);
         GeoFire geoFire = new GeoFire(ref);
 

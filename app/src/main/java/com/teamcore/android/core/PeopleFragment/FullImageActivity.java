@@ -173,7 +173,7 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
 
                         // viewedMeUser
                         oUser = dataSnapshot.getValue(User.class);
-                        if(oUser == null) finish();
+                        if(oUser.getSummaryUser() == null) finish();
                         item.setSummaryUser(oUser.getSummaryUser());
                         setView(item);
 

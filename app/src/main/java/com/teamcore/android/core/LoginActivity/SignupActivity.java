@@ -234,8 +234,7 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     // 이미 회원가입한 디바이스
-                    Toast.makeText(getApplicationContext(),"이미 회원가입한 디바이스입니다.",Toast.LENGTH_SHORT).show();
-                    UiUtil.getInstance().stopProgressDialog();
+                    onSignupFailed(new Exception("이미 회원가입한 디바이스입니다."));
                 } else {
                     // 회원가입 하지 않은 디바이스
                     try {
@@ -249,10 +248,8 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
 
                                 });
                     } catch (NotSetAutoTimeException e) {
+                        onSignupFailed(e);
                         e.printStackTrace();
-                        Toast.makeText(SignupActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                        ActivityCompat.finishAffinity(SignupActivity.this);
-
                     }
                 }
 
