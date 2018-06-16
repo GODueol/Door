@@ -571,7 +571,6 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
                             }
                         }
                     });
-                }, (dialog, whichButton) -> {
                 });
             }
         });
