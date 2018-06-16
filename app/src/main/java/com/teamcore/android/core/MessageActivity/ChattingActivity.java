@@ -280,48 +280,55 @@ public class ChattingActivity extends BlockBaseActivity {
                             public void onRewardedVideoAdLoaded() {
                                 Log.d("test", "onRewardedVideoAdLoaded");
                             }
+
                             @Override
                             public void onRewardedVideoAdOpened() {
                                 Log.d("test", "onRewardedVideoAdOpened" +
                                         "");
                             }
+
                             @Override
                             public void onRewardedVideoStarted() {
                                 Log.d("test", "onRewardedVideoStarted");
                             }
+
                             @Override
                             public void onRewardedVideoAdClosed() {
                                 loadRewardedVideoAd();
                                 FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("blockCount").addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {
-                                        if (dataSnapshot.exists()) {
-                                            int value = Integer.valueOf(dataSnapshot.getValue().toString());
-                                            Log.d("test", "몇개 : " + value);
-                                            if (value > 0) {
-                                                FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("blockCount").setValue(value - 1);
+                                        int value;
+                                        try {
+                                            value = Integer.valueOf(dataSnapshot.getValue().toString());
+                                        } catch (Exception e) {
+                                            value = 0;
+                                        }
+                                        Log.d("test", "몇개 : " + value);
+                                        if (value > 0) {
+                                            FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("blockCount").setValue(value - 1);
 
-                                                UiUtil.getInstance().startProgressDialog(ChattingActivity.this);
-                                                // blockUsers 추가
-                                                try {
-                                                    FireBaseUtil.getInstance().block(chatFirebaseUtil.getItem().getUuid()).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                        @Override
-                                                        public void onSuccess(Void aVoid) {
-                                                            finish();
-                                                        }
-                                                    }).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                        @Override
-                                                        public void onComplete(@NonNull Task<Void> task) {
-                                                            UiUtil.getInstance().stopProgressDialog();
-                                                            finish();
-                                                        }
-                                                    });
-                                                } catch (ChildSizeMaxException e) {
-                                                    Toast.makeText(ChattingActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                                                    UiUtil.getInstance().stopProgressDialog();
-                                                }
+                                            UiUtil.getInstance().startProgressDialog(ChattingActivity.this);
+                                            // blockUsers 추가
+                                            try {
+                                                FireBaseUtil.getInstance().block(chatFirebaseUtil.getItem().getUuid()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void aVoid) {
+                                                        finish();
+                                                    }
+                                                }).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        UiUtil.getInstance().stopProgressDialog();
+                                                        finish();
+                                                    }
+                                                });
+                                            } catch (ChildSizeMaxException e) {
+                                                Toast.makeText(ChattingActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                UiUtil.getInstance().stopProgressDialog();
                                             }
                                         }
+
                                     }
 
                                     @Override
@@ -349,7 +356,7 @@ public class ChattingActivity extends BlockBaseActivity {
                             }
                         });
                         checkCorePlus().done(isPlus -> {
-                            if(!isPlus){
+                            if (!isPlus) {
                                 FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("blockCount").addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -378,7 +385,7 @@ public class ChattingActivity extends BlockBaseActivity {
                                                     Toast.makeText(ChattingActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                                                     UiUtil.getInstance().stopProgressDialog();
                                                 }
-                                            }else{
+                                            } else {
                                                 mRewardedVideoAd.show();
                                             }
                                         }
@@ -388,7 +395,7 @@ public class ChattingActivity extends BlockBaseActivity {
                                     public void onCancelled(DatabaseError databaseError) {
                                     }
                                 });
-                            }else{
+                            } else {
                                 UiUtil.getInstance().startProgressDialog(ChattingActivity.this);
                                 // blockUsers 추가
                                 try {
