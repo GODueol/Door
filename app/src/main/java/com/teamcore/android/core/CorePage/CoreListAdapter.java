@@ -697,24 +697,28 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                                 FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("blockCount").addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {
-                                        if (dataSnapshot.exists()) {
-                                            int value = Integer.valueOf(dataSnapshot.getValue().toString());
-                                            Log.d("test", "몇개 : " + value);
-                                            if (value > 0) {
-                                                FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("blockCount").setValue(value - 1);
-
-                                                UiUtil.getInstance().startProgressDialog((Activity) context);
-                                                // blockUsers 추가
-                                                try {
-                                                    FireBaseUtil.getInstance().block(coreListItem.getCorePost().getUuid()).addOnSuccessListener(aVoid -> Toast.makeText(context, "차단되었습니다", Toast.LENGTH_SHORT).show()).addOnCompleteListener(task -> UiUtil.getInstance().stopProgressDialog());
-                                                } catch (ChildSizeMaxException e) {
-                                                    Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-                                                    UiUtil.getInstance().stopProgressDialog();
-                                                }
-                                            } else {
-                                                mRewardedVideoAd.show();
-                                            }
+                                        int value;
+                                        try {
+                                            value = Integer.valueOf(dataSnapshot.getValue().toString());
+                                        } catch (Exception e) {
+                                            value = 0;
                                         }
+                                        Log.d("test", "몇개 : " + value);
+                                        if (value > 0) {
+                                            FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("blockCount").setValue(value - 1);
+
+                                            UiUtil.getInstance().startProgressDialog((Activity) context);
+                                            // blockUsers 추가
+                                            try {
+                                                FireBaseUtil.getInstance().block(coreListItem.getCorePost().getUuid()).addOnSuccessListener(aVoid -> Toast.makeText(context, "차단되었습니다", Toast.LENGTH_SHORT).show()).addOnCompleteListener(task -> UiUtil.getInstance().stopProgressDialog());
+                                            } catch (ChildSizeMaxException e) {
+                                                Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                UiUtil.getInstance().stopProgressDialog();
+                                            }
+                                        } else {
+                                            mRewardedVideoAd.show();
+                                        }
+
                                     }
 
                                     @Override

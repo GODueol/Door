@@ -536,23 +536,29 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
                             FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("blockCount").addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
-                                    if (dataSnapshot.exists()) {
-                                        int value = Integer.valueOf(dataSnapshot.getValue().toString());
-                                        Log.d("test", "몇개 : " + value);
-                                        if (value > 0) {
-                                            FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("blockCount").setValue(value - 1);
-                                            UiUtil.getInstance().startProgressDialog(FullImageActivity.this);
-                                            // blockUsers 추가
-                                            try {
-                                                FireBaseUtil.getInstance().block(item.getUuid()).addOnSuccessListener(aVoid -> finish()).addOnCompleteListener(task -> UiUtil.getInstance().stopProgressDialog());
-                                            } catch (ChildSizeMaxException e) {
-                                                Toast.makeText(FullImageActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                                                UiUtil.getInstance().stopProgressDialog();
-                                            }
-                                        } else {
-                                            mRewardedVideoAd.show();
-                                        }
+
+                                    int value;
+                                    try {
+                                        value = Integer.valueOf(dataSnapshot.getValue().toString());
+                                    } catch (Exception e) {
+                                        value = 0;
                                     }
+                                    Log.d("test", "몇개 : " + value);
+
+                                    if (value > 0) {
+                                        FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("blockCount").setValue(value - 1);
+                                        UiUtil.getInstance().startProgressDialog(FullImageActivity.this);
+                                        // blockUsers 추가
+                                        try {
+                                            FireBaseUtil.getInstance().block(item.getUuid()).addOnSuccessListener(aVoid -> finish()).addOnCompleteListener(task -> UiUtil.getInstance().stopProgressDialog());
+                                        } catch (ChildSizeMaxException e) {
+                                            Toast.makeText(FullImageActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                            UiUtil.getInstance().stopProgressDialog();
+                                        }
+                                    } else {
+                                        mRewardedVideoAd.show();
+                                    }
+
                                 }
 
                                 @Override
