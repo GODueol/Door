@@ -6,7 +6,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
+import com.teamcore.android.core.BuildConfig;
 import com.teamcore.android.core.R;
 
 /**
@@ -76,6 +78,8 @@ public class AppInfoActivity extends AppCompatActivity {
                 }).show();
             }
         });
+
+       ((TextView)findViewById(R.id.appVersion)).setText(String.valueOf(BuildConfig.VERSION_CODE));
     }
 
 
