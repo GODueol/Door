@@ -107,4 +107,19 @@ public class CorePost {
     public void setLikeUsers(Map<String, Long> likeUsers) {
         this.likeUsers = likeUsers;
     }
+
+    @Override
+    public String toString() {
+        return "CorePost{" +
+                "uuid='" + uuid + '\'' +
+                ", writeDate=" + writeDate +
+                ", text='" + text + '\'' +
+                ", pictureUrl='" + pictureUrl + '\'' +
+                ", soundUrl='" + soundUrl + '\'' +
+                ", videoUrl='" + videoUrl + '\'' +
+                ", likeUsers=" + likeUsers +
+                ", reply='" + reply + '\'' +
+                ", isCloud=" + isCloud +
+                '}';
+    }
 }

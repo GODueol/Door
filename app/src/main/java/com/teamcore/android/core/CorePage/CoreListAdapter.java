@@ -280,6 +280,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 
                         // 이미 코어가 올라가 있는 게시물인지 확인
                         for (CoreListItem item : coreListItems) {
+                            Log.d("KBJ", "CorePost : " + item.getCorePost().toString());
                             if (item.getCorePost().isCloud()) {
                                 Toast.makeText(context, "이미 코어 클라우드 게시하였습니다", Toast.LENGTH_SHORT).show();
                                 view.setClickable(true);
