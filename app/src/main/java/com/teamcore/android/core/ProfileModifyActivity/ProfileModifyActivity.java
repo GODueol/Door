@@ -26,10 +26,12 @@ import android.widget.ToggleButton;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 import com.teamcore.android.core.Entity.IntBoundary;
 import com.teamcore.android.core.Entity.StringBoundary;
@@ -39,13 +41,12 @@ import com.teamcore.android.core.Util.BaseActivity.BaseActivity;
 import com.teamcore.android.core.Util.DataContainer;
 import com.teamcore.android.core.Util.FireBaseUtil;
 import com.teamcore.android.core.Util.GalleryPick;
+import com.teamcore.android.core.Util.GlideApp;
 import com.teamcore.android.core.Util.UiUtil;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -148,7 +149,7 @@ public class ProfileModifyActivity extends BaseActivity implements NumberPicker.
     private ImageView modifyingPic;
 
     @SuppressLint("UseSparseArrays")
-    Map<Integer, Uri> uriMap = new HashMap<>();
+//    Map<Integer, Uri> uriMap = new HashMap<>();
 
     // User Info
     User user;
@@ -336,9 +337,24 @@ public class ProfileModifyActivity extends BaseActivity implements NumberPicker.
     private void setOnDelPicBtnClickListener(final ImageView btn, final ImageView targetPic) {
         View.OnClickListener onDeleteClickListener = v -> UiUtil.getInstance().showDialog(ProfileModifyActivity.this, "사진 삭제", " 사진을 삭제하시겠습니까?"
                 , (dialog, whichButton) -> {
+                    // 사진 바로 삭제
 
-                    targetPic.setImageResource(R.drawable.a);
-                    uriMap.put(targetPic.getId(), null);
+                    StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+                    final StorageReference spaceRef = storageRef.child(getPicPath(targetPic));
+                    final StorageReference thumbNailSpaceRef = storageRef.child(getPicPath(targetPic).replace(".jpg", "_thumbNail.jpg"));
+
+                    // 삭제
+                    Task task = spaceRef.delete().addOnSuccessListener(o -> {
+                        removeUserPicUrl(targetPic);
+                        targetPic.setImageResource(R.drawable.a);
+                    });
+
+                    Task thumbNailTask = thumbNailSpaceRef.delete()
+                            .addOnSuccessListener(o -> removeUserThumbNailPicUrl(targetPic));
+
+                    startProgressDialog();
+                    Tasks.whenAll(task, thumbNailTask).addOnCompleteListener(task1 -> stopProgressDialog());
+
                 }, (dialog, whichButton) -> {
                 });
 
@@ -580,16 +596,42 @@ public class ProfileModifyActivity extends BaseActivity implements NumberPicker.
             if (requestCode == GalleryPick.REQUEST_GALLERY && data != null && data.getData() != null) {
                 try {
                     galleryPick.invoke(data);
-                    galleryPick.setImage(modifyingPic);
+
+                    // 사진 파일 업로드, 유저정보 추가
+                    Uri uri = galleryPick.getUri();
+                    StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+                    final StorageReference spaceRef = storageRef.child(getPicPath(modifyingPic));
+                    final StorageReference thumbNailSpaceRef = storageRef.child(getPicPath(modifyingPic).replace(".jpg", "_thumbNail.jpg"));
+
+                    // 저장
+                    StorageTask<UploadTask.TaskSnapshot> picUploadTask = galleryPick.upload(spaceRef, uri)
+                            .addOnSuccessListener(taskSnapshot -> {
+                                saveUserPicUrl(taskSnapshot.getDownloadUrl(), modifyingPic);
+                                // Set Local
+                                GlideApp.with(modifyingPic.getContext())
+                                        .load(taskSnapshot.getDownloadUrl())
+                                        .placeholder(R.drawable.a)
+                                        .into(modifyingPic);
+                            });
+
+                    // make thumbnail
+                    StorageTask<UploadTask.TaskSnapshot> thumbnailUploadTask = galleryPick.makeThumbNail(thumbNailSpaceRef, uri)
+                            .addOnSuccessListener(taskSnapshot -> saveUserThumbNailPicUrl(taskSnapshot.getDownloadUrl(), modifyingPic));
+
+                    startProgressDialog();
+                    Tasks.whenAll(picUploadTask, thumbnailUploadTask).addOnCompleteListener(task -> stopProgressDialog());
+
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                     Toast.makeText(ProfileModifyActivity.this, "Error : " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    stopProgressDialog();
                 } catch (Exception e) {
                     e.printStackTrace();
                     Toast.makeText(ProfileModifyActivity.this, "Error : " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    stopProgressDialog();
                 }
 
-                uriMap.put(modifyingPic.getId(), galleryPick.getUri());
+//                uriMap.put(modifyingPic.getId(), galleryPick.getUri());
 //                modifyingPic.setImageBitmap(galleryPick.getBitmap());
             }
         }
@@ -697,71 +739,12 @@ public class ProfileModifyActivity extends BaseActivity implements NumberPicker.
             // User is signed in
             Log.d(this.getClass().getName(), "onAuthStateChanged:signed_in:" + firebaseUser.getUid());
 
-            final ArrayList<Task> tasks = new ArrayList<>();
             // 파이어베이스 저장
-            Task userTask = DataContainer.getInstance().getUsersRef().child(firebaseUser.getUid()).setValue(user);
-            tasks.add(userTask);
-
-            // 사진
-            for (int id : uriMap.keySet()) {
-                final ImageView targetImageView = (ImageView) findViewById(id);
-                final Uri uri = uriMap.get(id);
-
-
-                StorageReference storageRef = FirebaseStorage.getInstance().getReference();
-                final StorageReference spaceRef = storageRef.child(getPicPath(targetImageView));
-                final StorageReference thumbNailSpaceRef = storageRef.child(getPicPath(targetImageView).replace(".jpg", "_thumbNail.jpg"));
-
-
-                if (uri == null) {
-                    // 삭제
-                    Task task = spaceRef.delete();
-
-                    tasks.add(task);
-                    task.addOnSuccessListener(o -> removeUserPicUrl(targetImageView));
-
-                    Task thumbNailTask = thumbNailSpaceRef.delete();
-                    thumbNailTask.addOnSuccessListener(o -> removeUserThumbNailPicUrl(targetImageView));
-                    tasks.add(thumbNailTask);
-
-                } else {
-                    // 저장
-                    UploadTask task;
-                    try {
-                        task = galleryPick.upload(spaceRef, uri);
-                        tasks.add(task);
-                        task.addOnSuccessListener(taskSnapshot -> saveUserPicUrl(taskSnapshot.getDownloadUrl(), targetImageView));
-
-                        // make thumbnail
-                        UploadTask thumNailTask = galleryPick.makeThumbNail(thumbNailSpaceRef, uri);
-                        if (thumNailTask != null)
-                            thumNailTask.addOnSuccessListener(taskSnapshot -> saveUserThumbNailPicUrl(taskSnapshot.getDownloadUrl(), targetImageView));
-                        else removeUserThumbNailPicUrl(targetImageView);
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        Toast.makeText(ProfileModifyActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                }
-            }
-
-            for (Task task : tasks) {
-                task.addOnCompleteListener(compTask -> {
-                    for (Task task1 : tasks) {
-                        if (!task1.isComplete()) return;
-                    }
-                    // 성공시 백버튼
-                    try {
-                        onBackPressed();
-
-                        getInstance().stopProgressDialog();
-
-                    } catch (Exception e){
-                        e.printStackTrace();
-                    }
-                });
-            }
+            startProgressDialog();
+            DataContainer.getInstance().getUsersRef().child(firebaseUser.getUid()).setValue(user).addOnCompleteListener(task -> {
+                onBackPressed();
+                stopProgressDialog();
+            });
 
         } else {
             // User is signed out
