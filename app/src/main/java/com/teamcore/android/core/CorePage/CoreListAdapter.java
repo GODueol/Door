@@ -592,7 +592,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                                     , (dialogInterface, i1) -> {
                                         Map<String, Object> childUpdate = new HashMap<>();
                                         // 포스트 getIsCloud = false
-                                        childUpdate.put("posts/" + coreListItem.getcUuid() + "/" + coreListItem.getPostKey() + "/getIsCloud", false);
+                                        childUpdate.put("posts/" + coreListItem.getcUuid() + "/" + coreListItem.getPostKey() + "/isCloud", false);
 
                                         // 클라우드에서 포스트 키 null
                                         childUpdate.put("coreCloud/" + coreListItem.getPostKey(), null);

@@ -119,7 +119,7 @@ public class CorePost {
                 ", videoUrl='" + videoUrl + '\'' +
                 ", likeUsers=" + likeUsers +
                 ", reply='" + reply + '\'' +
-                ", getIsCloud=" + isCloud +
+                ", isCloud=" + isCloud +
                 '}';
     }
 }
