@@ -207,7 +207,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
         holder.seekBar.setEnabled(false);
 
         // 클라우드 체크
-        if (corePost.isCloud() && !(context instanceof CoreCloudActivity)) {
+        if (corePost.getIsCloud() && !(context instanceof CoreCloudActivity)) {
             holder.check_cloud.setVisibility(View.VISIBLE);
         } else {
             holder.check_cloud.setVisibility(View.INVISIBLE);
@@ -282,7 +282,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                         for (CoreListItem item : coreListItems) {
                             Log.d("KBJ", "CorePost : " + item.getCorePost().toString());
                             Toast.makeText(context, "CorePost : " + item.getCorePost().toString(), Toast.LENGTH_SHORT).show();
-                            if (item.getCorePost().isCloud()) {
+                            if (item.getCorePost().getIsCloud()) {
                                 Toast.makeText(context, "이미 코어 클라우드 게시하였습니다", Toast.LENGTH_SHORT).show();
                                 view.setClickable(true);
                                 return;
@@ -593,8 +593,8 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                             UiUtil.getInstance().showDialog(context, "클라우드 내리기", "정말 클라우드를 내리겠습니까?"
                                     , (dialogInterface, i1) -> {
                                         Map<String, Object> childUpdate = new HashMap<>();
-                                        // 포스트 isCloud = false
-                                        childUpdate.put("posts/" + coreListItem.getcUuid() + "/" + coreListItem.getPostKey() + "/isCloud", false);
+                                        // 포스트 getIsCloud = false
+                                        childUpdate.put("posts/" + coreListItem.getcUuid() + "/" + coreListItem.getPostKey() + "/getIsCloud", false);
 
                                         // 클라우드에서 포스트 키 null
                                         childUpdate.put("coreCloud/" + coreListItem.getPostKey(), null);
@@ -758,7 +758,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 
     private void deletePost(final CoreListItem coreListItem) {
         String msg = "게시물을 삭제하시겠습니까?";
-        if (coreListItem.getCorePost().isCloud()) {
+        if (coreListItem.getCorePost().getIsCloud()) {
             msg = "클라우드된 게시물입니다. 정말 게시물을 삭제하시겠습니까?";
         }
         UiUtil.getInstance().showDialog(context, "Delete", msg, (dialogInterface, i) ->

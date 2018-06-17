@@ -141,7 +141,7 @@ public class UiUtil {
     }
 
     public void noticeModifyToCloud(CorePost corePost, String postKey, Activity activity) {
-        if(corePost.isCloud()){
+        if(corePost.getIsCloud()){
             try {
                 DataContainer.getInstance().getCoreCloudRef().child(postKey).child("modifyDate").setValue(UiUtil.getInstance().getCurrentTime(activity));
             } catch (NotSetAutoTimeException e) {

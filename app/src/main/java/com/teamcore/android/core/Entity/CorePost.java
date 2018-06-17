@@ -18,11 +18,11 @@ public class CorePost {
     String reply;
     boolean isCloud = false;
 
-    public boolean isCloud() {
+    public boolean getIsCloud() {
         return isCloud;
     }
 
-    public void setCloud(boolean cloud) {
+    public void setIsCloud(boolean cloud) {
         isCloud = cloud;
     }
 
@@ -119,7 +119,7 @@ public class CorePost {
                 ", videoUrl='" + videoUrl + '\'' +
                 ", likeUsers=" + likeUsers +
                 ", reply='" + reply + '\'' +
-                ", isCloud=" + isCloud +
+                ", getIsCloud=" + isCloud +
                 '}';
     }
 }

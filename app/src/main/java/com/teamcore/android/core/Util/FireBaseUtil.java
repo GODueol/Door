@@ -278,7 +278,7 @@ public class FireBaseUtil {
             final ArrayList<Task> deleteTasks = new ArrayList<>();
 
             // coreCloud
-            if (coreListItem.getCorePost().isCloud()) {
+            if (coreListItem.getCorePost().getIsCloud()) {
                 DataContainer.getInstance().getCoreCloudRef().child(coreListItem.getPostKey()).removeValue();
             }
 
@@ -331,12 +331,12 @@ public class FireBaseUtil {
         // delete coreCloud
         if (deletePostKey != null) {  // 지워야할 포스트 지우기
             childUpdates.put("coreCloud/" + deletePostKey, null);
-            childUpdates.put("posts/" + deleteCUuid + "/" + deletePostKey + "/isCloud", false);
+            childUpdates.put("posts/" + deleteCUuid + "/" + deletePostKey + "/getIsCloud", false);
         }
 
         // add coreCloud
         childUpdates.put("coreCloud/" + coreListItem.getPostKey(), new CoreCloud(cUuid, UiUtil.getInstance().getCurrentTime(context), UiUtil.getInstance().getCurrentTime(context)));
-        childUpdates.put("posts/" + cUuid + "/" + coreListItem.getPostKey() + "/isCloud", true);
+        childUpdates.put("posts/" + cUuid + "/" + coreListItem.getPostKey() + "/getIsCloud", true);
         Log.d("KBJ", "isCloudTEST : " + childUpdates.toString());
 
         return FirebaseDatabase.getInstance().getReference().updateChildren(childUpdates);
