@@ -45,7 +45,7 @@ public class BaseActivity extends AppCompatActivity {
 
             } else {
 //                deferred.resolve(false);
-                deferred.resolve(true);
+                deferred.resolve(false);
             }
         };
 
