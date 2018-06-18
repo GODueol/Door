@@ -604,22 +604,20 @@ public class ProfileModifyActivity extends BaseActivity implements NumberPicker.
                     final StorageReference thumbNailSpaceRef = storageRef.child(getPicPath(modifyingPic).replace(".jpg", "_thumbNail.jpg"));
 
                     // 저장
-                    StorageTask<UploadTask.TaskSnapshot> picUploadTask = galleryPick.upload(spaceRef, uri)
-                            .addOnSuccessListener(taskSnapshot -> {
-                                saveUserPicUrl(taskSnapshot.getDownloadUrl(), modifyingPic);
-                                // Set Local
-                                GlideApp.with(modifyingPic.getContext())
-                                        .load(taskSnapshot.getDownloadUrl())
-                                        .placeholder(R.drawable.a)
-                                        .into(modifyingPic);
-                            });
+                    galleryPick.upload(spaceRef, uri)
+                        .addOnSuccessListener(taskSnapshot -> {
+                            saveUserPicUrl(taskSnapshot.getDownloadUrl(), modifyingPic);
+                            // Set Local
+                            GlideApp.with(modifyingPic.getContext())
+                                    .load(taskSnapshot.getDownloadUrl())
+                                    .placeholder(R.drawable.pic_load_ani)
+                                    .into(modifyingPic);
+                        });
 
                     // make thumbnail
-                    StorageTask<UploadTask.TaskSnapshot> thumbnailUploadTask = galleryPick.makeThumbNail(thumbNailSpaceRef, uri)
-                            .addOnSuccessListener(taskSnapshot -> saveUserThumbNailPicUrl(taskSnapshot.getDownloadUrl(), modifyingPic));
-
-                    startProgressDialog();
-                    Tasks.whenAll(picUploadTask, thumbnailUploadTask).addOnCompleteListener(task -> stopProgressDialog());
+                    StorageTask<UploadTask.TaskSnapshot> thumbnailUploadTask = galleryPick.makeThumbNail(thumbNailSpaceRef, uri);
+                    if(thumbnailUploadTask != null) thumbnailUploadTask.addOnSuccessListener(taskSnapshot -> saveUserThumbNailPicUrl(taskSnapshot.getDownloadUrl(), modifyingPic));
+                    else removeUserThumbNailPicUrl(modifyingPic);
 
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
@@ -631,8 +629,6 @@ public class ProfileModifyActivity extends BaseActivity implements NumberPicker.
                     stopProgressDialog();
                 }
 
-//                uriMap.put(modifyingPic.getId(), galleryPick.getUri());
-//                modifyingPic.setImageBitmap(galleryPick.getBitmap());
             }
         }
     }
