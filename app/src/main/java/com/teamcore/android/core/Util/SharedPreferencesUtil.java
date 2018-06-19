@@ -229,15 +229,19 @@ public class SharedPreferencesUtil {
 
         switch (str){
             case "FMainGrid" :
+                // 채팅눌렀을때 풀이미지에서???
                 count=RemoteConfig.MainGridAdCount;
                 break;
             case "ChatList" :
+                // 채팅 리스트클릭
                 count=RemoteConfig.ChatAdCount;
                 break;
             case "Friends" :
+                // 프렌즈탭 클릭
                 count=RemoteConfig.FriendsAdCount;
                 break;
             case "ProfileChat" :
+                //
                 count=RemoteConfig.ProfileChatAdCount;
                 break;
         }

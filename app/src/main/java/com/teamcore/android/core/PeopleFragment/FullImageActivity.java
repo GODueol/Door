@@ -209,7 +209,7 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
                 startActivity(intent);
                 checkCorePlus().done(isPlus -> {
                     if (!isPlus) {
-                        SPUtil.increaseAds(mInterstitialAd, "FMainGrid");
+                        SPUtil.increaseAds(mInterstitialAd, "ProfileChat");
                     }
                 });
             });

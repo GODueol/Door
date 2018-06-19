@@ -75,7 +75,7 @@ public class PeopleFragment extends BaseFragment {
             startActivity(p);
             checkCorePlus().done(isPlus ->{
                 if(!isPlus){
-                    SPUtil.increaseAds(mInterstitialAd, "ProfileChat");
+                    SPUtil.increaseAds(mInterstitialAd, "FMainGrid");
                 }
             });
 
