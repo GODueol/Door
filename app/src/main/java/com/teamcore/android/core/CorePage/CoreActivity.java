@@ -14,6 +14,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -33,9 +34,12 @@ import android.widget.Toast;
 import com.android.vending.billing.IInAppBillingService;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
@@ -43,6 +47,7 @@ import com.squareup.otto.Subscribe;
 import com.teamcore.android.core.Entity.CloudEntity;
 import com.teamcore.android.core.Entity.CoreListItem;
 import com.teamcore.android.core.Entity.CorePost;
+import com.teamcore.android.core.Entity.PurchaseEntity;
 import com.teamcore.android.core.Entity.User;
 import com.teamcore.android.core.Event.TargetUserBlocksMeEvent;
 import com.teamcore.android.core.Exception.NotSetAutoTimeException;
@@ -549,9 +554,21 @@ public class CoreActivity extends BlockBaseActivity {
                 UiUtil.getInstance().startProgressDialog(CoreActivity.this);
                 try {
 
+                    PurchaseEntity purchaseEntity = new PurchaseEntity();
+                    purchaseEntity.setOrderId(purchase.getOrderId());
+                    purchaseEntity.setPurchaseTime(purchase.getPurchaseTime());
+                    purchaseEntity.setSignature(purchase.getSignature());
+                    purchaseEntity.setToken(purchase.getToken());
+
                     FireBaseUtil.getInstance().putCoreCloud(cloudEntity.getCUuid(), cloudEntity.getCoreListItem(), getApplicationContext(), cloudEntity.getDeletePostKey(), cloudEntity.getDeletePostKey()).addOnSuccessListener(o -> {
-                        Toast.makeText(getApplicationContext(), "코어가 클라우드에 추가되었습니다", Toast.LENGTH_SHORT).show();
-                        UiUtil.getInstance().stopProgressDialog();
+                        DatabaseReference purchaseReference = FirebaseDatabase.getInstance().getReference("purchase").child(DataContainer.getInstance().getUid());
+                        String postKey = purchaseReference.push().getKey();
+                        purchaseReference.child(postKey).setValue(purchaseEntity).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                UiUtil.getInstance().stopProgressDialog();
+                            }
+                        });
                     });
                 } catch (NotSetAutoTimeException e) {
                     e.printStackTrace();

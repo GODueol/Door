@@ -21,8 +21,10 @@ import android.widget.Toast;
 import com.android.vending.billing.IInAppBillingService;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.teamcore.android.core.Activity.MainActivity;
+import com.teamcore.android.core.Entity.PurchaseEntity;
 import com.teamcore.android.core.R;
 import com.teamcore.android.core.Util.DataContainer;
 import com.teamcore.android.core.Util.GlideApp;
@@ -228,10 +230,19 @@ public class CorePlusActivity extends AppCompatActivity {
                         // 구매 성공
                         DataContainer.getInstance().isPlus = true;
                         setContentViewByPlus();
-                        FirebaseDatabase.getInstance().getReference("subscribe").child(DataContainer.getInstance().getUid()).child(String.valueOf(info.getPurchaseTime())).setValue(info).addOnCompleteListener(new OnCompleteListener<Void>() {
+
+                        PurchaseEntity purchaseEntity = new PurchaseEntity();
+                        purchaseEntity.setOrderId(info.getOrderId());
+                        purchaseEntity.setPurchaseTime(info.getPurchaseTime());
+                        purchaseEntity.setSignature(info.getSignature());
+                        purchaseEntity.setToken(info.getToken());
+
+                        DatabaseReference subscribeReference = FirebaseDatabase.getInstance().getReference("subscribe").child(DataContainer.getInstance().getUid());
+                        String postKey = subscribeReference.push().getKey();
+                        subscribeReference.child(postKey).setValue(purchaseEntity).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
-                                Intent p = new Intent(getApplicationContext(),MainActivity.class);
+                                Intent p = new Intent(getApplicationContext(), MainActivity.class);
                                 startActivity(p);
                             }
                         });
