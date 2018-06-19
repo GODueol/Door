@@ -132,6 +132,7 @@ public class MessageActivity extends BaseActivity implements SharedPreferences.O
         linearLayoutManager.setReverseLayout(true);
         linearLayoutManager.setStackFromEnd(true);
         messageRecyclerAdapter = new messageRecyclerAdapter(MessageActivity.this, listrowItem, R.layout.chatting_list_row, listener, chatlistener);
+        messageRecyclerAdapter.setHasStableIds(true);
         messageList = (RecyclerView) findViewById(R.id.messagelist);
         messageList.setAdapter(messageRecyclerAdapter);
         messageList.setLayoutManager(linearLayoutManager);

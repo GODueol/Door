@@ -61,6 +61,9 @@ public class messageRecyclerAdapter extends RecyclerView.Adapter<messageRecycler
         holder.nickname.setText(room.getTargetNickName());
         holder.profile.setText(room.getTargetProfile());
         holder.badge.setText(Integer.toString(room.getBadgeCount()));
+        if(holder.badge.getText().equals("0")){
+            holder.badge.setText("");
+        }
         Long lastChatTime = room.getLastChatTime();
         Long lastViewTime = room.getLastViewTime();
         if (lastViewTime >= lastChatTime) {
@@ -118,7 +121,11 @@ public class messageRecyclerAdapter extends RecyclerView.Adapter<messageRecycler
                     .centerCrop()
                     .into(holder.img);
         }
+    }
 
+    @Override
+    public long getItemId(int position) {
+        return roomList.get(position).getLastChatTime();
     }
 
     @Override
