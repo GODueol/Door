@@ -126,6 +126,7 @@ public class IntroActivity extends BaseActivity {
             Log.i("Internet Connection", "인터넷 연결 안된 상태");
             Toast.makeText(getApplicationContext(), "인터넷 연결이 안되어 있습니다", Toast.LENGTH_SHORT).show();
             finish();
+            return;
         }
 
         if (user != null) {
