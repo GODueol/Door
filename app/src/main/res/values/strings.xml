@@ -76,7 +76,7 @@
     <string name="unblock_to_all_user">전체 회원 블럭 해제</string>
     <string name="people">People</string>
 
-    <string name="alarm">Alarm</string>
+    <string name="alarm">alarm</string>
     <string name="badge">badge</string>
 
     <string name="mainAlarm">mainAlarm</string>
@@ -209,6 +209,15 @@
     <string name="detach_cloud">클라우드에서 내리기</string>
     <string name="next">다음</string>
     <string name="approval">클라우드 결제</string>
+
+    <string name="admob">admob</string>
+
+    <string name="blockCount">blockCount</string>
+    <string name="findUserCount">findUserCount</string>
+    <string name="mCorePostCount">mCorePostCount</string>
+    <string name="coreCloudProfileCount">coreCloudProfileCount</string>
+    <string name="mapSearchCount">mapSearchCount</string>
+    <string name="navAlarmCount">navAlarmCount</string>
 
     <string name="cloud_pager_1">클라우드는 자신의 코어 포스트 중 하나를 1$에 결제하여, 앱 내 전체 회원에게 공개하는 자기 어필 광고 공간입니다</string>
     <string name="cloud_pager_1_1">다음 업로드 가능 시간</string>

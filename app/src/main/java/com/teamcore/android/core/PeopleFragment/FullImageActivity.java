@@ -486,14 +486,14 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
                         @Override
                         public void onRewardedVideoAdClosed() {
                             loadRewardedVideoAd();
-                            FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("blockCount").addListenerForSingleValueEvent(new ValueEventListener() {
+                            FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(getString(R.string.blockCount)).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     if (dataSnapshot.exists()) {
                                         int value = Integer.valueOf(dataSnapshot.getValue().toString());
                                         Log.d("test", "몇개 : " + value);
                                         if (value > 0) {
-                                            FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("blockCount").setValue(value - 1);
+                                            FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(getString(R.string.blockCount)).setValue(value - 1);
                                             UiUtil.getInstance().startProgressDialog(FullImageActivity.this);
                                             // blockUsers 추가
                                             try {
@@ -516,7 +516,7 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
 
                         @Override
                         public void onRewarded(RewardItem rewardItem) {
-                            FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("blockCount").setValue(rewardItem.getAmount());
+                            FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(getString(R.string.blockCount)).setValue(rewardItem.getAmount());
                         }
 
                         @Override
@@ -533,7 +533,7 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
 
                     checkCorePlus().done(isPlus -> {
                         if (!isPlus) {
-                            FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("blockCount").addListenerForSingleValueEvent(new ValueEventListener() {
+                            FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(getString(R.string.blockCount)).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -546,7 +546,7 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
                                     Log.d("test", "몇개 : " + value);
 
                                     if (value > 0) {
-                                        FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("blockCount").setValue(value - 1);
+                                        FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(getString(R.string.blockCount)).setValue(value - 1);
                                         UiUtil.getInstance().startProgressDialog(FullImageActivity.this);
                                         // blockUsers 추가
                                         try {

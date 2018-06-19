@@ -25,7 +25,7 @@ import java.util.Map;
 public class AlarmUtil {
 
     private static final AlarmUtil ourInstance = new AlarmUtil();
-    private final DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference("Alarm");
+    private final DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference("alarm");
     private final String Uuid = DataContainer.getInstance().getUid();
 
     public static AlarmUtil getInstance() {

@@ -134,14 +134,14 @@ public class NavAlarmAdapter extends RecyclerView.Adapter<NavAlarmAdapter.ViewHo
                     @Override
                     public void onRewardedVideoAdClosed() {
                         loadRewardedVideoAd();
-                        FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("navAlarmCount").addListenerForSingleValueEvent(new ValueEventListener() {
+                        FirebaseDatabase.getInstance().getReference(context.getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(context.getString(R.string.navAlarmCount)).addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 if (dataSnapshot.exists()) {
                                     int value = Integer.valueOf(dataSnapshot.getValue().toString());
                                     Log.d("test", "몇개 : " + value);
                                     if (value > 0) {
-                                        FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("navAlarmCount").setValue(value - 1);
+                                        FirebaseDatabase.getInstance().getReference(context.getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(context.getString(R.string.navAlarmCount)).setValue(value - 1);
                                         showCorePost(item, position);
                                     }
                                 }
@@ -157,7 +157,7 @@ public class NavAlarmAdapter extends RecyclerView.Adapter<NavAlarmAdapter.ViewHo
 
                     @Override
                     public void onRewarded(RewardItem rewardItem) {
-                        FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("navAlarmCount").setValue(rewardItem.getAmount());
+                        FirebaseDatabase.getInstance().getReference(context.getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(context.getString(R.string.navAlarmCount)).setValue(rewardItem.getAmount());
                     }
 
                     @Override
@@ -172,7 +172,7 @@ public class NavAlarmAdapter extends RecyclerView.Adapter<NavAlarmAdapter.ViewHo
                     }
                 });
                 if (!isPlus) {
-                    FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("navAlarmCount").addListenerForSingleValueEvent(new ValueEventListener() {
+                    FirebaseDatabase.getInstance().getReference(context.getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(context.getString(R.string.navAlarmCount)).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             int value;
@@ -183,7 +183,7 @@ public class NavAlarmAdapter extends RecyclerView.Adapter<NavAlarmAdapter.ViewHo
                             }
                             Log.d("test", "몇개 : " + value);
                             if (value > 0) {
-                                FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("navAlarmCount").setValue(value - 1);
+                                FirebaseDatabase.getInstance().getReference(context.getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(context.getString(R.string.navAlarmCount)).setValue(value - 1);
                                 showCorePost(item, position);
                             } else {
                                 mRewardedVideoAd.show();
@@ -285,7 +285,7 @@ public class NavAlarmAdapter extends RecyclerView.Adapter<NavAlarmAdapter.ViewHo
     private void showCorePost(AlarmSummary item, int position) {
         if (DataContainer.getInstance().isBlockWithMe(item.getcUuid())) {
             Toast.makeText(context, "포스트를 볼 수 없습니다.", Toast.LENGTH_SHORT).show();
-            FirebaseDatabase.getInstance().getReference("Alarm").child(DataContainer.getInstance().getUid()).child(item.getKey()).removeValue();
+            FirebaseDatabase.getInstance().getReference(context.getString(R.string.alarm)).child(DataContainer.getInstance().getUid()).child(item.getKey()).removeValue();
             items.remove(position);
             notifyDataSetChanged();
             return;
@@ -293,7 +293,7 @@ public class NavAlarmAdapter extends RecyclerView.Adapter<NavAlarmAdapter.ViewHo
         try {
             Long time = UiUtil.getInstance().getCurrentTime(context);
             item.setViewTime(time);
-            FirebaseDatabase.getInstance().getReference("Alarm").child(DataContainer.getInstance().getUid()).child(item.getKey()).child("alarmSummary").child("viewTime").setValue(time);
+            FirebaseDatabase.getInstance().getReference(context.getString(R.string.alarm)).child(DataContainer.getInstance().getUid()).child(item.getKey()).child("alarmSummary").child("viewTime").setValue(time);
         } catch (NotSetAutoTimeException e) {
             e.printStackTrace();
         }

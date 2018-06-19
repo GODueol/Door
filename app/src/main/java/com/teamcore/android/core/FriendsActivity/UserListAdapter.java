@@ -167,14 +167,14 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
                             @Override
                             public void onRewardedVideoAdClosed() {
                                 loadRewardedVideoAd2();
-                                FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("findUserCount").addListenerForSingleValueEvent(new ValueEventListener() {
+                                FirebaseDatabase.getInstance().getReference(context.getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(context.getString(R.string.findUserCount)).addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {
                                         if (dataSnapshot.exists()) {
                                             int value = Integer.valueOf(dataSnapshot.getValue().toString());
                                             Log.d("test", "몇개 : " + value);
                                             if (value > 0) {
-                                                FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("findUserCount").setValue(value - 1);
+                                                FirebaseDatabase.getInstance().getReference(context.getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(context.getString(R.string.findUserCount)).setValue(value - 1);
                                                 view.getContext().startActivity(p);
                                             }
                                         }
@@ -190,7 +190,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
 
                             @Override
                             public void onRewarded(RewardItem rewardItem) {
-                                FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("findUserCount").setValue(rewardItem.getAmount());
+                                FirebaseDatabase.getInstance().getReference(context.getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(context.getString(R.string.findUserCount)).setValue(rewardItem.getAmount());
                             }
 
                             @Override
@@ -207,7 +207,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
 
 
                         if(!isPlus){
-                            FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("findUserCount").addListenerForSingleValueEvent(new ValueEventListener() {
+                            FirebaseDatabase.getInstance().getReference(context.getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(context.getString(R.string.findUserCount)).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     int value;
@@ -218,7 +218,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
                                     }
                                     Log.d("test", "몇개 : " + value);
                                     if (value > 0) {
-                                        FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("findUserCount").setValue(value - 1);
+                                        FirebaseDatabase.getInstance().getReference(context.getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(context.getString(R.string.findUserCount)).setValue(value - 1);
                                         view.getContext().startActivity(p);
                                     } else {
                                         mRewardedVideoAd2.show();
@@ -314,14 +314,14 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
                                         @Override
                                         public void onRewardedVideoAdClosed() {
                                             loadRewardedVideoAd();
-                                            FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("blockCount").addListenerForSingleValueEvent(new ValueEventListener() {
+                                            FirebaseDatabase.getInstance().getReference(context.getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(context.getString(R.string.blockCount)).addListenerForSingleValueEvent(new ValueEventListener() {
                                                 @Override
                                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                                     if (dataSnapshot.exists()) {
                                                         int value = Integer.valueOf(dataSnapshot.getValue().toString());
                                                         Log.d("test", "몇개 : " + value);
                                                         if (value > 0) {
-                                                            FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("blockCount").setValue(value - 1);
+                                                            FirebaseDatabase.getInstance().getReference(context.getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(context.getString(R.string.blockCount)).setValue(value - 1);
 
                                                             UiUtil.getInstance().startProgressDialog((Activity) context);
                                                             try {
@@ -349,7 +349,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
 
                                         @Override
                                         public void onRewarded(RewardItem rewardItem) {
-                                            FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("blockCount").setValue(rewardItem.getAmount());
+                                            FirebaseDatabase.getInstance().getReference(context.getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(context.getString(R.string.blockCount)).setValue(rewardItem.getAmount());
                                         }
 
                                         @Override
@@ -364,7 +364,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
                                         }
                                     });
                                     if(!isPlus) {
-                                        FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("blockCount").addListenerForSingleValueEvent(new ValueEventListener() {
+                                        FirebaseDatabase.getInstance().getReference(context.getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(context.getString(R.string.blockCount)).addListenerForSingleValueEvent(new ValueEventListener() {
                                             @Override
                                             public void onDataChange(DataSnapshot dataSnapshot) {
                                                 int value;
@@ -375,7 +375,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
                                                 }
                                                 Log.d("test", "몇개 : " + value);
                                                 if (value > 0) {
-                                                    FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("blockCount").setValue(value - 1);
+                                                    FirebaseDatabase.getInstance().getReference(context.getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(context.getString(R.string.blockCount)).setValue(value - 1);
 
                                                     UiUtil.getInstance().startProgressDialog((Activity) context);
                                                     try {

@@ -218,14 +218,14 @@ public class CoreWriteActivity extends BlockBaseActivity {
                             @Override
                             public void onRewardedVideoAdClosed() {
                                 loadRewardedVideoAd();
-                                FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("mCorePostCount").addListenerForSingleValueEvent(new ValueEventListener() {
+                                FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(getString(R.string.mCorePostCount)).addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {
                                         if (dataSnapshot.exists()) {
                                             int value = Integer.valueOf(dataSnapshot.getValue().toString());
                                             Log.d("test", "몇개 : " + value);
                                             if (value > 0) {
-                                                FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("mCorePostCount").setValue(value - 1);
+                                                FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(getString(R.string.mCorePostCount)).setValue(value - 1);
                                                 saveCore();
 
                                             }
@@ -242,7 +242,7 @@ public class CoreWriteActivity extends BlockBaseActivity {
 
                             @Override
                             public void onRewarded(RewardItem rewardItem) {
-                                FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("mCorePostCount").setValue(rewardItem.getAmount());
+                                FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(getString(R.string.mCorePostCount)).setValue(rewardItem.getAmount());
                             }
 
                             @Override
@@ -258,7 +258,7 @@ public class CoreWriteActivity extends BlockBaseActivity {
 
                         boolean isPlus = DataContainer.getInstance().isPlus;
                         if (!isPlus) {
-                            FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("mCorePostCount").addListenerForSingleValueEvent(new ValueEventListener() {
+                            FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(getString(R.string.mCorePostCount)).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     int value;
@@ -269,7 +269,7 @@ public class CoreWriteActivity extends BlockBaseActivity {
                                     }
                                     Log.d("test", "몇개 : " + value);
                                     if (value > 0) {
-                                        FirebaseDatabase.getInstance().getReference("adMob").child(DataContainer.getInstance().getUid()).child("mCorePostCount").setValue(value - 1);
+                                        FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(getString(R.string.mCorePostCount)).setValue(value - 1);
                                         saveCore();
                                     } else {
                                         mRewardedVideoAd.show();
