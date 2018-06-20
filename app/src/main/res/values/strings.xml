@@ -1,10 +1,12 @@
 <resources>
     <string name="app_name">CORE</string>
+    <string name="core">코어</string>
     <string name="TeamCore">TeamCore</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="adsID">ca-app-pub-4410935111031067~7345603486</string>
+
     <!-- 하단 배너 광고 TestId-->
     <string name="adsCore">ca-app-pub-3940256099942544/6300978111</string>
     <string name="adsCoreCloud">ca-app-pub-3940256099942544/6300978111</string>
@@ -31,29 +33,6 @@
     <string name="adsEnteredCore">ca-app-pub-3940256099942544/5224354917</string>
     <string name="adsBlockUser">ca-app-pub-3940256099942544/5224354917</string>
 
-    <!-- 하단 배너 광고
-    <string name="adsCore">ca-app-pub-4410935111031067/2316158497</string>
-    <string name="adsCoreCloud">ca-app-pub-4410935111031067/3984463389</string>
-    <string name="adsMainGrid">ca-app-pub-4410935111031067/8143200242</string>
-    <string name="adsMapSearch">ca-app-pub-4410935111031067/3390115757</string>
-    <string name="adsUserSearch">ca-app-pub-4410935111031067/2815400684</string>
-    -->
-
-    <!-- 전면 광고
-    <string name="adsProfileChating">ca-app-pub-4410935111031067/5713026769</string>
-    <string name="adsFMainGrid">ca-app-pub-4410935111031067/2016775597</string>
-    <string name="adsFriendsTab">ca-app-pub-4410935111031067/6051814400</string>
-    <string name="adsChatingList">ca-app-pub-4410935111031067/5034369915</string>
-    -->
-
-    <!-- 전면 동영상 광고
-    <string name="adsWriteCorePost">ca-app-pub-4410935111031067/8287219211</string>
-    <string name="adsUserSearching">ca-app-pub-4410935111031067/6774278252</string>
-    <string name="adsNavAlarm">ca-app-pub-4410935111031067/1126790784</string>
-    <string name="adsMapSearching">ca-app-pub-4410935111031067/2148637538</string>
-    <string name="adsEnteredCore">ca-app-pub-4410935111031067/1645665534</string>
-    <string name="adsBlockUser">ca-app-pub-4410935111031067/9224896366</string>
-    -->
     <string name="find_map">지도 검색</string>
     <string name="find_id">회원 검색</string>
     <string name="lock_to_all_user">공개한 사진 모두 잠금</string>
@@ -63,9 +42,7 @@
     <string name="join_mail_2">코어는 기기당 한 계정만 가입할 수 있으므로 가급적 수신이 가능한 메일을 입력해주시기 바랍니다.</string>
 
     <string-array name="titles_tab">
-        <!--<item>Board</item>-->
         <item>People</item>
-        <!--<item>Club</item>-->
     </string-array>
 
     <!-- Action Bar action items -->
@@ -98,7 +75,7 @@
     <string name="block">블럭</string>
     <string name="follower">팔로워</string>
     <string name="following">팔로잉</string>
-    <string name="unfollow">팔로우 취소</string>
+    <string name="unfollow">팔로잉 취소</string>
 
 
     <string name="edit">편집</string>
@@ -107,11 +84,10 @@
     <string name="core_plus">CORE PLUS</string>
     <string name="notice">공지사항</string>
     <string name="account_setting">계정</string>
-    <string name="alarm_setting">알림</string>
+    <string name="alarm_setting">푸쉬</string>
     <string name="block_list">블럭</string>
     <string name="app_info">앱 정보</string>
     <string name="log_out">로그 아웃</string>
-    <string name="core">코어</string>
     <string name="follow">팔로우</string>
     <string name="unblock">블럭 해제</string>
     <string name="oldOrder">오래된 순</string>
@@ -161,7 +137,7 @@
     <string name="cp_1">다른 회원을 더 자세히 알아보고 싶으신가요?</string>
     <string name="cp_2">CORE PLUS는 여러분께 다양한 혜택을 드립니다!</string>
     <string name="cp_3">CORE PLUS 구독하기</string>
-    <string name="cp_4">￦ ---- / 월 ※ 부가세 별도</string>
+    <string name="cp_4">￦ 5000 / 월(month)</string>
     <string name="cp_6">구독 혜택 안내</string>
     <string name="cp_7">안녕하세요.</string>
     <string name="cp_8">구독 혜택을 알려드릴 운영자 입니다.</string>
@@ -170,15 +146,15 @@
     <string name="cp_11">관심있는 회원의 코어에 들어가</string>
     <string name="cp_12">일상사진, 생각, 목소리를 알아보고 익명 질문을 남겨보세요!</string>
     <string name="cp_13">2 내 코어에 기록할 수 있는 포스트 총 개수가 증가됩니다.</string>
-    <string name="cp_14">기록할 수 있는 코어 포스트의 개수가</string>
-    <string name="cp_15">150개에서 500개로 늘어납니다!</string>
-    <string name="cp_16">3 움직이는 사진(GIF 파일)을 업로드 할 수 있습니다.</string>
+    <string name="cp_14">기록할 수 있는 코어 포스트의 최대 개수가</string>
+    <string name="cp_15">30개에서 100개로 늘어납니다!</string>
+    <string name="cp_16">3 움직이는 사진(GIF 파일)을 업로드할 수 있습니다.</string>
     <string name="cp_17">프로필 사진과 코어 포스트에 좋아하는 짤을 넣어보세요!</string>
-    <string name="cp_18">* 5MB 이하의 GIF 파일만 업로드 가능합니다</string>
+    <string name="cp_18"> </string>
     <string name="cp_19">4 매너 없는 포스트를 게시한 익명 회원을 차단할 수 있습니다.</string>
     <string name="cp_20">내 코어에 악성 포스트를 남긴 익명 유저를 차단할 수 있습니다!</string>
     <string name="cp_21">5 차단한 블럭 리스트를 볼 수 있고 해제할 수 있습니다.</string>
-    <string name="cp_22">차단한 회원을 (익명 차단 포함) 모두 볼 수 있고,</string>
+    <string name="cp_22">차단하신 모든 회원을 볼 수 있고,</string>
     <string name="cp_23">다시 해제할 수 있습니다.</string>
     <string name="cp_24">다른 궁금한 점이 있나요?</string>
     <string name="cp_25">의견 보내기</string>

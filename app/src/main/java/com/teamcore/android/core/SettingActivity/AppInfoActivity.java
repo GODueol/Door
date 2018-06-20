@@ -79,7 +79,7 @@ public class AppInfoActivity extends AppCompatActivity {
             }
         });
 
-       ((TextView)findViewById(R.id.appVersion)).setText(String.valueOf(BuildConfig.VERSION_CODE));
+       ((TextView)findViewById(R.id.appVersion)).setText(String.valueOf("Version "+BuildConfig.VERSION_CODE));
     }
 
 
