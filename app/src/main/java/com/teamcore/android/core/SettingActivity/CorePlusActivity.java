@@ -114,7 +114,7 @@ public class CorePlusActivity extends AppCompatActivity {
         iaphelper = new IabHelper(this, PUBLIC_KEY);
         iaphelper.startSetup(result -> {
             if (!result.isSuccess()) {
-                Toast.makeText(CorePlusActivity.this, "문제발생", Toast.LENGTH_SHORT).show();
+                Toast.makeText(CorePlusActivity.this, "다시 시도해주세요", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -137,7 +137,7 @@ public class CorePlusActivity extends AppCompatActivity {
                 iaphelper.launchSubscriptionPurchaseFlow(this, getString(R.string.subscribe), 1001, mPurchaseFinishedListener, payLoad);
             } else {
                 // 결제가 막혔다면 왜 결제가 막혀있찌 대체????
-                Toast.makeText(CorePlusActivity.this, "구매실패", Toast.LENGTH_SHORT).show();
+                Toast.makeText(CorePlusActivity.this, "다시 시도해주세요", Toast.LENGTH_SHORT).show();
             }
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -222,7 +222,7 @@ public class CorePlusActivity extends AppCompatActivity {
         public void onIabPurchaseFinished(IabResult result, Purchase info) {
             if (iaphelper == null) return;
             if (result.isFailure()) {
-                Toast.makeText(CorePlusActivity.this, result.getResponse() + "구매 실패, 정상 경로를 이용해주세요.111", Toast.LENGTH_SHORT).show();
+                Toast.makeText(CorePlusActivity.this, result.getResponse() + "구매 실패 정상 경로를 이용해주세요[1]", Toast.LENGTH_SHORT).show();
             } else {
                 if (verifyDeveloperPayload(info)) {
                     //보낸 신호와 맞는경우
@@ -247,10 +247,10 @@ public class CorePlusActivity extends AppCompatActivity {
                             }
                         });
                     } else {
-                        Toast.makeText(CorePlusActivity.this, "구매 실패, 정상 경로를 이용해주세요.222", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CorePlusActivity.this, "구매 실패 정상 경로를 이용해주세요[2]", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(CorePlusActivity.this, "구매 실패, 정상 경로를 이용해주세요.333", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CorePlusActivity.this, "구매 실패 정상 경로를 이용해주세요[3]", Toast.LENGTH_SHORT).show();
                 }
             }
         }

@@ -13,12 +13,7 @@ public final class ViewUtil {
         throw new InstantiationException("This class is not for instantiation");
     }
 
-    /**
-     * Generate a value suitable for use in {@link android.view.View#setId(int)}.
-     * This value will not collide with ID values generated at build time by aapt for R.id.
-     *
-     * @return a generated ID value
-     */
+
     public static int generateViewId() {
         for (; ; ) {
             final int result = sNextGeneratedId.get();

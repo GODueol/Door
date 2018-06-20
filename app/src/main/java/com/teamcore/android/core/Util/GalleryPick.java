@@ -311,11 +311,11 @@ public class GalleryPick {
         return returnCursor.getLong(sizeIndex);
     }
     private long getFileSizeInMB() {
-        long fileSizeInMB;// 크기 확인 : 5MB
+        long fileSizeInMB; // 크기 확인 : 5MB
 
         long fileSizeInBytes = getFileSizeInBytes();
-
         // Convert the bytes to Kilobytes (1 KB = 1024 Bytes)
+
         long fileSizeInKB = fileSizeInBytes / 1024;
         // Convert the KB to MegaBytes (1 MB = 1024 KBytes)
         fileSizeInMB = fileSizeInKB / 1024;

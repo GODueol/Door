@@ -13,7 +13,7 @@ import com.teamcore.android.core.Util.SharedPreferencesUtil;
  * Created by Kwon on 2018-01-04.
  */
 
-public class AlarmActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
+public class PushAlarmActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
 
 
     Toolbar toolbar = null;

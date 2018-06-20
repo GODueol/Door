@@ -578,7 +578,7 @@ public class ChatFirebaseUtil {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(context, "이미지 삭제에 실패했습니다.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "이미지 삭제에 실패했습니다", Toast.LENGTH_SHORT).show();
             }
         });
 

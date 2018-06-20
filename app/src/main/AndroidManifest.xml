@@ -172,7 +172,7 @@
             android:screenOrientation="portrait"
             tools:ignore="InnerclassSeparator" />
         <activity
-            android:name=".SettingActivity.AlarmActivity"
+            android:name=".SettingActivity.PushAlarmActivity"
             android:screenOrientation="portrait"
             tools:ignore="InnerclassSeparator" />
         <activity

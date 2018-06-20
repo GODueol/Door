@@ -95,7 +95,7 @@ public class AccountActivity extends BaseActivity implements View.OnClickListene
 
         AlertDialog.Builder builder = new AlertDialog.Builder(AccountActivity.this);
         TextView title = new TextView(AccountActivity.this);
-        title.setText("[계정 삭제]\n\n계정을 삭제하시려면, 비밀번호를 입력해주세요.");
+        title.setText("[계정 삭제]\n\n계정을 삭제하시려면 비밀번호를 입력해주세요.");
         title.setGravity(Gravity.CENTER);
         title.setPadding(0,90,0,40);
         title.setTextSize(15);
@@ -146,9 +146,9 @@ public class AccountActivity extends BaseActivity implements View.OnClickListene
                 runnable.run();
             } else {
                 Toast.makeText(AccountActivity.this,
-                        "포스트 제재 당하셨기 때문에 " +
-                                releaseDate + " 까지 계정삭제 불가능합니다"
-                        , Toast.LENGTH_SHORT).show();
+                        "현재 제재 대상자이므로 " +
+                                releaseDate + " 까지 계정삭제가 불가능합니다."
+                        , Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -159,8 +159,8 @@ public class AccountActivity extends BaseActivity implements View.OnClickListene
                 runnable.run();
             } else {
                 Toast.makeText(AccountActivity.this,
-                        "프로필 제재 당하셨기 때문에 " +
-                                releaseDate + " 까지 계정삭제 불가능합니다"
+                        "현재 제재 대상자이므로 " +
+                                releaseDate + " 까지 계정삭제가 불가능합니다."
                         , Toast.LENGTH_SHORT).show();
             }
         });
@@ -210,13 +210,13 @@ public class AccountActivity extends BaseActivity implements View.OnClickListene
                                             pw.setText(null);
                                             pwConfirm.setText(null);
                                             new_password_layout.setVisibility(View.GONE);
-                                            Toast.makeText(getApplicationContext(), "비밀번호가 변경되었습니다.", Toast.LENGTH_LONG).show();
+                                            Toast.makeText(getApplicationContext(), "비밀번호가 변경되었습니다", Toast.LENGTH_LONG).show();
                                         }
-                                    }).addOnFailureListener(e -> Toast.makeText(getApplicationContext(), "비밀번호 변경에 실패하였습니다. ", Toast.LENGTH_SHORT).show());
+                                    }).addOnFailureListener(e -> Toast.makeText(getApplicationContext(), "비밀번호 변경에 실패하였습니다", Toast.LENGTH_SHORT).show());
                             UiUtil.getInstance().stopProgressDialog();
                         }).addOnFailureListener(e -> {
                             focusEditText(currentPw);
-                            Toast.makeText(getApplicationContext(), "현재 비밀번호를 다시 확인해주세요. ", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "현재 비밀번호를 다시 확인해주세요", Toast.LENGTH_SHORT).show();
                             UiUtil.getInstance().stopProgressDialog();
                         });
                 break;
@@ -264,7 +264,7 @@ public class AccountActivity extends BaseActivity implements View.OnClickListene
 
         if (currentPassword.length() < 6 || currentPassword.isEmpty()) {
             focusEditText(currentPw);
-            throw new Exception("비밀번호를 올바르게 입력해 주세요.");
+            throw new Exception("비밀번호는 6자리 이상 12자리 이하로 설정해주세요.");
         } else if (password.isEmpty() || password.length() < 6 || password.length() > 12) {
             focusEditText(pwConfirm);
             focusEditText(pw);

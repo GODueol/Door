@@ -161,7 +161,7 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
 
                 // 차단된 경우
                 if (mUser != null && mUser.getBlockMeUsers().containsKey(item.getUuid())) {
-                    Toast.makeText(FullImageActivity.this, "당신은 차단되었습니다", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(FullImageActivity.this, "Block", Toast.LENGTH_SHORT).show();
                     finish();
                 }
 
@@ -390,11 +390,11 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
             String title, message;
             final boolean isFollow = oUser.getFollowerUsers().containsKey(myUuid);  // 이미 팔로우한 유저
             if (isFollow) {
-                title = "팔로우 해제";
-                message = "해당유저를 팔로우해제하시겠습니까?";
+                title = "팔로잉 취소";
+                message = "이 회원을 팔로잉 하지않습니다.";
             } else {
-                title = "팔로우 신청";
-                message = "해당유저를 팔로우하시겠습니까?";
+                title = "팔로잉";
+                message = "이 회원을 팔로잉 합니다. 서로 팔로잉하면 친구가 됩니다.";
             }
 
             UiUtil.getInstance().showDialog(FullImageActivity.this, title, message, (dialog, whichButton) -> {
@@ -407,24 +407,24 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
                         task = FireBaseUtil.getInstance().follow(FullImageActivity.this, oUser, item.getUuid(), isFollow);
                     } catch (NotSetAutoTimeException e) {
                         e.printStackTrace();
-                        Toast.makeText(FullImageActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(FullImageActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                         ActivityCompat.finishAffinity(FullImageActivity.this);
                     }
                 } catch (ChildSizeMaxException e) {
-                    Toast.makeText(FullImageActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(FullImageActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                     UiUtil.getInstance().stopProgressDialog();
                     return;
                 }
                 if (task == null) {
-                    Toast.makeText(getBaseContext(), "오류 발생", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getBaseContext(), "오류 발생", Toast.LENGTH_SHORT).show();
                     UiUtil.getInstance().stopProgressDialog();
                     return;
                 }
                 task.addOnSuccessListener(aVoid -> {
                     if (oUser.getFollowerUsers().containsKey(myUuid)) {   //  이미 팔로우함
-                        addFriends.setImageResource(R.drawable.unfollow); // 팔로우 취소 버튼
+                        addFriends.setImageResource(R.drawable.unfollow); // 팔로잉 취소 버튼
                     } else {
-                        addFriends.setImageResource(R.drawable.follow); // 팔로우 버튼
+                        addFriends.setImageResource(R.drawable.follow); // 팔로잉 버튼
                     }
                 }).addOnCompleteListener(task1 -> UiUtil.getInstance().stopProgressDialog());
 
@@ -460,9 +460,9 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
             }
 
             private void showBlockDialog() {
-                UiUtil.getInstance().showDialog(FullImageActivity.this, "유저 차단", "해당 유저를 차단하시겠습니까?", (dialog, whichButton) -> {
+                UiUtil.getInstance().showDialog(FullImageActivity.this, "회원 차단", "이 회원을 차단합니다.", (dialog, whichButton) -> {
                     if (mUser.getBlockUsers().size() >= DataContainer.ChildrenMax) {
-                        Toast.makeText(FullImageActivity.this, DataContainer.ChildrenMax + "명을 초과할 수 없습니다", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(FullImageActivity.this,"차단 가능한 회원 수를 초과하였습니다", Toast.LENGTH_SHORT).show();
                         return;
                     }
                     mRewardedVideoAd.setRewardedVideoAdListener(new RewardedVideoAdListener() {
@@ -617,8 +617,8 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
             String title, message;
             final boolean isLock = !mUser.getUnLockUsers().containsKey(item.getUuid());  // 이미 해제한 유저
             if (isLock) {
-                title = "사진 해제";
-                message = "이 회원에게 당신의 잠긴 사진을 공개하시겠습니까?";
+                title = "사진 공개";
+                message = "이 회원에게 당신이 잠근 사진을 공개하시겠습니까?";
             } else {
                 title = "사진 잠금";
                 message = "이 회원에게 당신의 사진을 잠그시겠습니까?";

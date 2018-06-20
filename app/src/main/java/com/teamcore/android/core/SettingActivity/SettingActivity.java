@@ -69,7 +69,7 @@ public class SettingActivity extends AppCompatActivity {
                         startActivity(i3);
                         break;
                     case 3:
-                        Intent i4 = new Intent(SettingActivity.this, AlarmActivity.class);
+                        Intent i4 = new Intent(SettingActivity.this, PushAlarmActivity.class);
                         startActivity(i4);
                         break;
                     case 4:

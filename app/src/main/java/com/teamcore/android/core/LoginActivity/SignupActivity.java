@@ -234,7 +234,7 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     // 이미 회원가입한 디바이스
-                    onSignupFailed(new Exception("이미 회원가입한 디바이스입니다."));
+                    onSignupFailed(new Exception("하나의 디바이스에 중복 가입할 수 없습니다"));
                 } else {
                     // 회원가입 하지 않은 디바이스
                     try {
@@ -277,7 +277,7 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
     }
 
     public void onSignupSuccess() {
-        Toast.makeText(getBaseContext(), "환영합니다!", Toast.LENGTH_LONG).show();
+        Toast.makeText(getBaseContext(), "코어에 오신 것을 환영합니다!", Toast.LENGTH_LONG).show();
         _signupButton.setEnabled(true);
         Intent i = new Intent(this, MainActivity.class);
         startActivity(i);

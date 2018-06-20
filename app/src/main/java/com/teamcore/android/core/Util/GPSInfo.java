@@ -191,7 +191,7 @@ public class GPSInfo extends Service implements LocationListener {
     }
 
     public void testMessage() {
-        Toast.makeText(mContext, "(임시처리) 권한이 없어 내위치가 서울로", Toast.LENGTH_SHORT);
+//        Toast.makeText(mContext, "(임시처리) 권한이 없어 내위치가 서울로", Toast.LENGTH_SHORT);
     }
 
     // 위치값,위치시간 변경시 발생(0초/1미터)

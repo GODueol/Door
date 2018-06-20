@@ -46,8 +46,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.w3c.dom.Text;
+
 import java.util.Collections;
 import java.util.List;
+
+import static com.teamcore.android.core.Util.RemoteConfig.CorePossibleOldFriendCount;
 
 /**
  * Created by kimbyeongin on 2017-12-16.
@@ -282,12 +286,12 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
                         }
 
                         private void block() {
-                            UiUtil.getInstance().showDialog(context, "유저 차단", "해당 유저를 차단하시겠습니까?", new DialogInterface.OnClickListener() {
+                            UiUtil.getInstance().showDialog(context, "회원 차단", "이 회원을 차단합니다.", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                     final User mUser = DataContainer.getInstance().getUser();
                                     if (mUser.getBlockUsers().size() >= DataContainer.ChildrenMax) {
-                                        Toast.makeText(context, DataContainer.ChildrenMax + "명을 초과할 수 없습니다", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(context, "차단 가능한 회원 수를 초과하였습니다", Toast.LENGTH_SHORT).show();
                                         return;
                                     }
 
@@ -423,7 +427,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
                         }
 
                         private void unblock() {
-                            UiUtil.getInstance().showDialog(context, "유저 차단해제", "해당 유저를 차단해제하시겠습니까?", new DialogInterface.OnClickListener() {
+                            UiUtil.getInstance().showDialog(context, "회원 차단 해제", "이 회원을 차단 해제합니다.", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                     UiUtil.getInstance().startProgressDialog((Activity) context);
@@ -443,7 +447,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
                         }
 
                         private void unFollow() {
-                            UiUtil.getInstance().showDialog(context, "팔로우 취소", "해당 유저 팔로우 취소하시겠습니까?", new DialogInterface.OnClickListener() {
+                            UiUtil.getInstance().showDialog(context, "팔로잉 취소", "이 회원을 팔로잉 하지않습니다.", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                     UiUtil.getInstance().startProgressDialog((Activity) context);
@@ -460,7 +464,6 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
                                         ActivityCompat.finishAffinity((Activity) context);
                                     }
                                     if (task == null) {
-                                        Toast.makeText(context, "팔로우 취소 상태입니다", Toast.LENGTH_SHORT).show();
                                         UiUtil.getInstance().stopProgressDialog();
                                         return;
                                     }
@@ -480,7 +483,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
                         }
 
                         private void follow() {
-                            UiUtil.getInstance().showDialog(context, "팔로우 신청", "해당 유저 팔로우 신청하시겠습니까?", new DialogInterface.OnClickListener() {
+                            UiUtil.getInstance().showDialog(context, "팔로잉", "이 회원을 팔로잉 합니다. 서로 팔로잉하면 친구가 됩니다.", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                     UiUtil.getInstance().startProgressDialog((Activity) context);
@@ -497,7 +500,6 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
                                         ActivityCompat.finishAffinity((Activity) context);
                                     }
                                     if (task == null) {
-                                        Toast.makeText(context, "팔로우 신청 되어있습니다", Toast.LENGTH_SHORT).show();
                                         UiUtil.getInstance().stopProgressDialog();
                                         return;
                                     }
@@ -532,6 +534,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
                 params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
 
                 TextView header_title = userHolder.itemView.findViewById(R.id.header_title);
+                TextView core_open_count = userHolder.itemView.findViewById(R.id.core_open_count);
                 final TextView friends_contents = userHolder.itemView.findViewById(R.id.friends_contents);
                 TextView friends_contents2 = userHolder.itemView.findViewById(R.id.friends_contents2);
                 TextView header_count = userHolder.itemView.findViewById(R.id.header_count);
@@ -600,7 +603,8 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
                     case "friendUsers":
                         header_title.setText("친구 목록");
                         friends_contents.setText(mUser.getId() + " 님은 CORE 일반 회원입니다");
-                        friends_contents2.setText("3명의 친구까지 코어를 열어볼 수 있습니다");
+                        core_open_count.setText(""+CorePossibleOldFriendCount);
+                        friends_contents2.setText(" 명의 오래된 친구까지 코어를 열어볼 수 있습니다");
                         header_count.setText((items.size() - 1) + "");
                         break;
                 }

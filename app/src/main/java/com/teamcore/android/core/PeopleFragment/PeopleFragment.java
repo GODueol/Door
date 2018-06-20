@@ -287,10 +287,12 @@ public class PeopleFragment extends BaseFragment {
         geoFire.setLocation(DataContainer.getInstance().getUid(), new GeoLocation(location.getLatitude(), location.getLongitude()), (key, error) -> {
             if (error != null) {
                 if (getActivity() != null)
-                    Toast.makeText(getActivity(), "There was an error saving the location to GeoFire: " + error, Toast.LENGTH_SHORT).show();
+                {
+//                    Toast.makeText(getActivity(), "There was an error saving the location to GeoFire: " + error, Toast.LENGTH_SHORT).show();
+                }
             } else {
                 if (getActivity() != null)
-                   Log.d("KBJ","Location saved on server successfully! ");
+                   Log.d("KBJ","Location saved on server successfully!");
             }
         });
     }

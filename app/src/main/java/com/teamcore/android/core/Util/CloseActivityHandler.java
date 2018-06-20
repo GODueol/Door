@@ -43,7 +43,7 @@ public class CloseActivityHandler {
 
     private void showGuide() {
         toast = Toast.makeText(activity,
-                "한번 더 누르면 종료됩니다.", Toast.LENGTH_SHORT);
+                "한번 더 누르면 종료됩니다", Toast.LENGTH_SHORT);
         toast.show();
     }
 }

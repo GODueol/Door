@@ -69,12 +69,6 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.login_activity);
         ButterKnife.bind(this);
 
-//        frameLayout = (FrameLayout)findViewById(R.id.framelayout);
-//        animationDrawable = (AnimationDrawable)frameLayout.getBackground();
-//        animationDrawable.setEnterFadeDuration(5000);
-//        animationDrawable.setExitFadeDuration(5000);
-//        animationDrawable.start();
-
         //statusbar 투명하게
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             Window w = getWindow(); // in Activity's onCreate() for instance
@@ -228,7 +222,6 @@ public class LoginActivity extends AppCompatActivity {
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
-                    Toast.makeText(getApplicationContext(), "Getting UserInfo Cancelled", Toast.LENGTH_SHORT).show();
                     Log.d(getApplication().getClass().getName(), databaseError.getMessage());
 
                 }
@@ -270,7 +263,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void onLoginFailed(Exception e) {
-        Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
         _loginButton.setEnabled(true);
         UiUtil.getInstance().stopProgressDialog();
     }

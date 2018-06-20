@@ -65,7 +65,7 @@ public class AlarmUtil {
                                     FirebaseSendPushMsg.sendPostToFCM("Post", oUuid, "UnKnown", "누군가 내 코어에 질문을 남겼어요!");
                                     break;
                                 case "Answer":
-                                    FirebaseSendPushMsg.sendPostToFCM("Answer", oUuid, NickName, "당신이 작성한 질문글에 답이 왔네요!");
+                                    FirebaseSendPushMsg.sendPostToFCM("Answer", oUuid, NickName, "당신이 작성한 익명 질문 글에 답이 왔네요!");
                                     break;
                                 case "Like":
                                     FirebaseSendPushMsg.sendPostToFCM("Like", oUuid, NickName, "누군가 내가 올린 포스트를 좋아하네요!");

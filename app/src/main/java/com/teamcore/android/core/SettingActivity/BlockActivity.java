@@ -44,7 +44,7 @@ public class BlockActivity extends UserListBaseActivity {
         // 일반 유저 블럭 리스트 볼 수 없음
         if(!DataContainer.getInstance().isPlus)
         {
-            Toast.makeText(BlockActivity.this, "일반 유저는 블럭 리스트를 볼 수 없습니다", Toast.LENGTH_SHORT).show();
+            Toast.makeText(BlockActivity.this, "CORE PLUS 구독 시 차단한 회원을 볼 수 있습니다", Toast.LENGTH_LONG).show();
             finish();
         }
 
@@ -102,13 +102,13 @@ public class BlockActivity extends UserListBaseActivity {
             case R.id.unblock_all:
                 final User user = DataContainer.getInstance().getUser();
                 if (user.getBlockUsers().size() == 0) {
-                    Toast.makeText(getBaseContext(), "이미 모든 유저 블락이 해제되어있습니다", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getBaseContext(), "이미 모든 유저 블락이 해제되어있습니다", Toast.LENGTH_SHORT).show();
                     return true;
                 }
 
                 // 다이얼로그
-                UiUtil.getInstance().showDialog(BlockActivity.this, "모든 유저 블락 해제",
-                        "모든 유저 대상으로 블럭을 해제하시겠습니까?", (dialog, whichButton) -> {
+                UiUtil.getInstance().showDialog(BlockActivity.this, "전체 회원 차단 해제",
+                        "차단한 모든 회원을 다시 차단 해제합니다.", (dialog, whichButton) -> {
                             UiUtil.getInstance().startProgressDialog(BlockActivity.this);
 
                             FireBaseUtil.getInstance().allUnblock(user.getBlockUsers()).addOnSuccessListener((OnSuccessListener<Void>) aVoid -> {

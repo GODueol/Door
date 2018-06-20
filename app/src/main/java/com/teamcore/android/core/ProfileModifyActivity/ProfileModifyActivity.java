@@ -247,9 +247,9 @@ public class ProfileModifyActivity extends BaseActivity implements NumberPicker.
                 if(!isRelease){
 
                     Toast.makeText(ProfileModifyActivity.this,
-                            "프로필 사진 제재 당하셨기 때문에 " +
-                                    releaseDate + " 까지 프로필을 업로드 할 수 없습니다"
-                            , Toast.LENGTH_SHORT).show();
+                            "프로필 사진 제재로 인해 " +
+                                    releaseDate + " 까지 업로드 할 수 없습니다"
+                            , Toast.LENGTH_LONG).show();
                     return;
                 }
 
@@ -314,9 +314,9 @@ public class ProfileModifyActivity extends BaseActivity implements NumberPicker.
         CompoundButton.OnCheckedChangeListener listener = (compoundButton, b) -> {
             String msg;
             if(b){  // True 잠금
-                msg = "이 사진을 비공개 합니다.";
+                msg = "이 사진을 비공개합니다.";
             } else {
-                msg = "이 사진을 전체공개 합니다";
+                msg = "이 사진을 전체 공개합니다";
             }
             Toast.makeText(ProfileModifyActivity.this, msg, Toast.LENGTH_SHORT).show();
         };
@@ -335,7 +335,7 @@ public class ProfileModifyActivity extends BaseActivity implements NumberPicker.
 
 
     private void setOnDelPicBtnClickListener(final ImageView btn, final ImageView targetPic) {
-        View.OnClickListener onDeleteClickListener = v -> UiUtil.getInstance().showDialog(ProfileModifyActivity.this, "사진 삭제", " 사진을 삭제하시겠습니까?"
+        View.OnClickListener onDeleteClickListener = v -> UiUtil.getInstance().showDialog(ProfileModifyActivity.this, "사진 삭제", "사진을 삭제합니다."
                 , (dialog, whichButton) -> {
                     // 사진 바로 삭제
 

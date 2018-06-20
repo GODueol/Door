@@ -72,7 +72,7 @@ public class IntroActivity extends BaseActivity {
                     checkCorePlus()
                             .done(isPlus -> getUserInfo(FirebaseAuth.getInstance().getCurrentUser()))
                             .fail(str -> {
-                                Toast.makeText(IntroActivity.this, "구글 플레이 스토어 계정을 연결하고 다시 시도해주세요", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(IntroActivity.this, "플레이 스토어에 계정을 연결하고 다시 시도해주세요", Toast.LENGTH_SHORT).show();
                                 finish();
                             });
                 }
@@ -81,7 +81,7 @@ public class IntroActivity extends BaseActivity {
             @Override
             public void onPermissionDenied(ArrayList<String> arrayList) {
                 //new setPermission(getApplicationContext(), this, permissions); // 권한요청 및 권한에따른 구글맵 셋팅});
-                Toast.makeText(getApplication(), "권한이 없으면 앱을 실행할 수 없습니다.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplication(), "필수 권한 거부 시 코어를 사용할 수 없습니다\n\n설정 방법 [설정] > [권한]", Toast.LENGTH_SHORT).show();
                 finish();   // 권한 거부시 앱 종료
             }
         };
@@ -96,7 +96,7 @@ public class IntroActivity extends BaseActivity {
 
         // 시간 자동 설정 체크
         if(!UiUtil.getInstance().isAutoTimeSet(this)){
-            Toast.makeText(this, "시간을 수동으로 설정한 경우 코어를 사용하실 수 없습니다.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "디바이스 시간을 수동으로 설정 시 코어를 사용할 수 없습니다", Toast.LENGTH_LONG).show();
             finish();
             return;
         }
@@ -120,11 +120,10 @@ public class IntroActivity extends BaseActivity {
         NetworkInfo mobile = manager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
         NetworkInfo wifi = manager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 
-
         // wifi 또는 모바일 네트워크 어느 하나라도 연결이 되어있다면,
         if (!wifi.isConnected() && !mobile.isConnected()) {
             Log.i("Internet Connection", "인터넷 연결 안된 상태");
-            Toast.makeText(getApplicationContext(), "인터넷 연결이 안되어 있습니다", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "네트워크를 확인해주세요", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }

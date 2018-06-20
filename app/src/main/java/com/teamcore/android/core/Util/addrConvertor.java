@@ -21,7 +21,7 @@ import java.util.Locale;
 public class addrConvertor {
 
     public static String getAddress(Context mContext, LatLng latlng) {
-        String nowAddress = "현재 위치를 확인 할 수 없습니다.";
+        String nowAddress = "현재 위치를 확인할 수 없습니다";
         Geocoder geocoder = new Geocoder(mContext, Locale.KOREA);
         List<Address> address;
         try {
@@ -44,7 +44,7 @@ public class addrConvertor {
             }
 
         } catch (IOException e) {
-            Toast.makeText(mContext, "주소를 가져 올 수 없습니다.", Toast.LENGTH_LONG).show();
+            Toast.makeText(mContext, "주소를 가져올 수 없습니다", Toast.LENGTH_LONG).show();
 
             e.printStackTrace();
         }

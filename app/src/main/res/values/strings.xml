@@ -199,8 +199,8 @@
     <string name="alertFriend">새로운 친구가 생겼어요!</string>
     <string name="alertPost">누군가 내 코어에 질문을 남겼어요!</string>
     <string name="alertLike">누군가 내가 올린 포스트를 좋아하네요!</string>
-    <string name="alertUnlockPic">누군가 당신에게 비공개 사진을 열었어요!</string>
-    <string name="alertAnswer">당신이 작성한 질문글에 답이 왔네요!</string>
+    <string name="alertUnlockPic">비공개 사진을 열었어요!</string>
+    <string name="alertAnswer">당신이 작성한 익명 질문 글에 답이 왔네요!</string>
     <string name="msgUnlockPic">비공개 사진을 확인해보세요!</string>
 
     <string name="mapSpiner">&#160;눌러서 이곳 회원 검색&#160;</string>
@@ -655,7 +655,7 @@
         부칙\n
                 &#160;본 약관은 @년 @월@일부터 시행됩니다.\n\n\n\n\n
     </string>
-    <string name="possibleCorePlusGIF">Core Plus 유저만 GIF 파일을 업로드 할 수 있습니다</string>
+    <string name="possibleCorePlusGIF">CORE PLUS를 구독하시면 GIF 파일을 업로드할 수 있습니다</string>
     <string name="WEEKLY_TOPIC">WeeklyTopic</string>
 
 </resources>

@@ -59,7 +59,7 @@ public class FireBaseUtil {
         SharedPreferencesUtil SPUtil = new SharedPreferencesUtil(context.getApplicationContext());
         final User mUser = DataContainer.getInstance().getUser();
         if (mUser.getFollowingUsers().size() >= DataContainer.ChildrenMax) {
-            throw new ChildSizeMaxException("Follow가 " + DataContainer.ChildrenMax + "명 이상이므로 Follow 불가능합니다");
+            throw new ChildSizeMaxException("최대 팔로우 수를 초과하여 더이상 팔로우할 수 없습니다");
         }
         //final User oUser = item.getSummaryUser();
         DatabaseReference mDatabase = DataContainer.getInstance().getUsersRef();
@@ -124,7 +124,7 @@ public class FireBaseUtil {
         final User mUser = DataContainer.getInstance().getUser();
 
         if (mUser.getBlockUsers().size() >= DataContainer.ChildrenMax) {
-            throw new ChildSizeMaxException("Block된 유저들이 " + DataContainer.ChildrenMax + "명 이상이므로 Block 불가능합니다");
+            throw new ChildSizeMaxException("최대 차단 수를 초과하여 더이상 팔로우할 수 없습니다");
         }
 
         long now = System.currentTimeMillis();

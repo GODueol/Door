@@ -96,17 +96,35 @@
             android:text="Nickname 님은 CORE 일반 회원입니다"
             android:textColor="@color/white" />
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/friends_contents"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="16dp"
+            android:orientation="horizontal"
+            android:gravity="center"
+            >
+
+            <TextView
+                android:id="@+id/core_open_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="5"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+
+                />
+
         <TextView
             android:id="@+id/friends_contents2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/friends_contents"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="16dp"
-            android:layout_marginTop="2dp"
-            android:text="8명의 친구까지 코어를 열어볼 수 있습니다"
+            android:text="명의 친구까지 코어를 열어볼 수 있습니다"
             android:textColor="@color/white" />
 
+        </LinearLayout>
 
     </RelativeLayout>
 

@@ -199,7 +199,7 @@
                     android:id="@+id/txt9"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="필수적 권한 접근을 허용합니다."
+                    android:text="확인"
                     android:textColor="@color/skyblue"
                     android:textStyle="bold"
                     android:textSize="16dp"
