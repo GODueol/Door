@@ -143,7 +143,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.OnConn
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Toast.makeText(getApplicationContext(), "맵 로드 실패", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), "구글 맵을 불러오지 못했습니다", Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -220,7 +220,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.OnConn
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {
                             int value = Integer.valueOf(dataSnapshot.getValue().toString());
-                            Log.d("test", "몇개 : " + value);
+//                            Log.d("test", "몇개 : " + value);
                             if (value > 0) {
                                 FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(getString(R.string.mapSearchCount)).setValue(value - 1);
                                 startActivity(p);
@@ -263,7 +263,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.OnConn
                         } catch (Exception e) {
                             value = 0;
                         }
-                        Log.d("test", "몇개 : " + value);
+//                        Log.d("test", "몇개 : " + value);
                         if (value > 0) {
                             FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(getString(R.string.mapSearchCount)).setValue(value - 1);
                             startActivity(p);

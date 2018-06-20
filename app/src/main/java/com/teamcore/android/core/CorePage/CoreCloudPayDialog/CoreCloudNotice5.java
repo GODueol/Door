@@ -57,7 +57,7 @@ public class CoreCloudNotice5 extends BaseFragment {
                 @Override
                 public void onClick(View view) {
                     if(!check_notice.isChecked()){
-                        Toast.makeText(getActivity(), "동의 체크를 누르셔야 결제 가능합니다", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "고지사항에 동의 후 결제 가능합니다", Toast.LENGTH_SHORT).show();
                         return;
                     }
 

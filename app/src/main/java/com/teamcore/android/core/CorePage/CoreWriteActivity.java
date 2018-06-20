@@ -156,7 +156,7 @@ public class CoreWriteActivity extends BlockBaseActivity {
             fab.setVisibility(View.GONE);
             editImage.setVisibility(View.GONE);
             edit_audio_layout.setVisibility(View.GONE);
-            textContents.setHint("익명으로 글을 남깁니다. 모욕적인 글 작성 시 해당 코어 주인에게 차단당할 수 있습니다.");
+            textContents.setHint("익명으로 질문을 남깁니다. 매너를 지켜주세요:)");
         }
 
         fab.setOnClickListener(view -> {
@@ -179,7 +179,7 @@ public class CoreWriteActivity extends BlockBaseActivity {
 
             // 차단관계인 경우 불가능
             if (DataContainer.getInstance().getUser().getBlockMeUsers().containsKey(cUuid)) {// 차단
-                Toast.makeText(CoreWriteActivity.this, "차단으로 인해 익명 포스트를 남길 수 없습니다", Toast.LENGTH_SHORT).show();
+                Toast.makeText(CoreWriteActivity.this, "차단으로 인해 포스트 업로드가 불가능합니다", Toast.LENGTH_SHORT).show();
                 finish();
                 return;
             }
@@ -191,7 +191,7 @@ public class CoreWriteActivity extends BlockBaseActivity {
                     // 답변이 달린경우
                     if (dataSnapshot.getValue() != null) {
                         if (isAnonymousPost()) {
-                            Toast.makeText(CoreWriteActivity.this, "답변이 달린 경우 글 내용을 수정할 수 없습니다.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(CoreWriteActivity.this, "당신의 질문에 답변이 달려 글 내용을 수정할 수 없습니다", Toast.LENGTH_LONG).show();
                             finish();
                             return;
                         }
@@ -311,7 +311,7 @@ public class CoreWriteActivity extends BlockBaseActivity {
                     // Optional
                     .setSource(AudioSource.MIC)
                     .setChannel(AudioChannel.STEREO)
-                    .setSampleRate(AudioSampleRate.HZ_48000)
+                    .setSampleRate(AudioSampleRate.HZ_8000)
                     .setAutoStart(true)
                     .setKeepDisplayOn(true)
 

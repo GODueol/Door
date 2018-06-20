@@ -43,12 +43,7 @@ public class TabPagerAdapter extends FragmentPagerAdapter {
                 args.putParcelable("latlng", latLng);
                 peopleFragment.setArguments(args);
                 return peopleFragment;
-//            case 1:
-//                PeopleFragment tab1 = PeopleFragment.getInstance();
-//                return tab1;
-//            case 2:
-//                TabFragment3 tab3 = TabFragment3.getInstance();
-//                return tab3;
+
             default:
                 return null;
         }

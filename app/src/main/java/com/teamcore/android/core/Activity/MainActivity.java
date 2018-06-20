@@ -127,8 +127,6 @@ public class MainActivity extends BaseActivity
             startActivity(intent);
         }
 
-
-
         setSupportActionBar(toolbar);
         AdView mAdView = (AdView) findViewById(R.id.adView);
         checkCorePlus().done(isPlus -> {
@@ -224,7 +222,7 @@ public class MainActivity extends BaseActivity
         if (user == null) return;
         User mUser = DataContainer.getInstance().getUser();
         if (mUser == null || mUser.getEmail().isEmpty() || mUser.getEmail().equals("")) {
-            Toast.makeText(getApplicationContext(), "로그인 실패", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Sorry Login again please", Toast.LENGTH_SHORT).show();
             logout();
             return;
         }
@@ -265,7 +263,7 @@ public class MainActivity extends BaseActivity
             public void onDataChange(DataSnapshot dataSnapshot) {
                 SPUtil = new SharedPreferencesUtil(getApplicationContext());
                 String currentActivity = SPUtil.getBlockMeUserCurrentActivity(getString(R.string.currentActivity));
-                Log.d("test", "들어옴");
+//                Log.d("test", "들어옴");
                 for (DataSnapshot blockMeUserSnapshot : dataSnapshot.getChildren()) {
                     if (blockMeUserSnapshot.getKey() != null && blockMeUserSnapshot.getKey().equals(currentActivity)) {
                         /*Intent intent = new Intent(getApplication(), MainActivity.class);
@@ -284,13 +282,12 @@ public class MainActivity extends BaseActivity
             }
         });
 
-
         String PUBLIC_KEY = getString(R.string.GP_LICENSE_KEY);
         // 핼퍼 setup
         iaphelper = new IabHelper(this, PUBLIC_KEY);
         iaphelper.startSetup(result -> {
             if (!result.isSuccess()) {
-                Toast.makeText(MainActivity.this, "문제발생", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Sorry Login again please", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -312,7 +309,7 @@ public class MainActivity extends BaseActivity
             Log.d(getClass().getSimpleName(), "onQueryInventoryFinished");
             if (iaphelper == null) return;
             if (result.isFailure()) {
-                Toast.makeText(getApplicationContext(), "onQueryInventoryFinished 실패", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "onQueryInventoryFinished Failed", Toast.LENGTH_SHORT).show();
                 //getPurchases() 실패했을때
                 return;
             }
@@ -330,7 +327,7 @@ public class MainActivity extends BaseActivity
             if (purchase != null && purchase.getPurchaseState() == 0 && verifyDeveloperPayload(purchase)) {
                 //해당 아이템을 가지고 있는 경우.
                 //아이템에대한 처리를 한다.
-                Toast.makeText(getApplicationContext(), purchase.getPurchaseState() + "onQueryInventoryFinished 이미 보유중", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), purchase.getPurchaseState() + "onQueryInventoryFinished Already had", Toast.LENGTH_SHORT).show();
             }
         }
     };
@@ -441,16 +438,15 @@ public class MainActivity extends BaseActivity
                 startActivity(new Intent(MainActivity.this, FindUserActivity.class));
                 return true;
             case R.id.lock_all:
-
                 final User user = DataContainer.getInstance().getUser();
                 if (user.getUnLockUsers().size() == 0) {
-                    Toast.makeText(getBaseContext(), "이미 모든 유저에게 사진을 비공개 하였습니다", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getBaseContext(), "모든 사진을 비공개 합니다", Toast.LENGTH_SHORT).show();
                     return true;
                 }
 
                 // 다이얼로그
-                UiUtil.getInstance().showDialog(MainActivity.this, "모든 유저 사진 잠금"
-                        , "모든 유저 대상으로 사진을 잠그시겠습니까?", (dialog, whichButton) -> {
+                UiUtil.getInstance().showDialog(MainActivity.this, "사진 비공개"
+                        , "모든 회원을 대상으로 사진을 다시 잠그시겠습니까?", (dialog, whichButton) -> {
                             UiUtil.getInstance().startProgressDialog(MainActivity.this);
                             user.getUnLockUsers().clear();
                             DataContainer.getInstance().getUsersRef().child(DataContainer.getInstance().getUid()).setValue(user).addOnSuccessListener(aVoid -> DataContainer.getInstance().setUser(user)).addOnCompleteListener(task -> UiUtil.getInstance().stopProgressDialog());
@@ -625,13 +621,13 @@ public class MainActivity extends BaseActivity
                 wtSubEn.setText(RemoteConfig.WtSubEn);
 
                 adb.setView(v);
-                adb.setPositiveButton("오늘 하루 열지 않기", (dialog, which) -> {
+                adb.setPositiveButton("하루 동안 열지 않기", (dialog, which) -> {
 //                    if (dontShowAgain.isChecked()) {
-                        try {
-                            SPUtil.putWeeklyTopicCheck(MainActivity.this);
-                        } catch (NotSetAutoTimeException e) {
-                            e.printStackTrace();
-                        }
+                    try {
+                        SPUtil.putWeeklyTopicCheck(MainActivity.this);
+                    } catch (NotSetAutoTimeException e) {
+                        e.printStackTrace();
+                    }
 //                    }
                 });
                 AlertDialog dialog = adb.create();
@@ -724,7 +720,6 @@ public class MainActivity extends BaseActivity
 
     // 메인토글버튼 동기화
     private void checkMainToggle() {
-        Log.d("test", "dsaad");
         try {
             if (messageBadge.getText().equals("") && coreBadge.getText().equals("") && friendBadge.getText().equals("")) {
                 SPUtil.setMainIcon(getString(R.string.mainAlarm), false);

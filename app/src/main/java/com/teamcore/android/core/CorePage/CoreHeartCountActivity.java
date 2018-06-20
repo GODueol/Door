@@ -49,8 +49,6 @@ public class CoreHeartCountActivity extends UserListBaseActivity {
         recyclerView.addItemDecoration(new DividerItemDecoration(CoreHeartCountActivity.this, DividerItemDecoration.VERTICAL)); //리사이클뷰 구분선
         // setRecyclerView (default)
         setRecyclerView(items, adapter, "Core Heart Count", R.menu.follower_menu, FirebaseDatabase.getInstance().getReference("posts").child(cUuid).child(postKey).child("likeUsers").orderByValue());
-
-
     }
 
     // 뒤로가기 버튼 기능

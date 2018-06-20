@@ -60,15 +60,7 @@
             android:textColor="@android:color/white"
             android:textSize="60sp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_marginTop="20dp"
-            android:textColor="@android:color/black"
-            android:textSize="15sp"
-            android:text="@string/audio_notice"
-            />
+
 
 
     </LinearLayout>
@@ -118,6 +110,18 @@
             android:onClick="togglePlaying"
             android:scaleType="fitCenter"
             android:src="@drawable/aar_ic_play" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:layout_below="@+id/record"
+            android:layout_marginTop="20dp"
+            android:textColor="@android:color/white"
+            android:textSize="15sp"
+            android:text="@string/audio_notice"
+            />
 
     </RelativeLayout>
 

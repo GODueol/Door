@@ -281,7 +281,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                         // 이미 코어가 올라가 있는 게시물인지 확인
                         for (CoreListItem item : coreListItems) {
                             if (item.getCorePost().getIsCloud()) {
-                                Toast.makeText(context, "이미 코어 클라우드 게시하였습니다", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, "클라우드에는 하나의 포스트만 업로드 가능합니다", Toast.LENGTH_SHORT).show();
                                 view.setClickable(true);
                                 return;
                             }
@@ -570,9 +570,9 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 
                             if (!isRelease) {
                                 Toast.makeText(context,
-                                        "포스트 사진 제재 당하셨기 때문에 " +
-                                                releaseDate + " 까지 프로필을 업로드 할 수 없습니다"
-                                        , Toast.LENGTH_SHORT).show();
+                                        "포스트 제제로 인해 " +
+                                                releaseDate + " 까지 업로드 할 수 없습니다"
+                                        , Toast.LENGTH_LONG).show();
                                 return;
                             }
 
@@ -588,7 +588,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                     case R.id.detach_cloud:
                         // 클라우드 내리기
                         if (context instanceof CoreCloudActivity) {
-                            UiUtil.getInstance().showDialog(context, "클라우드 내리기", "정말 클라우드를 내리겠습니까?"
+                            UiUtil.getInstance().showDialog(context, "클라우드 포스트 내림", "클라우드에서 이 포스트를 내리시겠습니까? 재구매없이 다시 올릴 수 없습니다."
                                     , (dialogInterface, i1) -> {
                                         Map<String, Object> childUpdate = new HashMap<>();
                                         // 포스트 getIsCloud = false
@@ -599,7 +599,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 
                                         FirebaseDatabase.getInstance().getReference().updateChildren(childUpdate).addOnCompleteListener(task -> {
                                             if (task.isSuccessful()) {
-                                                Toast.makeText(context, "코어 포스트를 내렸습니다", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(context, "클라우드에서 이 포스트를 내렸습니다", Toast.LENGTH_SHORT).show();
                                             }
                                         });
                                     }, null
@@ -615,14 +615,14 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                     case R.id.block:
                         // 일반 유저는 익명 유저를 차단 불가
                         if (coreListItem.getUser() == null && !DataContainer.getInstance().isPlus) {
-                            Toast.makeText(context, "일반 유저는 익명 유저를 차단할 수 없습니다", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, "CORE PLUS 회원만 익명 질문 회원을 차단할 수 있습니다", Toast.LENGTH_LONG).show();
                             break;
                         }
 
-                        UiUtil.getInstance().showDialog(context, "유저 차단", "해당 유저를 차단하시겠습니까?", (dialog, whichButton) -> {
+                        UiUtil.getInstance().showDialog(context, "회원 차단", "이 회원을 차단합니다.", (dialog, whichButton) -> {
                             final User mUser = DataContainer.getInstance().getUser();
                             if (mUser.getBlockUsers().size() >= DataContainer.ChildrenMax) {
-                                Toast.makeText(context, DataContainer.ChildrenMax + "명을 초과할 수 없습니다", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, "차단 가능한 회원 수를 초과하였습니다", Toast.LENGTH_SHORT).show();
                                 return;
                             }
 
@@ -659,7 +659,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                                                     UiUtil.getInstance().startProgressDialog((Activity) context);
                                                     // blockUsers 추가
                                                     try {
-                                                        FireBaseUtil.getInstance().block(coreListItem.getCorePost().getUuid()).addOnSuccessListener(aVoid -> Toast.makeText(context, "차단되었습니다", Toast.LENGTH_SHORT).show()).addOnCompleteListener(task -> UiUtil.getInstance().stopProgressDialog());
+                                                        FireBaseUtil.getInstance().block(coreListItem.getCorePost().getUuid()).addOnSuccessListener(aVoid -> Toast.makeText(context, "이 회원을 차단합니다", Toast.LENGTH_SHORT).show()).addOnCompleteListener(task -> UiUtil.getInstance().stopProgressDialog());
                                                     } catch (ChildSizeMaxException e) {
                                                         Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
                                                         UiUtil.getInstance().stopProgressDialog();
@@ -710,7 +710,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                                             UiUtil.getInstance().startProgressDialog((Activity) context);
                                             // blockUsers 추가
                                             try {
-                                                FireBaseUtil.getInstance().block(coreListItem.getCorePost().getUuid()).addOnSuccessListener(aVoid -> Toast.makeText(context, "차단되었습니다", Toast.LENGTH_SHORT).show()).addOnCompleteListener(task -> UiUtil.getInstance().stopProgressDialog());
+                                                FireBaseUtil.getInstance().block(coreListItem.getCorePost().getUuid()).addOnSuccessListener(aVoid -> Toast.makeText(context, "이 회원을 차단합니다", Toast.LENGTH_SHORT).show()).addOnCompleteListener(task -> UiUtil.getInstance().stopProgressDialog());
                                             } catch (ChildSizeMaxException e) {
                                                 Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
                                                 UiUtil.getInstance().stopProgressDialog();
@@ -729,7 +729,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                                 UiUtil.getInstance().startProgressDialog((Activity) context);
                                 // blockUsers 추가
                                 try {
-                                    FireBaseUtil.getInstance().block(coreListItem.getCorePost().getUuid()).addOnSuccessListener(aVoid -> Toast.makeText(context, "차단되었습니다", Toast.LENGTH_SHORT).show()).addOnCompleteListener(task -> UiUtil.getInstance().stopProgressDialog());
+                                    FireBaseUtil.getInstance().block(coreListItem.getCorePost().getUuid()).addOnSuccessListener(aVoid -> Toast.makeText(context, "이 회원을 차단합니다", Toast.LENGTH_SHORT).show()).addOnCompleteListener(task -> UiUtil.getInstance().stopProgressDialog());
                                 } catch (ChildSizeMaxException e) {
                                     Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
                                     UiUtil.getInstance().stopProgressDialog();
@@ -755,12 +755,12 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
     }
 
     private void deletePost(final CoreListItem coreListItem) {
-        String msg = "게시물을 삭제하시겠습니까?";
+        String msg = "포스트 삭제";
         if (coreListItem.getCorePost().getIsCloud()) {
-            msg = "클라우드된 게시물입니다. 정말 게시물을 삭제하시겠습니까?";
+            msg = "클라우드에 결제된 포스트입니다. 삭제하시겠습니까?";
         }
-        UiUtil.getInstance().showDialog(context, "Delete", msg, (dialogInterface, i) ->
-                FireBaseUtil.getInstance().deletePostExecution(coreListItem, postsRef, coreListItem.getcUuid(), () -> Toast.makeText(context, "삭제 완료되었습니다", Toast.LENGTH_SHORT).show())
+        UiUtil.getInstance().showDialog(context, "포스트 삭제", msg, (dialogInterface, i) ->
+                FireBaseUtil.getInstance().deletePostExecution(coreListItem, postsRef, coreListItem.getcUuid(), () -> Toast.makeText(context, "포스트를 삭제합니다", Toast.LENGTH_SHORT).show())
         );
     }
 

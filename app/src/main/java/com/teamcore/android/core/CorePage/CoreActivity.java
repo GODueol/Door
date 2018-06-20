@@ -14,7 +14,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
-import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -34,12 +33,9 @@ import android.widget.Toast;
 import com.android.vending.billing.IInAppBillingService;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
@@ -47,7 +43,6 @@ import com.squareup.otto.Subscribe;
 import com.teamcore.android.core.Entity.CloudEntity;
 import com.teamcore.android.core.Entity.CoreListItem;
 import com.teamcore.android.core.Entity.CorePost;
-import com.teamcore.android.core.Entity.PurchaseEntity;
 import com.teamcore.android.core.Entity.User;
 import com.teamcore.android.core.Event.TargetUserBlocksMeEvent;
 import com.teamcore.android.core.Exception.NotSetAutoTimeException;
@@ -103,7 +98,7 @@ public class CoreActivity extends BlockBaseActivity {
 
         // 일반유저, 가장 오래된 친구 3명 이외에 다른 회원 코어 확인 불가능
         if (!isOldFriends(cUuid)) {
-            Toast.makeText(this, "가장 오래된 친구 " + CorePossibleOldFriendCount + "명 이외에 다른 회원 코어 확인 불가능합니다", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "일반 회원은 " + CorePossibleOldFriendCount + "명의 오래된 친구까지 코어 열람이 가능합니다 :(", Toast.LENGTH_LONG).show();
             finish();
         }
 
@@ -220,9 +215,9 @@ public class CoreActivity extends BlockBaseActivity {
             UiUtil.getInstance().checkPostPrevent(CoreActivity.this, (isRelease, releaseDate) -> {
                         if (!isRelease) {
                             Toast.makeText(CoreActivity.this,
-                                    "포스트 사진 제재 당하셨기 때문에 " +
-                                            releaseDate + " 까지 프로필을 업로드 할 수 없습니다"
-                                    , Toast.LENGTH_SHORT).show();
+                                    "포스트 제제로 인해 " +
+                                            releaseDate + " 까지 업로드 할 수 없습니다"
+                                    , Toast.LENGTH_LONG).show();
                             return;
                         }
 
@@ -237,14 +232,12 @@ public class CoreActivity extends BlockBaseActivity {
                                     if (cUser.getAccountType() == null || !isPlus) {
                                         // 100개 제한
                                         if (cUser.getCorePostCount() >= RemoteConfig.NORMAL_CORE_LIMIT) {
-                                            Toast.makeText(CoreActivity.this, "Core 주인이 일반 계정이기 때문에 " + RemoteConfig.NORMAL_CORE_LIMIT + "초과하여 글을 추가할수 없습니다", Toast.LENGTH_SHORT).show();
-                                            return;
+                                            Toast.makeText(CoreActivity.this, "이 회원이 보유 최대 포스트 " + RemoteConfig.NORMAL_CORE_LIMIT + "개에 도달하였습니다", Toast.LENGTH_LONG).show();                                            return;
                                         }
                                     } else {
                                         // 300개 제한
                                         if (cUser.getCorePostCount() >= RemoteConfig.PLUS_CORE_LIMIT) {
-                                            Toast.makeText(CoreActivity.this, RemoteConfig.NORMAL_CORE_LIMIT + "초과하여 글을 추가할수 없습니다", Toast.LENGTH_SHORT).show();
-                                            return;
+                                            Toast.makeText(CoreActivity.this, RemoteConfig.NORMAL_CORE_LIMIT + "개가 넘는 포스트를 업로드할 수 없습니다", Toast.LENGTH_LONG).show();                                            return;
                                         }
                                     }
 
@@ -429,7 +422,7 @@ public class CoreActivity extends BlockBaseActivity {
 
                 dontShowAgain = v.findViewById(R.id.check_access);
                 adb.setView(v);
-                adb.setPositiveButton("Ok", (dialog, which) -> {
+                adb.setPositiveButton("확인", (dialog, which) -> {
                     if (dontShowAgain.isChecked()) {
                         try {
                             SPUtil.putCoreNoticeCheck(CoreActivity.this);
@@ -485,8 +478,8 @@ public class CoreActivity extends BlockBaseActivity {
 
         if (iaphelper == null) return;
         if (!iaphelper.handleActivityResult(requestCode, resultCode, data)) {
-            //처리할 결과물이 아닐 경우 이곳으로 빠져 기본처리를 하도록한다
-            Toast.makeText(this, "지금", Toast.LENGTH_SHORT).show();
+//            //처리할 결과물이 아닐 경우 이곳으로 빠져 기본처리를 하도록한다
+//            Toast.makeText(this, "지금", Toast.LENGTH_SHORT).show();
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
@@ -527,7 +520,7 @@ public class CoreActivity extends BlockBaseActivity {
         iaphelper = new IabHelper(this, PUBLIC_KEY);
         iaphelper.startSetup(result -> {
             if (!result.isSuccess()) {
-                Toast.makeText(getApplicationContext(), "문제발생", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(), "문제발생", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -550,32 +543,17 @@ public class CoreActivity extends BlockBaseActivity {
             // 이 샘플에서는 "관리되지 않는 제품"은 "가스" 한가지뿐이므로 상품에 대한 체크를 하지 않습니다.
             // 하지만 다수의 제품이 있을 경우 상품 아이디를 비교하여 처리할 필요가 있습니다.
             if (result.isSuccess()) {
-                Toast.makeText(getApplicationContext(), "소비성공??", Toast.LENGTH_SHORT).show();
                 UiUtil.getInstance().startProgressDialog(CoreActivity.this);
                 try {
-
-                    PurchaseEntity purchaseEntity = new PurchaseEntity();
-                    purchaseEntity.setOrderId(purchase.getOrderId());
-                    purchaseEntity.setPurchaseTime(purchase.getPurchaseTime());
-                    purchaseEntity.setSignature(purchase.getSignature());
-                    purchaseEntity.setToken(purchase.getToken());
-
                     FireBaseUtil.getInstance().putCoreCloud(cloudEntity.getCUuid(), cloudEntity.getCoreListItem(), getApplicationContext(), cloudEntity.getDeletePostKey(), cloudEntity.getDeletePostKey()).addOnSuccessListener(o -> {
-                        DatabaseReference purchaseReference = FirebaseDatabase.getInstance().getReference("purchase").child(DataContainer.getInstance().getUid());
-                        String postKey = purchaseReference.push().getKey();
-                        purchaseReference.child(postKey).setValue(purchaseEntity).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                UiUtil.getInstance().stopProgressDialog();
-                            }
-                        });
+                        Toast.makeText(getApplicationContext(), "포스트가 클라우드에 올라갔습니다", Toast.LENGTH_SHORT).show();
+                        UiUtil.getInstance().stopProgressDialog();
                     });
                 } catch (NotSetAutoTimeException e) {
                     e.printStackTrace();
                     Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
                     ActivityCompat.finishAffinity((Activity) getApplicationContext());
                 }
-                // 성공적으로 소진되었다면 상품의 효과를 게임상에 적용합니다. 여기서는 가스를 충전합니다.
             }
         }
     };
@@ -589,9 +567,7 @@ public class CoreActivity extends BlockBaseActivity {
             if (pendingIntent != null) {
                 iaphelper.launchPurchaseFlow(this, getString(R.string.purchase), 1001, mPurchaseFinishedListener, payLoad);
             } else {
-                // 결제가 막혔다면 왜 결제가 막혀있찌 대체????
-                Toast.makeText(getApplicationContext(), "구매실패", Toast.LENGTH_SHORT).show();
-            }
+                Toast.makeText(getApplicationContext(), "클라우드 결제가 취소됬습니다", Toast.LENGTH_SHORT).show();            }
         } catch (RemoteException e) {
             e.printStackTrace();
         } catch (IabHelper.IabAsyncInProgressException e) {
@@ -614,7 +590,7 @@ public class CoreActivity extends BlockBaseActivity {
             Log.d(getClass().getSimpleName(), "onQueryInventoryFinished");
             if (iaphelper == null) return;
             if (result.isFailure()) {
-                Toast.makeText(getApplicationContext(), "onQueryInventoryFinished 실패", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "onQueryInventoryFinished Failed", Toast.LENGTH_SHORT).show();
                 //getPurchases() 실패했을때
 
                 return;
@@ -626,7 +602,7 @@ public class CoreActivity extends BlockBaseActivity {
                 //해당 아이템을 가지고 있는 경우.
                 //아이템에대한 처리를 한다.
 
-                Toast.makeText(getApplicationContext(), "onQueryInventoryFinished 이미 보유중", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "onQueryInventoryFinished Already had", Toast.LENGTH_SHORT).show();
 
                 try {
                     iaphelper.consumeAsync(inv.getPurchase(getString(R.string.purchase)), mConsumeFinishedListener);
@@ -644,20 +620,20 @@ public class CoreActivity extends BlockBaseActivity {
     IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener = new IabHelper.OnIabPurchaseFinishedListener() {
         @Override
         public void onIabPurchaseFinished(IabResult result, Purchase info) {
-            Toast.makeText(getApplicationContext(), "onIabPurchaseFinished 진입", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getApplicationContext(), "onIabPurchaseFinished 진입", Toast.LENGTH_SHORT).show();
             if (iaphelper == null) {
-                Toast.makeText(getApplicationContext(), "iaphelper null", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(), "iaphelper null", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             if (result.isFailure()) {
-                Toast.makeText(getApplicationContext(), "구매 실패, 정상 경로를 이용해주세요.111", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "구매 실패 정상 경로를 이용해주세요[1]", Toast.LENGTH_SHORT).show();
             } else {
 
                 if (verifyDeveloperPayload(info)) {
                     //보낸 신호와 맞는경우
                     if (info.getSku().equals(getString(R.string.purchase))) {
-                        Toast.makeText(getApplicationContext(), "구매 성공", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "포스트가 클라우드에 올라갔습니다", Toast.LENGTH_SHORT).show();
 
                         try {
                             iaphelper.consumeAsync(info, mConsumeFinishedListener);
@@ -666,10 +642,10 @@ public class CoreActivity extends BlockBaseActivity {
                         }
                         //alreadyBuyedItem();
                     } else {
-                        Toast.makeText(getApplicationContext(), "구매 실패, 정상 경로를 이용해주세요.222", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "구매 실패 정상 경로를 이용해주세요[2]", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(getApplicationContext(), "구매 실패, 정상 경로를 이용해주세요.333", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "구매 실패 정상 경로를 이용해주세요[3]", Toast.LENGTH_SHORT).show();
                 }
             }
         }
