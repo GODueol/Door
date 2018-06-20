@@ -23,7 +23,7 @@ android {
         minSdkVersion 16
         //noinspection OldTargetApi
         targetSdkVersion 26
-        versionCode 81
+        versionCode 82
         versionName "1.0"
 
         // Enabling multidex support.
