@@ -407,11 +407,11 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
                         task = FireBaseUtil.getInstance().follow(FullImageActivity.this, oUser, item.getUuid(), isFollow);
                     } catch (NotSetAutoTimeException e) {
                         e.printStackTrace();
-//                        Toast.makeText(FullImageActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(FullImageActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                         ActivityCompat.finishAffinity(FullImageActivity.this);
                     }
                 } catch (ChildSizeMaxException e) {
-//                    Toast.makeText(FullImageActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(FullImageActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                     UiUtil.getInstance().stopProgressDialog();
                     return;
                 }

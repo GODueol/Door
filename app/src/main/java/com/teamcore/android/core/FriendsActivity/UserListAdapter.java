@@ -500,6 +500,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
                                         ActivityCompat.finishAffinity((Activity) context);
                                     }
                                     if (task == null) {
+                                        Toast.makeText(context, "이미 팔로잉 중입니다", Toast.LENGTH_SHORT).show();
                                         UiUtil.getInstance().stopProgressDialog();
                                         return;
                                     }
