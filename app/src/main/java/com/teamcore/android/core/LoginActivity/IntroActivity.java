@@ -108,9 +108,7 @@ public class IntroActivity extends BaseActivity {
         // remoteConfig 서버와 동기화
         RemoteConfig.getConfig(this).addOnCompleteListener(task -> {
 
-            int appVersion = getAppVersionCode();
-            Toast.makeText(this,String.valueOf(appVersion),Toast.LENGTH_SHORT).show();
-            if (RemoteConfig.MinAppVersion <= appVersion && appVersion <= RemoteConfig.MaxAppVersion) {
+            if (IsSutiableVersion()) {
                 // 버전이 맞으면
 
                 // 권한 체크
@@ -131,6 +129,7 @@ public class IntroActivity extends BaseActivity {
                             try {
                                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
                                 finish();
+
                             } catch (android.content.ActivityNotFoundException anfe) {
                                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
                                 finish();
@@ -237,6 +236,9 @@ public class IntroActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
         // 계정있으면 로그아웃
+        if(!IsSutiableVersion())
+            finish();
+
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             logout();
         }
@@ -262,6 +264,11 @@ public class IntroActivity extends BaseActivity {
         }
 
         return packageInfo.versionCode;
+    }
+
+    public boolean IsSutiableVersion(){
+        int appVersion = getAppVersionCode();
+        return RemoteConfig.MinAppVersion <= appVersion && appVersion <= RemoteConfig.MaxAppVersion;
     }
 }
 
