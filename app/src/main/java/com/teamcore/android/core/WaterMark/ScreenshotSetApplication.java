@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.support.multidex.MultiDex;
 import android.util.Log;
 
 import com.teamcore.android.core.MyAidl;
@@ -118,5 +119,11 @@ public class ScreenshotSetApplication extends Application {
         } catch (RemoteException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
     }
 }
