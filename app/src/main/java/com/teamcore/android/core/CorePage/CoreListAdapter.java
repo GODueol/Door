@@ -970,15 +970,13 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 
     private void loadRewardedVideoAd() {
         mRewardedVideoAd.loadAd(context.getString(R.string.adsBlockUser),
-                new AdRequest.Builder().addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                        .addTestDevice("0D525D9C92269D80384121978C3C4267")
+                new AdRequest.Builder()
                         .build());
     }
 
     private void loadRewardedVideoAd2() {
         mRewardedVideoAd2.loadAd(context.getString(R.string.adsEnteredCore),
-                new AdRequest.Builder().addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                        .addTestDevice("0D525D9C92269D80384121978C3C4267")
+                new AdRequest.Builder()
                         .build());
     }
 

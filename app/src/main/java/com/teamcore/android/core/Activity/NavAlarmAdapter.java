@@ -277,8 +277,7 @@ public class NavAlarmAdapter extends RecyclerView.Adapter<NavAlarmAdapter.ViewHo
 
     private void loadRewardedVideoAd() {
         mRewardedVideoAd.loadAd(context.getString(R.string.adsNavAlarm),
-                new AdRequest.Builder().addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                        .addTestDevice("0D525D9C92269D80384121978C3C4267")
+                new AdRequest.Builder()
                         .build());
     }
 

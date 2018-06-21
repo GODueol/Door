@@ -7,14 +7,14 @@
 
     <string name="adsID">ca-app-pub-4410935111031067~7345603486</string>
 
-    <!-- 하단 배너 광고 TestId-->
+    <!-- 하단 배너 광고 TestId
     <string name="adsCore">ca-app-pub-3940256099942544/6300978111</string>
     <string name="adsCoreCloud">ca-app-pub-3940256099942544/6300978111</string>
     <string name="adsMainGrid">ca-app-pub-3940256099942544/6300978111</string>
     <string name="adsMapSearch">ca-app-pub-3940256099942544/6300978111</string>
     <string name="adsUserSearch">ca-app-pub-3940256099942544/6300978111</string>
 
-    <!-- 전면 광고 TestId-->
+    전면 광고 TestId
     <string name="ProfileChat_ads">ProfileChat</string>
     <string name="FMainGrid_ads">FMainGrid</string>
     <string name="Friends_ads">Friends</string>
@@ -25,13 +25,38 @@
     <string name="adsFriendsTab">ca-app-pub-3940256099942544/1033173712</string>
     <string name="adsChatingList">ca-app-pub-3940256099942544/1033173712</string>
 
-    <!-- 전면 동영상 광고 TestId -->
+    전면 동영상 광고 TestId
     <string name="adsWriteCorePost">ca-app-pub-3940256099942544/5224354917</string>
     <string name="adsUserSearching">ca-app-pub-3940256099942544/5224354917</string>
     <string name="adsNavAlarm">ca-app-pub-3940256099942544/5224354917</string>
     <string name="adsMapSearching">ca-app-pub-3940256099942544/5224354917</string>
     <string name="adsEnteredCore">ca-app-pub-3940256099942544/5224354917</string>
     <string name="adsBlockUser">ca-app-pub-3940256099942544/5224354917</string>
+    -->
+
+    하단 배너 광고
+    <string name="adsCore">ca-app-pub-4410935111031067/2316158497</string>
+    <string name="adsCoreCloud">ca-app-pub-4410935111031067/3984463389</string>
+    <string name="adsMainGrid">ca-app-pub-4410935111031067/8143200242</string>
+    <string name="adsMapSearch">ca-app-pub-4410935111031067/3390115757</string>
+    <string name="adsUserSearch">ca-app-pub-4410935111031067/2815400684</string>
+
+
+    전면 광고
+    <string name="adsProfileChating">ca-app-pub-4410935111031067/5713026769</string>
+    <string name="adsFMainGrid">ca-app-pub-4410935111031067/2016775597</string>
+    <string name="adsFriendsTab">ca-app-pub-4410935111031067/6051814400</string>
+    <string name="adsChatingList">ca-app-pub-4410935111031067/5034369915</string>
+
+
+    전면 동영상 광고
+    <string name="adsWriteCorePost">ca-app-pub-4410935111031067/8287219211</string>
+    <string name="adsUserSearching">ca-app-pub-4410935111031067/6774278252</string>
+    <string name="adsNavAlarm">ca-app-pub-4410935111031067/1126790784</string>
+    <string name="adsMapSearching">ca-app-pub-4410935111031067/2148637538</string>
+    <string name="adsEnteredCore">ca-app-pub-4410935111031067/1645665534</string>
+    <string name="adsBlockUser">ca-app-pub-4410935111031067/9224896366</string>
+
 
     <string name="find_map">지도 검색</string>
     <string name="find_id">회원 검색</string>

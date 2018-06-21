@@ -236,7 +236,7 @@ public class IntroActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
         // 계정있으면 로그아웃
-        if(!IsSutiableVersion())
+        if (!IsSutiableVersion())
             finish();
 
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
@@ -254,7 +254,6 @@ public class IntroActivity extends BaseActivity {
 
     public int getAppVersionCode() {
         PackageInfo packageInfo = null;         //패키지에 대한 전반적인 정보
-
         //PackageInfo 초기화
         try {
             packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
@@ -266,7 +265,7 @@ public class IntroActivity extends BaseActivity {
         return packageInfo.versionCode;
     }
 
-    public boolean IsSutiableVersion(){
+    public boolean IsSutiableVersion() {
         int appVersion = getAppVersionCode();
         return RemoteConfig.MinAppVersion <= appVersion && appVersion <= RemoteConfig.MaxAppVersion;
     }

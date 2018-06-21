@@ -175,8 +175,6 @@ public class CoreActivity extends BlockBaseActivity {
 
         if (!DataContainer.getInstance().isPlus) {
             AdRequest adRequest = new AdRequest.Builder()
-                    .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                    .addTestDevice("0D525D9C92269D80384121978C3C4267")
                     .build();
             mAdView.loadAd(adRequest);
         } else {
