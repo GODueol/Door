@@ -1,14 +1,19 @@
 package com.teamcore.android.core.LoginActivity;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -24,6 +29,7 @@ import com.teamcore.android.core.Entity.User;
 import com.teamcore.android.core.R;
 import com.teamcore.android.core.Util.BaseActivity.BaseActivity;
 import com.teamcore.android.core.Util.DataContainer;
+import com.teamcore.android.core.Util.RemoteConfig;
 import com.teamcore.android.core.Util.SharedPreferencesUtil;
 import com.teamcore.android.core.Util.UiUtil;
 import com.teamcore.android.core.Util.setPermission;
@@ -101,13 +107,44 @@ public class IntroActivity extends BaseActivity {
             return;
         }
 
-        // 권한 체크
-        if (isHaveAllPermission()) {
-            setPermission();
-        } else {
-            // 권한 다이얼로그 띄움
-            startActivityForResult(new Intent(IntroActivity.this, AccessRightActiviry.class), ACCESS_RIGHT_REQUEST);
+        int appVersion = getAppVersionCode();
+        if(RemoteConfig.MinAppVersion <= appVersion && appVersion <=RemoteConfig.MaxAppVersion) {
+            // 버전이 맞으면
+
+            // 권한 체크
+            if (isHaveAllPermission()) {
+                setPermission();
+            } else {
+                // 권한 다이얼로그 띄움
+                startActivityForResult(new Intent(IntroActivity.this, AccessRightActiviry.class), ACCESS_RIGHT_REQUEST);
+            }
+
+        }else{
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("업데이트");
+            builder.setMessage("버전 업데이트가 필요합니다.");
+            builder.setPositiveButton("업데이트",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            final String appPackageName = getPackageName();
+                            try {
+                                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+                            } catch (android.content.ActivityNotFoundException anfe) {
+                                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+                            }
+                        }
+                    });
+            builder.setNegativeButton("아니오",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            finish();
+                            return;
+                        }
+                    });
+            builder.show();
         }
+
+
 
         SPUtil = new SharedPreferencesUtil(this);
         //  광고 아이디 설정 (최초 1회)
@@ -212,6 +249,20 @@ public class IntroActivity extends BaseActivity {
         if (requestCode == ACCESS_RIGHT_REQUEST) {
             setPermission();
         }
+    }
+
+    public int getAppVersionCode(){
+        PackageInfo packageInfo = null;         //패키지에 대한 전반적인 정보
+
+        //PackageInfo 초기화
+        try{
+            packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+        }catch (PackageManager.NameNotFoundException e){
+            e.printStackTrace();
+            return -1;
+        }
+
+        return packageInfo.versionCode;
     }
 }
 

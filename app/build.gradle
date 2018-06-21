@@ -20,10 +20,10 @@ android {
 
     defaultConfig {
         applicationId "com.teamcore.android.core"
-        minSdkVersion 19
+        minSdkVersion 16
         //noinspection OldTargetApi
         targetSdkVersion 26
-        versionCode 90
+        versionCode 91
         versionName "1.0"
 
         // Enabling multidex support.
