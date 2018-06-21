@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.provider.Settings.Secure;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.ViewGroup;
@@ -307,34 +306,48 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
         String Bodytype = _bodyType.getText().toString();
 
 
-
-        if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+        if (email.isEmpty()){
+            throw new Exception("이메일을 입력해주세요.");
+        }
+        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             focusEditText(_emailText);
             throw new Exception("올바른 이메일 양식으로 작성해주세요.");
-        } else if (password.isEmpty() || password.length() < 6 || password.length() > 12) {
+        }
+
+        if (password.isEmpty())
+            throw new Exception("비밀번호를 입력해주세요.");
+
+        if (password.length() < 6 || password.length() > 12) {
             focusEditText(_passwordText);
             focusEditText(_reEnterPasswordText);
             throw new Exception("비밀번호는 6자리 이상 12자리 이하로 설정해주세요.");
-        } else if (reEnterPassword.isEmpty() || reEnterPassword.length() < 6 || reEnterPassword.length() > 12 || !(reEnterPassword.equals(password))) {
+        }
+        if (reEnterPassword.isEmpty() || reEnterPassword.length() < 6 || reEnterPassword.length() > 12 || !(reEnterPassword.equals(password))) {
             focusEditText(_passwordText);
             focusEditText(_reEnterPasswordText);
             throw new Exception("패스워드가 일치하지 않습니다.");
-        } else if (ID.isEmpty() || ID.length() < 2 || ID.length() > 10) {
+        }
+        if (ID.isEmpty() || ID.length() < 2 || ID.length() > 10) {
             focusEditText(_IDText);
             throw new Exception("두 자리 이상의 아이디로 작성해주세요.");
-        } else if (Age.isEmpty() || Age.length() != 2 || Integer.parseInt(Age) > 100) {
+        }
+        if (Age.isEmpty() || Age.length() != 2 || Integer.parseInt(Age) > 100) {
             focusEditText(_ageText);
             throw new Exception("올바른 나이를 작성해주세요.");
-        } else if (Integer.parseInt(Age) < 20) {
+        }
+        if (Integer.parseInt(Age) < 20) {
             focusEditText(_ageText);
             throw new Exception("미성년자는 가입할 수 없습니다.");
-        } else if (Height.isEmpty() || Height.length() != 3 || Integer.parseInt(Height) < 100 || Integer.parseInt(Height) > 220) {
+        }
+        if (Height.isEmpty() || Height.length() != 3 || Integer.parseInt(Height) < 100 || Integer.parseInt(Height) > 220) {
             focusEditText(_heightText);
             throw new Exception("올바른 키를 작성해 주세요.");
-        } else if (Weight.isEmpty() || Weight.length() < 2 || Weight.length() > 3 || Integer.parseInt(Weight) < 40 || Integer.parseInt(Weight) > 140) {
+        }
+        if (Weight.isEmpty() || Weight.length() < 2 || Weight.length() > 3 || Integer.parseInt(Weight) < 40 || Integer.parseInt(Weight) > 140) {
             focusEditText(_weightText);
             throw new Exception("올바른 몸무게로 작성해주세요.");
-        } else if (Bodytype.isEmpty()) {
+        }
+        if (Bodytype.isEmpty()) {
             throw new Exception("바디타입을 설정해주세요.");
         }
         if (!access_agree.isChecked()){

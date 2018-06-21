@@ -1,6 +1,5 @@
 package com.teamcore.android.core.LoginActivity;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -60,8 +59,6 @@ public class LoginActivity extends AppCompatActivity {
     CheckBox cb_save_id;
     @Bind(R.id.link_find_password)
     ImageView link_find_password;
-
-    private ProgressDialog progressDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -264,19 +261,25 @@ public class LoginActivity extends AppCompatActivity {
 
     public void onLoginFailed(Exception e) {
         _loginButton.setEnabled(true);
+        Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
         UiUtil.getInstance().stopProgressDialog();
     }
 
     public void validate() throws Exception {
 
+        final int PASSWORD_MIN = 6;
+        final int PASSWORD_MAX = 12;
         String email = _emailText.getText().toString();
         String password = _passwordText.getText().toString();
 
-        if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+        if (email.isEmpty())
+            throw new Exception("이메일을 입력해주세요.");
+        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches())
             throw new Exception("이메일이 틀렸습니다.");
-        } else if (password.isEmpty() || password.length() < 6 || password.length() > 12) {
-            throw new Exception("비밀번호가 틀렸습니다.");
-        }
+        if (password.isEmpty())
+            throw new Exception("비밀번호를 입력해주세요.");
+        if ( password.length() < PASSWORD_MIN || password.length() > PASSWORD_MAX)
+            throw new Exception("비밀번호는 " + PASSWORD_MIN + "자에서 " + PASSWORD_MAX + "자 사이로 입력해주세요");
     }
 
     @Override
