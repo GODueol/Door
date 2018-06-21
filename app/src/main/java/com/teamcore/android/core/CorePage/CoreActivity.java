@@ -229,7 +229,7 @@ public class CoreActivity extends BlockBaseActivity {
                                 Boolean isPlus = DataContainer.getInstance().isPlus;
                                 if (cUser != null) {
                                     // CORE 주인 일반 회원
-                                    if (cUser.getAccountType() == null || !isPlus) {
+                                    if (!isPlus) {
                                         // 100개 제한
                                         if (cUser.getCorePostCount() >= RemoteConfig.NORMAL_CORE_LIMIT) {
                                             Toast.makeText(CoreActivity.this, "이 회원이 보유 최대 포스트 " + RemoteConfig.NORMAL_CORE_LIMIT + "개에 도달하였습니다", Toast.LENGTH_LONG).show();                                            return;
