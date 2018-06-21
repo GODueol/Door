@@ -237,7 +237,7 @@ public class CoreActivity extends BlockBaseActivity {
                                     } else {
                                         // 300개 제한
                                         if (cUser.getCorePostCount() >= RemoteConfig.PLUS_CORE_LIMIT) {
-                                            Toast.makeText(CoreActivity.this, RemoteConfig.NORMAL_CORE_LIMIT + "개가 넘는 포스트를 업로드할 수 없습니다", Toast.LENGTH_LONG).show();                                            return;
+                                            Toast.makeText(CoreActivity.this, RemoteConfig.PLUS_CORE_LIMIT + "개가 넘는 포스트를 업로드할 수 없습니다", Toast.LENGTH_LONG).show();                                            return;
                                         }
                                     }
 
