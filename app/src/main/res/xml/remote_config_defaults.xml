@@ -71,5 +71,17 @@
         <value>Sub</value>
     </entry>
 
+    <entry>
+        <key>MinAppVersion</key>
+        <value>68</value>
+    </entry>
+
+    <entry>
+        <key>MaxAppVersion</key>
+        <value>90</value>
+    </entry>
+
+
+
 </defaultsMap>
     <!-- END xml_defaults -->

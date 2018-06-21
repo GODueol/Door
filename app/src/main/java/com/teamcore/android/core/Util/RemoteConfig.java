@@ -31,6 +31,9 @@ public class RemoteConfig {
     public static String WtSubKo = "";
     public static String WtSubEn = "";
 
+    public static int MinAppVersion = 68;
+    public static int MaxAppVersion = 90;
+
     static public Task<Void> getConfig(Activity activity){
         // Remote Config
         FirebaseRemoteConfig mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
@@ -81,5 +84,8 @@ public class RemoteConfig {
         WtTitleEn = mFirebaseRemoteConfig.getString("WtTitleEn");
         WtSubKo = mFirebaseRemoteConfig.getString("WtSubKo");
         WtSubEn = mFirebaseRemoteConfig.getString("WtSubEn");
+
+        MinAppVersion = (int) mFirebaseRemoteConfig.getLong("MinAppVersion");
+        MaxAppVersion = (int) mFirebaseRemoteConfig.getLong("MaxAppVersion");
     }
 }
