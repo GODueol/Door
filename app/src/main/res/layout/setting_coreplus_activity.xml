@@ -610,7 +610,7 @@
                         android:id="@+id/sub_txt19"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="다음 결제일 : "
+
                         android:textColor="@color/black"
                         android:textStyle="bold" />
 
@@ -637,7 +637,7 @@
                         android:id="@+id/sub_txt20"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="결제 청구 : "
+
                         android:textColor="@color/black"
                         android:textStyle="bold" />
 
@@ -664,7 +664,7 @@
                         android:id="@+id/membership_cancel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="구독 취소"
+
                         android:textColor="@color/black"
                         android:textStyle="bold" />
                 </RelativeLayout>
