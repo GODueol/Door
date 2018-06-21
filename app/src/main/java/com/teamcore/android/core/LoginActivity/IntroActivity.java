@@ -1,7 +1,6 @@
 package com.teamcore.android.core.LoginActivity;
 
 import android.Manifest;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -101,14 +100,15 @@ public class IntroActivity extends BaseActivity {
         setContentView(R.layout.intro_activity);
 
         // 시간 자동 설정 체크
-        if(!UiUtil.getInstance().isAutoTimeSet(this)){
+        if (!UiUtil.getInstance().isAutoTimeSet(this)) {
             Toast.makeText(this, "디바이스 시간을 수동으로 설정 시 코어를 사용할 수 없습니다", Toast.LENGTH_LONG).show();
             finish();
             return;
         }
 
         int appVersion = getAppVersionCode();
-        if(RemoteConfig.MinAppVersion <= appVersion && appVersion <=RemoteConfig.MaxAppVersion) {
+        Toast.makeText(this,String.valueOf(appVersion),Toast.LENGTH_SHORT).show();
+        if (RemoteConfig.MinAppVersion <= appVersion && appVersion <= RemoteConfig.MaxAppVersion) {
             // 버전이 맞으면
 
             // 권한 체크
@@ -118,19 +118,23 @@ public class IntroActivity extends BaseActivity {
                 // 권한 다이얼로그 띄움
                 startActivityForResult(new Intent(IntroActivity.this, AccessRightActiviry.class), ACCESS_RIGHT_REQUEST);
             }
-
-        }else{
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        } else {
+            // 버전 미달 또는 이상이 있을 경우
+           AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("업데이트");
-            builder.setMessage("버전 업데이트가 필요합니다.");
+            builder.setMessage("업데이트가 필요합니다.");
             builder.setPositiveButton("업데이트",
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             final String appPackageName = getPackageName();
                             try {
                                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+                                finish();
+                                return;
                             } catch (android.content.ActivityNotFoundException anfe) {
                                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+                                finish();
+                                return;
                             }
                         }
                     });
@@ -144,11 +148,9 @@ public class IntroActivity extends BaseActivity {
             builder.show();
         }
 
-
-
         SPUtil = new SharedPreferencesUtil(this);
         //  광고 아이디 설정 (최초 1회)
-        MobileAds.initialize(this,this.getString(R.string.adsID));
+        MobileAds.initialize(this, this.getString(R.string.adsID));
         SPUtil.initAds();
     }
 
@@ -251,13 +253,13 @@ public class IntroActivity extends BaseActivity {
         }
     }
 
-    public int getAppVersionCode(){
+    public int getAppVersionCode() {
         PackageInfo packageInfo = null;         //패키지에 대한 전반적인 정보
 
         //PackageInfo 초기화
-        try{
+        try {
             packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-        }catch (PackageManager.NameNotFoundException e){
+        } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
             return -1;
         }
