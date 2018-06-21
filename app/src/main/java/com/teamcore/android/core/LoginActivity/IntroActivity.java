@@ -2,7 +2,6 @@ package com.teamcore.android.core.LoginActivity;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -106,52 +105,50 @@ public class IntroActivity extends BaseActivity {
             return;
         }
 
-        int appVersion = getAppVersionCode();
-        Toast.makeText(this,String.valueOf(appVersion),Toast.LENGTH_SHORT).show();
-        if (RemoteConfig.MinAppVersion <= appVersion && appVersion <= RemoteConfig.MaxAppVersion) {
-            // 버전이 맞으면
+        // remoteConfig 서버와 동기화
+        RemoteConfig.getConfig(this).addOnCompleteListener(task -> {
 
-            // 권한 체크
-            if (isHaveAllPermission()) {
-                setPermission();
+            int appVersion = getAppVersionCode();
+            Toast.makeText(this,String.valueOf(appVersion),Toast.LENGTH_SHORT).show();
+            if (RemoteConfig.MinAppVersion <= appVersion && appVersion <= RemoteConfig.MaxAppVersion) {
+                // 버전이 맞으면
+
+                // 권한 체크
+                if (isHaveAllPermission()) {
+                    setPermission();
+                } else {
+                    // 권한 다이얼로그 띄움
+                    startActivityForResult(new Intent(IntroActivity.this, AccessRightActiviry.class), ACCESS_RIGHT_REQUEST);
+                }
             } else {
-                // 권한 다이얼로그 띄움
-                startActivityForResult(new Intent(IntroActivity.this, AccessRightActiviry.class), ACCESS_RIGHT_REQUEST);
-            }
-        } else {
-            // 버전 미달 또는 이상이 있을 경우
-           AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("업데이트");
-            builder.setMessage("업데이트가 필요합니다.");
-            builder.setPositiveButton("업데이트",
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
+                // 버전 미달 또는 이상이 있을 경우
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("업데이트");
+                builder.setMessage("업데이트가 필요합니다.");
+                builder.setPositiveButton("업데이트",
+                        (dialog, which) -> {
                             final String appPackageName = getPackageName();
                             try {
                                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
                                 finish();
-                                return;
                             } catch (android.content.ActivityNotFoundException anfe) {
                                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
                                 finish();
-                                return;
                             }
-                        }
-                    });
-            builder.setNegativeButton("아니오",
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
+                        });
+                builder.setNegativeButton("아니오",
+                        (dialog, which) -> {
                             finish();
-                            return;
-                        }
-                    });
-            builder.show();
-        }
+                        });
+                builder.show();
+            }
 
-        SPUtil = new SharedPreferencesUtil(this);
-        //  광고 아이디 설정 (최초 1회)
-        MobileAds.initialize(this, this.getString(R.string.adsID));
-        SPUtil.initAds();
+            SPUtil = new SharedPreferencesUtil(this);
+            //  광고 아이디 설정 (최초 1회)
+            MobileAds.initialize(this, this.getString(R.string.adsID));
+            SPUtil.initAds();
+
+        });
     }
 
     private void getUserInfo(final FirebaseUser user) {

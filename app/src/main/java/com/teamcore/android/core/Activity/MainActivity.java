@@ -299,8 +299,7 @@ public class MainActivity extends BaseActivity
             }
         });
 
-        // remoteConfig
-        RemoteConfig.getConfig(this).addOnCompleteListener(task -> showWeeklyTopicDialog());
+        showWeeklyTopicDialog();
     }
 
     IabHelper.QueryInventoryFinishedListener mGotInventoryListener = new IabHelper.QueryInventoryFinishedListener() {
