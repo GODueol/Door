@@ -310,7 +310,7 @@ public class CoreWriteActivity extends BlockBaseActivity {
 
                     // Optional
                     .setSource(AudioSource.MIC)
-                    .setChannel(AudioChannel.STEREO)
+                    .setChannel(AudioChannel.MONO)
                     .setSampleRate(AudioSampleRate.HZ_8000)
                     .setAutoStart(true)
                     .setKeepDisplayOn(true)
