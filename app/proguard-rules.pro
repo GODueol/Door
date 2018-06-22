@@ -23,7 +23,7 @@
 
 # Firebase Realtime database
 -keepattributes Signature
--keepclassmembers class Entity.** {
+-keepclassmembers class com.teamcore.android.core.Entity.** {
   *;
 }
 #################ButterKnife
