@@ -15,3 +15,27 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+#################Firebase
+# Firebase Authentication
+-keepattributes *Annotation*
+
+# Firebase Realtime database
+-keepattributes Signature
+-keepclassmembers class Entity.** {
+  *;
+}
+#################ButterKnife
+-dontwarn butterknife.internal.**
+
+-keep class **$$ViewInjector { *; }
+
+-keepnames class * { @butterknife.InjectView *;}
+
+-dontwarn butterknife.Views$InjectViewProcessor
+
+-dontwarn com.gc.materialdesign.views.**
+
+################org.slf4j.LoggerFactory:
+-dontwarn javax.naming.**
+-dontwarn javax.servlet.**
+-dontwarn org.slf4j.**
