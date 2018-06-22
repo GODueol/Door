@@ -41,3 +41,6 @@
 -dontwarn javax.naming.**
 -dontwarn javax.servlet.**
 -dontwarn org.slf4j.**
+
+-keep class com.gun0912.tedpermission.** { *; }
+
