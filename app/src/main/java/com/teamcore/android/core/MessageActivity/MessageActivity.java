@@ -3,7 +3,6 @@ package com.teamcore.android.core.MessageActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -91,7 +90,7 @@ public class MessageActivity extends BaseActivity implements SharedPreferences.O
                                     startActivity(intent);
                                     checkCorePlus().done(isPlus -> {
                                         if (!isPlus) {
-                                            SPUtil.increaseAds(mInterstitialAd,"ChatList");
+                                            SPUtil.increaseAds(mInterstitialAd, "ChatList");
                                         }
                                     });
                                 }

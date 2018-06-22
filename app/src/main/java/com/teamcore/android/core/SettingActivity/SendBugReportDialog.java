@@ -20,7 +20,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.FirebaseDatabase;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -31,17 +31,17 @@ public class SendBugReportDialog extends CustomDialog {
 
 
     private static int MiN_CONTENT = 10;
-    @Bind(R.id.email)
+    @BindView(R.id.email)
     TextView email;
-    @Bind(R.id.recive_email)
+    @BindView(R.id.recive_email)
     EditText recive_email;
-    @Bind(R.id.edit_report)
+    @BindView(R.id.edit_report)
     EditText content;
-    @Bind(R.id.send_report)
+    @BindView(R.id.send_report)
     TextView sendReport;
-    @Bind(R.id.content_error)
+    @BindView(R.id.content_error)
     TextView content_error;
-    @Bind(R.id.email_error)
+    @BindView(R.id.email_error)
     TextView email_error;
 
     private boolean avaliableEamil = false, avaliableContent = false;

@@ -48,7 +48,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.teamcore.android.core.Util.UiUtil.getInstance;
@@ -67,75 +67,75 @@ public class ProfileModifyActivity extends BaseActivity implements NumberPicker.
 
     private TextView min_age_filter, max_age_filter, min_height_filter, max_height_filter, min_weight_filter, max_weight_filter, min_bodytype_filter, max_bodytype_filter;
 
-    @Bind(R.id.modify_id)
+    @BindView(R.id.modify_id)
     EditText _idText;
 
-    @Bind(R.id.image1)
+    @BindView(R.id.image1)
     ImageView profilePic1;
 
-    @Bind(R.id.image2)
+    @BindView(R.id.image2)
     ImageView profilePic2;
 
-    @Bind(R.id.image3)
+    @BindView(R.id.image3)
     ImageView profilePic3;
 
-    @Bind(R.id.image4)
+    @BindView(R.id.image4)
     ImageView profilePic4;
 
-    @Bind(R.id.modify_introduce)
+    @BindView(R.id.modify_introduce)
     EditText introEditText;
 
-    @Bind(R.id.content_error)
+    @BindView(R.id.content_error)
     TextView content_error;
 
-    @Bind(R.id.filter_switch)
+    @BindView(R.id.filter_switch)
     Switch filterSwitch;
 
-    @Bind(R.id.AGE_FILTER)
+    @BindView(R.id.AGE_FILTER)
     RelativeLayout ageFilterLayout;
 
-    @Bind(R.id.HEIGHT_FILTER)
+    @BindView(R.id.HEIGHT_FILTER)
     RelativeLayout heightFilterLayout;
 
-    @Bind(R.id.WEIGHT_FILTER)
+    @BindView(R.id.WEIGHT_FILTER)
     RelativeLayout weightFilterLayout;
 
-    @Bind(R.id.BODY_TYPE_FILTER)
+    @BindView(R.id.BODY_TYPE_FILTER)
     RelativeLayout bodyTypeFilterLayout;
 
-    @Bind(R.id.AGE_FILTER1)
+    @BindView(R.id.AGE_FILTER1)
     RelativeLayout ageFilterLayout1;
 
-    @Bind(R.id.HEIGHT_FILTER1)
+    @BindView(R.id.HEIGHT_FILTER1)
     RelativeLayout heightFilterLayout1;
 
-    @Bind(R.id.WEIGHT_FILTER1)
+    @BindView(R.id.WEIGHT_FILTER1)
     RelativeLayout weightFilterLayout1;
 
-    @Bind(R.id.BODY_TYPE_FILTER1)
+    @BindView(R.id.BODY_TYPE_FILTER1)
     RelativeLayout bodyTypeFilterLayout1;
 
-    @Bind(R.id.lock2)
+    @BindView(R.id.lock2)
     ToggleButton lock2Toggle;
 
-    @Bind(R.id.lock3)
+    @BindView(R.id.lock3)
     ToggleButton lock3Toggle;
 
-    @Bind(R.id.lock4)
+    @BindView(R.id.lock4)
     ToggleButton lock4Toggle;
 
-    @Bind(R.id.delete2)
+    @BindView(R.id.delete2)
     ImageView delete2Image;
 
-    @Bind(R.id.delete3)
+    @BindView(R.id.delete3)
     ImageView delete3Image;
 
-    @Bind(R.id.delete4)
+    @BindView(R.id.delete4)
     ImageView delete4Image;
 
     private GalleryPick galleryPick;
 
-    @Bind(R.id.age_nouse)
+    @BindView(R.id.age_nouse)
     EditText introduce_focus;
 
     // filter boundary

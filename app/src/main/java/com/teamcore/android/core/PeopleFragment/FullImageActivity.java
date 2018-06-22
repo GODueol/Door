@@ -55,7 +55,7 @@ import com.teamcore.android.core.WaterMark.ScreenshotSetApplication;
 import java.util.ArrayList;
 import java.util.Map;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.teamcore.android.core.MessageActivity.ChatFirebaseUtil.sendEventMessage;
@@ -68,47 +68,47 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
     RelativeLayout core_enter = null;
     ImageView page1, page2, page3, page4;
 
-    @Bind(R.id.text_physical)
+    @BindView(R.id.text_physical)
     TextView textPhysical;
 
-    @Bind(R.id.text_introduce)
+    @BindView(R.id.text_introduce)
     TextView textIntroduce;
 
-    @Bind(R.id.text_id)
+    @BindView(R.id.text_id)
     TextView textId;
 
-    @Bind(R.id.full_image_view)
+    @BindView(R.id.full_image_view)
     ImageView fullImageView;
 
-    @Bind(R.id.distance)
+    @BindView(R.id.distance)
     TextView distanceText;
 
-    @Bind(R.id.login_time)
+    @BindView(R.id.login_time)
     TextView loginTime;
     private ArrayList<String> picUrlList;
 
-    @Bind(R.id.pic_open)
+    @BindView(R.id.pic_open)
     ImageView picOpen;
 
-    @Bind(R.id.block_friends)
+    @BindView(R.id.block_friends)
     ImageView blockFriends;
 
-    @Bind(R.id.item_menu_btn)
+    @BindView(R.id.item_menu_btn)
     ImageView addFriends;
 
-    @Bind(R.id.message_white)
+    @BindView(R.id.message_white)
     ImageView message;
 
-    @Bind(R.id.core_counts)
+    @BindView(R.id.core_counts)
     TextView corePostCount;
 
-    @Bind(R.id.image2lock)
+    @BindView(R.id.image2lock)
     ImageView image2lock;
 
-    @Bind(R.id.image3lock)
+    @BindView(R.id.image3lock)
     ImageView image3lock;
 
-    @Bind(R.id.image4lock)
+    @BindView(R.id.image4lock)
     ImageView image4lock;
 
     private User oUser;

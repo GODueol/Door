@@ -31,7 +31,7 @@ import com.teamcore.android.core.R;
 import com.teamcore.android.core.Util.DataContainer;
 import com.teamcore.android.core.Util.UiUtil;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class LoginActivity extends AppCompatActivity {
@@ -47,17 +47,17 @@ public class LoginActivity extends AppCompatActivity {
     // database
     DatabaseReference userRef = DataContainer.getInstance().getUsersRef();
 
-    @Bind(R.id.input_email)
+    @BindView(R.id.input_email)
     EditText _emailText;
-    @Bind(R.id.input_password)
+    @BindView(R.id.input_password)
     EditText _passwordText;
-    @Bind(R.id.btn_login)
+    @BindView(R.id.btn_login)
     TextView _loginButton;
-    @Bind(R.id.link_signup)
+    @BindView(R.id.link_signup)
     TextView _signupLink;
-    @Bind(R.id.cb_save_id)
+    @BindView(R.id.cb_save_id)
     CheckBox cb_save_id;
-    @Bind(R.id.link_find_password)
+    @BindView(R.id.link_find_password)
     ImageView link_find_password;
 
     @Override

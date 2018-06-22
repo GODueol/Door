@@ -25,7 +25,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -34,10 +34,10 @@ import butterknife.ButterKnife;
 
 public class NavAlarmDialog extends Dialog  {
 
-    @Bind(R.id.navAlarmList)
+    @BindView(R.id.navAlarmList)
     RecyclerView recyclerView;
 
-    @Bind(R.id.nontext)
+    @BindView(R.id.nontext)
     TextView nonText;
 
 
@@ -60,7 +60,6 @@ public class NavAlarmDialog extends Dialog  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.nav_alarm_activity_main);
         ButterKnife.bind(this);
-
         setRecyclerView();
         setItems();
     }

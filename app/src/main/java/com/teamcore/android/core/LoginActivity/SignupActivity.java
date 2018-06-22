@@ -33,7 +33,7 @@ import com.teamcore.android.core.SettingActivity.AccessTerms3;
 import com.teamcore.android.core.Util.DataContainer;
 import com.teamcore.android.core.Util.UiUtil;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class SignupActivity extends AppCompatActivity implements NumberPicker.OnValueChangeListener {
@@ -47,46 +47,46 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
 
     User mUser;
 
-    @Bind(R.id.input_email)
+    @BindView(R.id.input_email)
     EditText _emailText;
 
-    @Bind(R.id.input_password)
+    @BindView(R.id.input_password)
     EditText _passwordText;
 
-    @Bind(R.id.input_reEnterPassword)
+    @BindView(R.id.input_reEnterPassword)
     EditText _reEnterPasswordText;
 
-    @Bind(R.id.input_id)
+    @BindView(R.id.input_id)
     EditText _IDText;
 
-    @Bind(R.id.input_age)
+    @BindView(R.id.input_age)
     EditText _ageText;
 
-    @Bind(R.id.input_height)
+    @BindView(R.id.input_height)
     EditText _heightText;
 
-    @Bind(R.id.input_weight)
+    @BindView(R.id.input_weight)
     EditText _weightText;
 
-    @Bind(R.id.input_bodytype)
+    @BindView(R.id.input_bodytype)
     EditText _bodyType;
 
-    @Bind(R.id.access_terms1)
+    @BindView(R.id.access_terms1)
     TextView access_terms1;
 
-    @Bind(R.id.access_terms2)
+    @BindView(R.id.access_terms2)
     TextView access_terms2;
 
-    @Bind(R.id.access_terms3)
+    @BindView(R.id.access_terms3)
     TextView access_terms3;
 
-    @Bind(R.id.access_agree)
+    @BindView(R.id.access_agree)
     ToggleButton access_agree;
 
-    @Bind(R.id.btn_signup)
+    @BindView(R.id.btn_signup)
     Button _signupButton;
 
-    @Bind(R.id.link_login)
+    @BindView(R.id.link_login)
     TextView _loginLink;
 
     private EditText bodytype;

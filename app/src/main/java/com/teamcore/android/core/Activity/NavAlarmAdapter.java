@@ -35,7 +35,7 @@ import com.teamcore.android.core.Util.UiUtil;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -250,22 +250,22 @@ public class NavAlarmAdapter extends RecyclerView.Adapter<NavAlarmAdapter.ViewHo
     public class ViewHolder extends RecyclerView.ViewHolder {
 
 
-        @Bind(R.id.dateLayout)
+        @BindView(R.id.dateLayout)
         LinearLayout linearLayout;
 
-        @Bind(R.id.dateText)
+        @BindView(R.id.dateText)
         TextView dTextview;
 
-        @Bind(R.id.navAlarmItemlayout)
+        @BindView(R.id.navAlarmItemlayout)
         LinearLayout alarmItemLayout;
 
-        @Bind(R.id.navAlarmImg)
+        @BindView(R.id.navAlarmImg)
         ImageView alarmImg;
 
-        @Bind(R.id.navAlarmText)
+        @BindView(R.id.navAlarmText)
         TextView alarmText;
 
-        @Bind(R.id.navAlarmTime)
+        @BindView(R.id.navAlarmTime)
         TextView alarmTime;
 
         public ViewHolder(View itemView) {

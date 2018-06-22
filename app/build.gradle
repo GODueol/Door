@@ -23,7 +23,7 @@ android {
         minSdkVersion 16
         //noinspection OldTargetApi
         targetSdkVersion 26
-        versionCode 101
+        versionCode 102
         versionName "1.0"
 
         // Enabling multidex support.
@@ -40,8 +40,13 @@ android {
     }
 
     lintOptions {
+        disable 'InvalidPackage'
         checkReleaseBuilds false
         abortOnError false
+    }
+
+    packagingOptions {
+        exclude 'META-INF/services/javax.annotation.processing.Processor'
     }
 
     buildTypes {
@@ -73,7 +78,12 @@ dependencies {
     compile 'com.android.support:design:26.+'
     compile 'com.android.support:appcompat-v7:26.+'
     compile files('libs/universal-image-loader-1.2.1.jar')
-    compile 'com.jakewharton:butterknife:7.0.1'
+    // duplication fix
+    compile ('com.jakewharton:butterknife:8.8.1'){
+        exclude group:'com.android.support', module: 'support-compat'
+    }
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+
     compile project(':heartbutton_library')
 
     compile 'com.google.firebase:firebase-core:11.4.2'
