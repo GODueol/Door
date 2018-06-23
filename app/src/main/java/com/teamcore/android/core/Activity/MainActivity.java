@@ -261,7 +261,7 @@ public class MainActivity extends BaseActivity
             public void onDataChange(DataSnapshot dataSnapshot) {
                 SPUtil = new SharedPreferencesUtil(getApplicationContext());
                 String currentActivity = SPUtil.getBlockMeUserCurrentActivity(getString(R.string.currentActivity));
-//                Log.d("test", "들어옴");
+                Log.d("test", "들어옴");
                 for (DataSnapshot blockMeUserSnapshot : dataSnapshot.getChildren()) {
                     if (blockMeUserSnapshot.getKey() != null && blockMeUserSnapshot.getKey().equals(currentActivity)) {
                         /*Intent intent = new Intent(getApplication(), MainActivity.class);

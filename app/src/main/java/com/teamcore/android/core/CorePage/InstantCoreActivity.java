@@ -36,7 +36,7 @@ public class InstantCoreActivity extends AppCompatActivity {
                 try {
                     CorePost corePost = dataSnapshot.getValue(CorePost.class);
                 }catch (Exception e){
-                    Toast.makeText(getApplicationContext(),"삭제된 포스트 입니다.",Toast.LENGTH_SHORT);
+                    Toast.makeText(getApplicationContext(),"삭제된 포스트 입니다",Toast.LENGTH_SHORT);
                     finish();
                 }
             }

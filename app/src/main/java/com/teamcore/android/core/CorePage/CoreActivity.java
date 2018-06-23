@@ -477,7 +477,6 @@ public class CoreActivity extends BlockBaseActivity {
         if (iaphelper == null) return;
         if (!iaphelper.handleActivityResult(requestCode, resultCode, data)) {
 //            //처리할 결과물이 아닐 경우 이곳으로 빠져 기본처리를 하도록한다
-//            Toast.makeText(this, "지금", Toast.LENGTH_SHORT).show();
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
@@ -518,7 +517,6 @@ public class CoreActivity extends BlockBaseActivity {
         iaphelper = new IabHelper(this, PUBLIC_KEY);
         iaphelper.startSetup(result -> {
             if (!result.isSuccess()) {
-//                Toast.makeText(getApplicationContext(), "문제발생", Toast.LENGTH_SHORT).show();
                 return;
             }
 

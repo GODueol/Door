@@ -464,6 +464,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
                                         ActivityCompat.finishAffinity((Activity) context);
                                     }
                                     if (task == null) {
+                                        Toast.makeText(context, "팔로우 취소 상태입니다", Toast.LENGTH_SHORT).show();
                                         UiUtil.getInstance().stopProgressDialog();
                                         return;
                                     }
