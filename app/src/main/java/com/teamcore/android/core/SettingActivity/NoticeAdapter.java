@@ -16,6 +16,8 @@ import com.teamcore.android.core.Util.SharedPreferencesUtil;
 
 import java.util.List;
 
+import static java.security.AccessController.getContext;
+
 public class NoticeAdapter extends RecyclerView.Adapter<NoticeAdapter.NoticeHolder> {
 
     private List<Notice> noticeList;

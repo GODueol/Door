@@ -3,13 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/AndroidAudioRecord/AndroidAudioRecord.iml" filepath="$PROJECT_DIR$/AndroidAudioRecord/AndroidAudioRecord.iml" />
-      <module fileurl="file://E:/CORE/Core/AndroidAudioRecord/AndroidAudioRecord.iml" filepath="E:/CORE/Core/AndroidAudioRecord/AndroidAudioRecord.iml" />
       <module fileurl="file://$PROJECT_DIR$/Core.iml" filepath="$PROJECT_DIR$/Core.iml" />
-      <module fileurl="file://E:/CORE/Core/Core.iml" filepath="E:/CORE/Core/Core.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://E:/CORE/Core/app/app.iml" filepath="E:/CORE/Core/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/heartbutton_library/heartbutton_library.iml" filepath="$PROJECT_DIR$/heartbutton_library/heartbutton_library.iml" />
-      <module fileurl="file://E:/CORE/Core/heartbutton_library/heartbutton_library.iml" filepath="E:/CORE/Core/heartbutton_library/heartbutton_library.iml" />
     </modules>
   </component>
 </project>
