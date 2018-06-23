@@ -604,10 +604,12 @@ public class ProfileModifyActivity extends BaseActivity implements NumberPicker.
                     final StorageReference thumbNailSpaceRef = storageRef.child(getPicPath(modifyingPic).replace(".jpg", "_thumbNail.jpg"));
 
                     // 저장
+                    startProgressDialog();
                     galleryPick.upload(spaceRef, uri)
                         .addOnSuccessListener(taskSnapshot -> {
                             saveUserPicUrl(taskSnapshot.getDownloadUrl(), modifyingPic);
                             // Set Local
+                            stopProgressDialog();
                             GlideApp.with(modifyingPic.getContext())
                                     .load(taskSnapshot.getDownloadUrl())
                                     .placeholder(R.drawable.pic_load_ani)

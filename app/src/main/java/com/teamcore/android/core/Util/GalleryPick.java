@@ -19,6 +19,7 @@ import android.util.Log;
 import android.widget.ImageView;
 
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 import com.teamcore.android.core.Exception.GifException;
 import com.teamcore.android.core.R;
@@ -286,10 +287,10 @@ public class GalleryPick {
         return getUploadTask(ref, uri);
     }
 
-    public UploadTask upload(StorageReference ref, Uri uri) throws Exception {
+    public StorageTask<UploadTask.TaskSnapshot> upload(StorageReference ref, Uri uri) throws Exception {
         // Check Gif
         getImgPath(uri);
-        return getUploadTask(ref, uri);
+        return getUploadTask(ref, uri).addOnSuccessListener(taskSnapshot -> recycle());
     }
 
     @NonNull
@@ -436,6 +437,10 @@ public class GalleryPick {
         }
 
         return orientation;
+    }
+
+    public void recycle() {
+        if(!bitmap.isRecycled()) bitmap.recycle();
     }
 
 }
