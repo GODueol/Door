@@ -15,7 +15,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.chrisbanes.photoview.PhotoView;
+import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.reward.RewardItem;
 import com.google.android.gms.ads.reward.RewardedVideoAd;
@@ -48,6 +51,10 @@ public class NavAlarmAdapter extends RecyclerView.Adapter<NavAlarmAdapter.ViewHo
     private Context context;
     private boolean isPlus;
     private RewardedVideoAd mRewardedVideoAd;
+    private InterstitialAd noFillInterstitialAd;
+    boolean isFillReward = false;
+    private AlarmSummary alarmItem;
+    private int positionItem;
 
     NavAlarmAdapter(Context context, List<AlarmSummary> items, boolean isPlus) {
         this.context = context;
@@ -56,7 +63,8 @@ public class NavAlarmAdapter extends RecyclerView.Adapter<NavAlarmAdapter.ViewHo
         // Use an activity context to get the rewarded video instance.
         mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(context);
         loadRewardedVideoAd();
-
+        mRewardedVideoAd.setRewardedVideoAdListener(rewardedVideoAdListener);
+        setnoFillInterstitialAd();
     }
 
     @Override
@@ -110,67 +118,8 @@ public class NavAlarmAdapter extends RecyclerView.Adapter<NavAlarmAdapter.ViewHo
             @Override
             public void onClick(View view) {
                 //if (mRewardedVideoAd.isLoaded()) {
-
-                mRewardedVideoAd.setRewardedVideoAdListener(new RewardedVideoAdListener() {
-
-
-                    @Override
-                    public void onRewardedVideoAdLoaded() {
-                        Log.d("test", "onRewardedVideoAdLoaded");
-                    }
-
-                    @Override
-                    public void onRewardedVideoAdOpened() {
-                        Log.d("test", "onRewardedVideoAdOpened" +
-                                "");
-
-                    }
-
-                    @Override
-                    public void onRewardedVideoStarted() {
-                        Log.d("test", "onRewardedVideoStarted");
-                    }
-
-                    @Override
-                    public void onRewardedVideoAdClosed() {
-                        loadRewardedVideoAd();
-                        FirebaseDatabase.getInstance().getReference(context.getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(context.getString(R.string.navAlarmCount)).addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                if (dataSnapshot.exists()) {
-                                    int value = Integer.valueOf(dataSnapshot.getValue().toString());
-                                    Log.d("test", "몇개 : " + value);
-                                    if (value > 0) {
-                                        FirebaseDatabase.getInstance().getReference(context.getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(context.getString(R.string.navAlarmCount)).setValue(value - 1);
-                                        showCorePost(item, position);
-                                    }
-                                }
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-
-                            }
-                        });
-                        Log.d("test", "onRewardedVideoAdClosed");
-                    }
-
-                    @Override
-                    public void onRewarded(RewardItem rewardItem) {
-                        FirebaseDatabase.getInstance().getReference(context.getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(context.getString(R.string.navAlarmCount)).setValue(rewardItem.getAmount());
-                    }
-
-                    @Override
-                    public void onRewardedVideoAdLeftApplication() {
-
-                        Log.d("test", "onRewardedVideoAdLeftApplication");
-                    }
-
-                    @Override
-                    public void onRewardedVideoAdFailedToLoad(int i) {
-                        Log.d("test", "onRewardedVideoAdFailedToLoad" + i);
-                    }
-                });
+                alarmItem = item;
+                positionItem = position;
                 if (!isPlus) {
                     FirebaseDatabase.getInstance().getReference(context.getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(context.getString(R.string.navAlarmCount)).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -186,7 +135,12 @@ public class NavAlarmAdapter extends RecyclerView.Adapter<NavAlarmAdapter.ViewHo
                                 FirebaseDatabase.getInstance().getReference(context.getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(context.getString(R.string.navAlarmCount)).setValue(value - 1);
                                 showCorePost(item, position);
                             } else {
-                                mRewardedVideoAd.show();
+                                if (isFillReward) {
+                                    showCorePost(item, position);
+                                    noFillInterstitialAd.show();
+                                } else {
+                                    mRewardedVideoAd.show();
+                                }
                             }
                         }
 
@@ -242,6 +196,102 @@ public class NavAlarmAdapter extends RecyclerView.Adapter<NavAlarmAdapter.ViewHo
         }
     }
 
+
+    RewardedVideoAdListener rewardedVideoAdListener = new RewardedVideoAdListener() {
+
+
+        @Override
+        public void onRewardedVideoAdLoaded() {
+            Log.d("test", "onRewardedVideoAdLoaded");
+        }
+
+        @Override
+        public void onRewardedVideoAdOpened() {
+            Log.d("test", "onRewardedVideoAdOpened");
+        }
+
+        @Override
+        public void onRewardedVideoStarted() {
+            Log.d("test", "onRewardedVideoStarted");
+        }
+
+        @Override
+        public void onRewardedVideoAdClosed() {
+            loadRewardedVideoAd();
+            FirebaseDatabase.getInstance().getReference(context.getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(context.getString(R.string.navAlarmCount)).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        int value = Integer.valueOf(dataSnapshot.getValue().toString());
+                        Log.d("test", "몇개 : " + value);
+                        if (value > 0) {
+                            FirebaseDatabase.getInstance().getReference(context.getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(context.getString(R.string.navAlarmCount)).setValue(value - 1);
+                            showCorePost(alarmItem, positionItem);
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+            Log.d("test", "onRewardedVideoAdClosed");
+        }
+
+        @Override
+        public void onRewarded(RewardItem rewardItem) {
+            FirebaseDatabase.getInstance().getReference(context.getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(context.getString(R.string.navAlarmCount)).setValue(rewardItem.getAmount());
+        }
+
+        @Override
+        public void onRewardedVideoAdLeftApplication() {
+
+            Log.d("test", "onRewardedVideoAdLeftApplication");
+        }
+
+        @Override
+        public void onRewardedVideoAdFailedToLoad(int i) {
+            Toast.makeText(context,"에러코드nav"+String.valueOf(i),Toast.LENGTH_LONG).show();
+            switch (i) {
+                case 0:
+                    // 에드몹 내부서버에러
+                    Toast.makeText(context, "내부서버에 문제가 있습니다.", Toast.LENGTH_LONG).show();
+                    loadRewardedVideoAd();
+                    break;
+                case 2:
+                    // 네트워크 연결상태 불량
+                    Toast.makeText(context, "네트워크 연결상태가 좋지 않습니다.", Toast.LENGTH_LONG).show();
+                    loadRewardedVideoAd();
+                    break;
+                case 3:
+                    // 에드몹 광고 인벤토리 부족
+                    isFillReward = true;
+                    break;
+            }
+        }
+    };
+
+
+    private void loadRewardedVideoAd() {
+        mRewardedVideoAd.loadAd(context.getString(R.string.adsNavAlarm),
+                new AdRequest.Builder()
+                        .build());
+    }
+
+    public void setnoFillInterstitialAd() {
+        noFillInterstitialAd = new InterstitialAd(context);
+        noFillInterstitialAd.setAdUnitId(context.getString(R.string.noFillReward));
+        noFillInterstitialAd.loadAd(new AdRequest.Builder().build());
+        noFillInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdClosed() {
+                noFillInterstitialAd.loadAd(new AdRequest.Builder().build());
+            }
+        });
+    }
+
+
     @Override
     public int getItemCount() {
         return items.size();
@@ -274,13 +324,6 @@ public class NavAlarmAdapter extends RecyclerView.Adapter<NavAlarmAdapter.ViewHo
         }
     }
 
-
-    private void loadRewardedVideoAd() {
-        mRewardedVideoAd.loadAd(context.getString(R.string.adsNavAlarm),
-                new AdRequest.Builder()
-                        .build());
-    }
-
     private void showCorePost(AlarmSummary item, int position) {
         if (DataContainer.getInstance().isBlockWithMe(item.getcUuid())) {
             Toast.makeText(context, "포스트를 볼 수 없습니다.", Toast.LENGTH_SHORT).show();
@@ -302,5 +345,27 @@ public class NavAlarmAdapter extends RecyclerView.Adapter<NavAlarmAdapter.ViewHo
         p.putExtra("postId", item.getPostId());
         context.startActivity(p);
         notifyDataSetChanged();
+    }
+
+
+    public void Resume() {
+        if(mRewardedVideoAd!=null) {
+            mRewardedVideoAd.resume(context);
+            mRewardedVideoAd.setRewardedVideoAdListener(rewardedVideoAdListener);
+        }
+    }
+
+    public void Pause() {
+        if(mRewardedVideoAd!=null) {
+            mRewardedVideoAd.pause(context);
+            mRewardedVideoAd.setRewardedVideoAdListener(null);
+        }
+    }
+
+    public void Destroy() {
+        if(mRewardedVideoAd!=null) {
+            mRewardedVideoAd.destroy(context);
+            mRewardedVideoAd.setRewardedVideoAdListener(null);
+        }
     }
 }

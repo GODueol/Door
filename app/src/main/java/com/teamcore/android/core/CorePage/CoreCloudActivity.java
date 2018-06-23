@@ -37,7 +37,7 @@ public class CoreCloudActivity extends CoreActivity {
             AdRequest adRequest = new AdRequest.Builder()
                     .build();
             mAdView.loadAd(adRequest);
-        }else{
+        } else {
             mAdView.destroy();
             mAdView.setVisibility(View.GONE);
         }
@@ -158,5 +158,30 @@ public class CoreCloudActivity extends CoreActivity {
     public void FinishActivity(SomeoneBlocksMeEvent someoneBlocksMeEvent) {
         addPostsToList(list);
     }
+
+    @Override
+    public void onResume() {
+        if (coreListAdapter != null) {
+            coreListAdapter.Resume();
+        }
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        if (coreListAdapter != null) {
+            coreListAdapter.Pause();
+        }
+        super.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        if (coreListAdapter != null) {
+            coreListAdapter.Destroy();
+        }
+        super.onDestroy();
+    }
+
 
 }

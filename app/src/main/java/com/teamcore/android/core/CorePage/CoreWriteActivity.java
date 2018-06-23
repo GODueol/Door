@@ -207,10 +207,7 @@ public class CoreWriteActivity extends BlockBaseActivity {
 
                     if (!isAnonymousPost()) {
                         boolean isPlus = DataContainer.getInstance().isPlus;
-                        if (isFillReward) {
-                            saveCore();
-                            noFillInterstitialAd.show();
-                        } else if (!isPlus) {
+                        if (!isPlus) {
                             FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(getString(R.string.mCorePostCount)).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -225,7 +222,12 @@ public class CoreWriteActivity extends BlockBaseActivity {
                                         FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(getString(R.string.mCorePostCount)).setValue(value - 1);
                                         saveCore();
                                     } else {
-                                        mRewardedVideoAd.show();
+                                        if (isFillReward) {
+                                            saveCore();
+                                            noFillInterstitialAd.show();
+                                        } else {
+                                            mRewardedVideoAd.show();
+                                        }
                                     }
                                 }
 

@@ -102,4 +102,28 @@ public class FindUserActivity extends UserListBaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onResume() {
+        if (adapter != null) {
+            adapter.Resume();
+        }
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        if (adapter != null) {
+            adapter.Pause();
+        }
+        super.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        if (adapter != null) {
+            adapter.Destroy();
+        }
+        super.onDestroy();
+    }
+
 }

@@ -103,6 +103,7 @@ public class MainActivity extends BaseActivity
 
     private SharedPreferencesUtil SPUtil;
 
+    NavAlarmDialog navAlarmDialog;
     IabHelper iaphelper;
 
     @SuppressLint("ClickableViewAccessibility")
@@ -205,9 +206,13 @@ public class MainActivity extends BaseActivity
         } else {
             nav_alarm.setBackgroundResource(R.drawable.nav_alarm_on);
         }
+
         nav_alarm.setOnClickListener(v -> {
             SPUtil.setAlarmIcon(getString(R.string.navAlarm), false);
-            checkCorePlus().done(isPlus -> new NavAlarmDialog(MainActivity.this, isPlus).show());
+            checkCorePlus().done(isPlus -> {
+                navAlarmDialog.setIsPlus(isPlus);
+                navAlarmDialog.show();
+            });
         });
 
         // Set Profile Pic
@@ -297,6 +302,7 @@ public class MainActivity extends BaseActivity
             }
         });
 
+        navAlarmDialog = new NavAlarmDialog(MainActivity.this);
         showWeeklyTopicDialog();
     }
 
@@ -571,12 +577,18 @@ public class MainActivity extends BaseActivity
 
     @Override
     protected void onDestroy() {
+        if(navAlarmDialog!=null){
+            navAlarmDialog.Destroy();
+        }
         super.onDestroy();
         UiUtil.getInstance().stopProgressDialog();
     }
 
     @Override
     public void onResume() {
+        if(navAlarmDialog!=null){
+            navAlarmDialog.Resume();
+        }
         super.onResume();
         SPUtil.setBlockMeUserCurrentActivity(getString(R.string.currentActivity), null);
         checkMainToggle();
@@ -653,6 +665,10 @@ public class MainActivity extends BaseActivity
 
     @Override
     public void onPause() {
+
+        if(navAlarmDialog!=null){
+            navAlarmDialog.Pause();
+        }
         super.onPause();
         ScreenshotSetApplication.getInstance().unregisterScreenshotObserver();
     }

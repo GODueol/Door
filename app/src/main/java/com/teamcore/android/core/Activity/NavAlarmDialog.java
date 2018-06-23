@@ -32,7 +32,7 @@ import butterknife.ButterKnife;
  * Created by Kwon on 2018-03-16.
  */
 
-public class NavAlarmDialog extends Dialog  {
+public class NavAlarmDialog extends Dialog {
 
     @BindView(R.id.navAlarmList)
     RecyclerView recyclerView;
@@ -45,9 +45,12 @@ public class NavAlarmDialog extends Dialog  {
     private List<AlarmSummary> items;
     private boolean isPlus;
 
-    public NavAlarmDialog(@NonNull Context context,boolean isPlus) {
+    public NavAlarmDialog(@NonNull Context context) {
         super(context);
-        this.isPlus =  isPlus;
+    }
+
+    public void setIsPlus(boolean isPlus){
+        this.isPlus = isPlus;
     }
 
     // 포스트 아이디로 받아온다면? (
@@ -64,10 +67,10 @@ public class NavAlarmDialog extends Dialog  {
         setItems();
     }
 
-    private void setRecyclerView(){
+    private void setRecyclerView() {
         items = new ArrayList<AlarmSummary>();
 
-        navAlarmAdapter = new NavAlarmAdapter(getContext(),items,isPlus);
+        navAlarmAdapter = new NavAlarmAdapter(getContext(), items, isPlus);
         recyclerView.setAdapter(navAlarmAdapter);
 
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL)); //리사이클뷰 구분선
@@ -76,26 +79,26 @@ public class NavAlarmDialog extends Dialog  {
         recyclerView.setLayoutManager(mLayoutManager);
     }
 
-    private void setItems(){
+    private void setItems() {
         final String Uuid = DataContainer.getInstance().getUid();
         FirebaseDatabase.getInstance().getReference(getContext().getString(R.string.alarm)).child(Uuid).orderByChild("time").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Iterator<DataSnapshot> iterator = dataSnapshot.getChildren().iterator();
-                int count =0;
-                while (iterator.hasNext()){
+                int count = 0;
+                while (iterator.hasNext()) {
                     DataSnapshot data = iterator.next();
                     String key = data.getKey();
                     AlarmSummary alarmSummary = data.child("alarmSummary").getValue(AlarmSummary.class);
-                    if(count >= RemoteConfig.MAX_ALARM_COUNT) {
-                        FirebaseDatabase.getInstance().getReference(getContext().getString(R.string.alarm)).child(Uuid).child(items.remove(items.size()-1).getKey()).removeValue();
+                    if (count >= RemoteConfig.MAX_ALARM_COUNT) {
+                        FirebaseDatabase.getInstance().getReference(getContext().getString(R.string.alarm)).child(Uuid).child(items.remove(items.size() - 1).getKey()).removeValue();
                     }
                     // 포스트키를 잘라줌 (뒤에 Post,Like,Answer)
 
-                        alarmSummary.setKey(key);
-                        key = key.substring(0, key.lastIndexOf("_"));
-                        alarmSummary.setPostId(key);
-                        items.add(0, alarmSummary);
+                    alarmSummary.setKey(key);
+                    key = key.substring(0, key.lastIndexOf("_"));
+                    alarmSummary.setPostId(key);
+                    items.add(0, alarmSummary);
                     count++;
                 }
                 Collections.sort(items, new Comparator<AlarmSummary>() {
@@ -105,9 +108,9 @@ public class NavAlarmDialog extends Dialog  {
                     }
                 });
 
-                if(count==0){
+                if (count == 0) {
                     nonText.setVisibility(View.VISIBLE);
-                }else {
+                } else {
                     nonText.setVisibility(View.GONE);
                 }
                 recyclerView.getRecycledViewPool().clear();
@@ -120,5 +123,24 @@ public class NavAlarmDialog extends Dialog  {
 
             }
         });
+    }
+
+
+    public void Resume() {
+        if (navAlarmAdapter != null) {
+            navAlarmAdapter.Resume();
+        }
+    }
+
+    public void Pause() {
+        if (navAlarmAdapter != null) {
+            navAlarmAdapter.Pause();
+        }
+    }
+
+    public void Destroy() {
+        if (navAlarmAdapter != null) {
+            navAlarmAdapter.Destroy();
+        }
     }
 }

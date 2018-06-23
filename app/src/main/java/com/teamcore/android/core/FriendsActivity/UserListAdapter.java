@@ -69,7 +69,14 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
     private RewardedVideoAd mRewardedVideoAd2;
 
     private InterstitialAd mInterstitialAd;
+    private InterstitialAd noFillInterstitialAd;
     private SharedPreferencesUtil SPUtil;
+    boolean isFillReward = false;
+
+    boolean isFillReward2 = false;
+    private Item ad_Item;
+    private View ad_View;
+    private Intent ad_i;
 
     private class VIEW_TYPES {
         static final int Header = 1;
@@ -88,11 +95,12 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
         loadRewardedVideoAd2();
 
         setmInterstitialAd();
+        setnoFillInterstitialAd();
         SPUtil = new SharedPreferencesUtil(context);
     }
 
-    public UserListAdapter(Context context, List<Item> items,Boolean isPlus) {
-        this(context,items);
+    public UserListAdapter(Context context, List<Item> items, Boolean isPlus) {
+        this(context, items);
         this.isPlus = isPlus;
     }
 
@@ -146,71 +154,11 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
                 public void onClick(View view) {
                     Intent p = new Intent(view.getContext(), FullImageActivity.class);
                     p.putExtra("item", new GridItem(0, item.getUuid(), user.getSummaryUser(), ""));
+                    ad_i = p;
+                    ad_View = view;
+                    if (context instanceof FindUserActivity) {
 
-                    if(context instanceof FindUserActivity){
-                        mRewardedVideoAd2.setRewardedVideoAdListener(new RewardedVideoAdListener() {
-
-
-                            @Override
-                            public void onRewardedVideoAdLoaded() {
-                                Log.d("test", "onRewardedVideoAdLoaded");
-                            }
-
-                            @Override
-                            public void onRewardedVideoAdOpened() {
-                                Log.d("test", "onRewardedVideoAdOpened" +
-                                        "");
-
-                            }
-
-                            @Override
-                            public void onRewardedVideoStarted() {
-                                Log.d("test", "onRewardedVideoStarted");
-                            }
-
-                            @Override
-                            public void onRewardedVideoAdClosed() {
-                                loadRewardedVideoAd2();
-                                FirebaseDatabase.getInstance().getReference(context.getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(context.getString(R.string.findUserCount)).addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
-                                        if (dataSnapshot.exists()) {
-                                            int value = Integer.valueOf(dataSnapshot.getValue().toString());
-                                            Log.d("test", "몇개 : " + value);
-                                            if (value > 0) {
-                                                FirebaseDatabase.getInstance().getReference(context.getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(context.getString(R.string.findUserCount)).setValue(value - 1);
-                                                view.getContext().startActivity(p);
-                                            }
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onCancelled(DatabaseError databaseError) {
-
-                                    }
-                                });
-                                Log.d("test", "onRewardedVideoAdClosed");
-                            }
-
-                            @Override
-                            public void onRewarded(RewardItem rewardItem) {
-                                FirebaseDatabase.getInstance().getReference(context.getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(context.getString(R.string.findUserCount)).setValue(rewardItem.getAmount());
-                            }
-
-                            @Override
-                            public void onRewardedVideoAdLeftApplication() {
-
-                                Log.d("test", "onRewardedVideoAdLeftApplication");
-                            }
-
-                            @Override
-                            public void onRewardedVideoAdFailedToLoad(int i) {
-                                Log.d("test", "onRewardedVideoAdFailedToLoad" + i);
-                            }
-                        });
-
-
-                        if(!isPlus){
+                        if (!isPlus) {
                             FirebaseDatabase.getInstance().getReference(context.getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(context.getString(R.string.findUserCount)).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -225,7 +173,12 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
                                         FirebaseDatabase.getInstance().getReference(context.getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(context.getString(R.string.findUserCount)).setValue(value - 1);
                                         view.getContext().startActivity(p);
                                     } else {
-                                        mRewardedVideoAd2.show();
+                                        if (isFillReward2) {
+                                            view.getContext().startActivity(p);
+                                            noFillInterstitialAd.show();
+                                        }else {
+                                            mRewardedVideoAd2.show();
+                                        }
                                     }
                                 }
 
@@ -234,16 +187,16 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
 
                                 }
                             });
-                        }else{
+                        } else {
                             view.getContext().startActivity(p);
                         }
 
-                    } else if(context instanceof FriendsActivity){
+                    } else if (context instanceof FriendsActivity) {
                         view.getContext().startActivity(p);
-                        if(!isPlus) {
+                        if (!isPlus) {
                             SPUtil.increaseAds(mInterstitialAd, "Friends");
                         }
-                    }else{
+                    } else {
                         view.getContext().startActivity(p);
                     }
 
@@ -294,80 +247,8 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
                                         Toast.makeText(context, "차단 가능한 회원 수를 초과하였습니다", Toast.LENGTH_SHORT).show();
                                         return;
                                     }
-
-                                    mRewardedVideoAd.setRewardedVideoAdListener(new RewardedVideoAdListener() {
-
-
-                                        @Override
-                                        public void onRewardedVideoAdLoaded() {
-                                            Log.d("test", "onRewardedVideoAdLoaded");
-                                        }
-
-                                        @Override
-                                        public void onRewardedVideoAdOpened() {
-                                            Log.d("test", "onRewardedVideoAdOpened" +
-                                                    "");
-
-                                        }
-
-                                        @Override
-                                        public void onRewardedVideoStarted() {
-                                            Log.d("test", "onRewardedVideoStarted");
-                                        }
-
-                                        @Override
-                                        public void onRewardedVideoAdClosed() {
-                                            loadRewardedVideoAd();
-                                            FirebaseDatabase.getInstance().getReference(context.getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(context.getString(R.string.blockCount)).addListenerForSingleValueEvent(new ValueEventListener() {
-                                                @Override
-                                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                                    if (dataSnapshot.exists()) {
-                                                        int value = Integer.valueOf(dataSnapshot.getValue().toString());
-                                                        Log.d("test", "몇개 : " + value);
-                                                        if (value > 0) {
-                                                            FirebaseDatabase.getInstance().getReference(context.getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(context.getString(R.string.blockCount)).setValue(value - 1);
-
-                                                            UiUtil.getInstance().startProgressDialog((Activity) context);
-                                                            try {
-                                                                FireBaseUtil.getInstance().block(item.getUuid()).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                    @Override
-                                                                    public void onComplete(@NonNull Task<Void> task) {
-                                                                        UiUtil.getInstance().stopProgressDialog();
-                                                                    }
-                                                                });
-                                                            } catch (ChildSizeMaxException e) {
-                                                                Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-                                                                UiUtil.getInstance().stopProgressDialog();
-                                                            }
-                                                        }
-                                                    }
-                                                }
-
-                                                @Override
-                                                public void onCancelled(DatabaseError databaseError) {
-
-                                                }
-                                            });
-                                            Log.d("test", "onRewardedVideoAdClosed");
-                                        }
-
-                                        @Override
-                                        public void onRewarded(RewardItem rewardItem) {
-                                            FirebaseDatabase.getInstance().getReference(context.getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(context.getString(R.string.blockCount)).setValue(rewardItem.getAmount());
-                                        }
-
-                                        @Override
-                                        public void onRewardedVideoAdLeftApplication() {
-
-                                            Log.d("test", "onRewardedVideoAdLeftApplication");
-                                        }
-
-                                        @Override
-                                        public void onRewardedVideoAdFailedToLoad(int i) {
-                                            Log.d("test", "onRewardedVideoAdFailedToLoad" + i);
-                                        }
-                                    });
-                                    if(!isPlus) {
+                                    ad_Item = item;
+                                   if (!isPlus) {
                                         FirebaseDatabase.getInstance().getReference(context.getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(context.getString(R.string.blockCount)).addListenerForSingleValueEvent(new ValueEventListener() {
                                             @Override
                                             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -394,7 +275,24 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
                                                         UiUtil.getInstance().stopProgressDialog();
                                                     }
                                                 } else {
-                                                    mRewardedVideoAd.show();
+                                                    if (isFillReward) {
+                                                        UiUtil.getInstance().startProgressDialog((Activity) context);
+                                                        try {
+                                                            FireBaseUtil.getInstance().block(item.getUuid()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                @Override
+                                                                public void onComplete(@NonNull Task<Void> task) {
+                                                                    UiUtil.getInstance().stopProgressDialog();
+                                                                }
+                                                            });
+                                                        } catch (ChildSizeMaxException e) {
+                                                            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                            UiUtil.getInstance().stopProgressDialog();
+                                                        }
+
+                                                        noFillInterstitialAd.show();
+                                                    }else {
+                                                        mRewardedVideoAd.show();
+                                                    }
                                                 }
                                             }
 
@@ -403,7 +301,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
 
                                             }
                                         });
-                                    }else{
+                                    } else {
                                         UiUtil.getInstance().startProgressDialog((Activity) context);
                                         try {
                                             FireBaseUtil.getInstance().block(item.getUuid()).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -605,7 +503,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
                     case "friendUsers":
                         header_title.setText("친구 목록");
                         friends_contents.setText(mUser.getId() + " 님은 CORE 일반 회원입니다");
-                        core_open_count.setText(""+CorePossibleOldFriendCount);
+                        core_open_count.setText("" + CorePossibleOldFriendCount);
                         friends_contents2.setText(" 명의 오래된 친구까지 코어를 열어볼 수 있습니다");
                         header_count.setText((items.size() - 1) + "");
                         break;
@@ -656,7 +554,6 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
     }
 
 
-
     public static class Item {
         User user;
         long date;
@@ -696,11 +593,24 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
 
     }
 
-    public void setmInterstitialAd(){
+    public void setnoFillInterstitialAd() {
+        noFillInterstitialAd = new InterstitialAd(context);
+        noFillInterstitialAd.setAdUnitId(context.getString(R.string.noFillReward));
+        noFillInterstitialAd.loadAd(new AdRequest.Builder().build());
+        noFillInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdClosed() {
+                noFillInterstitialAd.loadAd(new AdRequest.Builder().build());
+            }
+        });
+    }
+
+
+    public void setmInterstitialAd() {
         mInterstitialAd = new InterstitialAd(context);
         mInterstitialAd.setAdUnitId(context.getString(R.string.adsFriendsTab));
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
-        mInterstitialAd.setAdListener(new AdListener(){
+        mInterstitialAd.setAdListener(new AdListener() {
             @Override
             public void onAdClosed() {
                 mInterstitialAd.loadAd(new AdRequest.Builder().build());
@@ -712,13 +622,215 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
         mRewardedVideoAd.loadAd(context.getString(R.string.adsBlockUser),
                 new AdRequest.Builder()
                         .build());
+        mRewardedVideoAd.setRewardedVideoAdListener(rewardedVideoAdListener);
     }
+
+    RewardedVideoAdListener rewardedVideoAdListener = new RewardedVideoAdListener() {
+
+        @Override
+        public void onRewardedVideoAdLoaded() {
+            Log.d("test", "onRewardedVideoAdLoaded");
+        }
+
+        @Override
+        public void onRewardedVideoAdOpened() {
+            Log.d("test", "onRewardedVideoAdOpened" +
+                    "");
+
+        }
+
+        @Override
+        public void onRewardedVideoStarted() {
+            Log.d("test", "onRewardedVideoStarted");
+        }
+
+        @Override
+        public void onRewardedVideoAdClosed() {
+            loadRewardedVideoAd();
+            FirebaseDatabase.getInstance().getReference(context.getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(context.getString(R.string.blockCount)).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        int value = Integer.valueOf(dataSnapshot.getValue().toString());
+                        Log.d("test", "몇개 : " + value);
+                        if (value > 0) {
+                            FirebaseDatabase.getInstance().getReference(context.getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(context.getString(R.string.blockCount)).setValue(value - 1);
+
+                            UiUtil.getInstance().startProgressDialog((Activity) context);
+                            try {
+                                FireBaseUtil.getInstance().block(ad_Item.getUuid()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        UiUtil.getInstance().stopProgressDialog();
+                                    }
+                                });
+                            } catch (ChildSizeMaxException e) {
+                                Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                UiUtil.getInstance().stopProgressDialog();
+                            }
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+            Log.d("test", "onRewardedVideoAdClosed");
+        }
+
+        @Override
+        public void onRewarded(RewardItem rewardItem) {
+            FirebaseDatabase.getInstance().getReference(context.getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(context.getString(R.string.blockCount)).setValue(rewardItem.getAmount());
+        }
+
+        @Override
+        public void onRewardedVideoAdLeftApplication() {
+
+            Log.d("test", "onRewardedVideoAdLeftApplication");
+        }
+
+        @Override
+        public void onRewardedVideoAdFailedToLoad(int i) {
+            Toast.makeText(context,"에러코드block"+String.valueOf(i),Toast.LENGTH_LONG).show();
+            switch (i) {
+                case 0:
+                    // 에드몹 내부서버에러
+                    Toast.makeText(context, "내부서버에 문제가 있습니다.", Toast.LENGTH_LONG).show();
+                    loadRewardedVideoAd();
+                    break;
+                case 2:
+                    // 네트워크 연결상태 불량
+                    Toast.makeText(context, "네트워크 연결상태가 좋지 않습니다.", Toast.LENGTH_LONG).show();
+                    loadRewardedVideoAd();
+                    break;
+                case 3:
+                    // 에드몹 광고 인벤토리 부족
+                    isFillReward = true;
+                    break;
+            }
+
+        }
+    };
 
     private void loadRewardedVideoAd2() {
         mRewardedVideoAd2.loadAd(context.getString(R.string.adsUserSearching),
                 new AdRequest.Builder()
                         .build());
+        mRewardedVideoAd2.setRewardedVideoAdListener(rewardedVideoAdListener2);
     }
 
+    RewardedVideoAdListener rewardedVideoAdListener2 = new RewardedVideoAdListener() {
+
+
+        @Override
+        public void onRewardedVideoAdLoaded() {
+            Log.d("test", "onRewardedVideoAdLoaded");
+        }
+
+        @Override
+        public void onRewardedVideoAdOpened() {
+            Log.d("test", "onRewardedVideoAdOpened" +
+                    "");
+
+        }
+
+        @Override
+        public void onRewardedVideoStarted() {
+            Log.d("test", "onRewardedVideoStarted");
+        }
+
+        @Override
+        public void onRewardedVideoAdClosed() {
+            loadRewardedVideoAd2();
+            FirebaseDatabase.getInstance().getReference(context.getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(context.getString(R.string.findUserCount)).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        int value = Integer.valueOf(dataSnapshot.getValue().toString());
+                        Log.d("test", "몇개 : " + value);
+                        if (value > 0) {
+                            FirebaseDatabase.getInstance().getReference(context.getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(context.getString(R.string.findUserCount)).setValue(value - 1);
+                            ad_View.getContext().startActivity(ad_i);
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+            Log.d("test", "onRewardedVideoAdClosed");
+        }
+
+        @Override
+        public void onRewarded(RewardItem rewardItem) {
+            FirebaseDatabase.getInstance().getReference(context.getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(context.getString(R.string.findUserCount)).setValue(rewardItem.getAmount());
+        }
+
+        @Override
+        public void onRewardedVideoAdLeftApplication() {
+
+            Log.d("test", "onRewardedVideoAdLeftApplication");
+        }
+
+        @Override
+        public void onRewardedVideoAdFailedToLoad(int i) {
+            Toast.makeText(context,"에러코드UserSearching"+String.valueOf(i),Toast.LENGTH_LONG).show();
+            switch (i) {
+                case 0:
+                    // 에드몹 내부서버에러
+                    Toast.makeText(context, "내부서버에 문제가 있습니다.", Toast.LENGTH_LONG).show();
+                    loadRewardedVideoAd2();
+                    break;
+                case 2:
+                    // 네트워크 연결상태 불량
+                    Toast.makeText(context, "네트워크 연결상태가 좋지 않습니다.", Toast.LENGTH_LONG).show();
+                    loadRewardedVideoAd2();
+                    break;
+                case 3:
+                    // 에드몹 광고 인벤토리 부족
+                    isFillReward2 = true;
+                    break;
+            }
+
+        }
+    };
+
+    public void Resume() {
+        if(mRewardedVideoAd!=null) {
+            mRewardedVideoAd.resume(context);
+            mRewardedVideoAd.setRewardedVideoAdListener(rewardedVideoAdListener);
+        }
+
+        if(mRewardedVideoAd2!=null) {
+            mRewardedVideoAd2.resume(context);
+            mRewardedVideoAd2.setRewardedVideoAdListener(rewardedVideoAdListener2);
+        }
+    }
+
+    public void Pause() {
+        if(mRewardedVideoAd!=null) {
+            mRewardedVideoAd.pause(context);
+            mRewardedVideoAd.setRewardedVideoAdListener(null);
+        }
+        if(mRewardedVideoAd2!=null) {
+            mRewardedVideoAd2.pause(context);
+            mRewardedVideoAd2.setRewardedVideoAdListener(null);
+        }
+    }
+
+    public void Destroy() {
+        if(mRewardedVideoAd!=null) {
+            mRewardedVideoAd.destroy(context);
+            mRewardedVideoAd.setRewardedVideoAdListener(null);
+        }
+        if(mRewardedVideoAd2!=null) {
+            mRewardedVideoAd2.destroy(context);
+            mRewardedVideoAd2.setRewardedVideoAdListener(null);
+        }
+    }
 
 }

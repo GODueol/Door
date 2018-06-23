@@ -202,11 +202,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.OnConn
             i.putExtra("latLng", latLng);
 
             checkCorePlus().done(isPlus -> {
-                if (isFillReward) {
-                    startActivity(i);
-                    noFillInterstitialAd.show();
-                    finish();
-                } else if (!isPlus) {
+               if (!isPlus) {
                     FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(getString(R.string.mapSearchCount)).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -223,7 +219,13 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.OnConn
                                 Toast.makeText(getApplicationContext(), "스와이프하시면 현재 위치로 되돌아갑니다.", Toast.LENGTH_LONG).show();
                                 finish();
                             } else {
-                                mRewardedVideoAd.show();
+                                if (isFillReward) {
+                                    startActivity(i);
+                                    noFillInterstitialAd.show();
+                                    finish();
+                                } else {
+                                    mRewardedVideoAd.show();
+                                }
 
                             }
                         }
@@ -401,20 +403,28 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.OnConn
 
     @Override
     public void onResume() {
-        mRewardedVideoAd.resume(this);
+        if(mRewardedVideoAd!=null) {
+            mRewardedVideoAd.resume(this);
+            mRewardedVideoAd.setRewardedVideoAdListener(rewardedVideoAdListener);
+        }
         super.onResume();
     }
 
     @Override
     public void onPause() {
-        mRewardedVideoAd.pause(this);
+        if(mRewardedVideoAd!=null) {
+            mRewardedVideoAd.pause(this);
+            mRewardedVideoAd.setRewardedVideoAdListener(null);
+        }
         super.onPause();
     }
 
     @Override
     public void onDestroy() {
-        mRewardedVideoAd.destroy(this);
-        mRewardedVideoAd.setRewardedVideoAdListener(null);
+        if(mRewardedVideoAd!=null) {
+            mRewardedVideoAd.destroy(this);
+            mRewardedVideoAd.setRewardedVideoAdListener(null);
+        }
         super.onDestroy();
     }
 

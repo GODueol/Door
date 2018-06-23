@@ -31,7 +31,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.reward.RewardItem;
 import com.google.android.gms.ads.reward.RewardedVideoAd;
@@ -88,6 +90,8 @@ public class ChattingActivity extends BlockBaseActivity {
     private String targetUuid;
     private GalleryPick galleryPick;
     private RewardedVideoAd mRewardedVideoAd;
+    private InterstitialAd noFillInterstitialAd;
+    boolean isFillReward = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,6 +117,7 @@ public class ChattingActivity extends BlockBaseActivity {
         targetUuid = (String) p.getSerializableExtra("userUuid");
         mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(getApplicationContext());
         loadRewardedVideoAd();
+        setnoFillInterstitialAd();
         // 엑티비티 Uuid 저장
         SPUtil.setBlockMeUserCurrentActivity(getString(R.string.currentActivity), targetUuid);
         // 내정보 데이터 셋
@@ -227,12 +232,17 @@ public class ChattingActivity extends BlockBaseActivity {
 
     @Override
     protected void onResume() {
+
+        mRewardedVideoAd.resume(this);
+        mRewardedVideoAd.setRewardedVideoAdListener(rewardedVideoAdListener);
         super.onResume();
         mImageView.setClickable(true);
     }
 
     @Override
     protected void onDestroy() {
+        mRewardedVideoAd.destroy(this);
+        mRewardedVideoAd.setRewardedVideoAdListener(null);
         super.onDestroy();
         SPUtil.removeCurrentChat(getString(R.string.currentRoom));
         chatFirebaseUtil.deleteFirebaseRef();
@@ -275,88 +285,8 @@ public class ChattingActivity extends BlockBaseActivity {
                 UiUtil.getInstance().showDialog(ChattingActivity.this, "유저 차단", "해당 유저를 차단하시겠습니까?", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
 
-                        mRewardedVideoAd.setRewardedVideoAdListener(new RewardedVideoAdListener() {
-                            @Override
-                            public void onRewardedVideoAdLoaded() {
-                                Log.d("test", "onRewardedVideoAdLoaded");
-                            }
-
-                            @Override
-                            public void onRewardedVideoAdOpened() {
-                                Log.d("test", "onRewardedVideoAdOpened" +
-                                        "");
-                            }
-
-                            @Override
-                            public void onRewardedVideoStarted() {
-                                Log.d("test", "onRewardedVideoStarted");
-                            }
-
-                            @Override
-                            public void onRewardedVideoAdClosed() {
-                                loadRewardedVideoAd();
-                                FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(getString(R.string.blockCount)).addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
-                                        int value;
-                                        try {
-                                            value = Integer.valueOf(dataSnapshot.getValue().toString());
-                                        } catch (Exception e) {
-                                            value = 0;
-                                        }
-                                        Log.d("test", "몇개 : " + value);
-                                        if (value > 0) {
-                                            FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(getString(R.string.blockCount)).setValue(value - 1);
-
-                                            UiUtil.getInstance().startProgressDialog(ChattingActivity.this);
-                                            // blockUsers 추가
-                                            try {
-                                                FireBaseUtil.getInstance().block(chatFirebaseUtil.getItem().getUuid()).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                    @Override
-                                                    public void onSuccess(Void aVoid) {
-                                                        finish();
-                                                    }
-                                                }).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<Void> task) {
-                                                        UiUtil.getInstance().stopProgressDialog();
-                                                        finish();
-                                                    }
-                                                });
-                                            } catch (ChildSizeMaxException e) {
-                                                Toast.makeText(ChattingActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                                                UiUtil.getInstance().stopProgressDialog();
-                                            }
-                                        }
-
-                                    }
-
-                                    @Override
-                                    public void onCancelled(DatabaseError databaseError) {
-
-                                    }
-                                });
-                                Log.d("test", "onRewardedVideoAdClosed");
-                            }
-
-                            @Override
-                            public void onRewarded(RewardItem rewardItem) {
-                                FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(getString(R.string.blockCount)).setValue(rewardItem.getAmount());
-                            }
-
-                            @Override
-                            public void onRewardedVideoAdLeftApplication() {
-
-                                Log.d("test", "onRewardedVideoAdLeftApplication");
-                            }
-
-                            @Override
-                            public void onRewardedVideoAdFailedToLoad(int i) {
-                                Log.d("test", "onRewardedVideoAdFailedToLoad" + i);
-                            }
-                        });
                         checkCorePlus().done(isPlus -> {
-                            if (!isPlus) {
+                           if (!isPlus) {
                                 FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(getString(R.string.blockCount)).addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -386,7 +316,31 @@ public class ChattingActivity extends BlockBaseActivity {
                                                     UiUtil.getInstance().stopProgressDialog();
                                                 }
                                             } else {
-                                                mRewardedVideoAd.show();
+                                                if(isFillReward){
+                                                    UiUtil.getInstance().startProgressDialog(ChattingActivity.this);
+                                                    // blockUsers 추가
+                                                    try {
+                                                        FireBaseUtil.getInstance().block(chatFirebaseUtil.getItem().getUuid()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                            @Override
+                                                            public void onSuccess(Void aVoid) {
+                                                                finish();
+                                                            }
+                                                        }).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                            @Override
+                                                            public void onComplete(@NonNull Task<Void> task) {
+                                                                UiUtil.getInstance().stopProgressDialog();
+                                                                finish();
+                                                            }
+                                                        });
+                                                    } catch (ChildSizeMaxException e) {
+                                                        Toast.makeText(ChattingActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                        UiUtil.getInstance().stopProgressDialog();
+                                                    }
+                                                    noFillInterstitialAd.show();
+                                                }
+                                                else {
+                                                    mRewardedVideoAd.show();
+                                                }
                                             }
                                         }
                                     }
@@ -511,10 +465,126 @@ public class ChattingActivity extends BlockBaseActivity {
         finish();
     }
 
+    public void setnoFillInterstitialAd() {
+        noFillInterstitialAd = new InterstitialAd(this);
+        noFillInterstitialAd.setAdUnitId(getString(R.string.noFillReward));
+        noFillInterstitialAd.loadAd(new AdRequest.Builder().build());
+        noFillInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdClosed() {
+                noFillInterstitialAd.loadAd(new AdRequest.Builder().build());
+            }
+        });
+    }
+
     private void loadRewardedVideoAd() {
         mRewardedVideoAd.loadAd(getString(R.string.adsBlockUser),
                 new AdRequest.Builder()
                         .build());
+        mRewardedVideoAd.setRewardedVideoAdListener(rewardedVideoAdListener);
+    }
+    RewardedVideoAdListener rewardedVideoAdListener = new RewardedVideoAdListener() {
+        @Override
+        public void onRewardedVideoAdLoaded() {
+            Log.d("test", "onRewardedVideoAdLoaded");
+        }
+
+        @Override
+        public void onRewardedVideoAdOpened() {
+            Log.d("test", "onRewardedVideoAdOpened" +
+                    "");
+        }
+
+        @Override
+        public void onRewardedVideoStarted() {
+            Log.d("test", "onRewardedVideoStarted");
+        }
+
+        @Override
+        public void onRewardedVideoAdClosed() {
+            loadRewardedVideoAd();
+            FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(getString(R.string.blockCount)).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    int value;
+                    try {
+                        value = Integer.valueOf(dataSnapshot.getValue().toString());
+                    } catch (Exception e) {
+                        value = 0;
+                    }
+                    Log.d("test", "몇개 : " + value);
+                    if (value > 0) {
+                        FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(getString(R.string.blockCount)).setValue(value - 1);
+
+                        UiUtil.getInstance().startProgressDialog(ChattingActivity.this);
+                        // blockUsers 추가
+                        try {
+                            FireBaseUtil.getInstance().block(chatFirebaseUtil.getItem().getUuid()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    finish();
+                                }
+                            }).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    UiUtil.getInstance().stopProgressDialog();
+                                    finish();
+                                }
+                            });
+                        } catch (ChildSizeMaxException e) {
+                            Toast.makeText(ChattingActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                            UiUtil.getInstance().stopProgressDialog();
+                        }
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+            Log.d("test", "onRewardedVideoAdClosed");
+        }
+
+        @Override
+        public void onRewarded(RewardItem rewardItem) {
+            FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(getString(R.string.blockCount)).setValue(rewardItem.getAmount());
+        }
+
+        @Override
+        public void onRewardedVideoAdLeftApplication() {
+
+            Log.d("test", "onRewardedVideoAdLeftApplication");
+        }
+
+        @Override
+        public void onRewardedVideoAdFailedToLoad(int i) {
+            Toast.makeText(getApplicationContext(),"에러코드chattingList"+String.valueOf(i),Toast.LENGTH_LONG).show();
+            switch (i) {
+                case 0:
+                    // 에드몹 내부서버에러
+                    Toast.makeText(getApplicationContext(), "내부서버에 문제가 있습니다.", Toast.LENGTH_LONG).show();
+                    loadRewardedVideoAd();
+                    break;
+                case 2:
+                    // 네트워크 연결상태 불량
+                    Toast.makeText(getApplicationContext(), "네트워크 연결상태가 좋지 않습니다.", Toast.LENGTH_LONG).show();
+                    loadRewardedVideoAd();
+                    break;
+                case 3:
+                    // 에드몹 광고 인벤토리 부족
+                    isFillReward = true;
+                    break;
+            }
+        }
+    };
+
+    @Override
+    public void onPause() {
+    mRewardedVideoAd.pause(this);
+    mRewardedVideoAd.setRewardedVideoAdListener(null);
+    super.onPause();
     }
 
 }
