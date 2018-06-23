@@ -11,6 +11,8 @@ import android.support.multidex.MultiDex;
 import android.util.Log;
 
 import com.teamcore.android.core.MyAidl;
+import com.crashlytics.android.Crashlytics;
+import io.fabric.sdk.android.Fabric;
 
 /**
  * Created by soochun on 2017-01-16.
@@ -25,6 +27,7 @@ public class ScreenshotSetApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Fabric.with(this, new Crashlytics());
         instance = this;
 
         mConnection = new ServiceConnection() {

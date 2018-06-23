@@ -1,15 +1,22 @@
 buildscript {
     repositories {
         jcenter()
+        maven { url 'https://maven.fabric.io/public' }
     }
 
     dependencies {
         classpath 'me.tatarka:gradle-retrolambda:3.6.1'
+        classpath 'io.fabric.tools:gradle:1.+'
     }
 }
 
 
 apply plugin: 'com.android.application'
+
+repositories {
+    maven { url 'https://maven.fabric.io/public' }
+}
+
 apply plugin: 'io.fabric'
 //apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'com.google.firebase.firebase-perf'
@@ -23,7 +30,7 @@ android {
         minSdkVersion 19
         //noinspection OldTargetApi
         targetSdkVersion 26
-        versionCode 111
+        versionCode 112
         versionName "1.0"
 
         // Enabling multidex support.

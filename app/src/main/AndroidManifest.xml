@@ -208,6 +208,9 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="7a7fde1f668ce339bb6eba14d924657ed6e31a17" />
     </application>
 
 
