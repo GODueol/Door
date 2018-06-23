@@ -146,13 +146,18 @@ public class BaseActivity extends AppCompatActivity {
         return DataContainer.getInstance().getUser(this::logout);
     }
 
-    private void logout() {
-        DataContainer.getInstance().getMyUserRef().child("token").removeValue().addOnSuccessListener(aVoid -> {
-            FirebaseAuth.getInstance().signOut();
-            DataContainer.getInstance().setUser(null);
-            startActivity(new Intent(BaseActivity.this, LoginActivity.class));
-            finish();
-        });
+    public void logout() {
+        try {
+            DataContainer.getInstance().getMyUserRef().child("token").removeValue().addOnSuccessListener(aVoid -> {
+                FirebaseAuth.getInstance().signOut();
+                DataContainer.getInstance().setUser(null);
+                startActivity(new Intent(BaseActivity.this, LoginActivity.class));
+                finish();
+            });
+        } catch (Exception e){
+            e.printStackTrace();
+            UiUtil.getInstance().restartApp(getApplicationContext());
+        }
     }
 
 }

@@ -515,20 +515,6 @@ public class MainActivity extends BaseActivity
         return true;
     }
 
-    private void logout() {
-
-        Task<Void> task = FirebaseDatabase.getInstance().getReference("users").child(DataContainer.getInstance().getUid(getApplication())).child("token").removeValue();
-        final Intent i = new Intent(this, LoginActivity.class);
-        task.addOnSuccessListener(aVoid -> {
-            FirebaseAuth.getInstance().signOut();
-            DataContainer.getInstance().setUser(null);
-            startActivity(i);
-            finish();
-        });
-
-    }
-
-
     public void ToggleIconSet() {
         Drawable drawable = ResourcesCompat.getDrawable(getResources(), R.drawable.icon, getTheme());
         Drawable drawable2 = ResourcesCompat.getDrawable(getResources(), R.drawable.icon_badge, getTheme());

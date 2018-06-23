@@ -26,8 +26,8 @@ public class ImageAdapter extends BaseAdapter {
 
     private IndexedTreeSet<GridItem> mItems = new IndexedTreeSet<>((item1, item2) -> {
         if (item1.getUuid().equals(item2.getUuid())) return 0;
-        if (item2.getUuid().equals(DataContainer.getInstance().getUid(mInflater.getContext()))) return 1;   // 1. 본인계정
-        if (item1.getUuid().equals(DataContainer.getInstance().getUid(mInflater.getContext())))
+        if (item2.getUuid().equals(DataContainer.getInstance().getUid())) return 1;   // 1. 본인계정
+        if (item1.getUuid().equals(DataContainer.getInstance().getUid()))
             return -1;   // 1. 본인계정
         if (item1.distance != item2.distance) {
             float diff = (item1.distance - item2.distance);

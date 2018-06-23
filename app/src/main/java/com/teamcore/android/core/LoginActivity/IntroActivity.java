@@ -212,7 +212,8 @@ public class IntroActivity extends BaseActivity {
         }
     }
 
-    private void logout() {
+    @Override
+    public void logout() {
         SPUtil.initAds();
         FirebaseAuth.getInstance().signOut();
         goToLoginActivity();
