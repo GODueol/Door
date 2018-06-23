@@ -22,7 +22,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.teamcore.android.core.LoginActivity.LoginActivity;
 import com.teamcore.android.core.R;
 import com.teamcore.android.core.Util.BaseActivity.BaseActivity;
-import com.teamcore.android.core.Util.DataContainer;
 import com.teamcore.android.core.Util.UiUtil;
 
 /**
@@ -50,7 +49,7 @@ public class AccountActivity extends BaseActivity implements View.OnClickListene
         setContentView(R.layout.setting_account_activity);
 
         email = (TextView) findViewById(R.id.email);
-        email.setText(DataContainer.getInstance().getUser().getEmail());
+        email.setText(getUser().getEmail());
         email.setTypeface(null, Typeface.BOLD);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -110,7 +109,7 @@ public class AccountActivity extends BaseActivity implements View.OnClickListene
                     // email and password credentials but there are multiple possible providers,
                     // such as GoogleAuthProvider or FacebookAuthProvider.
                     AuthCredential credential = EmailAuthProvider
-                            .getCredential(DataContainer.getInstance().getUser().getEmail(), password.getText().toString());
+                            .getCredential(getUser().getEmail(), password.getText().toString());
 
                     startProgressDialog();
                     // Prompt the user to re-provide their sign-in credentials
@@ -183,7 +182,7 @@ public class AccountActivity extends BaseActivity implements View.OnClickListene
         switch (view.getId()) {
             case R.id.change_pw:
                 final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                String userenail = DataContainer.getInstance().getUser().getEmail();
+                String userenail = getUser().getEmail();
                 UiUtil.getInstance().startProgressDialog(this);
 
                 // 비밀번호 변경 검증

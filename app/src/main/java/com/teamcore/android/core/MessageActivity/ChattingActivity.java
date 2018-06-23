@@ -122,7 +122,7 @@ public class ChattingActivity extends BlockBaseActivity {
         SPUtil.setBlockMeUserCurrentActivity(getString(R.string.currentActivity), targetUuid);
         // 내정보 데이터 셋
         mAuth = FirebaseAuth.getInstance();
-        user = DataContainer.getInstance().getUser();
+        user = getUser();
         userUuid = mAuth.getUid();
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);

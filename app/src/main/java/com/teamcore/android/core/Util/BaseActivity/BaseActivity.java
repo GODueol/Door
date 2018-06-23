@@ -1,10 +1,19 @@
 package com.teamcore.android.core.Util.BaseActivity;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.TaskCompletionSource;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.teamcore.android.core.Entity.User;
+import com.teamcore.android.core.LoginActivity.LoginActivity;
 import com.teamcore.android.core.R;
 import com.teamcore.android.core.Util.DataContainer;
 import com.teamcore.android.core.Util.UiUtil;
@@ -83,4 +92,18 @@ public class BaseActivity extends AppCompatActivity {
         @SuppressLint("HardwareIds") String deviceIdentifier = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
         FirebaseDatabase.getInstance().getReference("identifier").child(deviceIdentifier).removeValue();
     }
+
+    public User getUser() {
+        return DataContainer.getInstance().getUser(this::logout);
+    }
+
+    private void logout() {
+        DataContainer.getInstance().getMyUserRef().child("token").removeValue().addOnSuccessListener(aVoid -> {
+            FirebaseAuth.getInstance().signOut();
+            DataContainer.getInstance().setUser(null);
+            startActivity(new Intent(BaseActivity.this, LoginActivity.class));
+            finish();
+        });
+    }
+
 }

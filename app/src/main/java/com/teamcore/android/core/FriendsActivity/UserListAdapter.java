@@ -2,7 +2,6 @@ package com.teamcore.android.core.FriendsActivity;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -40,6 +39,7 @@ import com.teamcore.android.core.Exception.NotSetAutoTimeException;
 import com.teamcore.android.core.PeopleFragment.FullImageActivity;
 import com.teamcore.android.core.PeopleFragment.GridItem;
 import com.teamcore.android.core.R;
+import com.teamcore.android.core.Util.BaseActivity.BaseActivity;
 import com.teamcore.android.core.Util.DataContainer;
 import com.teamcore.android.core.Util.FireBaseUtil;
 import com.teamcore.android.core.Util.GlideApp;
@@ -59,7 +59,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
 
     private List<Item> items;
     private int itemMenu;
-    private Context context;
+    private BaseActivity context;
     private String field;
     public boolean isReverse = false;
     private boolean isPlus = false;
@@ -82,7 +82,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
         static final int Footer = 3;
     }
 
-    public UserListAdapter(Context context, List<Item> items) {
+    public UserListAdapter(BaseActivity context, List<Item> items) {
         this.context = context;
         this.items = items;
         if (context instanceof FriendsActivity) {
@@ -101,7 +101,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
         SPUtil = new SharedPreferencesUtil(context);
     }
 
-    public UserListAdapter(Context context, List<Item> items, Boolean isPlus) {
+    public UserListAdapter(BaseActivity context, List<Item> items, Boolean isPlus) {
         this(context, items);
         this.isPlus = isPlus;
     }
@@ -244,7 +244,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
                             UiUtil.getInstance().showDialog(context, "회원 차단", "이 회원을 차단합니다.", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
-                                    final User mUser = DataContainer.getInstance().getUser();
+                                    final User mUser = context.getUser();
                                     if (mUser.getBlockUsers().size() >= DataContainer.ChildrenMax) {
                                         Toast.makeText(context, "차단 가능한 회원 수를 초과하였습니다", Toast.LENGTH_SHORT).show();
                                         return;
@@ -446,7 +446,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
                 LinearLayout setting = userHolder.itemView.findViewById(R.id.setting_layout);
                 final TextView list_sequence = userHolder.itemView.findViewById(R.id.list_sequence);
 
-                User mUser = DataContainer.getInstance().getUser();
+                User mUser = context.getUser();
 
                 if (mUser.getPicUrls() != null && mUser.getPicUrls().getThumbNail_picUrl1() != null)
                     GlideApp.with(context).load(mUser.getPicUrls().getThumbNail_picUrl1()).centerCrop()

@@ -2,7 +2,6 @@ package com.teamcore.android.core.CorePage;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.media.AudioManager;
@@ -55,6 +54,7 @@ import com.teamcore.android.core.PeopleFragment.GridItem;
 import com.teamcore.android.core.PeopleFragment.ReportDialog;
 import com.teamcore.android.core.R;
 import com.teamcore.android.core.Util.AlarmUtil;
+import com.teamcore.android.core.Util.BaseActivity.BaseActivity;
 import com.teamcore.android.core.Util.DataContainer;
 import com.teamcore.android.core.Util.FireBaseUtil;
 import com.teamcore.android.core.Util.GlideApp;
@@ -71,7 +71,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 
     private final DatabaseReference postsRef;
     private List<CoreListItem> coreListItems;
-    private Context context;
+    private BaseActivity context;
     private Handler threadHandler = new Handler();
 
     private MediaPlayer mediaPlayer;
@@ -92,7 +92,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
         void upload(CloudEntity c);
     }
 
-    CoreListAdapter(List<CoreListItem> coreListItems, Context context, OnUploadCloudCallback onUploadCloudCallback) {
+    CoreListAdapter(List<CoreListItem> coreListItems, BaseActivity context, OnUploadCloudCallback onUploadCloudCallback) {
         this.coreListItems = coreListItems;
         this.context = context;
         this.mediaPlayer = new MediaPlayer();
@@ -107,7 +107,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
         setnoFillInterstitialAd();
     }
 
-    CoreListAdapter(List<CoreListItem> coreListItems, Context context, OnUploadCloudCallback onUploadCloudCallback, boolean isPlus) {
+    CoreListAdapter(List<CoreListItem> coreListItems, BaseActivity context, OnUploadCloudCallback onUploadCloudCallback, boolean isPlus) {
         this(coreListItems, context, onUploadCloudCallback);
         this.isPlus = isPlus;
     }
@@ -139,7 +139,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
         } catch (NotSetAutoTimeException e) {
             e.printStackTrace();
             Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-            ActivityCompat.finishAffinity((Activity) context);
+            ActivityCompat.finishAffinity(context);
         }
         holder.core_contents.setText(corePost.getText());
 
@@ -161,10 +161,10 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                             .child(coreListItem.getPostKey())
                             .child("likeUsers").child(mUuid).setValue(UiUtil.getInstance().getCurrentTime(context)).addOnSuccessListener(aVoid -> {
                         // cloud 반영
-                        UiUtil.getInstance().noticeModifyToCloud(corePost, coreListItem.getPostKey(), (Activity) context);
+                        UiUtil.getInstance().noticeModifyToCloud(corePost, coreListItem.getPostKey(), context);
 
                         if (!corePost.getUuid().equals(mUuid)) {    // 자신이 자신의 포스트에 좋아요한 경우를 제외
-                            final String NickName = DataContainer.getInstance().getUser().getId();
+                            final String NickName = context.getUser().getId();
                             AlarmUtil.getInstance().sendAlarm(context, "Like", NickName, corePost, coreListItem.getPostKey(), corePost.getUuid(), coreListItem.getcUuid());
                         }
 
@@ -172,7 +172,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                 } catch (NotSetAutoTimeException e) {
                     e.printStackTrace();
                     Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-                    ActivityCompat.finishAffinity((Activity) context);
+                    ActivityCompat.finishAffinity(context);
                 }
             }
 
@@ -182,7 +182,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                         .child(coreListItem.getPostKey())
                         .child("likeUsers").child(mUuid).setValue(null).addOnSuccessListener(aVoid -> {
                     // cloud 반영
-                    UiUtil.getInstance().noticeModifyToCloud(corePost, coreListItem.getPostKey(), (Activity) context);
+                    UiUtil.getInstance().noticeModifyToCloud(corePost, coreListItem.getPostKey(), context);
                 });
 
             }
@@ -218,7 +218,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
         }
     }
 
-    public void setnoFillInterstitialAd() {
+    private void setnoFillInterstitialAd() {
         noFillInterstitialAd = new InterstitialAd(context);
         noFillInterstitialAd.setAdUnitId(context.getString(R.string.noFillReward));
         noFillInterstitialAd.loadAd(new AdRequest.Builder().build());
@@ -587,7 +587,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                         }
 
                         UiUtil.getInstance().showDialog(context, "회원 차단", "이 회원을 차단합니다.", (dialog, whichButton) -> {
-                            final User mUser = DataContainer.getInstance().getUser();
+                            final User mUser = context.getUser();
                             if (mUser.getBlockUsers().size() >= DataContainer.ChildrenMax) {
                                 Toast.makeText(context, "차단 가능한 회원 수를 초과하였습니다", Toast.LENGTH_SHORT).show();
                                 return;
@@ -644,7 +644,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                     if (!finalIsReplyFirst || DataContainer.getInstance().isBlockWithMe(coreListItem.getCorePost().getUuid()))
                         return;
 
-                    final String NickName = DataContainer.getInstance().getUser().getId();
+                    final String NickName = context.getUser().getId();
                     AlarmUtil.getInstance().sendAlarm(context, "Answer", NickName, coreListItem.getCorePost(), coreListItem.getPostKey(), coreListItem.getCorePost().getUuid(), coreListItem.getcUuid());
                 });
             } else {
@@ -782,7 +782,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
             String currentPositionStr = millisecondsToString(currentPosition);
             currentHolder.textView_currentPosion.setText(currentPositionStr);
 
-            if (((Activity) context).isFinishing() || currentHolder.textView_currentPosion.getText().equals(currentHolder.textView_maxTime.getText())) {
+            if (context.isFinishing() || currentHolder.textView_currentPosion.getText().equals(currentHolder.textView_maxTime.getText())) {
                 // 사운드 재생 끝
                 currentHolder.startAndPause.setChecked(false);  // 버튼 Stop
                 currentHolder.textView_currentPosion.setText("0:0");

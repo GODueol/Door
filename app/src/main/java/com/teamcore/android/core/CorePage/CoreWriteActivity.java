@@ -185,7 +185,7 @@ public class CoreWriteActivity extends BlockBaseActivity {
         saveBtn.setOnClickListener(view -> {
 
             // 차단관계인 경우 불가능
-            if (DataContainer.getInstance().getUser().getBlockMeUsers().containsKey(cUuid)) {// 차단
+            if (getUser().getBlockMeUsers().containsKey(cUuid)) {// 차단
                 Toast.makeText(CoreWriteActivity.this, "차단으로 인해 포스트 업로드가 불가능합니다", Toast.LENGTH_SHORT).show();
                 finish();
                 return;

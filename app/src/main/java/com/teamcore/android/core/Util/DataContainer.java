@@ -46,7 +46,7 @@ public class DataContainer {
         if(user == null){
             userNullAction.run();
         }
-        return getUser();
+        return user;
     }
 
     public void setUser(User user) {

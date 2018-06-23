@@ -166,7 +166,7 @@ public class CoreActivity extends BlockBaseActivity {
     }
 
     public boolean isOldFriends(String cUuid) {
-        return DataContainer.getInstance().isPlus || FireBaseUtil.getInstance().isOldFriends(cUuid) || DataContainer.getInstance().getUid().equals(cUuid);
+        return DataContainer.getInstance().isPlus || FireBaseUtil.getInstance().isOldFriends(cUuid, getUser()) || DataContainer.getInstance().getUid().equals(cUuid);
     }
 
     public void setContentView() {
@@ -376,7 +376,7 @@ public class CoreActivity extends BlockBaseActivity {
                 boolean isChecked = !item.isChecked();
                 item.setChecked(isChecked);
 
-                dc.getUser().setAnonymityProhibition(isChecked);
+                getUser().setAnonymityProhibition(isChecked);
                 dc.getMyUserRef().child("anonymityProhibition").setValue(isChecked);
                 return true;
             case R.id.core_profile:

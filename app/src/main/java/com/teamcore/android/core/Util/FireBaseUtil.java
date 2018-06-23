@@ -23,6 +23,7 @@ import com.teamcore.android.core.Exception.NotSetAutoTimeException;
 import com.teamcore.android.core.MessageActivity.util.MessageVO;
 import com.teamcore.android.core.MessageActivity.util.RoomVO;
 import com.teamcore.android.core.R;
+import com.teamcore.android.core.Util.BaseActivity.BaseActivity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -54,10 +55,10 @@ public class FireBaseUtil {
     }
 
 
-    public Task<Void> follow(Context context, final User oUser, String oUuid, boolean isFollowed) throws ChildSizeMaxException, NotSetAutoTimeException {
+    public Task<Void> follow(BaseActivity context, final User oUser, String oUuid, boolean isFollowed) throws ChildSizeMaxException, NotSetAutoTimeException {
         String myUuid = DataContainer.getInstance().getUid();
         SharedPreferencesUtil SPUtil = new SharedPreferencesUtil(context.getApplicationContext());
-        final User mUser = DataContainer.getInstance().getUser();
+        final User mUser = context.getUser();
         if (mUser.getFollowingUsers().size() >= DataContainer.ChildrenMax) {
             throw new ChildSizeMaxException("최대 팔로우 수를 초과하여 더이상 팔로우할 수 없습니다");
         }
@@ -309,12 +310,14 @@ public class FireBaseUtil {
     }
 
     public void syncUser(final SyncUserListener syncUserListener) {
+
         final DataContainer dc = DataContainer.getInstance();
         dc.getMyUserRef().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
                 dc.setUser(dataSnapshot.getValue(User.class));
-                syncUserListener.onSuccessSync(dc.getUser());
+                syncUserListener.onSuccessSync(user);
             }
 
             @Override
@@ -363,8 +366,8 @@ public class FireBaseUtil {
     }
 
     /* 가장 오래된 친구 CorePossibleOldFriendCount 명인지 확인 */
-    public boolean isOldFriends(String uuid) {
-        return Observable.fromIterable(DataContainer.getInstance().getUser().getFriendUsers().entrySet())
+    public boolean isOldFriends(String uuid, User user) {
+        return Observable.fromIterable(user.getFriendUsers().entrySet())
                 .sorted((a, b) -> (int) (a.getValue() - b.getValue()))
                 .take(CorePossibleOldFriendCount)
                 .toMap(Map.Entry::getKey, Map.Entry::getValue).blockingGet()

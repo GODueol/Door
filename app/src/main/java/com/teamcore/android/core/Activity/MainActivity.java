@@ -223,7 +223,7 @@ public class MainActivity extends BaseActivity
         // 로그인 시간 Update
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) return;
-        User mUser = DataContainer.getInstance().getUser();
+        User mUser = getUser();
         if (mUser == null || mUser.getEmail().isEmpty() || mUser.getEmail().equals("")) {
             Toast.makeText(getApplicationContext(), "Sorry Login again please", Toast.LENGTH_SHORT).show();
             logout();
@@ -441,7 +441,7 @@ public class MainActivity extends BaseActivity
                 startActivity(new Intent(MainActivity.this, FindUserActivity.class));
                 return true;
             case R.id.lock_all:
-                final User user = DataContainer.getInstance().getUser();
+                final User user = getUser();
                 if (user.getUnLockUsers().size() == 0) {
                     Toast.makeText(getBaseContext(), "모든 사진을 비공개 합니다", Toast.LENGTH_SHORT).show();
                     return true;

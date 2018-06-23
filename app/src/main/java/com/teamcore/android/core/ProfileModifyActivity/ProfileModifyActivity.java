@@ -206,7 +206,7 @@ public class ProfileModifyActivity extends BaseActivity implements NumberPicker.
 
 
         // 개인정보 Setting
-        user = DataContainer.getInstance().getUser();
+        user = getUser();
         _idText.setText(user.getId());
         agePick.setText(Integer.toString(user.getAge()));
         heightPick.setText(Integer.toString(user.getHeight()));

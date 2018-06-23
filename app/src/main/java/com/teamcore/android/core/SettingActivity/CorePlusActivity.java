@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.Button;
@@ -26,6 +25,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.teamcore.android.core.Activity.MainActivity;
 import com.teamcore.android.core.Entity.PurchaseEntity;
 import com.teamcore.android.core.R;
+import com.teamcore.android.core.Util.BaseActivity.BaseActivity;
 import com.teamcore.android.core.Util.DataContainer;
 import com.teamcore.android.core.Util.GlideApp;
 import com.teamcore.android.core.Util.UiUtil;
@@ -38,7 +38,7 @@ import com.teamcore.android.core.Util.bilingUtil.Purchase;
  * Created by Kwon on 2018-01-04.
  */
 
-public class CorePlusActivity extends AppCompatActivity {
+public class CorePlusActivity extends BaseActivity {
 
     Toolbar toolbar = null;
 
@@ -80,7 +80,7 @@ public class CorePlusActivity extends AppCompatActivity {
         btn_cp_subs.setOnClickListener(view -> buyItem(getString(R.string.subscribe)));
 
         TextView sub_txt2 = (TextView) findViewById(R.id.sub_txt2);
-        sub_txt2.setText(DataContainer.getInstance().getUser().getId() + sub_txt2.getText().toString());
+        sub_txt2.setText(getUser().getId() + sub_txt2.getText().toString());
 
     }
 
