@@ -1,9 +1,14 @@
 package com.teamcore.android.core.Util.BaseActivity;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
@@ -18,8 +23,57 @@ import com.teamcore.android.core.Util.bilingUtil.Purchase;
 import org.jdeferred.Promise;
 import org.jdeferred.impl.DeferredObject;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 @SuppressLint("Registered")
 public class BaseActivity extends AppCompatActivity {
+
+    private Timer timer;
+    private boolean timerToast;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        TimerTask detectedNetwrok = new TimerTask() {
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(isNetworkAvailable()){
+                            // 네트워크 사용가능
+                            timerToast= false;
+                            stopProgressDialog();
+                        }else{
+                            // 네트워크 사용 불가능
+                            if(!timerToast) {
+                                Toast.makeText(getApplicationContext(), "네트워크가 끊겼습니다.", Toast.LENGTH_SHORT).show();
+                            }
+                            timerToast= true;
+                            startProgressDialog();
+                        }
+                    }
+                });
+
+            }
+        };
+
+        timer = new Timer();
+        timer.schedule(detectedNetwrok,0,1000);
+        super.onCreate(savedInstanceState);
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        timer.cancel();
+        super.onDestroy();
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+    }
 
     // 구독 결제 확인
     public Promise<Boolean, String, Integer> checkCorePlus(){
