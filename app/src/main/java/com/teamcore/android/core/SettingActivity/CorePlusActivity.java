@@ -129,7 +129,7 @@ public class CorePlusActivity extends BaseActivity {
 
     private void buyItem(String item) {
         try {
-            String payLoad = DataContainer.getInstance().getUid();
+            String payLoad = DataContainer.getInstance().getUid(getApplication());
 
             Bundle buyIntentBundle = mService.getBuyIntent(3, getPackageName(), item, "subs", payLoad);
             PendingIntent pendingIntent = buyIntentBundle.getParcelable("BUY_INTENT");
@@ -150,7 +150,7 @@ public class CorePlusActivity extends BaseActivity {
     boolean verifyDeveloperPayload(Purchase p) {
         String payload = p.getDeveloperPayload();
 
-        return payload.equals(DataContainer.getInstance().getUid());
+        return payload.equals(DataContainer.getInstance().getUid(getApplication()));
     }
 
     @Override
@@ -201,7 +201,7 @@ public class CorePlusActivity extends BaseActivity {
 /*
             Bundle activeSubs;
             try {
-                activeSubs = mService.getPurchases(3, getPackageName(), "subs", DataContainer.getInstance().getUid());
+                activeSubs = mService.getPurchases(3, getPackageName(), "subs", DataContainer.getInstance().getUid(getApplication()));
             } catch (RemoteException e) {
                 e.printStackTrace();
             }*/
@@ -237,7 +237,7 @@ public class CorePlusActivity extends BaseActivity {
                         purchaseEntity.setSignature(info.getSignature());
                         purchaseEntity.setToken(info.getToken());
 
-                        DatabaseReference subscribeReference = FirebaseDatabase.getInstance().getReference("subscribe").child(DataContainer.getInstance().getUid());
+                        DatabaseReference subscribeReference = FirebaseDatabase.getInstance().getReference("subscribe").child(DataContainer.getInstance().getUid(getApplication()));
                         String postKey = subscribeReference.push().getKey();
                         subscribeReference.child(postKey).setValue(purchaseEntity).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override

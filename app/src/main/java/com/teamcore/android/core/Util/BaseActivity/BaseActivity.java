@@ -5,13 +5,8 @@ import android.content.Intent;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 
-import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.teamcore.android.core.Entity.User;
 import com.teamcore.android.core.LoginActivity.LoginActivity;
 import com.teamcore.android.core.R;
@@ -77,7 +72,7 @@ public class BaseActivity extends AppCompatActivity {
 
     boolean verifyDeveloperPayload(Purchase p) {
         String payload = p.getDeveloperPayload();
-        return payload.equals(DataContainer.getInstance().getUid());
+        return payload.equals(DataContainer.getInstance().getUid(getApplication()));
     }
 
     public void startProgressDialog(){

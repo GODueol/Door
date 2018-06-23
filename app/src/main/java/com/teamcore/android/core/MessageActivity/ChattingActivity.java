@@ -287,7 +287,7 @@ public class ChattingActivity extends BlockBaseActivity {
 
                         checkCorePlus().done(isPlus -> {
                             if (!isPlus) {
-                                FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(getString(R.string.blockCount)).addListenerForSingleValueEvent(new ValueEventListener() {
+                                FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid(getApplication())).child(getString(R.string.blockCount)).addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {
                                         int value;
@@ -297,7 +297,7 @@ public class ChattingActivity extends BlockBaseActivity {
                                             value = 0;
                                         }
                                         if (value > 0) {
-                                            FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(getString(R.string.blockCount)).setValue(value - 1);
+                                            FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid(getApplication())).child(getString(R.string.blockCount)).setValue(value - 1);
 
                                             UiUtil.getInstance().startProgressDialog(ChattingActivity.this);
                                             // blockUsers 추가
@@ -506,7 +506,7 @@ public class ChattingActivity extends BlockBaseActivity {
         @Override
         public void onRewardedVideoAdClosed() {
             loadRewardedVideoAd();
-            FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(getString(R.string.blockCount)).addListenerForSingleValueEvent(new ValueEventListener() {
+            FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid(getApplication())).child(getString(R.string.blockCount)).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     int value;
@@ -517,7 +517,7 @@ public class ChattingActivity extends BlockBaseActivity {
                     }
                     Log.d("test", "몇개 : " + value);
                     if (value > 0) {
-                        FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(getString(R.string.blockCount)).setValue(value - 1);
+                        FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid(getApplication())).child(getString(R.string.blockCount)).setValue(value - 1);
 
                         UiUtil.getInstance().startProgressDialog(ChattingActivity.this);
                         // blockUsers 추가
@@ -552,7 +552,7 @@ public class ChattingActivity extends BlockBaseActivity {
 
         @Override
         public void onRewarded(RewardItem rewardItem) {
-            FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(getString(R.string.blockCount)).setValue(rewardItem.getAmount());
+            FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid(getApplication())).child(getString(R.string.blockCount)).setValue(rewardItem.getAmount());
         }
 
         @Override

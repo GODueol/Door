@@ -319,7 +319,7 @@ public class MainActivity extends BaseActivity
 /*
             Bundle activeSubs;
             try {
-                activeSubs = mService.getPurchases(3, getPackageName(), "subs", DataContainer.getInstance().getUid());
+                activeSubs = mService.getPurchases(3, getPackageName(), "subs", DataContainer.getInstance().getUid(getApplication()));
             } catch (RemoteException e) {
                 e.printStackTrace();
             }*/
@@ -338,7 +338,7 @@ public class MainActivity extends BaseActivity
     boolean verifyDeveloperPayload(Purchase p) {
         String payload = p.getDeveloperPayload();
 
-        return payload.equals(DataContainer.getInstance().getUid());
+        return payload.equals(DataContainer.getInstance().getUid(getApplication()));
     }
 
 
@@ -452,7 +452,7 @@ public class MainActivity extends BaseActivity
                         , "모든 회원을 대상으로 사진을 다시 잠그시겠습니까?", (dialog, whichButton) -> {
                             UiUtil.getInstance().startProgressDialog(MainActivity.this);
                             user.getUnLockUsers().clear();
-                            DataContainer.getInstance().getUsersRef().child(DataContainer.getInstance().getUid()).setValue(user).addOnSuccessListener(aVoid -> DataContainer.getInstance().setUser(user)).addOnCompleteListener(task -> UiUtil.getInstance().stopProgressDialog());
+                            DataContainer.getInstance().getUsersRef().child(DataContainer.getInstance().getUid(getApplication())).setValue(user).addOnSuccessListener(aVoid -> DataContainer.getInstance().setUser(user)).addOnCompleteListener(task -> UiUtil.getInstance().stopProgressDialog());
                         }, (dialog, whichButton) -> {
                         });
                 return true;
@@ -489,7 +489,7 @@ public class MainActivity extends BaseActivity
             Intent i = new Intent(MainActivity.this, CoreCloudActivity.class);
             startActivity(i);
         } else if (id == R.id.nav_mycore) {
-            UiUtil.getInstance().goToCoreActivity(MainActivity.this, DataContainer.getInstance().getUid());
+            UiUtil.getInstance().goToCoreActivity(MainActivity.this, DataContainer.getInstance().getUid(getApplication()));
         } else if (id == R.id.nav_message) {
 
             Intent i = new Intent(MainActivity.this, MessageActivity.class);
@@ -517,7 +517,7 @@ public class MainActivity extends BaseActivity
 
     private void logout() {
 
-        Task<Void> task = FirebaseDatabase.getInstance().getReference("users").child(DataContainer.getInstance().getUid()).child("token").removeValue();
+        Task<Void> task = FirebaseDatabase.getInstance().getReference("users").child(DataContainer.getInstance().getUid(getApplication())).child("token").removeValue();
         final Intent i = new Intent(this, LoginActivity.class);
         task.addOnSuccessListener(aVoid -> {
             FirebaseAuth.getInstance().signOut();

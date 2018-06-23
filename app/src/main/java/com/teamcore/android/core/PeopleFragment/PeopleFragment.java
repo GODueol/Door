@@ -283,7 +283,7 @@ public class PeopleFragment extends BaseFragment {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(FireBaseUtil.currentLocationPath);
         GeoFire geoFire = new GeoFire(ref);
 
-        geoFire.setLocation(DataContainer.getInstance().getUid(), new GeoLocation(location.getLatitude(), location.getLongitude()), (key, error) -> {
+        geoFire.setLocation(DataContainer.getInstance().getUid(getActivity()), new GeoLocation(location.getLatitude(), location.getLongitude()), (key, error) -> {
             if (error != null) {
                 if (getActivity() != null)
                 {

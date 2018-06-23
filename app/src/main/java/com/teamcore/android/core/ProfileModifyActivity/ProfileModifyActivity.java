@@ -371,7 +371,7 @@ public class ProfileModifyActivity extends BaseActivity implements NumberPicker.
         } else if (targetPic == profilePic4) {
             user.getPicUrls().setPicUrl4(null);
         }
-        DataContainer.getInstance().getUsersRef().child(DataContainer.getInstance().getUid()).setValue(user);
+        DataContainer.getInstance().getUsersRef().child(DataContainer.getInstance().getUid(getApplication())).setValue(user);
     }
 
     private void setVisibilityFilterLayout(boolean isChecked) {
@@ -646,7 +646,7 @@ public class ProfileModifyActivity extends BaseActivity implements NumberPicker.
         } else if (modifyingPic == profilePic4) {
             user.getPicUrls().setPicUrl4(downloadUrl.toString());
         }
-        DataContainer.getInstance().getUsersRef().child(DataContainer.getInstance().getUid()).setValue(user);
+        DataContainer.getInstance().getUsersRef().child(DataContainer.getInstance().getUid(getApplication())).setValue(user);
     }
 
     private void saveUserThumbNailPicUrl(Uri downloadUrl, ImageView modifyingPic) {
@@ -659,7 +659,7 @@ public class ProfileModifyActivity extends BaseActivity implements NumberPicker.
         } else if (modifyingPic == profilePic4) {
             user.getPicUrls().setThumbNail_picUrl4(downloadUrl.toString());
         }
-        DataContainer.getInstance().getUsersRef().child(DataContainer.getInstance().getUid()).setValue(user);
+        DataContainer.getInstance().getUsersRef().child(DataContainer.getInstance().getUid(getApplication())).setValue(user);
     }
 
     @NonNull
@@ -761,7 +761,7 @@ public class ProfileModifyActivity extends BaseActivity implements NumberPicker.
         } else if (targetPic == profilePic4) {
             user.getPicUrls().setThumbNail_picUrl4(null);
         }
-        DataContainer.getInstance().getUsersRef().child(DataContainer.getInstance().getUid()).setValue(user);
+        DataContainer.getInstance().getUsersRef().child(DataContainer.getInstance().getUid(getApplication())).setValue(user);
     }
 
     @Override

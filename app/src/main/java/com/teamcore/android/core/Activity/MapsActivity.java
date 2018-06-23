@@ -203,7 +203,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.OnConn
 
             checkCorePlus().done(isPlus -> {
                if (!isPlus) {
-                    FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(getString(R.string.mapSearchCount)).addListenerForSingleValueEvent(new ValueEventListener() {
+                    FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid(getApplication())).child(getString(R.string.mapSearchCount)).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             int value;
@@ -214,7 +214,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.OnConn
                             }
 //                        Log.d("test", "몇개 : " + value);
                             if (value > 0) {
-                                FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(getString(R.string.mapSearchCount)).setValue(value - 1);
+                                FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid(getApplication())).child(getString(R.string.mapSearchCount)).setValue(value - 1);
                                 startActivity(i);
                                 Toast.makeText(getApplicationContext(), "스와이프하시면 현재 위치로 되돌아갑니다.", Toast.LENGTH_LONG).show();
                                 finish();
@@ -265,14 +265,14 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.OnConn
         @Override
         public void onRewardedVideoAdClosed() {
             loadRewardedVideoAd();
-            FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(getString(R.string.mapSearchCount)).addListenerForSingleValueEvent(new ValueEventListener() {
+            FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid(getApplication())).child(getString(R.string.mapSearchCount)).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if (dataSnapshot.exists()) {
                         int value = Integer.valueOf(dataSnapshot.getValue().toString());
 //                            Log.d("test", "몇개 : " + value);
                         if (value > 0) {
-                            FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(getString(R.string.mapSearchCount)).setValue(value - 1);
+                            FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid(getApplication())).child(getString(R.string.mapSearchCount)).setValue(value - 1);
                             startActivity(i);
                             Toast.makeText(getApplicationContext(), "스와이프하시면 현재 위치로 되돌아갑니다.", Toast.LENGTH_LONG).show();
                             finish();
@@ -290,7 +290,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.OnConn
 
         @Override
         public void onRewarded(RewardItem rewardItem) {
-            FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(getString(R.string.mapSearchCount)).setValue(rewardItem.getAmount());
+            FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid(getApplication())).child(getString(R.string.mapSearchCount)).setValue(rewardItem.getAmount());
         }
 
         @Override

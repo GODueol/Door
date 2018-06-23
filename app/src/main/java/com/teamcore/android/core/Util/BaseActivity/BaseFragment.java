@@ -61,6 +61,6 @@ public class BaseFragment extends android.support.v4.app.Fragment {
 
     boolean verifyDeveloperPayload(Purchase p) {
         String payload = p.getDeveloperPayload();
-        return payload.equals(DataContainer.getInstance().getUid());
+        return payload.equals(DataContainer.getInstance().getUid(getActivity()));
     }
 }

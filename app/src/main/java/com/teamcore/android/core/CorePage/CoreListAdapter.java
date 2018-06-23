@@ -124,7 +124,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 
         final CoreListItem coreListItem = coreListItems.get(i);
         final CorePost corePost = coreListItem.getCorePost();
-        final String mUuid = DataContainer.getInstance().getUid();
+        final String mUuid = DataContainer.getInstance().getUid(context);
 
         // 코어 클라우드는 일단 빈값으로 순서를 채움 => 클라우드에 한해서 빈값이 허용되도록
         if (context instanceof CoreCloudActivity && (corePost == null || coreListItem.getUser() == null))
@@ -484,7 +484,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                 ad_i = p;
 
                if (!isPlus) {
-                    FirebaseDatabase.getInstance().getReference(context.getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(context.getString(R.string.coreCloudProfileCount)).addListenerForSingleValueEvent(new ValueEventListener() {
+                    FirebaseDatabase.getInstance().getReference(context.getString(R.string.admob)).child(DataContainer.getInstance().getUid(context)).child(context.getString(R.string.coreCloudProfileCount)).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             int value;
@@ -495,7 +495,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                             }
                             Log.d("test", "몇개 : " + value);
                             if (value > 0) {
-                                FirebaseDatabase.getInstance().getReference(context.getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(context.getString(R.string.coreCloudProfileCount)).setValue(value - 1);
+                                FirebaseDatabase.getInstance().getReference(context.getString(R.string.admob)).child(DataContainer.getInstance().getUid(context)).child(context.getString(R.string.coreCloudProfileCount)).setValue(value - 1);
                                 context.startActivity(p);
                             } else {
                                 if(isFillReward){
@@ -859,14 +859,14 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
         @Override
         public void onRewardedVideoAdClosed() {
             loadRewardedVideoAd2();
-            FirebaseDatabase.getInstance().getReference(context.getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(context.getString(R.string.coreCloudProfileCount)).addListenerForSingleValueEvent(new ValueEventListener() {
+            FirebaseDatabase.getInstance().getReference(context.getString(R.string.admob)).child(DataContainer.getInstance().getUid(context)).child(context.getString(R.string.coreCloudProfileCount)).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if (dataSnapshot.exists()) {
                         int value = Integer.valueOf(dataSnapshot.getValue().toString());
                         Log.d("test", "몇개 : " + value);
                         if (value > 0) {
-                            FirebaseDatabase.getInstance().getReference(context.getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(context.getString(R.string.coreCloudProfileCount)).setValue(value - 1);
+                            FirebaseDatabase.getInstance().getReference(context.getString(R.string.admob)).child(DataContainer.getInstance().getUid(context)).child(context.getString(R.string.coreCloudProfileCount)).setValue(value - 1);
                             context.startActivity(ad_i);
 
                         }
@@ -883,7 +883,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 
         @Override
         public void onRewarded(RewardItem rewardItem) {
-            FirebaseDatabase.getInstance().getReference(context.getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(context.getString(R.string.coreCloudProfileCount)).setValue(rewardItem.getAmount());
+            FirebaseDatabase.getInstance().getReference(context.getString(R.string.admob)).child(DataContainer.getInstance().getUid(context)).child(context.getString(R.string.coreCloudProfileCount)).setValue(rewardItem.getAmount());
         }
 
         @Override

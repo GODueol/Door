@@ -166,7 +166,7 @@ public class CoreActivity extends BlockBaseActivity {
     }
 
     public boolean isOldFriends(String cUuid) {
-        return DataContainer.getInstance().isPlus || FireBaseUtil.getInstance().isOldFriends(cUuid, getUser()) || DataContainer.getInstance().getUid().equals(cUuid);
+        return DataContainer.getInstance().isPlus || FireBaseUtil.getInstance().isOldFriends(cUuid, getUser()) || DataContainer.getInstance().getUid(getApplication()).equals(cUuid);
     }
 
     public void setContentView() {
@@ -240,11 +240,11 @@ public class CoreActivity extends BlockBaseActivity {
                                     }
 
                                     // 블럭 관계 확인
-                                    if (cUser.getBlockUsers().containsKey(dc.getUid())) {
+                                    if (cUser.getBlockUsers().containsKey(DataContainer.getInstance().getUid(getApplication()))) {
                                         Toast.makeText(CoreActivity.this, "포스트를 작성할 수 없습니다.", Toast.LENGTH_SHORT).show();
                                         finish();
                                         return;
-                                    } else if (!cUuid.equals(dc.getUid()) && cUser.isAnonymityProhibition()) {
+                                    } else if (!cUuid.equals(DataContainer.getInstance().getUid(getApplication())) && cUser.isAnonymityProhibition()) {
                                         Toast.makeText(CoreActivity.this, "포스트를 작성할 수 없습니다.", Toast.LENGTH_SHORT).show();
                                         return;
                                     }
@@ -357,7 +357,7 @@ public class CoreActivity extends BlockBaseActivity {
         if (postId != null) {
             profile.setVisible(true);
             prohibition.setVisible(false);
-        } else if (cUuid != null && cUuid.equals(dc.getUid())) {
+        } else if (cUuid != null && cUuid.equals(DataContainer.getInstance().getUid(getApplication()))) {
             profile.setVisible(false);
             prohibition.setVisible(true);
             menu.getItem(0).setChecked(dc.getUser(this::finish).isAnonymityProhibition());
@@ -556,7 +556,7 @@ public class CoreActivity extends BlockBaseActivity {
 
     private void buyItem(String item) {
         try {
-            String payLoad = DataContainer.getInstance().getUid();
+            String payLoad = DataContainer.getInstance().getUid(getApplication());
 
             Bundle buyIntentBundle = mService.getBuyIntent(3, getPackageName(), item, "inapp", payLoad);
             PendingIntent pendingIntent = buyIntentBundle.getParcelable("BUY_INTENT");
@@ -574,7 +574,7 @@ public class CoreActivity extends BlockBaseActivity {
     boolean verifyDeveloperPayload(Purchase p) {
         String payload = p.getDeveloperPayload();
 
-        return payload.equals(DataContainer.getInstance().getUid());
+        return payload.equals(DataContainer.getInstance().getUid(getApplication()));
     }
 
     /**

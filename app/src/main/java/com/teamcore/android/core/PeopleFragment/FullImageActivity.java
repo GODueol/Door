@@ -200,7 +200,7 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
 
     @SuppressLint("SetTextI18n")
     private void setView(final GridItem item) {
-        if (item.getUuid().equals(DataContainer.getInstance().getUid())) {  // 본인
+        if (item.getUuid().equals(DataContainer.getInstance().getUid(getApplication()))) {  // 본인
             message.setVisibility(View.INVISIBLE);  // 가림
         } else {
             message.setOnClickListener(v -> {
@@ -319,7 +319,7 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
 
     public void setViewedMeUsers(final GridItem item) {
 
-        final String mUuid = DataContainer.getInstance().getUid();
+        final String mUuid = DataContainer.getInstance().getUid(getApplication());
         if (item.getUuid().equals(DataContainer.getInstance().getUid(FullImageActivity.this)))
             return; // 자신일 경우
 
@@ -377,7 +377,7 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
     }
 
     private void setFollowing(final GridItem item) {
-        final String myUuid = DataContainer.getInstance().getUid();
+        final String myUuid = DataContainer.getInstance().getUid(getApplication());
         if (item.getUuid().equals(myUuid)) {  // 본인
             addFriends.setVisibility(View.INVISIBLE);  // 가림
             return;
@@ -437,7 +437,7 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
     }
 
     private void setBlock(final GridItem item) {
-        final String myUuid = DataContainer.getInstance().getUid();
+        final String myUuid = DataContainer.getInstance().getUid(getApplication());
         if (item.getUuid().equals(myUuid)) {  // 본인
             blockFriends.setVisibility(View.INVISIBLE);  // 가림
             return;
@@ -471,7 +471,7 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
 
                     checkCorePlus().done(isPlus -> {
                         if (!isPlus) {
-                            FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(getString(R.string.blockCount)).addListenerForSingleValueEvent(new ValueEventListener() {
+                            FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid(getApplication())).child(getString(R.string.blockCount)).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -484,7 +484,7 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
                                     Log.d("test", "몇개 : " + value);
 
                                     if (value > 0) {
-                                        FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(getString(R.string.blockCount)).setValue(value - 1);
+                                        FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid(getApplication())).child(getString(R.string.blockCount)).setValue(value - 1);
                                         UiUtil.getInstance().startProgressDialog(FullImageActivity.this);
                                         // blockUsers 추가
                                         try {
@@ -542,7 +542,7 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
     }
 
     private void setPicLock(final GridItem item) {
-        final String myUuid = DataContainer.getInstance().getUid();
+        final String myUuid = DataContainer.getInstance().getUid(getApplication());
         if (mUser == null) {
             UiUtil.getInstance().restartApp(this);
         }
@@ -721,14 +721,14 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
         @Override
         public void onRewardedVideoAdClosed() {
             loadRewardedVideoAd();
-            FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(getString(R.string.blockCount)).addListenerForSingleValueEvent(new ValueEventListener() {
+            FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid(getApplication())).child(getString(R.string.blockCount)).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if (dataSnapshot.exists()) {
                         int value = Integer.valueOf(dataSnapshot.getValue().toString());
                         Log.d("test", "몇개 : " + value);
                         if (value > 0) {
-                            FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(getString(R.string.blockCount)).setValue(value - 1);
+                            FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid(getApplication())).child(getString(R.string.blockCount)).setValue(value - 1);
                             UiUtil.getInstance().startProgressDialog(FullImageActivity.this);
                             // blockUsers 추가
                             try {
@@ -751,7 +751,7 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
 
         @Override
         public void onRewarded(RewardItem rewardItem) {
-            FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(getString(R.string.blockCount)).setValue(rewardItem.getAmount());
+            FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid(getApplication())).child(getString(R.string.blockCount)).setValue(rewardItem.getAmount());
         }
 
         @Override
