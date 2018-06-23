@@ -491,14 +491,14 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
                     case "followingUsers":
                         header_title.setText("팔로잉 목록");
                         friends_contents.setText(mUser.getId() + " 님의 팔로잉 목록입니다");
-                        core_open_count.setVisibility(View.INVISIBLE);
+                        core_open_count.setText("");
                         friends_contents2.setText("상대방이 팔로워하면 친구 목록에 추가됩니다");
                         header_count.setText((items.size() - 1) + "");
                         break;
                     case "followerUsers":
                         header_title.setText("팔로워 목록");
                         friends_contents.setText(mUser.getId() + " 님의 팔로워 목록입니다");
-                        core_open_count.setVisibility(View.INVISIBLE);
+                        core_open_count.setText("");
                         friends_contents2.setText("팔로잉하시면 친구 목록에 추가됩니다");
                         header_count.setText((items.size() - 1) + "");
                         break;
