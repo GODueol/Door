@@ -57,6 +57,8 @@
     <string name="adsEnteredCore">ca-app-pub-5936581642399514/2839648506</string>
     <string name="adsBlockUser">ca-app-pub-5936581642399514/6399619567</string>
 
+    <string name="noFillReward">ca-app-pub-5936581642399514/4981422658</string>
+
 
     <string name="find_map">지도 검색</string>
     <string name="find_id">회원 검색</string>

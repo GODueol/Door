@@ -17,8 +17,10 @@ import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.reward.RewardItem;
 import com.google.android.gms.ads.reward.RewardedVideoAd;
@@ -46,7 +48,7 @@ import com.teamcore.android.core.Util.addrConvertor;
  * Created by KwonCheolHyeok on 2016-11-25.
  */
 
-public class MapsActivity extends BaseActivity implements GoogleApiClient.OnConnectionFailedListener, OnMapReadyCallback, GoogleMap.OnMapClickListener, GoogleMap.OnInfoWindowClickListener {
+public class MapsActivity extends BaseActivity implements GoogleApiClient.OnConnectionFailedListener, OnMapReadyCallback, GoogleMap.OnMapClickListener {
 
 
     private GoogleMap mGoogleMap;
@@ -56,7 +58,9 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.OnConn
     public ImageButton search;
     private Toolbar toolbar;
     private RewardedVideoAd mRewardedVideoAd;
-
+    private InterstitialAd noFillInterstitialAd;
+    boolean isFillReward = false;
+    private Intent i;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,8 +76,10 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.OnConn
         // Use an activity context to get the rewarded video instance.
         mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this);
         loadRewardedVideoAd();
+        setnoFillInterstitialAd();
+        mRewardedVideoAd.setRewardedVideoAdListener(rewardedVideoAdListener);
 
-        AdView mAdView = (AdView) findViewById(R.id.adView);
+                AdView mAdView = (AdView) findViewById(R.id.adView);
         checkCorePlus().done(isPlus -> {
             if (!isPlus) {
                 AdRequest adRequest = new AdRequest.Builder()
@@ -175,7 +181,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.OnConn
         mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mLatLng, zlevel));
         setMarkerCustom();
         setMarker(latLng, address);
-        mGoogleMap.setOnInfoWindowClickListener(this);
+        mGoogleMap.setOnInfoWindowClickListener(onInfoWindowClickListener);
     }
 
     @Override
@@ -188,100 +194,128 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.OnConn
         setMarker(latLng, address);
     }
 
-    @Override
-    public void onInfoWindowClick(Marker marker) {
-        LatLng latLng = marker.getPosition();
-        Intent p = new Intent(getApplicationContext(), MainActivity.class);
-        p.putExtra("latLng", latLng);
+    GoogleMap.OnInfoWindowClickListener onInfoWindowClickListener = new GoogleMap.OnInfoWindowClickListener() {
+        @Override
+        public void onInfoWindowClick(Marker marker) {
+            LatLng latLng = marker.getPosition();
+            i= new Intent(getApplicationContext(), MainActivity.class);
+            i.putExtra("latLng", latLng);
 
-        mRewardedVideoAd.setRewardedVideoAdListener(new RewardedVideoAdListener() {
-            @Override
-            public void onRewardedVideoAdLoaded() {
-
-            }
-
-            @Override
-            public void onRewardedVideoAdOpened() {
-
-            }
-
-            @Override
-            public void onRewardedVideoStarted() {
-
-            }
-
-            @Override
-            public void onRewardedVideoAdClosed() {
-                loadRewardedVideoAd();
-                FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(getString(R.string.mapSearchCount)).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.exists()) {
-                            int value = Integer.valueOf(dataSnapshot.getValue().toString());
-                            Log.d("test", "몇개 : " + value);
+            checkCorePlus().done(isPlus -> {
+                if (isFillReward) {
+                    startActivity(i);
+                    noFillInterstitialAd.show();
+                    finish();
+                } else if (!isPlus) {
+                    FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(getString(R.string.mapSearchCount)).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            int value;
+                            try {
+                                value = Integer.valueOf(dataSnapshot.getValue().toString());
+                            } catch (Exception e) {
+                                value = 0;
+                            }
+//                        Log.d("test", "몇개 : " + value);
                             if (value > 0) {
                                 FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(getString(R.string.mapSearchCount)).setValue(value - 1);
-                                startActivity(p);
+                                startActivity(i);
                                 Toast.makeText(getApplicationContext(), "스와이프하시면 현재 위치로 되돌아갑니다.", Toast.LENGTH_LONG).show();
+                                finish();
+                            } else {
+                                mRewardedVideoAd.show();
+
                             }
                         }
-                    }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
 
-                    }
-                });
-                Log.d("test", "onRewardedVideoAdClosed");
-            }
-
-            @Override
-            public void onRewarded(RewardItem rewardItem) {
-                FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(getString(R.string.mapSearchCount)).setValue(rewardItem.getAmount());
-            }
-
-            @Override
-            public void onRewardedVideoAdLeftApplication() {
-
-            }
-
-            @Override
-            public void onRewardedVideoAdFailedToLoad(int i) {
-
-            }
-        });
-        checkCorePlus().done(isPlus -> {
-            if (!isPlus) {
-                FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(getString(R.string.mapSearchCount)).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        int value;
-                        try {
-                            value = Integer.valueOf(dataSnapshot.getValue().toString());
-                        } catch (Exception e) {
-                            value = 0;
                         }
-                        Log.d("test", "몇개 : " + value);
+                    });
+                } else {
+                    startActivity(i);
+                    Toast.makeText(getApplicationContext(), "스와이프하시면 현재 위치로 되돌아갑니다.", Toast.LENGTH_LONG).show();
+                    finish();
+                }
+            });
+
+        }
+    };
+
+
+    RewardedVideoAdListener rewardedVideoAdListener = new RewardedVideoAdListener() {
+        @Override
+        public void onRewardedVideoAdLoaded() {
+
+        }
+
+        @Override
+        public void onRewardedVideoAdOpened() {
+
+        }
+
+        @Override
+        public void onRewardedVideoStarted() {
+
+        }
+
+        @Override
+        public void onRewardedVideoAdClosed() {
+            loadRewardedVideoAd();
+            FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(getString(R.string.mapSearchCount)).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        int value = Integer.valueOf(dataSnapshot.getValue().toString());
+//                            Log.d("test", "몇개 : " + value);
                         if (value > 0) {
                             FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(getString(R.string.mapSearchCount)).setValue(value - 1);
-                            startActivity(p);
+                            startActivity(i);
                             Toast.makeText(getApplicationContext(), "스와이프하시면 현재 위치로 되돌아갑니다.", Toast.LENGTH_LONG).show();
-                        } else {
-                            mRewardedVideoAd.show();
+                            finish();
                         }
                     }
+                }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-                    }
-                });
-            } else {
-                startActivity(p);
-                Toast.makeText(getApplicationContext(), "스와이프하시면 현재 위치로 되돌아갑니다.", Toast.LENGTH_LONG).show();
+                }
+            });
+            Log.d("test", "onRewardedVideoAdClosed");
+        }
+
+        @Override
+        public void onRewarded(RewardItem rewardItem) {
+            FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(getString(R.string.mapSearchCount)).setValue(rewardItem.getAmount());
+        }
+
+        @Override
+        public void onRewardedVideoAdLeftApplication() {
+
+        }
+
+        @Override
+        public void onRewardedVideoAdFailedToLoad(int i) {
+            switch (i) {
+                case 0:
+                    // 에드몹 내부서버에러
+                    Toast.makeText(getApplicationContext(), "내부서버에 문제가 있습니다.", Toast.LENGTH_LONG).show();
+                    loadRewardedVideoAd();
+                    break;
+                case 2:
+                    // 네트워크 연결상태 불량
+                    Toast.makeText(getApplicationContext(), "네트워크 연결상태가 좋지 않습니다.", Toast.LENGTH_LONG).show();
+                    loadRewardedVideoAd();
+                    break;
+                case 3:
+                    // 에드몹 광고 인벤토리 부족
+                    isFillReward = true;
+                    break;
             }
-        });
-    }
+        }
+    };
 
     public void setMarker(LatLng latLng, String address) {
         mGoogleMap.addMarker(new MarkerOptions()
@@ -333,6 +367,19 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.OnConn
                         .build());
     }
 
+    public void setnoFillInterstitialAd() {
+        noFillInterstitialAd = new InterstitialAd(this);
+        noFillInterstitialAd.setAdUnitId(getString(R.string.noFillReward));
+        noFillInterstitialAd.loadAd(new AdRequest.Builder().build());
+        noFillInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdClosed() {
+                noFillInterstitialAd.loadAd(new AdRequest.Builder().build());
+            }
+        });
+    }
+
+
     View.OnClickListener search_addr = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -351,4 +398,24 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.OnConn
             }
         }
     };
+
+    @Override
+    public void onResume() {
+        mRewardedVideoAd.resume(this);
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        mRewardedVideoAd.pause(this);
+        super.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        mRewardedVideoAd.destroy(this);
+        mRewardedVideoAd.setRewardedVideoAdListener(null);
+        super.onDestroy();
+    }
+
 }
