@@ -20,18 +20,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.teamcore.android.core.Activity.FindUserActivity;
-import com.teamcore.android.core.Entity.User;
-import com.teamcore.android.core.Exception.ChildSizeMaxException;
-import com.teamcore.android.core.Exception.NotSetAutoTimeException;
-import com.teamcore.android.core.PeopleFragment.FullImageActivity;
-import com.teamcore.android.core.PeopleFragment.GridItem;
-import com.teamcore.android.core.R;
-import com.teamcore.android.core.Util.DataContainer;
-import com.teamcore.android.core.Util.FireBaseUtil;
-import com.teamcore.android.core.Util.GlideApp;
-import com.teamcore.android.core.Util.SharedPreferencesUtil;
-import com.teamcore.android.core.Util.UiUtil;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
@@ -45,8 +33,18 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import org.w3c.dom.Text;
+import com.teamcore.android.core.Activity.FindUserActivity;
+import com.teamcore.android.core.Entity.User;
+import com.teamcore.android.core.Exception.ChildSizeMaxException;
+import com.teamcore.android.core.Exception.NotSetAutoTimeException;
+import com.teamcore.android.core.PeopleFragment.FullImageActivity;
+import com.teamcore.android.core.PeopleFragment.GridItem;
+import com.teamcore.android.core.R;
+import com.teamcore.android.core.Util.DataContainer;
+import com.teamcore.android.core.Util.FireBaseUtil;
+import com.teamcore.android.core.Util.GlideApp;
+import com.teamcore.android.core.Util.SharedPreferencesUtil;
+import com.teamcore.android.core.Util.UiUtil;
 
 import java.util.Collections;
 import java.util.List;
@@ -87,12 +85,16 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
     public UserListAdapter(Context context, List<Item> items) {
         this.context = context;
         this.items = items;
-        mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(context);
-        loadRewardedVideoAd();
+        if (context instanceof FriendsActivity) {
+            mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(context);
+            loadRewardedVideoAd();
+        }
 
         // Use an activity context to get the rewarded video instance.
-        mRewardedVideoAd2 = MobileAds.getRewardedVideoAdInstance(context);
-        loadRewardedVideoAd2();
+        if (context instanceof FindUserActivity) {
+            mRewardedVideoAd2 = MobileAds.getRewardedVideoAdInstance(context);
+            loadRewardedVideoAd2();
+        }
 
         setmInterstitialAd();
         setnoFillInterstitialAd();
@@ -176,7 +178,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
                                         if (isFillReward2) {
                                             view.getContext().startActivity(p);
                                             noFillInterstitialAd.show();
-                                        }else {
+                                        } else {
                                             mRewardedVideoAd2.show();
                                         }
                                     }
@@ -248,7 +250,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
                                         return;
                                     }
                                     ad_Item = item;
-                                   if (!isPlus) {
+                                    if (!isPlus) {
                                         FirebaseDatabase.getInstance().getReference(context.getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(context.getString(R.string.blockCount)).addListenerForSingleValueEvent(new ValueEventListener() {
                                             @Override
                                             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -290,7 +292,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
                                                         }
 
                                                         noFillInterstitialAd.show();
-                                                    }else {
+                                                    } else {
                                                         mRewardedVideoAd.show();
                                                     }
                                                 }
@@ -695,7 +697,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
 
         @Override
         public void onRewardedVideoAdFailedToLoad(int i) {
-            Toast.makeText(context,"에러코드block"+String.valueOf(i),Toast.LENGTH_LONG).show();
+            Toast.makeText(context, "에러코드block" + String.valueOf(i), Toast.LENGTH_LONG).show();
             switch (i) {
                 case 0:
                     // 에드몹 내부서버에러
@@ -780,7 +782,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
 
         @Override
         public void onRewardedVideoAdFailedToLoad(int i) {
-            Toast.makeText(context,"에러코드UserSearching"+String.valueOf(i),Toast.LENGTH_LONG).show();
+            Toast.makeText(context, "에러코드UserSearching" + String.valueOf(i), Toast.LENGTH_LONG).show();
             switch (i) {
                 case 0:
                     // 에드몹 내부서버에러
@@ -802,34 +804,34 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
     };
 
     public void Resume() {
-        if(mRewardedVideoAd!=null) {
+        if (mRewardedVideoAd != null) {
             mRewardedVideoAd.resume(context);
             mRewardedVideoAd.setRewardedVideoAdListener(rewardedVideoAdListener);
         }
 
-        if(mRewardedVideoAd2!=null) {
+        if (mRewardedVideoAd2 != null) {
             mRewardedVideoAd2.resume(context);
             mRewardedVideoAd2.setRewardedVideoAdListener(rewardedVideoAdListener2);
         }
     }
 
     public void Pause() {
-        if(mRewardedVideoAd!=null) {
+        if (mRewardedVideoAd != null) {
             mRewardedVideoAd.pause(context);
             mRewardedVideoAd.setRewardedVideoAdListener(null);
         }
-        if(mRewardedVideoAd2!=null) {
+        if (mRewardedVideoAd2 != null) {
             mRewardedVideoAd2.pause(context);
             mRewardedVideoAd2.setRewardedVideoAdListener(null);
         }
     }
 
     public void Destroy() {
-        if(mRewardedVideoAd!=null) {
+        if (mRewardedVideoAd != null) {
             mRewardedVideoAd.destroy(context);
             mRewardedVideoAd.setRewardedVideoAdListener(null);
         }
-        if(mRewardedVideoAd2!=null) {
+        if (mRewardedVideoAd2 != null) {
             mRewardedVideoAd2.destroy(context);
             mRewardedVideoAd2.setRewardedVideoAdListener(null);
         }

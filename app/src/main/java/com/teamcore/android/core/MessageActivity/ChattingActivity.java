@@ -286,16 +286,40 @@ public class ChattingActivity extends BlockBaseActivity {
                     public void onClick(DialogInterface dialog, int whichButton) {
 
                         checkCorePlus().done(isPlus -> {
-                           if (!isPlus) {
+                            if (!isPlus) {
                                 FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(getString(R.string.blockCount)).addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {
-                                        if (dataSnapshot.exists()) {
-                                            int value = Integer.valueOf(dataSnapshot.getValue().toString());
-                                            Log.d("test", "몇개 : " + value);
-                                            if (value > 0) {
-                                                FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(getString(R.string.blockCount)).setValue(value - 1);
+                                        int value;
+                                        try {
+                                            value = Integer.valueOf(dataSnapshot.getValue().toString());
+                                        } catch (Exception e) {
+                                            value = 0;
+                                        }
+                                        if (value > 0) {
+                                            FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid()).child(getString(R.string.blockCount)).setValue(value - 1);
 
+                                            UiUtil.getInstance().startProgressDialog(ChattingActivity.this);
+                                            // blockUsers 추가
+                                            try {
+                                                FireBaseUtil.getInstance().block(chatFirebaseUtil.getItem().getUuid()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void aVoid) {
+                                                        finish();
+                                                    }
+                                                }).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        UiUtil.getInstance().stopProgressDialog();
+                                                        finish();
+                                                    }
+                                                });
+                                            } catch (ChildSizeMaxException e) {
+                                                Toast.makeText(ChattingActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                UiUtil.getInstance().stopProgressDialog();
+                                            }
+                                        } else {
+                                            if (isFillReward) {
                                                 UiUtil.getInstance().startProgressDialog(ChattingActivity.this);
                                                 // blockUsers 추가
                                                 try {
@@ -315,34 +339,12 @@ public class ChattingActivity extends BlockBaseActivity {
                                                     Toast.makeText(ChattingActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                                                     UiUtil.getInstance().stopProgressDialog();
                                                 }
+                                                noFillInterstitialAd.show();
                                             } else {
-                                                if(isFillReward){
-                                                    UiUtil.getInstance().startProgressDialog(ChattingActivity.this);
-                                                    // blockUsers 추가
-                                                    try {
-                                                        FireBaseUtil.getInstance().block(chatFirebaseUtil.getItem().getUuid()).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                            @Override
-                                                            public void onSuccess(Void aVoid) {
-                                                                finish();
-                                                            }
-                                                        }).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                            @Override
-                                                            public void onComplete(@NonNull Task<Void> task) {
-                                                                UiUtil.getInstance().stopProgressDialog();
-                                                                finish();
-                                                            }
-                                                        });
-                                                    } catch (ChildSizeMaxException e) {
-                                                        Toast.makeText(ChattingActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                                                        UiUtil.getInstance().stopProgressDialog();
-                                                    }
-                                                    noFillInterstitialAd.show();
-                                                }
-                                                else {
-                                                    mRewardedVideoAd.show();
-                                                }
+                                                mRewardedVideoAd.show();
                                             }
                                         }
+
                                     }
 
                                     @Override
@@ -483,6 +485,7 @@ public class ChattingActivity extends BlockBaseActivity {
                         .build());
         mRewardedVideoAd.setRewardedVideoAdListener(rewardedVideoAdListener);
     }
+
     RewardedVideoAdListener rewardedVideoAdListener = new RewardedVideoAdListener() {
         @Override
         public void onRewardedVideoAdLoaded() {
@@ -560,7 +563,7 @@ public class ChattingActivity extends BlockBaseActivity {
 
         @Override
         public void onRewardedVideoAdFailedToLoad(int i) {
-            Toast.makeText(getApplicationContext(),"에러코드chattingList"+String.valueOf(i),Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "에러코드chattingList" + String.valueOf(i), Toast.LENGTH_LONG).show();
             switch (i) {
                 case 0:
                     // 에드몹 내부서버에러
@@ -582,9 +585,9 @@ public class ChattingActivity extends BlockBaseActivity {
 
     @Override
     public void onPause() {
-    mRewardedVideoAd.pause(this);
-    mRewardedVideoAd.setRewardedVideoAdListener(null);
-    super.onPause();
+        mRewardedVideoAd.pause(this);
+        mRewardedVideoAd.setRewardedVideoAdListener(null);
+        super.onPause();
     }
 
 }
