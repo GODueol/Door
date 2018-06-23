@@ -81,6 +81,15 @@
         <value>90</value>
     </entry>
 
+    <entry>
+        <key>CoreCloudItemId</key>
+        <value>test001</value>
+    </entry>
+
+    <entry>
+        <key>CorePlusItemId</key>
+        <value>test002</value>
+    </entry>
 
 
 </defaultsMap>

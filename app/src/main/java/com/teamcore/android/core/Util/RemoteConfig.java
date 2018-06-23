@@ -10,6 +10,7 @@ import com.teamcore.android.core.BuildConfig;
 import com.teamcore.android.core.R;
 
 public class RemoteConfig {
+
     public static int NORMAL_CORE_LIMIT = 300;
     public static int PLUS_CORE_LIMIT = 300;
     public static int CoreCloudMax = 7;
@@ -33,6 +34,10 @@ public class RemoteConfig {
 
     public static int MinAppVersion = 68;
     public static int MaxAppVersion = 90;
+
+    // 결재 아이템 관련
+    public static String CoreCloudItemId = "";
+    public static String CorePlusItemId = "";
 
     static public Task<Void> getConfig(Activity activity){
         // Remote Config
@@ -87,5 +92,9 @@ public class RemoteConfig {
 
         MinAppVersion = (int) mFirebaseRemoteConfig.getLong("MinAppVersion");
         MaxAppVersion = (int) mFirebaseRemoteConfig.getLong("MaxAppVersion");
+
+        CoreCloudItemId = mFirebaseRemoteConfig.getString("CoreCloudItemId");
+        CorePlusItemId = mFirebaseRemoteConfig.getString("CorePlusItemId");
+
     }
 }
