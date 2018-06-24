@@ -6,7 +6,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="adsID">ca-app-pub-5936581642399514~5056131198</string>
-
+    <string name="ads">ads</string>
     <!-- 하단 배너 광고 TestId
     <string name="adsCore">ca-app-pub-3940256099942544/6300978111</string>
     <string name="adsCoreCloud">ca-app-pub-3940256099942544/6300978111</string>

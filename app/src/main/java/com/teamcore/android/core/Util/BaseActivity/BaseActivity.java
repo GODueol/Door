@@ -7,6 +7,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
@@ -31,24 +32,27 @@ public class BaseActivity extends AppCompatActivity {
 
     private Timer timer;
     private boolean timerToast;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler());
+
         TimerTask detectedNetwrok = new TimerTask() {
             @Override
             public void run() {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if(isNetworkAvailable()){
+                        if (isNetworkAvailable()) {
                             // 네트워크 사용가능
-                            timerToast= false;
+                            timerToast = false;
                             stopProgressDialog();
-                        }else{
+                        } else {
                             // 네트워크 사용 불가능
-                            if(!timerToast) {
+                            if (!timerToast) {
                                 Toast.makeText(getApplicationContext(), "네트워크가 끊겼습니다.", Toast.LENGTH_SHORT).show();
                             }
-                            timerToast= true;
+                            timerToast = true;
                             startProgressDialog();
                         }
                     }
@@ -58,9 +62,16 @@ public class BaseActivity extends AppCompatActivity {
         };
 
         timer = new Timer();
-        timer.schedule(detectedNetwrok,0,1000);
+        timer.schedule(detectedNetwrok, 0, 1000);
         super.onCreate(savedInstanceState);
 
+    }
+
+    public class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler {
+        @Override
+        public void uncaughtException(Thread thread, Throwable ex) {
+            appRestert();
+        }
     }
 
     @Override
@@ -76,7 +87,7 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     // 구독 결제 확인
-    public Promise<Boolean, String, Integer> checkCorePlus(){
+    public Promise<Boolean, String, Integer> checkCorePlus() {
         DeferredObject deferred = new DeferredObject();
         Promise promise = deferred.promise();
 
@@ -95,7 +106,7 @@ public class BaseActivity extends AppCompatActivity {
             //해당 아이템 구매 여부 체크
             Purchase purchase = inv.getPurchase(getString(R.string.subscribe));
 
-            if (purchase != null &&  verifyDeveloperPayload(purchase)) {
+            if (purchase != null && verifyDeveloperPayload(purchase)) {
                 //해당 아이템을 가지고 있는 경우.
                 //아이템에대한 처리를 한다.
                 //alreadyBuyedItem();
@@ -129,15 +140,15 @@ public class BaseActivity extends AppCompatActivity {
         return payload.equals(DataContainer.getInstance().getUid(getApplication()));
     }
 
-    public void startProgressDialog(){
+    public void startProgressDialog() {
         UiUtil.getInstance().startProgressDialog(BaseActivity.this);
     }
 
-    public void stopProgressDialog(){
+    public void stopProgressDialog() {
         UiUtil.getInstance().stopProgressDialog();
     }
 
-    public void deleteMyIdentifier(){
+    public void deleteMyIdentifier() {
         @SuppressLint("HardwareIds") String deviceIdentifier = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
         FirebaseDatabase.getInstance().getReference("identifier").child(deviceIdentifier).removeValue();
     }
@@ -146,6 +157,9 @@ public class BaseActivity extends AppCompatActivity {
         return DataContainer.getInstance().getUser(this::logout);
     }
 
+    public void appRestert(){
+        UiUtil.getInstance().restartApp(getApplicationContext());
+    }
     public void logout() {
         try {
             DataContainer.getInstance().getMyUserRef().child("token").removeValue().addOnSuccessListener(aVoid -> {
@@ -154,9 +168,9 @@ public class BaseActivity extends AppCompatActivity {
                 startActivity(new Intent(BaseActivity.this, LoginActivity.class));
                 finish();
             });
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-            UiUtil.getInstance().restartApp(getApplicationContext());
+            appRestert();
         }
     }
 

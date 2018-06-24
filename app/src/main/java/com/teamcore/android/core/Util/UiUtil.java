@@ -106,6 +106,7 @@ public class UiUtil {
 
     public void restartApp(Context context) {
         Intent mStartActivity = new Intent(context, IntroActivity.class);
+        Toast.makeText(context,"죄송합니다. 비정상 종료가 발생했습니다.",Toast.LENGTH_LONG).show();
         int mPendingIntentId = 123456;
         PendingIntent mPendingIntent = PendingIntent.getActivity(context, mPendingIntentId, mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
         AlarmManager mgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
