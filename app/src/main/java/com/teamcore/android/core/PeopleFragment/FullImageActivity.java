@@ -797,7 +797,7 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
 
     public void setmInterstitialAd() {
         mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd.setAdUnitId(getString(R.string.adsFMainGrid));
+        mInterstitialAd.setAdUnitId(getString(R.string.adsProfileChating));
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
         mInterstitialAd.setAdListener(new AdListener() {
             @Override

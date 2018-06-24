@@ -74,7 +74,10 @@ public class PeopleFragment extends BaseFragment {
             startActivity(p);
             checkCorePlus().done(isPlus ->{
                 if(!isPlus){
-                    SPUtil.increaseAds(mInterstitialAd, "FMainGrid");
+                    if(!item.getUuid().equals(DataContainer.getInstance().getUid(getContext()))) {
+                        //본인이 아니면
+                        SPUtil.increaseAds(mInterstitialAd, "FMainGrid");
+                    }
                 }
             });
 
@@ -328,7 +331,7 @@ public class PeopleFragment extends BaseFragment {
 
     public void setmInterstitialAd(){
         mInterstitialAd = new InterstitialAd(getContext());
-        mInterstitialAd.setAdUnitId(getString(R.string.adsProfileChating));
+        mInterstitialAd.setAdUnitId(getString(R.string.adsFMainGrid));
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
         mInterstitialAd.setAdListener(new AdListener(){
             @Override
