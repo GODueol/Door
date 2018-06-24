@@ -49,7 +49,7 @@ public class BaseActivity extends AppCompatActivity {
 
             try{
                 Thread.sleep(2000);
-            }catch (Exception e){
+            }catch (Exception ignored){
             }
 
             appRestert();
@@ -68,21 +68,18 @@ public class BaseActivity extends AppCompatActivity {
         TimerTask detectedNetwrok = new TimerTask() {
             @Override
             public void run() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (isNetworkAvailable()) {
-                            // 네트워크 사용가능
-                            timerToast = false;
-                            stopProgressDialog2();
-                        } else {
-                            // 네트워크 사용 불가능
-                            if (!timerToast) {
-                                Toast.makeText(getApplicationContext(), "네트워크를 확인해주세요", Toast.LENGTH_LONG).show();
-                            }
-                            timerToast = true;
-                            startProgressDialog2();
+                runOnUiThread(() -> {
+                    if (isNetworkAvailable()) {
+                        // 네트워크 사용가능
+                        timerToast = false;
+                        stopProgressDialog2();
+                    } else {
+                        // 네트워크 사용 불가능
+                        if (!timerToast) {
+                            Toast.makeText(getApplicationContext(), "네트워크를 확인해주세요", Toast.LENGTH_LONG).show();
                         }
+                        timerToast = true;
+                        startProgressDialog2();
                     }
                 });
 
