@@ -236,7 +236,10 @@ public class ProfileModifyActivity extends BaseActivity implements NumberPicker.
         for (int i = 0; i < profilePics.length; i++) {
             String url = picUrlList.get(i);
             if (url == null) continue;
-            Glide.with(getBaseContext()).load(url).into(profilePics[i]);
+            GlideApp.with(getBaseContext())
+                    .load(url)
+                    .placeholder(R.drawable.pic_load_ani)
+                    .into(profilePics[i]);
         }
 
         // Set Event of Getting Picture
