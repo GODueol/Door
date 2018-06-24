@@ -12,14 +12,11 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.ValueEventListener;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
-import com.teamcore.android.core.Entity.User;
 import com.teamcore.android.core.R;
 import com.teamcore.android.core.Util.BaseActivity.UserListBaseActivity;
 import com.teamcore.android.core.Util.DataContainer;
+import com.teamcore.android.core.Util.FireBaseUtil;
 import com.teamcore.android.core.Util.SharedPreferencesUtil;
 
 import java.util.ArrayList;
@@ -42,6 +39,10 @@ public class FriendsActivity extends UserListBaseActivity implements SharedPrefe
         super.onCreate(savedInstanceState);
         // Get the view from new_activity.xml
         setContentView(R.layout.friends_activity);
+
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.friendsRecyclerView);
+
         firstView = true;
         // bottomTab
         final BottomNavigationViewEx navigation = (BottomNavigationViewEx) findViewById(R.id.navigation);
@@ -77,6 +78,7 @@ public class FriendsActivity extends UserListBaseActivity implements SharedPrefe
                 return true;
             }
             Log.d("test", "처음");
+            setAdapter(navigation, recyclerView);
             switch (item.getItemId()) {
                 case R.id.navigation_friends:
                     if (!firstView) {
@@ -103,44 +105,34 @@ public class FriendsActivity extends UserListBaseActivity implements SharedPrefe
         };
         navigation.setOnNavigationItemSelectedListener(selectedListener);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.friendsRecyclerView);
-
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //액션바 아이콘을 업 네비게이션 형태로 표시합니다.
         getSupportActionBar().setDisplayShowHomeEnabled(true); //홈 아이콘을 숨김처리합니다.
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
 
+        FireBaseUtil.getInstance().syncUser(user -> {
+            setAdapter(navigation, recyclerView);
 
-        DataContainer.getInstance().getMyUserRef().addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                DataContainer.getInstance().setUser(dataSnapshot.getValue(User.class));
-
-                // 리사이클뷰
-                items = new ArrayList<>();
-                adapter = new UserListAdapter(FriendsActivity.this, items, DataContainer.getInstance().isPlus);
-                LinearLayoutManager layoutManager = new LinearLayoutManager(FriendsActivity.this);
-                recyclerView.setLayoutManager(layoutManager);
-                recyclerView.setAdapter(adapter);
-                recyclerView.addItemDecoration(new DividerItemDecoration(FriendsActivity.this, DividerItemDecoration.VERTICAL)); //리사이클뷰 구분선
-
-                // setRecyclerView (default)
-                navigation.setSelectedItemId(R.id.navigation_friends);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
+            // setRecyclerView (default)
+            navigation.setSelectedItemId(R.id.navigation_friends);
         });
+
 
         SPUtil = new SharedPreferencesUtil(getApplicationContext());
         SPUtil.getBadgePreferences().registerOnSharedPreferenceChangeListener(this);
         badges = new ArrayList<>();
         navigationViewinitBadge(bottomNavigationMenuView);
+    }
+
+    private void setAdapter(BottomNavigationViewEx navigation, RecyclerView recyclerView) {
+        // 리사이클뷰
+        items = new ArrayList<>();
+        adapter = new UserListAdapter(FriendsActivity.this, items, DataContainer.getInstance().isPlus);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(FriendsActivity.this);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(adapter);
+        recyclerView.addItemDecoration(new DividerItemDecoration(FriendsActivity.this, DividerItemDecoration.VERTICAL)); //리사이클뷰 구분선
     }
 
     private void navigationViewinitBadge(BottomNavigationMenuView bottomNavigationMenuView) {

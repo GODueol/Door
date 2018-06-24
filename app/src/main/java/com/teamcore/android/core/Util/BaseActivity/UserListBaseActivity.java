@@ -40,7 +40,7 @@ public class UserListBaseActivity extends BaseActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                Log.d(field, "DataChange : " + dataSnapshot.getKey() + ',' + dataSnapshot.getValue());
+                Log.d("KBJ",field +  ", DataChange : " + dataSnapshot.getKey() + ", size : " + dataSnapshot.getChildrenCount() + ", " + dataSnapshot.getValue());
                 items.clear();
                 items.add(new UserListAdapter.Item(true));
                 if(dataSnapshot.getValue() == null) adapter.notifyDataSetChanged();
@@ -64,7 +64,7 @@ public class UserListBaseActivity extends BaseActivity {
                     final HashMap<String, UserListAdapter.Item> stringItemHashMap = new HashMap<>();  // 순서를 위한 맵
 
                     for (final DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        Log.d("snapshot", snapshot.getValue().toString());
+                        Log.d("KBJ",field + ", snapshot key : " + snapshot.getKey() + ", value : " +  snapshot.getValue().toString());
                         final String oUuid = snapshot.getKey();
                         UserListAdapter.Item item = new UserListAdapter.Item(new User(), (long) snapshot.getValue(), oUuid);
                         stringItemHashMap.put(oUuid, item);
@@ -72,6 +72,11 @@ public class UserListBaseActivity extends BaseActivity {
                             items.add(item);
                         else
                             items.add(1, item);
+
+                        Log.d("KBJ", field + ", items.size() : " + items.size());
+
+//                        adapter.notifyDataSetChanged();
+
 
                         DataContainer.getInstance().getUsersRef().child(oUuid).addListenerForSingleValueEvent(new ValueEventListener() {
 
@@ -81,7 +86,11 @@ public class UserListBaseActivity extends BaseActivity {
 
                                 if(stringItemHashMap.containsKey(oUuid)) {
                                     stringItemHashMap.get(oUuid).setUser(oUser);
-                                    adapter.notifyDataSetChanged();
+//                                    adapter.notifyItemInserted(items.indexOf(stringItemHashMap.get(oUuid)));
+                                } else {
+                                    // 유저정보가 없는 경우 (유저가 삭제된 케이스)
+                                    items.remove(stringItemHashMap.get(oUuid));
+//                                    adapter.notifyItemRemoved(items.indexOf(stringItemHashMap.get(oUuid)));
                                 }
                             }
 

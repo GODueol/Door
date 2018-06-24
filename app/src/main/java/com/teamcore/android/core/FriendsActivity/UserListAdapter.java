@@ -139,6 +139,8 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
         // setHeader
         if (setHeader(userHolder, user)) return;
 
+        Log.d("KBJ", "i : " + i + ", itme : " + item);
+
         Glide.with(userHolder.profilePicImage.getContext()).load(user.getPicUrls().getThumbNail_picUrl1()).into(userHolder.profilePicImage);
         userHolder.idText.setText(user.getId());
         userHolder.subProfileText.setText(UiUtil.getInstance().setSubProfile(user));
@@ -595,6 +597,16 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
             return date;
         }
 
+        @Override
+        public String toString() {
+            return "Item{" +
+                    "user=" + user +
+                    ", date=" + date +
+                    ", uuid='" + uuid + '\'' +
+                    ", isHeader=" + isHeader +
+                    ", isFooter=" + isFooter +
+                    '}';
+        }
     }
 
     public void setnoFillInterstitialAd() {
