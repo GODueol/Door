@@ -6,8 +6,8 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Looper;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
@@ -32,10 +32,38 @@ public class BaseActivity extends AppCompatActivity {
 
     private Timer timer;
     private boolean timerToast;
+    private static Thread.UncaughtExceptionHandler mDefaultUEH;
+
+    private Thread.UncaughtExceptionHandler mCaughtExceptionHandler = new Thread.UncaughtExceptionHandler() {
+        @Override
+        public void uncaughtException(Thread thread, Throwable ex) {
+
+            new Thread() {
+                @Override
+                public void run() {
+                    Looper.prepare();
+                    Toast.makeText(getApplicationContext(), "비정상 종료로 앱이 재시작됩니다.", Toast.LENGTH_LONG).show();
+                    Looper.loop();
+                }
+            }.start();
+
+            try{
+                Thread.sleep(2000);
+            }catch (Exception e){
+            }
+
+            appRestert();
+
+            // This will make Crashlytics do its job
+            mDefaultUEH.uncaughtException(thread, ex);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler());
+        // Second, set custom UncaughtExceptionHandler
+        mDefaultUEH = Thread.getDefaultUncaughtExceptionHandler();
+        Thread.setDefaultUncaughtExceptionHandler(mCaughtExceptionHandler);
 
         TimerTask detectedNetwrok = new TimerTask() {
             @Override
@@ -67,12 +95,6 @@ public class BaseActivity extends AppCompatActivity {
 
     }
 
-    public class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler {
-        @Override
-        public void uncaughtException(Thread thread, Throwable ex) {
-            appRestert();
-        }
-    }
 
     @Override
     protected void onDestroy() {
@@ -166,9 +188,10 @@ public class BaseActivity extends AppCompatActivity {
         return DataContainer.getInstance().getUser(this::logout);
     }
 
-    public void appRestert(){
+    public void appRestert() {
         UiUtil.getInstance().restartApp(getApplicationContext());
     }
+
     public void logout() {
         try {
             DataContainer.getInstance().getMyUserRef().child("token").removeValue().addOnSuccessListener(aVoid -> {
