@@ -2,7 +2,6 @@ package com.teamcore.android.core.FriendsActivity;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -139,7 +138,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
         // setHeader
         if (setHeader(userHolder, user)) return;
 
-        Log.d("KBJ", "i : " + i + ", itme : " + item);
+        Log.d("KBJ", "items.size() :  " + items.size() + ",i : " + i + ", itme : " + item);
 
         Glide.with(userHolder.profilePicImage.getContext()).load(user.getPicUrls().getThumbNail_picUrl1()).into(userHolder.profilePicImage);
         userHolder.idText.setText(user.getId());
@@ -153,59 +152,56 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
         }
 
         if (!field.equals("blockUsers") && !field.equals("Core Heart Count")) {   // block 아닐때만 클릭 가능하도록
-            userHolder.profilePicImage.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent p = new Intent(view.getContext(), FullImageActivity.class);
-                    p.putExtra("item", new GridItem(0, item.getUuid(), user.getSummaryUser(), ""));
-                    ad_i = p;
-                    ad_View = view;
-                    if (context instanceof FindUserActivity) {
+            userHolder.profilePicImage.setOnClickListener(view -> {
+                Intent p = new Intent(view.getContext(), FullImageActivity.class);
+                p.putExtra("item", new GridItem(0, item.getUuid(), user.getSummaryUser(), ""));
+                ad_i = p;
+                ad_View = view;
+                if (context instanceof FindUserActivity) {
 
-                        if (!isPlus) {
-                            FirebaseDatabase.getInstance().getReference(context.getString(R.string.admob)).child(DataContainer.getInstance().getUid(context)).child(context.getString(R.string.findUserCount)).addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    int value;
-                                    try {
-                                        value = Integer.valueOf(dataSnapshot.getValue().toString());
-                                    } catch (Exception e) {
-                                        value = 0;
-                                    }
-                                    Log.d("test", "몇개 : " + value);
-                                    if (value > 0) {
-                                        FirebaseDatabase.getInstance().getReference(context.getString(R.string.admob)).child(DataContainer.getInstance().getUid(context)).child(context.getString(R.string.findUserCount)).setValue(value - 1);
+                    if (!isPlus) {
+                        FirebaseDatabase.getInstance().getReference(context.getString(R.string.admob)).child(DataContainer.getInstance().getUid(context)).child(context.getString(R.string.findUserCount)).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                int value;
+                                try {
+                                    value = Integer.valueOf(dataSnapshot.getValue().toString());
+                                } catch (Exception e) {
+                                    value = 0;
+                                }
+                                Log.d("test", "몇개 : " + value);
+                                if (value > 0) {
+                                    FirebaseDatabase.getInstance().getReference(context.getString(R.string.admob)).child(DataContainer.getInstance().getUid(context)).child(context.getString(R.string.findUserCount)).setValue(value - 1);
+                                    view.getContext().startActivity(p);
+                                } else {
+                                    if (isFillReward2) {
                                         view.getContext().startActivity(p);
+                                        noFillInterstitialAd.show();
                                     } else {
-                                        if (isFillReward2) {
-                                            view.getContext().startActivity(p);
-                                            noFillInterstitialAd.show();
-                                        } else {
-                                            mRewardedVideoAd2.show();
-                                        }
+                                        mRewardedVideoAd2.show();
                                     }
                                 }
+                            }
 
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
 
-                                }
-                            });
-                        } else {
-                            view.getContext().startActivity(p);
-                        }
-
-                    } else if (context instanceof FriendsActivity) {
-                        view.getContext().startActivity(p);
-                        if (!isPlus) {
-                            SPUtil.increaseAds(mInterstitialAd, "Friends");
-                        }
+                            }
+                        });
                     } else {
                         view.getContext().startActivity(p);
                     }
 
-
+                } else if (context instanceof FriendsActivity) {
+                    view.getContext().startActivity(p);
+                    if (!isPlus) {
+                        SPUtil.increaseAds(mInterstitialAd, "Friends");
+                    }
+                } else {
+                    view.getContext().startActivity(p);
                 }
+
+
             });
         }
 
@@ -213,218 +209,191 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
             userHolder.itemMenuBtn.setVisibility(View.INVISIBLE);
         } else {
             userHolder.itemMenuBtn.setVisibility(View.VISIBLE);
-            userHolder.itemMenuBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    final PopupMenu popup = new PopupMenu(view.getContext(), view);
-                    popup.getMenuInflater().inflate(itemMenu, popup.getMenu());
-                    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                        public boolean onMenuItemClick(MenuItem menuItem) {
-                            int i = menuItem.getItemId();
-                            if (i == R.id.follow) {
-                                follow();
-                                return true;
-                            } else if (i == R.id.followCancel) {
-                                unFollow();
-                                return true;
-                            } else if (i == R.id.block) {
-                                block();
-                                return true;
-                            } else if (i == R.id.core) {
-                                // Go to Core
-                                UiUtil.getInstance().goToCoreActivity(context, item.getUuid());
-                                return true;
-                            } else if (i == R.id.unblock) {
-                                unblock();
-                                return true;
-                            } else {
-                                return true;
-                            }
+            userHolder.itemMenuBtn.setOnClickListener(view -> {
+                final PopupMenu popup = new PopupMenu(view.getContext(), view);
+                popup.getMenuInflater().inflate(itemMenu, popup.getMenu());
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+                        int i19 = menuItem.getItemId();
+                        if (i19 == R.id.follow) {
+                            follow();
+                            return true;
+                        } else if (i19 == R.id.followCancel) {
+                            unFollow();
+                            return true;
+                        } else if (i19 == R.id.block) {
+                            block();
+                            return true;
+                        } else if (i19 == R.id.core) {
+                            // Go to Core
+                            UiUtil.getInstance().goToCoreActivity(context, item.getUuid());
+                            return true;
+                        } else if (i19 == R.id.unblock) {
+                            unblock();
+                            return true;
+                        } else {
+                            return true;
                         }
+                    }
 
-                        private void block() {
-                            UiUtil.getInstance().showDialog(context, "회원 차단", "이 회원을 차단합니다.", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    final User mUser = context.getUser();
-                                    if (mUser.getBlockUsers().size() >= DataContainer.ChildrenMax) {
-                                        Toast.makeText(context, "차단 가능한 회원 수를 초과하였습니다", Toast.LENGTH_SHORT).show();
-                                        return;
-                                    }
-                                    ad_Item = item;
-                                    if (!isPlus) {
-                                        FirebaseDatabase.getInstance().getReference(context.getString(R.string.admob)).child(DataContainer.getInstance().getUid(context)).child(context.getString(R.string.blockCount)).addListenerForSingleValueEvent(new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                                int value;
-                                                try {
-                                                    value = Integer.valueOf(dataSnapshot.getValue().toString());
-                                                } catch (Exception e) {
-                                                    value = 0;
-                                                }
-                                                Log.d("test", "몇개 : " + value);
-                                                if (value > 0) {
-                                                    FirebaseDatabase.getInstance().getReference(context.getString(R.string.admob)).child(DataContainer.getInstance().getUid(context)).child(context.getString(R.string.blockCount)).setValue(value - 1);
+                    private void block() {
+                        UiUtil.getInstance().showDialog(context, "회원 차단", "이 회원을 차단합니다.", (dialogInterface, i1) -> {
+                            final User mUser = context.getUser();
+                            if (mUser.getBlockUsers().size() >= DataContainer.ChildrenMax) {
+                                Toast.makeText(context, "차단 가능한 회원 수를 초과하였습니다", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                            ad_Item = item;
+                            if (!isPlus) {
+                                FirebaseDatabase.getInstance().getReference(context.getString(R.string.admob)).child(DataContainer.getInstance().getUid(context)).child(context.getString(R.string.blockCount)).addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        int value;
+                                        try {
+                                            value = Integer.valueOf(dataSnapshot.getValue().toString());
+                                        } catch (Exception e) {
+                                            value = 0;
+                                        }
+                                        Log.d("test", "몇개 : " + value);
+                                        if (value > 0) {
+                                            FirebaseDatabase.getInstance().getReference(context.getString(R.string.admob)).child(DataContainer.getInstance().getUid(context)).child(context.getString(R.string.blockCount)).setValue(value - 1);
 
-                                                    UiUtil.getInstance().startProgressDialog((Activity) context);
-                                                    try {
-                                                        FireBaseUtil.getInstance().block(item.getUuid()).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                            @Override
-                                                            public void onComplete(@NonNull Task<Void> task) {
-                                                                UiUtil.getInstance().stopProgressDialog();
-                                                            }
-                                                        });
-                                                    } catch (ChildSizeMaxException e) {
-                                                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                            UiUtil.getInstance().startProgressDialog((Activity) context);
+                                            try {
+                                                FireBaseUtil.getInstance().block(item.getUuid()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
                                                         UiUtil.getInstance().stopProgressDialog();
                                                     }
-                                                } else {
-                                                    if (isFillReward) {
-                                                        UiUtil.getInstance().startProgressDialog((Activity) context);
-                                                        try {
-                                                            FireBaseUtil.getInstance().block(item.getUuid()).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                @Override
-                                                                public void onComplete(@NonNull Task<Void> task) {
-                                                                    UiUtil.getInstance().stopProgressDialog();
-                                                                }
-                                                            });
-                                                        } catch (ChildSizeMaxException e) {
-                                                            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                });
+                                            } catch (ChildSizeMaxException e) {
+                                                Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                UiUtil.getInstance().stopProgressDialog();
+                                            }
+                                        } else {
+                                            if (isFillReward) {
+                                                UiUtil.getInstance().startProgressDialog((Activity) context);
+                                                try {
+                                                    FireBaseUtil.getInstance().block(item.getUuid()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<Void> task) {
                                                             UiUtil.getInstance().stopProgressDialog();
                                                         }
-
-                                                        noFillInterstitialAd.show();
-                                                    } else {
-                                                        mRewardedVideoAd.show();
-                                                    }
-                                                }
-                                            }
-
-                                            @Override
-                                            public void onCancelled(DatabaseError databaseError) {
-
-                                            }
-                                        });
-                                    } else {
-                                        UiUtil.getInstance().startProgressDialog((Activity) context);
-                                        try {
-                                            FireBaseUtil.getInstance().block(item.getUuid()).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    });
+                                                } catch (ChildSizeMaxException e) {
+                                                    Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
                                                     UiUtil.getInstance().stopProgressDialog();
                                                 }
-                                            });
-                                        } catch (ChildSizeMaxException e) {
-                                            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-                                            UiUtil.getInstance().stopProgressDialog();
+
+                                                noFillInterstitialAd.show();
+                                            } else {
+                                                mRewardedVideoAd.show();
+                                            }
                                         }
                                     }
-                                }
-                            }, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
 
-                                }
-                            });
-                        }
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
 
-                        private void unblock() {
-                            UiUtil.getInstance().showDialog(context, "회원 차단 해제", "이 회원을 차단 해제합니다.", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    UiUtil.getInstance().startProgressDialog((Activity) context);
-                                    FireBaseUtil.getInstance().unblock(item.getUuid()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    }
+                                });
+                            } else {
+                                UiUtil.getInstance().startProgressDialog((Activity) context);
+                                try {
+                                    FireBaseUtil.getInstance().block(item.getUuid()).addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             UiUtil.getInstance().stopProgressDialog();
                                         }
                                     });
+                                } catch (ChildSizeMaxException e) {
+                                    Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    UiUtil.getInstance().stopProgressDialog();
                                 }
-                            }, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
+                            }
+                        }, (dialogInterface, i12) -> {
 
+                        });
+                    }
+
+                    private void unblock() {
+                        UiUtil.getInstance().showDialog(context, "회원 차단 해제", "이 회원을 차단 해제합니다.", (dialogInterface, i13) -> {
+                            UiUtil.getInstance().startProgressDialog((Activity) context);
+                            FireBaseUtil.getInstance().unblock(item.getUuid()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    UiUtil.getInstance().stopProgressDialog();
                                 }
                             });
-                        }
+                        }, (dialogInterface, i14) -> {
 
-                        private void unFollow() {
-                            UiUtil.getInstance().showDialog(context, "팔로잉 취소", "이 회원을 팔로잉 하지않습니다.", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    UiUtil.getInstance().startProgressDialog((Activity) context);
-                                    Task<Void> task = null;
-                                    try {
-                                        task = FireBaseUtil.getInstance().follow(context, user, item.getUuid(), true);
-                                    } catch (ChildSizeMaxException e) {
-                                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-                                        UiUtil.getInstance().stopProgressDialog();
-                                        return;
-                                    } catch (NotSetAutoTimeException e) {
-                                        e.printStackTrace();
-                                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-                                        ActivityCompat.finishAffinity((Activity) context);
-                                    }
-                                    if (task == null) {
-                                        Toast.makeText(context, "팔로우 취소 상태입니다", Toast.LENGTH_SHORT).show();
-                                        UiUtil.getInstance().stopProgressDialog();
-                                        return;
-                                    }
-                                    task.addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            UiUtil.getInstance().stopProgressDialog();
-                                        }
-                                    });
-                                }
-                            }, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
+                        });
+                    }
 
+                    private void unFollow() {
+                        UiUtil.getInstance().showDialog(context, "팔로잉 취소", "이 회원을 팔로잉 하지않습니다.", (dialogInterface, i15) -> {
+                            UiUtil.getInstance().startProgressDialog((Activity) context);
+                            Task<Void> task = null;
+                            try {
+                                task = FireBaseUtil.getInstance().follow(context, user, item.getUuid(), true);
+                            } catch (ChildSizeMaxException e) {
+                                Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                UiUtil.getInstance().stopProgressDialog();
+                                return;
+                            } catch (NotSetAutoTimeException e) {
+                                e.printStackTrace();
+                                Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                ActivityCompat.finishAffinity((Activity) context);
+                            }
+                            if (task == null) {
+                                Toast.makeText(context, "팔로우 취소 상태입니다", Toast.LENGTH_SHORT).show();
+                                UiUtil.getInstance().stopProgressDialog();
+                                return;
+                            }
+                            task.addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    UiUtil.getInstance().stopProgressDialog();
                                 }
                             });
-                        }
+                        }, (dialogInterface, i16) -> {
 
-                        private void follow() {
-                            UiUtil.getInstance().showDialog(context, "팔로잉", "이 회원을 팔로잉 합니다. 서로 팔로잉하면 친구가 됩니다.", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    UiUtil.getInstance().startProgressDialog((Activity) context);
-                                    Task<Void> task = null;
-                                    try {
-                                        task = FireBaseUtil.getInstance().follow(context, user, item.getUuid(), false);
-                                    } catch (ChildSizeMaxException e) {
-                                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-                                        UiUtil.getInstance().stopProgressDialog();
-                                        return;
-                                    } catch (NotSetAutoTimeException e) {
-                                        e.printStackTrace();
-                                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-                                        ActivityCompat.finishAffinity((Activity) context);
-                                    }
-                                    if (task == null) {
-                                        Toast.makeText(context, "이미 팔로잉 중입니다", Toast.LENGTH_SHORT).show();
-                                        UiUtil.getInstance().stopProgressDialog();
-                                        return;
-                                    }
-                                    task.addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            UiUtil.getInstance().stopProgressDialog();
-                                        }
-                                    });
-                                }
-                            }, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
+                        });
+                    }
 
+                    private void follow() {
+                        UiUtil.getInstance().showDialog(context, "팔로잉", "이 회원을 팔로잉 합니다. 서로 팔로잉하면 친구가 됩니다.", (dialogInterface, i17) -> {
+                            UiUtil.getInstance().startProgressDialog((Activity) context);
+                            Task<Void> task = null;
+                            try {
+                                task = FireBaseUtil.getInstance().follow(context, user, item.getUuid(), false);
+                            } catch (ChildSizeMaxException e) {
+                                Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                UiUtil.getInstance().stopProgressDialog();
+                                return;
+                            } catch (NotSetAutoTimeException e) {
+                                e.printStackTrace();
+                                Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                ActivityCompat.finishAffinity((Activity) context);
+                            }
+                            if (task == null) {
+                                Toast.makeText(context, "이미 팔로잉 중입니다", Toast.LENGTH_SHORT).show();
+                                UiUtil.getInstance().stopProgressDialog();
+                                return;
+                            }
+                            task.addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    UiUtil.getInstance().stopProgressDialog();
                                 }
                             });
-                        }
-                    });
+                        }, (dialogInterface, i18) -> {
 
-                    popup.show();
-                }
+                        });
+                    }
+                });
+
+                popup.show();
             });
         }
     }
@@ -456,39 +425,33 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
                 userNick.setText(mUser.getId());
                 userProfile.setText(UiUtil.getInstance().setSubProfile(mUser));
 
-                setting.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        final PopupMenu popup = new PopupMenu(view.getContext(), view);
-                        popup.getMenuInflater().inflate(R.menu.sort_menu, popup.getMenu());
-                        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                            @Override
-                            public boolean onMenuItemClick(MenuItem menuItem) {
+                setting.setOnClickListener(view -> {
+                    final PopupMenu popup = new PopupMenu(view.getContext(), view);
+                    popup.getMenuInflater().inflate(R.menu.sort_menu, popup.getMenu());
+                    popup.setOnMenuItemClickListener(menuItem -> {
 
-                                if (menuItem.getItemId() == R.id.old_order) {
-                                    if (isReverse) return false;
-                                    list_sequence.setText(R.string.oldOrder);
-                                    isReverse = true;
+                        if (menuItem.getItemId() == R.id.old_order) {
+                            if (isReverse) return false;
+                            list_sequence.setText(R.string.oldOrder);
+                            isReverse = true;
 
-                                } else if (menuItem.getItemId() == R.id.new_order) {
-                                    if (!isReverse) return false;
-                                    list_sequence.setText(R.string.newOrder);
-                                    isReverse = false;
-                                }
+                        } else if (menuItem.getItemId() == R.id.new_order) {
+                            if (!isReverse) return false;
+                            list_sequence.setText(R.string.newOrder);
+                            isReverse = false;
+                        }
 
-                                // 첫번째만 남기고 모두 Reverse
-                                Item header = items.get(0);
-                                items.remove(0);
-                                Collections.reverse(items);
-                                items.add(0, header);
-                                notifyDataSetChanged();
+                        // 첫번째만 남기고 모두 Reverse
+                        Item header = items.get(0);
+                        items.remove(0);
+                        Collections.reverse(items);
+                        items.add(0, header);
+                        notifyDataSetChanged();
 
-                                return false;
-                            }
-                        });
-                        popup.show();
+                        return false;
+                    });
+                    popup.show();
 
-                    }
                 });
 
                 switch (field) {
@@ -674,12 +637,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
 
                             UiUtil.getInstance().startProgressDialog((Activity) context);
                             try {
-                                FireBaseUtil.getInstance().block(ad_Item.getUuid()).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        UiUtil.getInstance().stopProgressDialog();
-                                    }
-                                });
+                                FireBaseUtil.getInstance().block(ad_Item.getUuid()).addOnCompleteListener(task -> UiUtil.getInstance().stopProgressDialog());
                             } catch (ChildSizeMaxException e) {
                                 Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
                                 UiUtil.getInstance().stopProgressDialog();

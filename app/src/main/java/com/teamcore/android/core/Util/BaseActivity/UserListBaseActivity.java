@@ -2,7 +2,12 @@ package com.teamcore.android.core.Util.BaseActivity;
 
 import android.annotation.SuppressLint;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.TaskCompletionSource;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
@@ -15,6 +20,7 @@ import com.teamcore.android.core.Util.SharedPreferencesUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.Callable;
 
 /**
  * Created by kimbyeongin on 2018-01-07.
@@ -63,6 +69,8 @@ public class UserListBaseActivity extends BaseActivity {
 
                     final HashMap<String, UserListAdapter.Item> stringItemHashMap = new HashMap<>();  // 순서를 위한 맵
 
+                    ArrayList<Task<User>> tasks = new ArrayList<>();
+
                     for (final DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         Log.d("KBJ",field + ", snapshot key : " + snapshot.getKey() + ", value : " +  snapshot.getValue().toString());
                         final String oUuid = snapshot.getKey();
@@ -75,8 +83,7 @@ public class UserListBaseActivity extends BaseActivity {
 
                         Log.d("KBJ", field + ", items.size() : " + items.size());
 
-//                        adapter.notifyDataSetChanged();
-
+                        TaskCompletionSource taskCompletionSource = new TaskCompletionSource();
 
                         DataContainer.getInstance().getUsersRef().child(oUuid).addListenerForSingleValueEvent(new ValueEventListener() {
 
@@ -84,21 +91,28 @@ public class UserListBaseActivity extends BaseActivity {
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 User oUser = dataSnapshot.getValue(User.class);
 
-                                if(stringItemHashMap.containsKey(oUuid)) {
-                                    stringItemHashMap.get(oUuid).setUser(oUser);
-//                                    adapter.notifyItemInserted(items.indexOf(stringItemHashMap.get(oUuid)));
-                                } else {
+                                if(oUser == null) {
                                     // 유저정보가 없는 경우 (유저가 삭제된 케이스)
                                     items.remove(stringItemHashMap.get(oUuid));
-//                                    adapter.notifyItemRemoved(items.indexOf(stringItemHashMap.get(oUuid)));
+
+                                } else if(stringItemHashMap.containsKey(oUuid)) {
+                                    stringItemHashMap.get(oUuid).setUser(oUser);
+
+                                    int index = items.indexOf(stringItemHashMap.get(oUuid));
+                                    Log.d("KBJ", field + ", index : " + index + ", item : " + item);
                                 }
+                                taskCompletionSource.setResult(null);
                             }
 
                             @Override
                             public void onCancelled(DatabaseError databaseError) {
+                                taskCompletionSource.setException(databaseError.toException());
                             }
                         });
+                        tasks.add(taskCompletionSource.getTask());
                     }
+
+                    Tasks.whenAll(tasks).addOnSuccessListener(aVoid -> adapter.notifyDataSetChanged());
                 }
             }
             @Override
