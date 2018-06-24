@@ -33,7 +33,7 @@ public class FriendsActivity extends UserListBaseActivity implements SharedPrefe
 
     private List<Badge> badges;
     boolean firstView;
-
+    RecyclerView.ItemDecoration decoration;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +78,9 @@ public class FriendsActivity extends UserListBaseActivity implements SharedPrefe
                 return true;
             }
             Log.d("test", "처음");
+            if(decoration==null) {
+                decoration = new DividerItemDecoration(FriendsActivity.this, DividerItemDecoration.VERTICAL);
+            }
             setAdapter(navigation, recyclerView);
             switch (item.getItemId()) {
                 case R.id.navigation_friends:
@@ -112,6 +115,9 @@ public class FriendsActivity extends UserListBaseActivity implements SharedPrefe
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
 
         FireBaseUtil.getInstance().syncUser(user -> {
+            if(decoration==null) {
+                decoration = new DividerItemDecoration(FriendsActivity.this, DividerItemDecoration.VERTICAL);
+            }
             setAdapter(navigation, recyclerView);
 
             // setRecyclerView (default)
@@ -132,7 +138,10 @@ public class FriendsActivity extends UserListBaseActivity implements SharedPrefe
         LinearLayoutManager layoutManager = new LinearLayoutManager(FriendsActivity.this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
-        recyclerView.addItemDecoration(new DividerItemDecoration(FriendsActivity.this, DividerItemDecoration.VERTICAL)); //리사이클뷰 구분선
+        if(recyclerView.getItemDecorationAt(0)!=null) {
+            recyclerView.removeItemDecoration(decoration);
+        }
+        recyclerView.addItemDecoration(decoration); //리사이클뷰 구분선
     }
 
     private void navigationViewinitBadge(BottomNavigationMenuView bottomNavigationMenuView) {
