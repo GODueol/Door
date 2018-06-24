@@ -612,7 +612,7 @@ public class ProfileModifyActivity extends BaseActivity implements NumberPicker.
                             stopProgressDialog();
                             GlideApp.with(modifyingPic.getContext())
                                     .load(taskSnapshot.getDownloadUrl())
-                                    .placeholder(R.drawable.pic_load_ani)
+                                    .placeholder(R.drawable.pic_load_ani2)
                                     .into(modifyingPic);
                         });
 

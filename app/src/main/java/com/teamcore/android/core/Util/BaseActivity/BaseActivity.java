@@ -50,7 +50,7 @@ public class BaseActivity extends AppCompatActivity {
                         } else {
                             // 네트워크 사용 불가능
                             if (!timerToast) {
-                                Toast.makeText(getApplicationContext(), "네트워크가 끊겼습니다.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(), "네트워크를 확인해주세요", Toast.LENGTH_LONG).show();
                             }
                             timerToast = true;
                             startProgressDialog2();
