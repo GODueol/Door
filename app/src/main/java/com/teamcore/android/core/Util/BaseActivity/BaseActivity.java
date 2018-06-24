@@ -46,14 +46,14 @@ public class BaseActivity extends AppCompatActivity {
                         if (isNetworkAvailable()) {
                             // 네트워크 사용가능
                             timerToast = false;
-                            stopProgressDialog();
+                            stopProgressDialog2();
                         } else {
                             // 네트워크 사용 불가능
                             if (!timerToast) {
                                 Toast.makeText(getApplicationContext(), "네트워크가 끊겼습니다.", Toast.LENGTH_SHORT).show();
                             }
                             timerToast = true;
-                            startProgressDialog();
+                            startProgressDialog2();
                         }
                     }
                 });
@@ -147,6 +147,15 @@ public class BaseActivity extends AppCompatActivity {
     public void stopProgressDialog() {
         UiUtil.getInstance().stopProgressDialog();
     }
+
+    public void startProgressDialog2() {
+        UiUtil.getInstance().startProgressDialog2(BaseActivity.this);
+    }
+
+    public void stopProgressDialog2() {
+        UiUtil.getInstance().stopProgressDialog2();
+    }
+
 
     public void deleteMyIdentifier() {
         @SuppressLint("HardwareIds") String deviceIdentifier = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);

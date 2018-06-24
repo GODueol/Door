@@ -1,0 +1,24 @@
+<animation-list
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/network_error1" android:duration="50" />
+    <item android:drawable="@drawable/network_error2" android:duration="50" />
+    <item android:drawable="@drawable/network_error3" android:duration="50" />
+    <item android:drawable="@drawable/network_error4" android:duration="50" />
+    <item android:drawable="@drawable/network_error5" android:duration="50" />
+    <item android:drawable="@drawable/network_error6" android:duration="50" />
+    <item android:drawable="@drawable/network_error7" android:duration="50" />
+    <item android:drawable="@drawable/network_error8" android:duration="50" />
+    <item android:drawable="@drawable/network_error9" android:duration="50" />
+    <item android:drawable="@drawable/network_error10" android:duration="50" />
+    <item android:drawable="@drawable/network_error11" android:duration="50" />
+    <item android:drawable="@drawable/network_error12" android:duration="50" />
+    <item android:drawable="@drawable/network_error13" android:duration="50" />
+    <item android:drawable="@drawable/network_error14" android:duration="50" />
+    <item android:drawable="@drawable/network_error15" android:duration="50" />
+    <item android:drawable="@drawable/network_error16" android:duration="50" />
+    <item android:drawable="@drawable/network_error17" android:duration="50" />
+    <item android:drawable="@drawable/network_error18" android:duration="50" />
+    <item android:drawable="@drawable/network_error19" android:duration="50" />
+    <item android:drawable="@drawable/network_error20" android:duration="50" />
+
+</animation-list>
