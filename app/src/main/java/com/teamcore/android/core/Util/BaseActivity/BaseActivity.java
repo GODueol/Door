@@ -33,6 +33,7 @@ public class BaseActivity extends AppCompatActivity {
     private Timer timer;
     private boolean timerToast;
     private static Thread.UncaughtExceptionHandler mDefaultUEH;
+    private ConnectivityManager cm;
 
     private Thread.UncaughtExceptionHandler mCaughtExceptionHandler = new Thread.UncaughtExceptionHandler() {
         @Override
@@ -64,7 +65,7 @@ public class BaseActivity extends AppCompatActivity {
         // Second, set custom UncaughtExceptionHandler
         mDefaultUEH = Thread.getDefaultUncaughtExceptionHandler();
         Thread.setDefaultUncaughtExceptionHandler(mCaughtExceptionHandler);
-
+        cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         TimerTask detectedNetwrok = new TimerTask() {
             @Override
             public void run() {
@@ -100,7 +101,6 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     private boolean isNetworkAvailable() {
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
     }
