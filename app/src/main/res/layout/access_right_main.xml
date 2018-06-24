@@ -9,7 +9,9 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            >
 
             <RelativeLayout
                 android:id="@+id/layout1"
@@ -19,8 +21,8 @@
 
                 <ImageView
                     android:id="@+id/icon"
-                    android:layout_width="45dp"
-                    android:layout_height="45dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:layout_centerHorizontal="true"
                     android:layout_marginRight="40dp"
                     android:layout_toLeftOf="@+id/title"
