@@ -586,7 +586,6 @@ public class ChattingActivity extends BlockBaseActivity {
     @Override
     public void onPause() {
         mRewardedVideoAd.pause(this);
-        mRewardedVideoAd.setRewardedVideoAdListener(null);
         super.onPause();
     }
 

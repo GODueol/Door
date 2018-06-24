@@ -627,6 +627,7 @@ public class CoreWriteActivity extends BlockBaseActivity {
     @Override
     protected void onResume() {
         mRewardedVideoAd.resume(this);
+        mRewardedVideoAd.setRewardedVideoAdListener(rewardedVideoAdListener);
         super.onResume();
         pictureFab_layout.setClickable(true);
     }

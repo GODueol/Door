@@ -357,7 +357,6 @@ public class NavAlarmAdapter extends RecyclerView.Adapter<NavAlarmAdapter.ViewHo
     public void Pause() {
         if(mRewardedVideoAd!=null) {
             mRewardedVideoAd.pause(context);
-            mRewardedVideoAd.setRewardedVideoAdListener(null);
         }
     }
 

@@ -680,7 +680,6 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
     @Override
     public void onPause() {
         mRewardedVideoAd.pause(this);
-        mRewardedVideoAd.setRewardedVideoAdListener(null);
         super.onPause();
         ScreenshotSetApplication.getInstance().unregisterScreenshotObserver();
     }

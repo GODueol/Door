@@ -923,7 +923,6 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
     public void Pause() {
         if(mRewardedVideoAd2!=null) {
             mRewardedVideoAd2.pause(context);
-            mRewardedVideoAd2.setRewardedVideoAdListener(null);
         }
     }
 

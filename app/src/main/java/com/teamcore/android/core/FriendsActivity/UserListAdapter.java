@@ -788,11 +788,9 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
     public void Pause() {
         if (mRewardedVideoAd != null) {
             mRewardedVideoAd.pause(context);
-            mRewardedVideoAd.setRewardedVideoAdListener(null);
         }
         if (mRewardedVideoAd2 != null) {
             mRewardedVideoAd2.pause(context);
-            mRewardedVideoAd2.setRewardedVideoAdListener(null);
         }
     }
 
