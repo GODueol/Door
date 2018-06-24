@@ -581,6 +581,11 @@ public class ChattingActivity extends BlockBaseActivity {
                     break;
             }
         }
+
+        @Override
+        public void onRewardedVideoCompleted() {
+
+        }
     };
 
     @Override

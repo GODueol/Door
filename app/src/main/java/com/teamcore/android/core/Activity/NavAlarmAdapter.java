@@ -269,6 +269,11 @@ public class NavAlarmAdapter extends RecyclerView.Adapter<NavAlarmAdapter.ViewHo
                     break;
             }
         }
+
+        @Override
+        public void onRewardedVideoCompleted() {
+
+        }
     };
 
 

@@ -911,6 +911,11 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                     break;
             }
         }
+
+        @Override
+        public void onRewardedVideoCompleted() {
+
+        }
     };
 
     public void Resume() {

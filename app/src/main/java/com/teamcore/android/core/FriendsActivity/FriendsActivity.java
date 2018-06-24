@@ -138,7 +138,8 @@ public class FriendsActivity extends UserListBaseActivity implements SharedPrefe
         LinearLayoutManager layoutManager = new LinearLayoutManager(FriendsActivity.this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
-        if(recyclerView.getItemDecorationAt(0)!=null) {
+
+        if(recyclerView.getItemDecorationCount()!=0&&recyclerView.getItemDecorationAt(0)!=null) {
             recyclerView.removeItemDecoration(decoration);
         }
         recyclerView.addItemDecoration(decoration); //리사이클뷰 구분선

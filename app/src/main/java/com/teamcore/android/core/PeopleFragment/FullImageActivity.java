@@ -779,6 +779,11 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
                     break;
             }
         }
+
+        @Override
+        public void onRewardedVideoCompleted() {
+
+        }
     };
 
 

@@ -31,9 +31,11 @@ import java.util.TimerTask;
 public class BaseActivity extends AppCompatActivity {
 
     private Timer timer;
-    private boolean timerToast;
+    private boolean timerToast = true;
+    TimerTask detectedNetwrok;
     private static Thread.UncaughtExceptionHandler mDefaultUEH;
     private ConnectivityManager cm;
+    private int frequency=4000;
 
     private Thread.UncaughtExceptionHandler mCaughtExceptionHandler = new Thread.UncaughtExceptionHandler() {
         @Override
@@ -63,24 +65,26 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Second, set custom UncaughtExceptionHandler
-        mDefaultUEH = Thread.getDefaultUncaughtExceptionHandler();
-        Thread.setDefaultUncaughtExceptionHandler(mCaughtExceptionHandler);
+       // mDefaultUEH = Thread.getDefaultUncaughtExceptionHandler();
+        //Thread.setDefaultUncaughtExceptionHandler(mCaughtExceptionHandler);
         cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        TimerTask detectedNetwrok = new TimerTask() {
+        detectedNetwrok = new TimerTask() {
             @Override
             public void run() {
                 runOnUiThread(() -> {
                     if (isNetworkAvailable()) {
                         // 네트워크 사용가능
-                        timerToast = false;
-                        stopProgressDialog2();
+                        if(timerToast) {
+                            timerToast = false;
+                            stopProgressDialog2();
+                        }
                     } else {
                         // 네트워크 사용 불가능
                         if (!timerToast) {
+                            timerToast = true;
                             Toast.makeText(getApplicationContext(), "네트워크를 확인해주세요", Toast.LENGTH_LONG).show();
+                            startProgressDialog2();
                         }
-                        timerToast = true;
-                        startProgressDialog2();
                     }
                 });
 
@@ -88,7 +92,7 @@ public class BaseActivity extends AppCompatActivity {
         };
 
         timer = new Timer();
-        timer.schedule(detectedNetwrok, 0, 1000);
+        timer.schedule(detectedNetwrok, 0, frequency);
         super.onCreate(savedInstanceState);
 
     }

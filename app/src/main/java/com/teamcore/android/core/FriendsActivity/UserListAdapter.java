@@ -686,6 +686,11 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
             }
 
         }
+
+        @Override
+        public void onRewardedVideoCompleted() {
+
+        }
     };
 
     private void loadRewardedVideoAd2() {
@@ -769,6 +774,11 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
                     isFillReward2 = true;
                     break;
             }
+
+        }
+
+        @Override
+        public void onRewardedVideoCompleted() {
 
         }
     };

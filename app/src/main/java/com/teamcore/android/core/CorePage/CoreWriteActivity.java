@@ -422,6 +422,11 @@ public class CoreWriteActivity extends BlockBaseActivity {
                     break;
             }
         }
+
+        @Override
+        public void onRewardedVideoCompleted() {
+
+        }
     };
 
 

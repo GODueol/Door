@@ -317,6 +317,11 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.OnConn
                     break;
             }
         }
+
+        @Override
+        public void onRewardedVideoCompleted() {
+            Toast.makeText(getApplicationContext(), "onRewardedVideoCompleted", Toast.LENGTH_LONG).show();
+        }
     };
 
     public void setMarker(LatLng latLng, String address) {
