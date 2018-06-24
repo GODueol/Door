@@ -62,8 +62,8 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Second, set custom UncaughtExceptionHandler
-        //mDefaultUEH = Thread.getDefaultUncaughtExceptionHandler();
-        //Thread.setDefaultUncaughtExceptionHandler(mCaughtExceptionHandler);
+        mDefaultUEH = Thread.getDefaultUncaughtExceptionHandler();
+        Thread.setDefaultUncaughtExceptionHandler(mCaughtExceptionHandler);
 
         TimerTask detectedNetwrok = new TimerTask() {
             @Override
