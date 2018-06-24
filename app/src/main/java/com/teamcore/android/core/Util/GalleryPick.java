@@ -77,7 +77,7 @@ public class GalleryPick {
         long mb = getFileSizeInMB();
         if(mb >= RemoteConfig.LIMIT_MB){
             // 퀄리티 계산
-            quality = (int) ((RemoteConfig.LIMIT_MB*1024*1204)*100/getFileSizeInBytes());
+            quality = (int) ((RemoteConfig.LIMIT_MB*1024*1024)*100/getFileSizeInBytes());
 
         }
 
