@@ -96,6 +96,7 @@ public class IntroActivity extends BaseActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        deleteNetWorkReceiver();
         setContentView(R.layout.intro_activity);
 
         // 시간 자동 설정 체크

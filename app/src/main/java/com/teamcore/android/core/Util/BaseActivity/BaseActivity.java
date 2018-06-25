@@ -39,15 +39,22 @@ public class BaseActivity extends AppCompatActivity {
         // Second, set custom UncaughtExceptionHandler
         //mDefaultUEH = Thread.getDefaultUncaughtExceptionHandler();
         //Thread.setDefaultUncaughtExceptionHandler(mCaughtExceptionHandler);
+
         registerWifiReceiver();
         setProgressDialog2();
         super.onCreate(savedInstanceState);
     }
 
+    public void deleteNetWorkReceiver(){
+        this.unregisterReceiver(NetworkDetectedReceiver);
+    }
+
 
     @Override
     protected void onDestroy() {
-        this.unregisterReceiver(NetworkDetectedReceiver);
+        try {
+            this.unregisterReceiver(NetworkDetectedReceiver);
+        }catch (Exception ignored){}
         super.onDestroy();
     }
 
