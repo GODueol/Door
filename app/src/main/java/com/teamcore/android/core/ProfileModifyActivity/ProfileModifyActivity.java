@@ -207,6 +207,10 @@ public class ProfileModifyActivity extends BaseActivity implements NumberPicker.
 
         // 개인정보 Setting
         user = getUser();
+        if(user == null) {
+            startActivity(new Intent(ProfileModifyActivity.this, ProfileModifyActivity.class));
+            finish();
+        }
         _idText.setText(user.getId());
         agePick.setText(Integer.toString(user.getAge()));
         heightPick.setText(Integer.toString(user.getHeight()));
@@ -238,7 +242,7 @@ public class ProfileModifyActivity extends BaseActivity implements NumberPicker.
             if (url == null) continue;
             GlideApp.with(getBaseContext())
                     .load(url)
-                    .placeholder(R.drawable.pic_load_ani)
+                    .placeholder(R.drawable.pic_load_ani2)
                     .into(profilePics[i]);
         }
 
@@ -317,9 +321,9 @@ public class ProfileModifyActivity extends BaseActivity implements NumberPicker.
         CompoundButton.OnCheckedChangeListener listener = (compoundButton, b) -> {
             String msg;
             if(b){  // True 잠금
-                msg = "이 사진을 비공개합니다.";
+                msg = "이 사진을 비공개합니다";
             } else {
-                msg = "이 사진을 전체 공개합니다";
+                msg = "이 사진을 전체공개합니다";
             }
             Toast.makeText(ProfileModifyActivity.this, msg, Toast.LENGTH_SHORT).show();
         };
