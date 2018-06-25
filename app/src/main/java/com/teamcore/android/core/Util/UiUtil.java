@@ -43,7 +43,7 @@ public class UiUtil {
     }
 
     private ProgressDialog progressDialog;
-    private ProgressDialog progressDialog2;
+
 
     private UiUtil() {
     }
@@ -74,31 +74,6 @@ public class UiUtil {
         try {
             if (progressDialog != null && progressDialog.isShowing() && progressDialog.getContext() != null)
                 progressDialog.dismiss();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void startProgressDialog2(Activity activity) {
-        try{
-            if(progressDialog2 != null && progressDialog2.isShowing()) return;
-            //프로그레스 다이얼로그 이미지만 센터에서 돌아가게
-            progressDialog2 = new ProgressDialog(activity, R.style.MyTheme);
-            progressDialog2.setIndeterminate(true);
-            progressDialog2.setProgressStyle(android.R.style.Widget_ProgressBar_Small);
-            progressDialog2.setIndeterminateDrawable(activity.getResources().getDrawable(R.drawable.network_error_drawable_animation));
-            progressDialog2.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            progressDialog2.setCancelable(false);
-            if(!progressDialog2.isShowing())progressDialog2.show();
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-    }
-
-    public void stopProgressDialog2() {
-        try {
-            if (progressDialog2 != null && progressDialog2.isShowing() && progressDialog2.getContext() != null)
-                progressDialog2.dismiss();
         } catch (Exception e) {
             e.printStackTrace();
         }

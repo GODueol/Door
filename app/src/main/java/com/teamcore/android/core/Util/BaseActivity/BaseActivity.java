@@ -1,8 +1,11 @@
 package com.teamcore.android.core.Util.BaseActivity;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -35,7 +38,8 @@ public class BaseActivity extends AppCompatActivity {
     TimerTask detectedNetwrok;
     private static Thread.UncaughtExceptionHandler mDefaultUEH;
     private ConnectivityManager cm;
-    private int frequency=4000;
+    private ProgressDialog progressDialog2;
+    private int frequency = 4000;
 
     private Thread.UncaughtExceptionHandler mCaughtExceptionHandler = new Thread.UncaughtExceptionHandler() {
         @Override
@@ -50,9 +54,9 @@ public class BaseActivity extends AppCompatActivity {
                 }
             }.start();
 
-            try{
+            try {
                 Thread.sleep(2000);
-            }catch (Exception ignored){
+            } catch (Exception ignored) {
             }
 
             appRestert();
@@ -65,26 +69,28 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Second, set custom UncaughtExceptionHandler
-       // mDefaultUEH = Thread.getDefaultUncaughtExceptionHandler();
+        // mDefaultUEH = Thread.getDefaultUncaughtExceptionHandler();
         //Thread.setDefaultUncaughtExceptionHandler(mCaughtExceptionHandler);
         cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        setProgressDialog2();
         detectedNetwrok = new TimerTask() {
             @Override
             public void run() {
                 runOnUiThread(() -> {
                     if (isNetworkAvailable()) {
                         // 네트워크 사용가능
-                        if(timerToast) {
+                        if (timerToast) {
                             timerToast = false;
                             stopProgressDialog2();
                         }
+
                     } else {
                         // 네트워크 사용 불가능
                         if (!timerToast) {
                             timerToast = true;
-                            Toast.makeText(getApplicationContext(), "네트워크를 확인해주세요", Toast.LENGTH_LONG).show();
                             startProgressDialog2();
                         }
+
                     }
                 });
 
@@ -171,15 +177,6 @@ public class BaseActivity extends AppCompatActivity {
         UiUtil.getInstance().stopProgressDialog();
     }
 
-    public void startProgressDialog2() {
-        UiUtil.getInstance().startProgressDialog2(BaseActivity.this);
-    }
-
-    public void stopProgressDialog2() {
-        UiUtil.getInstance().stopProgressDialog2();
-    }
-
-
     public void deleteMyIdentifier() {
         @SuppressLint("HardwareIds") String deviceIdentifier = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
         FirebaseDatabase.getInstance().getReference("identifier").child(deviceIdentifier).removeValue();
@@ -205,6 +202,27 @@ public class BaseActivity extends AppCompatActivity {
             e.printStackTrace();
             appRestert();
         }
+    }
+
+    public void setProgressDialog2() {
+        progressDialog2 = new ProgressDialog(this, R.style.MyTheme);
+        progressDialog2.setIndeterminate(true);
+        progressDialog2.setProgressStyle(android.R.style.Widget_ProgressBar_Small);
+        progressDialog2.setIndeterminateDrawable(this.getResources().getDrawable(R.drawable.network_error_drawable_animation));
+        progressDialog2.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        progressDialog2.setCancelable(false);
+    }
+
+    public void startProgressDialog2() {
+        if (!progressDialog2.isShowing()) {
+            progressDialog2.show();
+            Toast.makeText(getApplicationContext(),"네트워크를 확인해주세요" , Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public void stopProgressDialog2() {
+        if (progressDialog2 != null && progressDialog2.isShowing() && progressDialog2.getContext() != null)
+            progressDialog2.dismiss();
     }
 
 }
