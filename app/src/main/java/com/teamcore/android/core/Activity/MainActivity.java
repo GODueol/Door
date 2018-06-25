@@ -601,7 +601,6 @@ public class MainActivity extends BaseActivity
                 @SuppressLint("InflateParams")
 
                 View v = adbInflater.inflate(R.layout.dialog_weekly_topic, null);
-//                CheckBox dontShowAgain = v.findViewById(R.id.check_access);
 
                 TextView wtBigTitle = v.findViewById(R.id.wtBigTitle);
                 TextView wtTitleKo = v.findViewById(R.id.wtTitleKo);
@@ -631,13 +630,14 @@ public class MainActivity extends BaseActivity
                 //Dialog 사이즈 조절 (dialog.show() 밑에 있어야함)
                 DisplayMetrics displayMetrics = new DisplayMetrics();
                 getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.WHITE)); //다이얼로그 배경 색을 설정해줌으로써 다이얼로그 가로를 매치로 맞췄을 때 패딩이 안보이게 해줌
+//                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.WHITE)); //다이얼로그 배경 색을 설정해줌으로써 다이얼로그 가로를 매치로 맞췄을 때 패딩이 안보이게 해줌
                 int displayWidth = displayMetrics.widthPixels;
                 int displayHeight = displayMetrics.heightPixels;
                 WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
                 layoutParams.copyFrom(dialog.getWindow().getAttributes());
                 int dialogWindowWidth = WindowManager.LayoutParams.MATCH_PARENT;
-                int dialogWindowHeight = (int) (displayHeight * 0.45f);
+//                int dialogWindowHeight = (int) (displayHeight * 0.5f);
+                int dialogWindowHeight = WindowManager.LayoutParams.WRAP_CONTENT;
                 layoutParams.width = dialogWindowWidth;
                 layoutParams.height = dialogWindowHeight;
                 dialog.getWindow().setAttributes(layoutParams);
