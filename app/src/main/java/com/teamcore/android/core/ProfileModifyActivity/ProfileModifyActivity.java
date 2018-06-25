@@ -24,7 +24,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
@@ -44,7 +43,6 @@ import com.teamcore.android.core.Util.GalleryPick;
 import com.teamcore.android.core.Util.GlideApp;
 import com.teamcore.android.core.Util.UiUtil;
 
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -616,22 +614,23 @@ public class ProfileModifyActivity extends BaseActivity implements NumberPicker.
                         .addOnSuccessListener(taskSnapshot -> {
                             saveUserPicUrl(taskSnapshot.getDownloadUrl(), modifyingPic);
                             // Set Local
-                            stopProgressDialog();
                             GlideApp.with(modifyingPic.getContext())
                                     .load(taskSnapshot.getDownloadUrl())
                                     .placeholder(R.drawable.pic_load_ani2)
                                     .into(modifyingPic);
+                            stopProgressDialog();
+
+                            // make thumbnail
+                            StorageTask<UploadTask.TaskSnapshot> thumbnailUploadTask = null;
+                            try {
+                                thumbnailUploadTask = galleryPick.makeThumbNail(thumbNailSpaceRef);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            if(thumbnailUploadTask != null) thumbnailUploadTask.addOnSuccessListener(taskSnapshot2 -> saveUserThumbNailPicUrl(taskSnapshot2.getDownloadUrl(), modifyingPic));
+                            else removeUserThumbNailPicUrl(modifyingPic);
                         });
 
-                    // make thumbnail
-                    StorageTask<UploadTask.TaskSnapshot> thumbnailUploadTask = galleryPick.makeThumbNail(thumbNailSpaceRef, uri);
-                    if(thumbnailUploadTask != null) thumbnailUploadTask.addOnSuccessListener(taskSnapshot -> saveUserThumbNailPicUrl(taskSnapshot.getDownloadUrl(), modifyingPic));
-                    else removeUserThumbNailPicUrl(modifyingPic);
-
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                    Toast.makeText(ProfileModifyActivity.this, "Error : " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    stopProgressDialog();
                 } catch (Exception e) {
                     e.printStackTrace();
                     Toast.makeText(ProfileModifyActivity.this, "Error : " + e.getMessage(), Toast.LENGTH_SHORT).show();

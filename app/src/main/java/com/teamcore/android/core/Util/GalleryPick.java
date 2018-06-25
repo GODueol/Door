@@ -83,7 +83,8 @@ public class GalleryPick {
 
         Log.d("kbj","quality : " +quality);
 
-        return quality;
+//        return quality;
+        return 100;
     }
 
     // 원본
@@ -91,6 +92,7 @@ public class GalleryPick {
 
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, getQuality(), stream);
+        bitmap.recycle();
         byte[] rst = stream.toByteArray();
         Log.d("kbj","ori length : " +rst.length);
 
@@ -104,14 +106,6 @@ public class GalleryPick {
         byte[] rst = stream.toByteArray();
         Log.d("kbj","thum length : " +rst.length);
         return stream.toByteArray();
-    }
-
-    // 용량 제한
-    private Bitmap getResizeBitmap(Bitmap bitmap) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, getQuality(), stream);
-        byte[] bitmapData = stream.toByteArray();
-        return BitmapFactory.decodeByteArray(bitmapData, 0, bitmapData.length);
     }
 
     public Bitmap getBitmap() {
@@ -139,121 +133,67 @@ public class GalleryPick {
     }
 
     private void getImgPath(Uri uri) throws FileNotFoundException {
-        boolean isImageFromGoogleDrive = false;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            if (DocumentsContract.isDocumentUri(activity, uri)) {
-                if ("com.android.externalstorage.documents".equals(uri.getAuthority())) {
-                    String docId = DocumentsContract.getDocumentId(uri);
-                    String[] split = docId.split(":");
-                    String type = split[0];
+        this.uri = uri;
+        if (DocumentsContract.isDocumentUri(activity, uri)) {
+            if ("com.android.externalstorage.documents".equals(uri.getAuthority())) {
+                String docId = DocumentsContract.getDocumentId(uri);
+                String[] split = docId.split(":");
+                String type = split[0];
 
-                    if ("primary".equalsIgnoreCase(type)) {
-                        imgPath = Environment.getExternalStorageDirectory() + "/" + split[1];
-                    } else {
-                        Pattern DIR_SEPORATOR = Pattern.compile("/");
-                        Set<String> rv = new HashSet<>();
-                        String rawExternalStorage = System.getenv("EXTERNAL_STORAGE");
-                        String rawSecondaryStoragesStr = System.getenv("SECONDARY_STORAGE");
-                        String rawEmulatedStorageTarget = System.getenv("EMULATED_STORAGE_TARGET");
-                        if (TextUtils.isEmpty(rawEmulatedStorageTarget)) {
-                            if (TextUtils.isEmpty(rawExternalStorage)) {
-                                rv.add("/storage/sdcard0");
-                            } else {
-                                rv.add(rawExternalStorage);
-                            }
+                if ("primary".equalsIgnoreCase(type)) {
+                    imgPath = Environment.getExternalStorageDirectory() + "/" + split[1];
+                } else {
+                    Pattern DIR_SEPORATOR = Pattern.compile("/");
+                    Set<String> rv = new HashSet<>();
+                    String rawExternalStorage = System.getenv("EXTERNAL_STORAGE");
+                    String rawSecondaryStoragesStr = System.getenv("SECONDARY_STORAGE");
+                    String rawEmulatedStorageTarget = System.getenv("EMULATED_STORAGE_TARGET");
+                    if (TextUtils.isEmpty(rawEmulatedStorageTarget)) {
+                        if (TextUtils.isEmpty(rawExternalStorage)) {
+                            rv.add("/storage/sdcard0");
                         } else {
-                            String rawUserId;
-                            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                                rawUserId = "";
-                            } else {
-                                String path = Environment.getExternalStorageDirectory().getAbsolutePath();
-                                String[] folders = DIR_SEPORATOR.split(path);
-                                String lastFolder = folders[folders.length - 1];
-                                boolean isDigit = false;
-                                try {
-                                    Integer.valueOf(lastFolder);
-                                    isDigit = true;
-                                } catch (NumberFormatException ignored) {
-                                }
-                                rawUserId = isDigit ? lastFolder : "";
-                            }
-                            if (TextUtils.isEmpty(rawUserId)) {
-                                rv.add(rawEmulatedStorageTarget);
-                            } else {
-                                rv.add(rawEmulatedStorageTarget + File.separator + rawUserId);
-                            }
+                            rv.add(rawExternalStorage);
                         }
-                        if (!TextUtils.isEmpty(rawSecondaryStoragesStr)) {
-                            String[] rawSecondaryStorages = rawSecondaryStoragesStr.split(File.pathSeparator);
-                            Collections.addAll(rv, rawSecondaryStorages);
+                    } else {
+                        String rawUserId;
+                        String path = Environment.getExternalStorageDirectory().getAbsolutePath();
+                        String[] folders = DIR_SEPORATOR.split(path);
+                        String lastFolder = folders[folders.length - 1];
+                        boolean isDigit = false;
+                        try {
+                            Integer.valueOf(lastFolder);
+                            isDigit = true;
+                        } catch (NumberFormatException ignored) {
                         }
-                        String[] temp = rv.toArray(new String[rv.size()]);
-                        for (String aTemp : temp) {
-                            File tempf = new File(aTemp + "/" + split[1]);
-                            if (tempf.exists()) {
-                                imgPath = aTemp + "/" + split[1];
-                            }
+                        rawUserId = isDigit ? lastFolder : "";
+                        if (TextUtils.isEmpty(rawUserId)) {
+                            rv.add(rawEmulatedStorageTarget);
+                        } else {
+                            rv.add(rawEmulatedStorageTarget + File.separator + rawUserId);
                         }
                     }
-                } else if ("com.android.providers.downloads.documents".equals(uri.getAuthority())) {
-                    String id = DocumentsContract.getDocumentId(uri);
-                    Uri contentUri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
-
-                    Cursor cursor = null;
-                    String column = "_data";
-                    String[] projection = {column};
-                    try {
-                        cursor = activity.getContentResolver().query(contentUri, projection, null, null,
-                                null);
-                        if (cursor != null && cursor.moveToFirst()) {
-                            int column_index = cursor.getColumnIndexOrThrow(column);
-                            imgPath = cursor.getString(column_index);
+                    if (!TextUtils.isEmpty(rawSecondaryStoragesStr)) {
+                        String[] rawSecondaryStorages = rawSecondaryStoragesStr.split(File.pathSeparator);
+                        Collections.addAll(rv, rawSecondaryStorages);
+                    }
+                    String[] temp = rv.toArray(new String[rv.size()]);
+                    for (String aTemp : temp) {
+                        File tempf = new File(aTemp + "/" + split[1]);
+                        if (tempf.exists()) {
+                            imgPath = aTemp + "/" + split[1];
                         }
-                    } finally {
-                        if (cursor != null)
-                            cursor.close();
                     }
-                } else if ("com.android.providers.media.documents".equals(uri.getAuthority())) {
-                    String docId = DocumentsContract.getDocumentId(uri);
-                    String[] split = docId.split(":");
-                    String type = split[0];
-
-                    Uri contentUri = null;
-                    if ("image".equals(type)) {
-                        contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-                    } else if ("video".equals(type)) {
-                        contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
-                    } else if ("audio".equals(type)) {
-                        contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-                    }
-
-                    String selection = "_id=?";
-                    String[] selectionArgs = new String[]{split[1]};
-
-                    Cursor cursor = null;
-                    String column = "_data";
-                    String[] projection = {column};
-
-                    try {
-                        cursor = activity.getContentResolver().query(contentUri, projection, selection, selectionArgs, null);
-                        if (cursor != null && cursor.moveToFirst()) {
-                            int column_index = cursor.getColumnIndexOrThrow(column);
-                            imgPath = cursor.getString(column_index);
-                        }
-                    } finally {
-                        if (cursor != null)
-                            cursor.close();
-                    }
-                } else if ("com.google.android.apps.docs.storage".equals(uri.getAuthority())) {
-                    isImageFromGoogleDrive = true;
                 }
-            } else if ("content".equalsIgnoreCase(uri.getScheme())) {
+            } else if ("com.android.providers.downloads.documents".equals(uri.getAuthority())) {
+                String id = DocumentsContract.getDocumentId(uri);
+                Uri contentUri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
+
                 Cursor cursor = null;
                 String column = "_data";
                 String[] projection = {column};
-
                 try {
-                    cursor = activity.getContentResolver().query(uri, projection, null, null, null);
+                    cursor = activity.getContentResolver().query(contentUri, projection, null, null,
+                            null);
                     if (cursor != null && cursor.moveToFirst()) {
                         int column_index = cursor.getColumnIndexOrThrow(column);
                         imgPath = cursor.getString(column_index);
@@ -262,34 +202,75 @@ public class GalleryPick {
                     if (cursor != null)
                         cursor.close();
                 }
-            } else if ("file".equalsIgnoreCase(uri.getScheme())) {
-                imgPath = uri.getPath();
-            }
-
-            if (isImageFromGoogleDrive) {
-                bitmap = BitmapFactory.decodeStream(activity.getContentResolver().openInputStream(uri));
             } else if ("com.android.providers.media.documents".equals(uri.getAuthority())) {
-                bitmap = rotateBitmap(imgPath, BitmapFactory.decodeFile(imgPath));
-            } else {
+                String docId = DocumentsContract.getDocumentId(uri);
+                String[] split = docId.split(":");
+                String type = split[0];
 
-                File f = new File(imgPath);
-                BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-                bitmap = BitmapFactory.decodeFile(f.getAbsolutePath(), bmOptions);
+                Uri contentUri = null;
+                if ("image".equals(type)) {
+                    contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+                } else if ("video".equals(type)) {
+                    contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+                } else if ("audio".equals(type)) {
+                    contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+                }
+
+                String selection = "_id=?";
+                String[] selectionArgs = new String[]{split[1]};
+
+                Cursor cursor = null;
+                String column = "_data";
+                String[] projection = {column};
+
+                try {
+                    cursor = activity.getContentResolver().query(contentUri, projection, selection, selectionArgs, null);
+                    if (cursor != null && cursor.moveToFirst()) {
+                        int column_index = cursor.getColumnIndexOrThrow(column);
+                        imgPath = cursor.getString(column_index);
+                    }
+                } finally {
+                    if (cursor != null)
+                        cursor.close();
+                }
             }
+        } else if ("content".equalsIgnoreCase(uri.getScheme())) {
+            Cursor cursor = null;
+            String column = "_data";
+            String[] projection = {column};
 
-        } else {
-            bitmap = BitmapFactory.decodeStream(activity.getContentResolver().openInputStream(uri));
+            try {
+                cursor = activity.getContentResolver().query(uri, projection, null, null, null);
+                if (cursor != null && cursor.moveToFirst()) {
+                    int column_index = cursor.getColumnIndexOrThrow(column);
+                    imgPath = cursor.getString(column_index);
+                }
+            } finally {
+                if (cursor != null)
+                    cursor.close();
+            }
+        } else if ("file".equalsIgnoreCase(uri.getScheme())) {
+            imgPath = uri.getPath();
         }
+
+        if(isGif()) return;
+
+        if ("com.android.providers.media.documents".equals(uri.getAuthority())) {
+            bitmap = rotateBitmap(imgPath, decodeUri(uri));
+        } else {
+            bitmap = decodeUri(uri);
+        }
+
     }
 
-    public UploadTask upload(StorageReference ref) throws Exception {
+    public StorageTask<UploadTask.TaskSnapshot> upload(StorageReference ref) throws Exception {
         // Check Gif
-        return getUploadTask(ref, uri);
+        return upload(ref, uri);
     }
 
     public StorageTask<UploadTask.TaskSnapshot> upload(StorageReference ref, Uri uri) throws Exception {
         // Check Gif
-        getImgPath(uri);
+//        getImgPath(uri);
         return getUploadTask(ref, uri).addOnSuccessListener(taskSnapshot -> recycle());
     }
 
@@ -334,12 +315,12 @@ public class GalleryPick {
         // Gif 파일인 경우
         if (isGif()) {
             if(!DataContainer.getInstance().isPlus) throw new Exception(activity.getString(R.string.possibleCorePlusGIF));
-            if (getFileSizeInMB() >= RemoteConfig.LIMIT_MB) throw new Exception("파일이 5MB를 넘어서 불가능합니다");
+            if (getFileSizeInMB() >= RemoteConfig.LIMIT_MB) throw new Exception("파일이 "+ RemoteConfig.LIMIT_MB +"MB를 넘어서 불가능합니다");
 
             //Uri
             GlideApp.with(editImage.getContext())
                     .load(uri)
-                    .placeholder(R.drawable.a)
+                    .placeholder(R.drawable.pic_load_ani2)
                     .into(editImage);
         } else {
             //if (getFileSizeInMB() >= 5) throw new Exception("파일이 5MB를 넘어서 불가능합니다");
@@ -349,8 +330,8 @@ public class GalleryPick {
         }
     }
 
-    public UploadTask makeThumbNail(StorageReference thumbNailSpaceRef, Uri uri) throws Exception {
-        getImgPath(uri);
+    public UploadTask makeThumbNail(StorageReference thumbNailSpaceRef) {
+//        getImgPath(uri);
         if (isGif()) {
             return null;
         } else {
@@ -360,7 +341,7 @@ public class GalleryPick {
     }
 
     private Bitmap rotateBitmap(String src, Bitmap bitmap) {
-        bitmap = getResizeBitmap(bitmap);
+//        bitmap = getResizeBitmap(bitmap);
         int orientation = getExifOrientation(src);
 
         if (orientation == 1) {
@@ -418,19 +399,9 @@ public class GalleryPick {
             Field tagOrientationField = exifClass.getField("TAG_ORIENTATION");
             String tagOrientation = (String) tagOrientationField.get(null);
             orientation = (Integer) getAttributeInt.invoke(exifInstance, new Object[]{tagOrientation, 1});
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (SecurityException e) {
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
+        } catch (ClassNotFoundException | SecurityException | NoSuchMethodException | InstantiationException | InvocationTargetException | IllegalAccessException e) {
             e.printStackTrace();
         } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
             e.printStackTrace();
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
@@ -439,10 +410,10 @@ public class GalleryPick {
         return orientation;
     }
 
-    public void recycle() {
-        if(!bitmap.isRecycled()) bitmap.recycle();
+    private void recycle() {
+        if(bitmap != null && !bitmap.isRecycled()) bitmap.recycle();
     }
-/*
+
     private Bitmap decodeUri(Uri selectedImage) throws FileNotFoundException {
 
         // Decode image size
@@ -451,7 +422,7 @@ public class GalleryPick {
         BitmapFactory.decodeStream(activity.getContentResolver().openInputStream(selectedImage), null, o);
 
         // The new size we want to scale to (HD)
-        final int REQUIRED_SIZE = 1920;
+        final int REQUIRED_SIZE = 1920/2;
 
         // Find the correct scale value. It should be the power of 2.
         int width_tmp = o.outWidth, height_tmp = o.outHeight;
@@ -469,7 +440,8 @@ public class GalleryPick {
         // Decode with inSampleSize
         BitmapFactory.Options o2 = new BitmapFactory.Options();
         o2.inSampleSize = scale;
+        Log.d("KBJ", "o2.inSampleSize : " + o2.inSampleSize);
         return BitmapFactory.decodeStream(activity.getContentResolver().openInputStream(selectedImage), null, o2);
 
-    }*/
+    }
 }

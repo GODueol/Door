@@ -29,6 +29,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 import com.teamcore.android.core.Entity.User;
 import com.teamcore.android.core.Exception.NotSetAutoTimeException;
@@ -208,7 +209,7 @@ public class ChatFirebaseUtil {
 //        UploadTask uploadTask = imageMessageRef.putFile(outputFileUri);
 
         try {
-            UploadTask uploadTask = galleryPick.upload(imageMessageRef);
+            StorageTask<UploadTask.TaskSnapshot> uploadTask = galleryPick.upload(imageMessageRef);
             uploadTask.addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {

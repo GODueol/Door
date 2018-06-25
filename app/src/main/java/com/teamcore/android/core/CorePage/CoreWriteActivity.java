@@ -40,6 +40,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.otto.Subscribe;
 import com.teamcore.android.core.Entity.CorePost;
@@ -607,7 +608,7 @@ public class CoreWriteActivity extends BlockBaseActivity {
 
     private void uploadPicture() throws Exception {
         final StorageReference spaceRef = storageRef.child("posts").child(cUuid).child(postKey).child("picture");
-        UploadTask uploadTask = galleryPick.upload(spaceRef);
+        StorageTask<UploadTask.TaskSnapshot> uploadTask = galleryPick.upload(spaceRef);
         tasks.put(uploadTask, (OnSuccessListener<UploadTask.TaskSnapshot>) taskSnapshot -> postRef.child("pictureUrl").setValue(taskSnapshot.getDownloadUrl().toString()));
     }
 
