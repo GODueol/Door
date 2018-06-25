@@ -9,9 +9,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.github.chrisbanes.photoview.PhotoView;
 import com.teamcore.android.core.Entity.Notice;
 import com.teamcore.android.core.MessageActivity.util.DateUtil;
 import com.teamcore.android.core.R;
+import com.teamcore.android.core.Util.GlideApp;
 import com.teamcore.android.core.Util.SharedPreferencesUtil;
 
 import java.util.List;
@@ -42,7 +45,7 @@ public class NoticeAdapter extends RecyclerView.Adapter<NoticeAdapter.NoticeHold
         final Notice notice = noticeList.get(i);
 
         // Image
-        if(notice.getPictureUrl() == null) {
+        if (notice.getPictureUrl() == null) {
             holder.image.setVisibility(View.GONE);
         } else {
             holder.image.setVisibility(View.VISIBLE);
@@ -53,10 +56,11 @@ public class NoticeAdapter extends RecyclerView.Adapter<NoticeAdapter.NoticeHold
 
         holder.text.setText(notice.getText());
         holder.title.setText(notice.getTitle());
+        holder.image.setVisibility(View.GONE);
         holder.date.setText(new DateUtil(notice.getWriteDate()).getDateAndTime());
 
         // set New tag
-        if(sp.isNoticeRead(notice.getKey())){
+        if (sp.isNoticeRead(notice.getKey())) {
             holder.new_dot.setVisibility(View.INVISIBLE);
         } else {
             holder.new_dot.setVisibility(View.VISIBLE);
@@ -76,10 +80,14 @@ public class NoticeAdapter extends RecyclerView.Adapter<NoticeAdapter.NoticeHold
                 noticeHolder.new_dot.setVisibility(View.INVISIBLE);
 
                 // 펼침
-                if(noticeHolder.text.getMaxLines() == 3){
+                if (noticeHolder.text.getMaxLines() == 3) {
                     noticeHolder.text.setMaxLines(Integer.MAX_VALUE);
+                    holder.image.setVisibility(View.VISIBLE);
+
+
                 } else {
                     noticeHolder.text.setMaxLines(3);
+                    holder.image.setVisibility(View.GONE);
                 }
 
             }
