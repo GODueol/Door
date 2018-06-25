@@ -2,12 +2,13 @@ package com.teamcore.android.core.Util.BaseActivity;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Looper;
 import android.provider.Settings;
@@ -20,6 +21,7 @@ import com.teamcore.android.core.Entity.User;
 import com.teamcore.android.core.LoginActivity.LoginActivity;
 import com.teamcore.android.core.R;
 import com.teamcore.android.core.Util.DataContainer;
+import com.teamcore.android.core.Util.NetworkUtil;
 import com.teamcore.android.core.Util.UiUtil;
 import com.teamcore.android.core.Util.bilingUtil.IabHelper;
 import com.teamcore.android.core.Util.bilingUtil.Purchase;
@@ -27,92 +29,26 @@ import com.teamcore.android.core.Util.bilingUtil.Purchase;
 import org.jdeferred.Promise;
 import org.jdeferred.impl.DeferredObject;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 @SuppressLint("Registered")
 public class BaseActivity extends AppCompatActivity {
-
-    private Timer timer;
-    private boolean timerToast = true;
-    TimerTask detectedNetwrok;
     private static Thread.UncaughtExceptionHandler mDefaultUEH;
-    private ConnectivityManager cm;
     private ProgressDialog progressDialog2;
-    private int frequency = 4000;
-
-    private Thread.UncaughtExceptionHandler mCaughtExceptionHandler = new Thread.UncaughtExceptionHandler() {
-        @Override
-        public void uncaughtException(Thread thread, Throwable ex) {
-
-            new Thread() {
-                @Override
-                public void run() {
-                    Looper.prepare();
-                    Toast.makeText(getApplicationContext(), "비정상 종료로 앱이 재시작됩니다.", Toast.LENGTH_LONG).show();
-                    Looper.loop();
-                }
-            }.start();
-
-            try {
-                Thread.sleep(2000);
-            } catch (Exception ignored) {
-            }
-
-            appRestert();
-
-            // This will make Crashlytics do its job
-            mDefaultUEH.uncaughtException(thread, ex);
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Second, set custom UncaughtExceptionHandler
-        // mDefaultUEH = Thread.getDefaultUncaughtExceptionHandler();
+        //mDefaultUEH = Thread.getDefaultUncaughtExceptionHandler();
         //Thread.setDefaultUncaughtExceptionHandler(mCaughtExceptionHandler);
-        cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        registerWifiReceiver();
         setProgressDialog2();
-        detectedNetwrok = new TimerTask() {
-            @Override
-            public void run() {
-                runOnUiThread(() -> {
-                    if (isNetworkAvailable()) {
-                        // 네트워크 사용가능
-                        if (timerToast) {
-                            timerToast = false;
-                            stopProgressDialog2();
-                        }
-
-                    } else {
-                        // 네트워크 사용 불가능
-                        if (!timerToast) {
-                            timerToast = true;
-                            startProgressDialog2();
-                        }
-
-                    }
-                });
-
-            }
-        };
-
-        timer = new Timer();
-        timer.schedule(detectedNetwrok, 0, frequency);
         super.onCreate(savedInstanceState);
-
     }
 
 
     @Override
     protected void onDestroy() {
-        timer.cancel();
+        this.unregisterReceiver(NetworkDetectedReceiver);
         super.onDestroy();
-    }
-
-    private boolean isNetworkAvailable() {
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
     }
 
     // 구독 결제 확인
@@ -120,10 +56,8 @@ public class BaseActivity extends AppCompatActivity {
         DeferredObject deferred = new DeferredObject();
         Promise promise = deferred.promise();
 
-
         // 핼퍼 setup
         IabHelper iaphelper = new IabHelper(this, getString(R.string.GP_LICENSE_KEY));
-
 
         IabHelper.QueryInventoryFinishedListener mGotInventoryListener = (result, inv) -> {
             if (result.isFailure()) {
@@ -204,6 +138,40 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
+    interface OnChangeNetworkStatusListener {
+        public void OnChanged(int status);
+    }
+
+    OnChangeNetworkStatusListener listener = status -> {
+        switch (status) {
+            case 0:
+                startProgressDialog2();
+                break;
+            default:
+                stopProgressDialog2();
+                break;
+        }
+    };
+
+    // 네트워크 상태 감지를 위한 리스너
+    BroadcastReceiver NetworkDetectedReceiver = new BroadcastReceiver() {
+        private OnChangeNetworkStatusListener onChangeNetworkStatusListener = null;
+
+        @Override
+        public void onReceive(final Context context, final Intent intent) {
+            int status = NetworkUtil.getConnectivityStatus(context);
+            onChangeNetworkStatusListener = listener;
+            onChangeNetworkStatusListener.OnChanged(status);
+        }
+    };
+
+    private void registerWifiReceiver() {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+        this.registerReceiver(NetworkDetectedReceiver, filter);
+    }
+
+
     public void setProgressDialog2() {
         progressDialog2 = new ProgressDialog(this, R.style.MyTheme);
         progressDialog2.setIndeterminate(true);
@@ -216,7 +184,7 @@ public class BaseActivity extends AppCompatActivity {
     public void startProgressDialog2() {
         if (!progressDialog2.isShowing()) {
             progressDialog2.show();
-            Toast.makeText(getApplicationContext(),"네트워크를 확인해주세요" , Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "네트워크를 확인해주세요", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -224,5 +192,31 @@ public class BaseActivity extends AppCompatActivity {
         if (progressDialog2 != null && progressDialog2.isShowing() && progressDialog2.getContext() != null)
             progressDialog2.dismiss();
     }
+
+    // 예외치 못한 상황 처리리
+    private Thread.UncaughtExceptionHandler mCaughtExceptionHandler = new Thread.UncaughtExceptionHandler() {
+        @Override
+        public void uncaughtException(Thread thread, Throwable ex) {
+
+            new Thread() {
+                @Override
+                public void run() {
+                    Looper.prepare();
+                    Toast.makeText(getApplicationContext(), "비정상 종료로 앱이 재시작됩니다.", Toast.LENGTH_LONG).show();
+                    Looper.loop();
+                }
+            }.start();
+
+            try {
+                Thread.sleep(2000);
+            } catch (Exception ignored) {
+            }
+
+            appRestert();
+
+            // This will make Crashlytics do its job
+            mDefaultUEH.uncaughtException(thread, ex);
+        }
+    };
 
 }
