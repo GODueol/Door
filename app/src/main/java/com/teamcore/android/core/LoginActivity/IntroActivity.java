@@ -171,13 +171,13 @@ public class IntroActivity extends BaseActivity {
                 logout();
                 return;
             }
-            mAuth.fetchProvidersForEmail(user.getEmail()).addOnCompleteListener(task -> {
+            mAuth.fetchSignInMethodsForEmail(user.getEmail()).addOnCompleteListener(task -> {
                 if (!task.isSuccessful()) {
                     Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     finish();
                 }
 
-                List<String> provider = task.getResult().getProviders();
+                List<String> provider = task.getResult().getSignInMethods();
                 if (provider == null || provider.isEmpty()) { // 계정이 없는 경우
                     Log.d(getApplication().getClass().getName(), "계정없음:" + user.getUid());
                     logout();
