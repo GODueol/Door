@@ -46,7 +46,9 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     public void deleteNetWorkReceiver(){
-        this.unregisterReceiver(NetworkDetectedReceiver);
+        try {
+            this.unregisterReceiver(NetworkDetectedReceiver);
+        }catch (Exception ignored){}
     }
 
 

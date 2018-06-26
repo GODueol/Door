@@ -532,6 +532,7 @@ public class ChatFirebaseUtil {
             chattingRecyclerview.removeOnScrollListener(detectTopPosition);
             if (childKeyList.size() < RemoteConfig.MessageCount) {
                 detectTopPosition = null;
+                return;
             }
             // 마지막으로 불러온 채팅 아이디
             String lastChildChatKey = childKeyList.get(0);
@@ -539,6 +540,8 @@ public class ChatFirebaseUtil {
             // 맨 위 아이템 제거(중복발생)
             try {
                 chatMessageList.remove(0);
+                chattingRecyclerview.getRecycledViewPool().clear();
+                chattingMessageAdapter.notifyDataSetChanged();
             } catch (Exception e) {
                 Intent p = new Intent(context.getApplicationContext(), MessageActivity.class);
                 p.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
