@@ -52,7 +52,6 @@ public class NoticeActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(noticeAdapter);
         recyclerView.addItemDecoration(new DividerItemDecoration(NoticeActivity.this, DividerItemDecoration.VERTICAL)); //리사이클뷰 구분선
-
         ((SimpleItemAnimator) recyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
 
         // 코어 주인의 User Get

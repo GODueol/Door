@@ -58,7 +58,9 @@
         android:ellipsize="end"
         android:text=""
         android:textColor="@color/black"
-        android:textSize="15sp" />
+        android:textSize="15sp"
+        android:autoLink="web"
+        />
 
     <TextView
         android:id="@+id/date"
