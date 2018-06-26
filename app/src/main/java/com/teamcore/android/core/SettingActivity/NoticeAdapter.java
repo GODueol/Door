@@ -81,17 +81,31 @@ public class NoticeAdapter extends RecyclerView.Adapter<NoticeAdapter.NoticeHold
 
                 // 펼침
                 if (noticeHolder.text.getMaxLines() == 3) {
-                    noticeHolder.text.setMaxLines(Integer.MAX_VALUE);
                     holder.image.setVisibility(View.VISIBLE);
-
-
-                } else {
-                    noticeHolder.text.setMaxLines(3);
-                    holder.image.setVisibility(View.GONE);
+                    noticeHolder.text.setMaxLines(Integer.MAX_VALUE);
                 }
-
+                // 접음
+                else {
+                    holder.image.setVisibility(View.GONE);
+                    noticeHolder.text.setMaxLines(3);
+                }
+                //이미지 클릭 시 펼치고 접음
+                holder.image.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View view) {
+                        if(noticeHolder.text.getMaxLines()==3){
+                            holder.image.setVisibility(View.VISIBLE);
+                            noticeHolder.text.setMaxLines(Integer.MAX_VALUE);
+                        }
+                        else{
+                            holder.image.setVisibility(View.GONE);
+                            noticeHolder.text.setMaxLines(3);
+                        }
+                    }
+                });
             }
         });
+
     }
 
     @Override
