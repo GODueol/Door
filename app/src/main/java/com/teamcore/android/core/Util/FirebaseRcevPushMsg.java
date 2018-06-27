@@ -28,11 +28,14 @@ import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
 public class FirebaseRcevPushMsg extends FirebaseMessagingService {
     private static final String TAG = "MyFirebaseMsgService";
 
-    private static final int DEFUALT = 1000;
-    private static final int CHATING_FALG = 2000;
-    private static final int FRIENDS_FALG = 3000;
-    private static final int COREPOST_FALG = 4000;
 
+    private static final int CHATING_FALG = 0;
+    private static final int FRIENDS_FALG = 1;
+    private static final int COREPOST_FALG = 2;
+    private static final int DEFUALT = 3;
+    private static final long Vibration[][] = new long[][]{{0L, 100L, 100L, 200L}, // chat vibration
+                                                            {0L, 200L, 100L, 100L}, // friends vibration
+                                                            {0L, 200L, 100L, 200L}}; // core vibration
     private SharedPreferencesUtil SPUtil;
 
     /**
@@ -44,10 +47,7 @@ public class FirebaseRcevPushMsg extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         SPUtil = new SharedPreferencesUtil(getApplicationContext());
-
-        boolean isCheck = SPUtil.getSwitchState(getString(R.string.alertUnlockPic));
-        isCheck = SPUtil.getSwitchState(getString(R.string.alertPost));
-        isCheck = SPUtil.getSwitchState(getString(R.string.alertLike));
+        boolean isCheck;
 
 
         // Check if message contains a data payload.
@@ -123,7 +123,7 @@ public class FirebaseRcevPushMsg extends FirebaseMessagingService {
     }
 
 
-    public PendingIntent setPendingIntent (int flag){
+    public PendingIntent setPendingIntent(int flag) {
         Intent intent = new Intent(this, MainActivity.class);
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
         stackBuilder.addParentStack(MainActivity.class);
@@ -145,7 +145,7 @@ public class FirebaseRcevPushMsg extends FirebaseMessagingService {
         return stackBuilder.getPendingIntent(0, FLAG_UPDATE_CURRENT);
     }
 
-    public void showNotification(int flag, NotificationCompat.Builder notificationBuilder, NotificationManager notificationManager){
+    public void showNotification(int flag, NotificationCompat.Builder notificationBuilder, NotificationManager notificationManager) {
 
         switch (flag) {
             case CHATING_FALG:
@@ -157,11 +157,12 @@ public class FirebaseRcevPushMsg extends FirebaseMessagingService {
             case COREPOST_FALG:
                 notificationManager.notify(COREPOST_FALG, notificationBuilder.build());
                 break;
-            default :
+            default:
                 notificationManager.notify(DEFUALT, notificationBuilder.build());
                 break;
         }
     }
+
     /**
      * Create and show a simple notification containing the received FCM message.
      *
@@ -172,7 +173,10 @@ public class FirebaseRcevPushMsg extends FirebaseMessagingService {
 
         PendingIntent pendingIntent = setPendingIntent(flag);
         String channelId = "Core channel";
-        String channelId_none = "Core none channel";
+        String chatChannelId = "Chat channel";
+        String friendsChannelId = "Friends channel";
+        String CoreChannelId = "Core channel";
+        String channelId_none = "none alert channel";
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         boolean isCheck = SPUtil.getSwitchState(getString(R.string.set_vibrate));
@@ -185,12 +189,8 @@ public class FirebaseRcevPushMsg extends FirebaseMessagingService {
                 // 채크되있으면 노알림
                 channel = notificationManager.getNotificationChannel(channelId_none);
                 if (channel == null) {
-                    channel = new NotificationChannel(channelId_none, channelId_none, NotificationManager.IMPORTANCE_DEFAULT);
+                    channel = new NotificationChannel(channelId_none, channelId_none, NotificationManager.IMPORTANCE_LOW);
                 }
-                channel.setSound(null, null);
-                channel.enableVibration(false);
-                channel.setVibrationPattern(new long[]{0L});
-
                 notificationBuilder =
                         new NotificationCompat.Builder(this, channelId_none)
                                 .setSmallIcon(R.drawable.icon)
@@ -201,45 +201,100 @@ public class FirebaseRcevPushMsg extends FirebaseMessagingService {
                                 .setContentIntent(pendingIntent);
 
             } else {
-                // 체크 안되있을경우
-                channel = notificationManager.getNotificationChannel(channelId);
-                if (channel == null) {
-                    channel = new NotificationChannel(channelId, channelId, NotificationManager.IMPORTANCE_DEFAULT);
+                switch (flag) {
+                    case CHATING_FALG:
+                        // 여긴 채팅
+                        // 체크 안되있을경우
+                        channel = notificationManager.getNotificationChannel(chatChannelId);
+                        if (channel == null) {
+                            channel = new NotificationChannel(chatChannelId, chatChannelId, NotificationManager.IMPORTANCE_DEFAULT);
+                            channel.setVibrationPattern(Vibration[CHATING_FALG]);
+                        }
+                        notificationBuilder =
+                                new NotificationCompat.Builder(this, chatChannelId)
+                                        .setSmallIcon(R.drawable.icon)
+                                        .setContentTitle(title)
+                                        .setContentText(messageBody)
+                                        .setAutoCancel(true)
+                                        .setSound(defaultSoundUri)
+                                        .setContentIntent(pendingIntent);
+                        break;
+                    case FRIENDS_FALG:
+                        // 여긴 프렌즈
+                        // 체크 안되있을경우
+                        channel = notificationManager.getNotificationChannel(friendsChannelId);
+                        if (channel == null) {
+                            channel = new NotificationChannel(friendsChannelId, friendsChannelId, NotificationManager.IMPORTANCE_DEFAULT);
+                            channel.setVibrationPattern(Vibration[FRIENDS_FALG]);
+                        }
+                        notificationBuilder =
+                                new NotificationCompat.Builder(this, friendsChannelId)
+                                        .setSmallIcon(R.drawable.icon)
+                                        .setContentTitle(title)
+                                        .setContentText(messageBody)
+                                        .setAutoCancel(true)
+                                        .setSound(defaultSoundUri)
+                                        .setContentIntent(pendingIntent);
+                        break;
+                    case COREPOST_FALG:
+                        // 여긴 코어
+                        // 체크 안되있을경우
+                        channel = notificationManager.getNotificationChannel(CoreChannelId);
+                        if (channel == null) {
+                            channel = new NotificationChannel(CoreChannelId, CoreChannelId, NotificationManager.IMPORTANCE_DEFAULT);
+                            channel.setVibrationPattern(Vibration[COREPOST_FALG]);
+                        }
+                        notificationBuilder =
+                                new NotificationCompat.Builder(this, CoreChannelId)
+                                        .setSmallIcon(R.drawable.icon)
+                                        .setContentTitle(title)
+                                        .setContentText(messageBody)
+                                        .setAutoCancel(true)
+                                        .setSound(defaultSoundUri)
+                                        .setContentIntent(pendingIntent);
+                        break;
+                    default:                // 체크 안되있을경우
+                        channel = notificationManager.getNotificationChannel(channelId);
+                        if (channel == null) {
+                            channel = new NotificationChannel(channelId, channelId, NotificationManager.IMPORTANCE_DEFAULT);
+                        }
+                        notificationBuilder =
+                                new NotificationCompat.Builder(this, channelId)
+                                        .setSmallIcon(R.drawable.icon)
+                                        .setContentTitle(title)
+                                        .setContentText(messageBody)
+                                        .setAutoCancel(true)
+                                        .setSound(defaultSoundUri)
+                                        .setContentIntent(pendingIntent);
+                        break;
                 }
-               notificationBuilder =
-                        new NotificationCompat.Builder(this, channelId)
-                                .setSmallIcon(R.drawable.icon)
-                                .setContentTitle(title)
-                                .setContentText(messageBody)
-                                .setAutoCancel(true)
-                                .setSound(defaultSoundUri)
-                                .setContentIntent(pendingIntent);
+
             }
             notificationManager.createNotificationChannel(channel);
             showNotification(flag, notificationBuilder, notificationManager);
 
-        }else {
+        } else {
             // 오레오 미만 버전
             notificationBuilder = new NotificationCompat.Builder(this, channelId)
-                            .setSmallIcon(R.drawable.icon)
-                            .setContentTitle(title)
-                            .setContentText(messageBody)
-                            .setAutoCancel(true)
-                            .setSound(defaultSoundUri)
-                            .setContentIntent(pendingIntent);
+                    .setSmallIcon(R.drawable.icon)
+                    .setContentTitle(title)
+                    .setContentText(messageBody)
+                    .setAutoCancel(true)
+                    .setSound(defaultSoundUri)
+                    .setContentIntent(pendingIntent);
 
             switch (flag) {
                 case CHATING_FALG:
                     // 여긴 채팅
-                    notificationBuilder.setVibrate(new long[]{0L, 100L, 100L, 200L});
+                    notificationBuilder.setVibrate(Vibration[CHATING_FALG]);
                     break;
                 case FRIENDS_FALG:
                     // 여긴 프렌즈
-                    notificationBuilder.setVibrate(new long[]{0L, 200L, 100L, 100L});
+                    notificationBuilder.setVibrate(Vibration[FRIENDS_FALG]);
                     break;
                 case COREPOST_FALG:
                     // 여긴 코어
-                    notificationBuilder.setVibrate(new long[]{0L, 200L, 100L, 200L});
+                    notificationBuilder.setVibrate(Vibration[COREPOST_FALG]);
                     break;
             }
 

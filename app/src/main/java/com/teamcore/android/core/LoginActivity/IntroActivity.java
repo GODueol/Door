@@ -180,7 +180,7 @@ public class IntroActivity extends BaseActivity {
                 try {
                     provider = task.getResult().getSignInMethods();
                 } catch (Exception e){
-                Toast.makeText(getApplicationContext(), "네트워크를 확인해주세요", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "로그인에 실패하였습니다", Toast.LENGTH_SHORT).show();
                 finish();
                 return;
             }

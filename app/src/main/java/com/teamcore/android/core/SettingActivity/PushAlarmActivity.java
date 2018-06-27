@@ -38,7 +38,6 @@ public class PushAlarmActivity extends AppCompatActivity implements CompoundButt
         Switch switch_chat = (Switch) findViewById(R.id.switch1);
         Switch switch_follow = (Switch) findViewById(R.id.switch2);
         Switch switch_friend = (Switch) findViewById(R.id.switch3);
-        Switch switch_privPic = (Switch) findViewById(R.id.switch4);
         Switch switch_post = (Switch) findViewById(R.id.switch5);
         Switch switch_answer = (Switch) findViewById(R.id.switch6);
         Switch switch_like = (Switch) findViewById(R.id.switch7);
@@ -50,8 +49,6 @@ public class PushAlarmActivity extends AppCompatActivity implements CompoundButt
         switch_follow.setChecked(isCheck);
         isCheck = SPUtil.getSwitchState(getString(R.string.alertFriend));
         switch_friend.setChecked(isCheck);
-        isCheck = SPUtil.getSwitchState(getString(R.string.alertUnlockPic));
-        switch_privPic.setChecked(isCheck);
         isCheck = SPUtil.getSwitchState(getString(R.string.alertPost));
         switch_post.setChecked(isCheck);
         isCheck = SPUtil.getSwitchState(getString(R.string.alertAnswer));
@@ -65,7 +62,6 @@ public class PushAlarmActivity extends AppCompatActivity implements CompoundButt
         switch_chat.setOnCheckedChangeListener(this);
         switch_follow.setOnCheckedChangeListener(this);
         switch_friend.setOnCheckedChangeListener(this);
-        switch_privPic.setOnCheckedChangeListener(this);
         switch_post.setOnCheckedChangeListener(this);
         switch_answer.setOnCheckedChangeListener(this);
         switch_like.setOnCheckedChangeListener(this);
@@ -87,9 +83,6 @@ public class PushAlarmActivity extends AppCompatActivity implements CompoundButt
                 break;
             case R.id.switch3:
                 switch_name = getString(R.string.alertFriend);
-                break;
-            case R.id.switch4:
-                switch_name = getString(R.string.alertUnlockPic);
                 break;
             case R.id.switch5:
                 switch_name = getString(R.string.alertPost);
