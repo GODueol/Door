@@ -33,6 +33,7 @@ public class UserListBaseActivity extends BaseActivity {
     protected SharedPreferencesUtil SPUtil;
 
     public void setRecyclerView(final ArrayList<UserListAdapter.Item> items, final UserListAdapter adapter, final String field, int item_menu, Query ref){
+        Log.d("KBJ", "setRecyclerView!!");
         adapter.setItemMenu(item_menu, field);
         //items.clear();
         //items.add(new UserListAdapter.Item(true));
@@ -49,7 +50,10 @@ public class UserListBaseActivity extends BaseActivity {
                 Log.d("KBJ",field +  ", DataChange : " + dataSnapshot.getKey() + ", size : " + dataSnapshot.getChildrenCount() + ", " + dataSnapshot.getValue());
                 items.clear();
                 items.add(new UserListAdapter.Item(true));
-                if(dataSnapshot.getValue() == null) adapter.notifyDataSetChanged();
+                if(dataSnapshot.getValue() == null) {
+                    adapter.notifyDataSetChanged();
+                    return;
+                }
 
                 if(field.equals("Find User")){
 
