@@ -173,11 +173,17 @@ public class IntroActivity extends BaseActivity {
             }
             mAuth.fetchSignInMethodsForEmail(user.getEmail()).addOnCompleteListener(task -> {
                 if (!task.isSuccessful()) {
-                    Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "네트워크를 확인해주세요", Toast.LENGTH_SHORT).show();
                     finish();
                 }
-
-                List<String> provider = task.getResult().getSignInMethods();
+                List<String> provider;
+                try {
+                    provider = task.getResult().getSignInMethods();
+                } catch (Exception e){
+                Toast.makeText(getApplicationContext(), "네트워크를 확인해주세요", Toast.LENGTH_SHORT).show();
+                finish();
+                return;
+            }
                 if (provider == null || provider.isEmpty()) { // 계정이 없는 경우
                     Log.d(getApplication().getClass().getName(), "계정없음:" + user.getUid());
                     logout();
@@ -241,9 +247,9 @@ public class IntroActivity extends BaseActivity {
         if (!IsSutiableVersion())
             finish();
 
-        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+       /* if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             logout();
-        }
+        }*/
     }
 
     @Override
