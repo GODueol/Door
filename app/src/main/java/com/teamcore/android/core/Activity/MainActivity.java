@@ -122,11 +122,6 @@ public class MainActivity extends BaseActivity
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         Intent p = getIntent();
-        String chatFlag = (String) p.getSerializableExtra("chat");
-        if (chatFlag != null && chatFlag.equals("chat")) {
-            Intent intent = new Intent(this, MessageActivity.class);
-            startActivity(intent);
-        }
 
         setSupportActionBar(toolbar);
         AdView mAdView = (AdView) findViewById(R.id.adView);

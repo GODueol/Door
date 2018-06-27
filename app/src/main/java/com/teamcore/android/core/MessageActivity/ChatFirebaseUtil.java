@@ -681,5 +681,13 @@ public class ChatFirebaseUtil {
             }
         });
     }
+
+    public void Pause(){
+        SPUtil.removeCurrentChat(context.getString(R.string.currentRoom));
+    }
+    public void  Resume(){
+        SPUtil.setCurrentChat(context.getString(R.string.currentRoom), roomName);
+    }
+
 }
 

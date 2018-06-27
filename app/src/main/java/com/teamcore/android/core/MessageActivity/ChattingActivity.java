@@ -235,9 +235,18 @@ public class ChattingActivity extends BlockBaseActivity {
 
         mRewardedVideoAd.resume(this);
         mRewardedVideoAd.setRewardedVideoAdListener(rewardedVideoAdListener);
+        chatFirebaseUtil.Resume();
         super.onResume();
         mImageView.setClickable(true);
     }
+
+    @Override
+    public void onPause() {
+        mRewardedVideoAd.pause(this);
+        chatFirebaseUtil.Pause();
+        super.onPause();
+    }
+
 
     @Override
     protected void onDestroy() {
@@ -587,11 +596,5 @@ public class ChattingActivity extends BlockBaseActivity {
 
         }
     };
-
-    @Override
-    public void onPause() {
-        mRewardedVideoAd.pause(this);
-        super.onPause();
-    }
 
 }

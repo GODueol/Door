@@ -88,7 +88,11 @@ public class DataContainer {
 
         if (diffTime < TIME_MAXIMUM.SEC) {
             // sec
-            msg = diffTime + "초 전";
+            if(diffTime<=10) {
+                msg = "방금 전";
+            }else {
+                msg = diffTime + "초 전";
+            }
         } else if ((diffTime /= TIME_MAXIMUM.SEC) < TIME_MAXIMUM.MIN) {
             // min
             System.out.println(diffTime);
