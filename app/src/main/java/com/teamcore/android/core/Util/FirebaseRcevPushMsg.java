@@ -1,11 +1,13 @@
 package com.teamcore.android.core.Util;
 
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
@@ -120,13 +122,8 @@ public class FirebaseRcevPushMsg extends FirebaseMessagingService {
 
     }
 
-    /**
-     * Create and show a simple notification containing the received FCM message.
-     *
-     * @param messageBody FCM message body received.
-     */
-    private void sendNotification(String title, String messageBody, int flag) {
-        // 기본 엑티비티 메인으로
+
+    public PendingIntent setPendingIntent (int flag){
         Intent intent = new Intent(this, MainActivity.class);
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
         stackBuilder.addParentStack(MainActivity.class);
@@ -144,57 +141,115 @@ public class FirebaseRcevPushMsg extends FirebaseMessagingService {
                 stackBuilder.addNextIntent(FriendsView);
                 break;
         }
-        pendingIntent = stackBuilder.getPendingIntent(0, FLAG_UPDATE_CURRENT);
 
-        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        NotificationCompat.Builder notificationBuilder =
-                new NotificationCompat.Builder(this, "Core channel")
-                        .setSmallIcon(R.drawable.icon)
-                        .setContentTitle(title)
-                        .setContentText(messageBody)
-                        .setAutoCancel(true)
-                        .setSound(defaultSoundUri)
-                        .setContentIntent(pendingIntent);
+        return stackBuilder.getPendingIntent(0, FLAG_UPDATE_CURRENT);
+    }
 
+    public void showNotification(int flag, NotificationCompat.Builder notificationBuilder, NotificationManager notificationManager){
 
-        boolean isCheck = SPUtil.getSwitchState(getString(R.string.set_vibrate));
         switch (flag) {
             case CHATING_FALG:
-                // 1000L == 1초 , 100L == 0.1초
-                // 대기 , 진동, 대기, 진동
-                // new long[]{대기,진동,대기,진동} 숫자뒤에 L은 꼭써줘야되요
-                // 여긴 채팅
-                notificationBuilder.setVibrate(new long[]{0L,100L,100L,200L});
+                notificationManager.notify(CHATING_FALG, notificationBuilder.build());
                 break;
             case FRIENDS_FALG:
-                // 여긴 프렌즈
-                notificationBuilder.setVibrate(new long[]{0L,200L,100L,100L});
+                notificationManager.notify(FRIENDS_FALG, notificationBuilder.build());
                 break;
             case COREPOST_FALG:
-                // 여긴 코어
-                notificationBuilder.setVibrate(new long[]{0L,200L,100L,200L});
-                break;
-        }
-
-        // 진동 제거
-        if (!isCheck) {
-            notificationBuilder.setVibrate(new long[]{0L});
-        }
-
-        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        switch (flag) {
-            case CHATING_FALG:
-                notificationManager.notify(CHATING_FALG/* ID of notification */, notificationBuilder.build());
-                break;
-            case FRIENDS_FALG:
-                notificationManager.notify(FRIENDS_FALG/* ID of notification */, notificationBuilder.build());
-                break;
-            case COREPOST_FALG:
-                notificationManager.notify(COREPOST_FALG/* ID of notification */, notificationBuilder.build());
+                notificationManager.notify(COREPOST_FALG, notificationBuilder.build());
                 break;
             default :
-                notificationManager.notify(DEFUALT/* ID of notification */, notificationBuilder.build());
+                notificationManager.notify(DEFUALT, notificationBuilder.build());
                 break;
+        }
+    }
+    /**
+     * Create and show a simple notification containing the received FCM message.
+     *
+     * @param messageBody FCM message body received.
+     */
+    private void sendNotification(String title, String messageBody, int flag) {
+        // 기본 엑티비티 메인으로
+
+        PendingIntent pendingIntent = setPendingIntent(flag);
+        String channelId = "Core channel";
+        String channelId_none = "Core none channel";
+        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        boolean isCheck = SPUtil.getSwitchState(getString(R.string.set_vibrate));
+        NotificationCompat.Builder notificationBuilder;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Since android Oreo notification channel is needed.
+            NotificationChannel channel;
+            if (!isCheck) {
+                // 채크되있으면 노알림
+                channel = notificationManager.getNotificationChannel(channelId_none);
+                if (channel == null) {
+                    channel = new NotificationChannel(channelId_none, channelId_none, NotificationManager.IMPORTANCE_DEFAULT);
+                }
+                channel.setSound(null, null);
+                channel.enableVibration(false);
+                channel.setVibrationPattern(new long[]{0L});
+
+                notificationBuilder =
+                        new NotificationCompat.Builder(this, channelId_none)
+                                .setSmallIcon(R.drawable.icon)
+                                .setContentTitle(title)
+                                .setContentText(messageBody)
+                                .setAutoCancel(true)
+                                .setSound(defaultSoundUri)
+                                .setContentIntent(pendingIntent);
+
+            } else {
+                // 체크 안되있을경우
+                channel = notificationManager.getNotificationChannel(channelId);
+                if (channel == null) {
+                    channel = new NotificationChannel(channelId, channelId, NotificationManager.IMPORTANCE_DEFAULT);
+                }
+               notificationBuilder =
+                        new NotificationCompat.Builder(this, channelId)
+                                .setSmallIcon(R.drawable.icon)
+                                .setContentTitle(title)
+                                .setContentText(messageBody)
+                                .setAutoCancel(true)
+                                .setSound(defaultSoundUri)
+                                .setContentIntent(pendingIntent);
+            }
+            notificationManager.createNotificationChannel(channel);
+            showNotification(flag, notificationBuilder, notificationManager);
+
+        }else {
+            // 오레오 미만 버전
+            notificationBuilder = new NotificationCompat.Builder(this, channelId)
+                            .setSmallIcon(R.drawable.icon)
+                            .setContentTitle(title)
+                            .setContentText(messageBody)
+                            .setAutoCancel(true)
+                            .setSound(defaultSoundUri)
+                            .setContentIntent(pendingIntent);
+
+            switch (flag) {
+                case CHATING_FALG:
+                    // 여긴 채팅
+                    notificationBuilder.setVibrate(new long[]{0L, 100L, 100L, 200L});
+                    break;
+                case FRIENDS_FALG:
+                    // 여긴 프렌즈
+                    notificationBuilder.setVibrate(new long[]{0L, 200L, 100L, 100L});
+                    break;
+                case COREPOST_FALG:
+                    // 여긴 코어
+                    notificationBuilder.setVibrate(new long[]{0L, 200L, 100L, 200L});
+                    break;
+            }
+
+            // 진동 제거
+            if (!isCheck) {
+                notificationBuilder.setSound(null);
+                notificationBuilder.setVibrate(new long[]{0L});
+            }
+
+            showNotification(flag, notificationBuilder, notificationManager);
         }
     }
 
