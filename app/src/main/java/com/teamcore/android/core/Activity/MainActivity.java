@@ -149,7 +149,7 @@ public class MainActivity extends BaseActivity
 
         toggle.setToolbarNavigationClickListener(v -> {
             SPUtil.setMainIcon(getString(R.string.mainAlarm), false);
-            changeToggleIcon();
+            new Thread(() -> runOnUiThread(() -> changeToggleIcon())).start();
         });
 
         //Navigation view
@@ -558,7 +558,7 @@ public class MainActivity extends BaseActivity
 
     @Override
     protected void onDestroy() {
-        if(navAlarmDialog!=null){
+        if (navAlarmDialog != null) {
             navAlarmDialog.Destroy();
         }
         super.onDestroy();
@@ -567,7 +567,7 @@ public class MainActivity extends BaseActivity
 
     @Override
     public void onResume() {
-        if(navAlarmDialog!=null){
+        if (navAlarmDialog != null) {
             navAlarmDialog.Resume();
         }
         super.onResume();
@@ -647,7 +647,7 @@ public class MainActivity extends BaseActivity
     @Override
     public void onPause() {
 
-        if(navAlarmDialog!=null){
+        if (navAlarmDialog != null) {
             navAlarmDialog.Pause();
         }
         super.onPause();
