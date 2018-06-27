@@ -30,7 +30,7 @@ android {
         minSdkVersion 19
         //noinspection OldTargetApi
         targetSdkVersion 26
-        versionCode 142
+        versionCode 143
         versionName "1.0"
 
         // Enabling multidex support.
@@ -58,8 +58,9 @@ android {
 
     buildTypes {
         release {
+            // 여긴 절대 건드리지마세요
             debuggable false
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
 
