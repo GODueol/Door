@@ -30,7 +30,7 @@ android {
         minSdkVersion 19
         //noinspection OldTargetApi
         targetSdkVersion 26
-        versionCode 143
+        versionCode 145
         versionName "1.0"
 
         // Enabling multidex support.
@@ -43,7 +43,7 @@ android {
     }
 
     dexOptions {
-        javaMaxHeapSize "4g"
+        javaMaxHeapSize "Xg"
     }
 
     lintOptions {

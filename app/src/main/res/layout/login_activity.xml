@@ -11,7 +11,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:background="@drawable/milkyway"
+        android:src="@drawable/milkyway"
         android:scaleType="centerCrop" />
     <!--배경 저작권 문제 생겼을 시 해당 이미지뷰 지우고 최상단 렐러티브 레이아웃에 android:background=@drawable/login_back 붙이기-->
 
