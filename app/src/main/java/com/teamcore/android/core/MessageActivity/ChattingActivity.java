@@ -350,7 +350,9 @@ public class ChattingActivity extends BlockBaseActivity {
                                                 }
                                                 noFillInterstitialAd.show();
                                             } else {
-                                                mRewardedVideoAd.show();
+                                                if(mRewardedVideoAd.isLoaded()) {
+                                                    mRewardedVideoAd.show();
+                                                }
                                             }
                                         }
 

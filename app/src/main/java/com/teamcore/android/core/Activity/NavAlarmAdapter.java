@@ -138,7 +138,9 @@ public class NavAlarmAdapter extends RecyclerView.Adapter<NavAlarmAdapter.ViewHo
                                     showCorePost(item, position);
                                     noFillInterstitialAd.show();
                                 } else {
-                                    mRewardedVideoAd.show();
+                                    if(mRewardedVideoAd.isLoaded()) {
+                                        mRewardedVideoAd.show();
+                                    }
                                 }
                             }
                         }

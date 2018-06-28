@@ -507,7 +507,9 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
                                             noFillInterstitialAd.show();
                                         }
                                         else {
-                                            mRewardedVideoAd.show();
+                                            if(mRewardedVideoAd.isLoaded()) {
+                                                mRewardedVideoAd.show();
+                                            }
                                         }
                                     }
 

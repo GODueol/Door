@@ -178,7 +178,9 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
                                         view.getContext().startActivity(p);
                                         noFillInterstitialAd.show();
                                     } else {
-                                        mRewardedVideoAd2.show();
+                                        if(mRewardedVideoAd2.isLoaded()) {
+                                            mRewardedVideoAd2.show();
+                                        }
                                     }
                                 }
                             }
@@ -287,7 +289,9 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
 
                                                 noFillInterstitialAd.show();
                                             } else {
-                                                mRewardedVideoAd.show();
+                                                if(mRewardedVideoAd.isLoaded()) {
+                                                    mRewardedVideoAd.show();
+                                                }
                                             }
                                         }
                                     }

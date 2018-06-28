@@ -503,7 +503,9 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                                     noFillInterstitialAd.show();
                                 }
                                 else {
-                                    mRewardedVideoAd2.show();
+                                    if(mRewardedVideoAd2.isLoaded()) {
+                                        mRewardedVideoAd2.show();
+                                    }
                                 }
                             }
                         }

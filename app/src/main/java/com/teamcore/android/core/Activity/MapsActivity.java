@@ -225,7 +225,9 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.OnConn
                                     noFillInterstitialAd.show();
                                     finish();
                                 } else {
-                                    mRewardedVideoAd.show();
+                                    if(mRewardedVideoAd.isLoaded()) {
+                                            mRewardedVideoAd.show();
+                                    }
                                 }
 
                             }

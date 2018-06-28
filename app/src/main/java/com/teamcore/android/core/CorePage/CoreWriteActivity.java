@@ -227,7 +227,9 @@ public class CoreWriteActivity extends BlockBaseActivity {
                                             saveCore();
                                             noFillInterstitialAd.show();
                                         } else {
-                                            mRewardedVideoAd.show();
+                                            if(mRewardedVideoAd.isLoaded()) {
+                                                mRewardedVideoAd.show();
+                                            }
                                         }
                                     }
                                 }
