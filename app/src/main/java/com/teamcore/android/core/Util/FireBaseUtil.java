@@ -2,7 +2,6 @@ package com.teamcore.android.core.Util;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
@@ -57,6 +56,7 @@ public class FireBaseUtil {
 
     public Task<Void> follow(BaseActivity context, final User oUser, String oUuid, boolean isFollowed) throws ChildSizeMaxException, NotSetAutoTimeException {
         String myUuid = DataContainer.getInstance().getUid();
+        if(oUuid.equals(myUuid)) throw new ChildSizeMaxException("자신은 팔로우 할 수 없습니다");
         SharedPreferencesUtil SPUtil = new SharedPreferencesUtil(context.getApplicationContext());
         final User mUser = context.getUser();
         if (mUser.getFollowingUsers().size() >= DataContainer.ChildrenMax) {
@@ -124,6 +124,8 @@ public class FireBaseUtil {
         final String mUuid = DataContainer.getInstance().getUid();
         final User mUser = DataContainer.getInstance().getUser();
 
+        if(mUuid.equals(oUuid)) throw new ChildSizeMaxException("자신을 차단할 수 없습니다");
+
         if (mUser.getBlockUsers().size() >= DataContainer.ChildrenMax) {
             throw new ChildSizeMaxException("최대 차단 수를 초과하여 더이상 팔로우할 수 없습니다");
         }
@@ -160,13 +162,13 @@ public class FireBaseUtil {
         // 채팅 관계 모두 삭제(DB)
         FirebaseDatabase.getInstance().getReference("chatRoomList").child(mUuid).child(oUuid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 try {
                     final String roomId = dataSnapshot.getValue(RoomVO.class).getChatRoomid();
                     // 채팅방 이미지 젼체 삭제
                     FirebaseDatabase.getInstance().getReference("chat").child(roomId).orderByChild("isImage").equalTo(1).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             for (DataSnapshot ds : dataSnapshot.getChildren()) {//마찬가지로 중복 유무 확인
                                 MessageVO message = ds.getValue(MessageVO.class);
                                 FirebaseStorage.getInstance().getReferenceFromUrl(message.getImage()).delete();
@@ -175,7 +177,7 @@ public class FireBaseUtil {
                         }
 
                         @Override
-                        public void onCancelled(DatabaseError databaseError) {
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
 
                         }
                     });
@@ -187,7 +189,7 @@ public class FireBaseUtil {
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         });
         // Code to be executed when when the interstitial ad is closed.
@@ -203,8 +205,9 @@ public class FireBaseUtil {
                 .child("posts").child(cUuid);
         postRef.runTransaction(new Transaction.Handler() {
 
+            @NonNull
             @Override
-            public Transaction.Result doTransaction(MutableData mutableData) {
+            public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
 
                 int count = 0;
                 if (mutableData.getValue() != null) {
@@ -314,14 +317,14 @@ public class FireBaseUtil {
         final DataContainer dc = DataContainer.getInstance();
         dc.getMyUserRef().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
                 dc.setUser(dataSnapshot.getValue(User.class));
                 syncUserListener.onSuccessSync(user);
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
         });

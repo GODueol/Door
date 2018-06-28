@@ -70,7 +70,7 @@ public class FindUserActivity extends UserListBaseActivity {
         search_view.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String id) {
-                setRecyclerView(items, adapter, "Find User", R.menu.follower_menu, DataContainer.getInstance().getUsersRef().orderByChild("id").equalTo(id));
+                findUserSetQuery(id);
                 return false;
             }
 
@@ -84,9 +84,14 @@ public class FindUserActivity extends UserListBaseActivity {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                setRecyclerView(items, adapter, "Find User", R.menu.follower_menu, DataContainer.getInstance().getUsersRef().orderByChild("id").equalTo(search_view.getQuery().toString()));
+                findUserSetQuery(search_view.getQuery().toString());
             }
         });
+    }
+
+    private void findUserSetQuery(String id) {
+        if(id.equals(DataContainer.getInstance().getUser().getId())) return;
+        setRecyclerView(items, adapter, "Find User", R.menu.follower_menu, DataContainer.getInstance().getUsersRef().orderByChild("id").equalTo(id));
     }
 
     @Override

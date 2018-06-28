@@ -90,6 +90,10 @@ public class GalleryPick {
     // 원본
     private byte[] getResizeImageByteArray(Bitmap bitmap) {
 
+
+        Log.d("kbj","getFileSizeInBytes() : " +getFileSizeInBytes());
+        Log.d("kbj","bitmap.getByteCount() : " +bitmap.getByteCount());
+
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, getQuality(), stream);
         bitmap.recycle();
