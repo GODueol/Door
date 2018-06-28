@@ -106,6 +106,8 @@ public class MainActivity extends BaseActivity
     NavAlarmDialog navAlarmDialog;
     IabHelper iaphelper;
 
+    private AdView mAdView;
+
     @SuppressLint("ClickableViewAccessibility")
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
@@ -124,15 +126,18 @@ public class MainActivity extends BaseActivity
         Intent p = getIntent();
 
         setSupportActionBar(toolbar);
-        AdView mAdView = (AdView) findViewById(R.id.adView);
+        mAdView = (AdView) findViewById(R.id.adView);
+        Log.d("ads",String.valueOf(mAdView.isLoading()));
         checkCorePlus().done(isPlus -> {
             if (!isPlus) {
                 AdRequest adRequest = new AdRequest.Builder()
                         .build();
                 mAdView.loadAd(adRequest);
+                Log.d("ads",String.valueOf(mAdView.isLoading()));
             } else {
                 mAdView.destroy();
                 mAdView.setVisibility(View.GONE);
+                Log.d("ads",String.valueOf(mAdView.isLoading()));
             }
         });
 
@@ -556,14 +561,23 @@ public class MainActivity extends BaseActivity
         }
     }
 
+
+
     @Override
-    protected void onDestroy() {
+    public void onPause() {
+
         if (navAlarmDialog != null) {
-            navAlarmDialog.Destroy();
+            navAlarmDialog.Pause();
         }
-        super.onDestroy();
-        UiUtil.getInstance().stopProgressDialog();
+
+        if(mAdView.isLoading()){
+            mAdView.pause();
+        }
+
+        super.onPause();
+        ScreenshotSetApplication.getInstance().unregisterScreenshotObserver();
     }
+
 
     @Override
     public void onResume() {
@@ -571,6 +585,10 @@ public class MainActivity extends BaseActivity
             navAlarmDialog.Resume();
         }
         super.onResume();
+
+        if(mAdView.isLoading()){
+            mAdView.resume();
+        }
         SPUtil.setBlockMeUserCurrentActivity(getString(R.string.currentActivity), null);
         checkMainToggle();
         ScreenshotSetApplication.getInstance().registerScreenshotObserver();
@@ -587,6 +605,19 @@ public class MainActivity extends BaseActivity
         });
     }
 
+
+    @Override
+    protected void onDestroy() {
+        if (navAlarmDialog != null) {
+            navAlarmDialog.Destroy();
+        }
+
+        if(mAdView.isLoading()){
+            mAdView.destroy();
+        }
+        super.onDestroy();
+        UiUtil.getInstance().stopProgressDialog();
+    }
     private void showWeeklyTopicDialog() {
         try {
             if (SPUtil.isWeeklyTopicPossible(MainActivity.this)) {
@@ -642,16 +673,6 @@ public class MainActivity extends BaseActivity
         } catch (NotSetAutoTimeException e) {
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public void onPause() {
-
-        if (navAlarmDialog != null) {
-            navAlarmDialog.Pause();
-        }
-        super.onPause();
-        ScreenshotSetApplication.getInstance().unregisterScreenshotObserver();
     }
 
     @Override

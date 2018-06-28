@@ -93,7 +93,7 @@ public class CoreActivity extends BlockBaseActivity {
     ServiceConnection mServiceConn;
     IabHelper iaphelper;
     private CloudEntity cloudEntity;
-
+    private AdView mAdView;
     @SuppressLint("LogNotTimber")
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -176,7 +176,7 @@ public class CoreActivity extends BlockBaseActivity {
 
     public void setContentView() {
         setContentView(R.layout.core_activity);
-        AdView mAdView = (AdView) findViewById(R.id.adView);
+        mAdView = (AdView) findViewById(R.id.adView);
 
         if (!DataContainer.getInstance().isPlus) {
             AdRequest adRequest = new AdRequest.Builder()
@@ -450,23 +450,43 @@ public class CoreActivity extends BlockBaseActivity {
                 layoutParams.width = dialogWindowWidth;
                 layoutParams.height = dialogWindowHeight;
                 dialog.getWindow().setAttributes(layoutParams);
-
-
             }
         } catch (NotSetAutoTimeException e) {
             e.printStackTrace();
         }
-
         super.onResume();
+        if(mAdView!=null && mAdView.isLoading()){
+            // Corecloude Activity 상속관계 때문에 null처리
+            mAdView.resume();
+        }
         ScreenshotSetApplication.getInstance().registerScreenshotObserver();
     }
 
     @Override
     public void onPause() {
+        if(mAdView!=null && mAdView.isLoading()){
+            // Corecloude Activity 상속관계 때문에 null처리
+            mAdView.pause();
+        }
         super.onPause();
         ScreenshotSetApplication.getInstance().unregisterScreenshotObserver();
         coreListAdapter.clickPause();
     }
+
+
+    @Override
+    protected void onDestroy() {
+        if (postQuery != null && listener != null) postQuery.removeEventListener(listener);
+        if (mService != null) {
+            unbindService(mServiceConn);
+        }
+        if(mAdView!=null && mAdView.isLoading()){
+            // Corecloude Activity 상속관계 때문에 null처리
+            mAdView.destroy();
+        }
+        super.onDestroy();
+    }
+
 
     public RecyclerView.ViewHolder getHolder(int position) {
         if (recyclerView == null) return null;
@@ -486,17 +506,6 @@ public class CoreActivity extends BlockBaseActivity {
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
-
-    @Override
-    protected void onDestroy() {
-        if (postQuery != null && listener != null) postQuery.removeEventListener(listener);
-        if (mService != null) {
-            unbindService(mServiceConn);
-        }
-
-        super.onDestroy();
-    }
-
 
     private void setBilingService() {
         String PUBLIC_KEY = getString(R.string.GP_LICENSE_KEY);

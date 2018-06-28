@@ -834,9 +834,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 
 
     private void loadRewardedVideoAd2() {
-        mRewardedVideoAd2.loadAd(context.getString(R.string.adsEnteredCore),
-                new AdRequest.Builder()
-                        .build());
+        mRewardedVideoAd2.loadAd(context.getString(R.string.adsEnteredCore), new AdRequest.Builder().build());
         mRewardedVideoAd2.setRewardedVideoAdListener(rewardedVideoAdListener2);
     }
 

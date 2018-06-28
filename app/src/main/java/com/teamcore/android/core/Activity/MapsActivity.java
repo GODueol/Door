@@ -61,6 +61,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.OnConn
     private InterstitialAd noFillInterstitialAd;
     boolean isFillReward = false;
     private Intent i;
+    private AdView mAdView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,7 +80,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.OnConn
         setnoFillInterstitialAd();
         mRewardedVideoAd.setRewardedVideoAdListener(rewardedVideoAdListener);
 
-                AdView mAdView = (AdView) findViewById(R.id.adView);
+                mAdView = (AdView) findViewById(R.id.adView);
         checkCorePlus().done(isPlus -> {
             if (!isPlus) {
                 AdRequest adRequest = new AdRequest.Builder()
@@ -415,6 +416,9 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.OnConn
             mRewardedVideoAd.setRewardedVideoAdListener(rewardedVideoAdListener);
         }
         super.onResume();
+        if(mAdView.isLoading()){
+            mAdView.resume();
+        }
     }
 
     @Override
@@ -422,6 +426,9 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.OnConn
         Toast.makeText(this,"onPause",Toast.LENGTH_LONG).show();
         if(mRewardedVideoAd!=null) {
             mRewardedVideoAd.pause(this);
+        }
+        if(mAdView.isLoading()){
+            mAdView.pause();
         }
         super.onPause();
     }
@@ -431,6 +438,9 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.OnConn
         if(mRewardedVideoAd!=null) {
             mRewardedVideoAd.destroy(this);
             mRewardedVideoAd.setRewardedVideoAdListener(null);
+        }
+        if(mAdView.isLoading()){
+            mAdView.destroy();
         }
         super.onDestroy();
     }

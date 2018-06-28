@@ -29,7 +29,7 @@ public class FindUserActivity extends UserListBaseActivity {
     private UserListAdapter adapter;
 
     private ArrayList<UserListAdapter.Item> items;
-
+    private AdView mAdView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,7 +42,7 @@ public class FindUserActivity extends UserListBaseActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //액션바 아이콘을 업 네비게이션 형태로 표시합니다.
         getSupportActionBar().setDisplayShowHomeEnabled(true); //홈 아이콘을 숨김처리합니다.
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
-        AdView mAdView = (AdView) findViewById(R.id.adView);
+        mAdView = (AdView) findViewById(R.id.adView);
         checkCorePlus().done(isPlus -> {
             if (!isPlus) {
                 AdRequest adRequest = new AdRequest.Builder()
@@ -113,12 +113,20 @@ public class FindUserActivity extends UserListBaseActivity {
             adapter.Resume();
         }
         super.onResume();
+
+        if(mAdView.isLoading()){
+            mAdView.resume();
+        }
     }
 
     @Override
     public void onPause() {
         if (adapter != null) {
             adapter.Pause();
+        }
+
+        if(mAdView.isLoading()){
+            mAdView.pause();
         }
         super.onPause();
     }
@@ -127,6 +135,9 @@ public class FindUserActivity extends UserListBaseActivity {
     public void onDestroy() {
         if (adapter != null) {
             adapter.Destroy();
+        }
+        if(mAdView.isLoading()){
+            mAdView.destroy();
         }
         super.onDestroy();
     }

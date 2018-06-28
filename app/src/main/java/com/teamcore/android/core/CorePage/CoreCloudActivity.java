@@ -28,10 +28,10 @@ import java.util.HashMap;
 public class CoreCloudActivity extends CoreActivity {
 
     HashMap<String, CoreListItem> coreListItemMap = new HashMap<>();
-
+    private AdView mAdView;
     public void setContentView() {
         setContentView(R.layout.core_cloud_activity_main);
-        AdView mAdView = (AdView) findViewById(R.id.adView);
+        mAdView = (AdView) findViewById(R.id.adView);
 
         if (!DataContainer.getInstance().isPlus) {
             AdRequest adRequest = new AdRequest.Builder()
@@ -165,12 +165,19 @@ public class CoreCloudActivity extends CoreActivity {
             coreListAdapter.Resume();
         }
         super.onResume();
+
+        if(mAdView.isLoading()){
+            mAdView.resume();
+        }
     }
 
     @Override
     public void onPause() {
         if (coreListAdapter != null) {
             coreListAdapter.Pause();
+        }
+        if(mAdView.isLoading()){
+            mAdView.pause();
         }
         super.onPause();
     }
@@ -179,6 +186,9 @@ public class CoreCloudActivity extends CoreActivity {
     public void onDestroy() {
         if (coreListAdapter != null) {
             coreListAdapter.Destroy();
+        }
+        if(mAdView.isLoading()){
+            mAdView.destroy();
         }
         super.onDestroy();
     }
