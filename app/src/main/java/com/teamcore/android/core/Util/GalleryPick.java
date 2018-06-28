@@ -83,23 +83,19 @@ public class GalleryPick {
 
         Log.d("kbj","quality : " +quality);
 
-//        return quality;
-        return 100;
+        return quality;
+//        return 100;
     }
 
     // 원본
     private byte[] getResizeImageByteArray(Bitmap bitmap) {
-
-
-        Log.d("kbj","getFileSizeInBytes() : " +getFileSizeInBytes());
-        Log.d("kbj","bitmap.getByteCount() : " +bitmap.getByteCount());
+        Log.d("kbj","원본 사이즈 : " +getFileSizeInBytes());
+        Log.d("kbj","해상도 변환 사이즈 : " +bitmap.getByteCount());
 
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, getQuality(), stream);
-        bitmap.recycle();
         byte[] rst = stream.toByteArray();
-        Log.d("kbj","ori length : " +rst.length);
-
+        Log.d("kbj","컨프레스 변환 사이즈 : " +rst.length);
         return stream.toByteArray();
     }
 
@@ -275,18 +271,21 @@ public class GalleryPick {
     public StorageTask<UploadTask.TaskSnapshot> upload(StorageReference ref, Uri uri) throws Exception {
         // Check Gif
 //        getImgPath(uri);
-        return getUploadTask(ref, uri).addOnSuccessListener(taskSnapshot -> recycle());
+        return getUploadTask(ref, uri);
     }
 
     @NonNull
     private UploadTask getUploadTask(StorageReference ref, Uri uri) throws Exception {
+        UploadTask task;
         if (isGif()) {
             if(!DataContainer.getInstance().isPlus) throw new GifException(activity.getString(R.string.possibleCorePlusGIF));
             if (getFileSizeInMB() >= RemoteConfig.LIMIT_MB) throw new GifException(activity.getString(R.string.cannotOver5Mb));
-            return ref.putFile(uri);
+            task = ref.putFile(uri);
         } else {
-            return ref.putBytes(this.getResizeImageByteArray(bitmap));
+            task = ref.putBytes(this.getResizeImageByteArray(bitmap));
         }
+        task.addOnCompleteListener(task1 -> recycle());
+        return task;
     }
 
     private long getFileSizeInBytes(){
@@ -426,7 +425,7 @@ public class GalleryPick {
         BitmapFactory.decodeStream(activity.getContentResolver().openInputStream(selectedImage), null, o);
 
         // The new size we want to scale to (HD)
-        final int REQUIRED_SIZE = 1920/2;
+        final int REQUIRED_SIZE = 1920;
 
         // Find the correct scale value. It should be the power of 2.
         int width_tmp = o.outWidth, height_tmp = o.outHeight;
