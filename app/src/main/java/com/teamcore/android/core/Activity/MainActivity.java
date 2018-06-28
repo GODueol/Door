@@ -6,10 +6,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -43,7 +41,6 @@ import com.bumptech.glide.Glide;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -55,7 +52,6 @@ import com.teamcore.android.core.Entity.User;
 import com.teamcore.android.core.Event.TargetUserBlocksMeEvent;
 import com.teamcore.android.core.Exception.NotSetAutoTimeException;
 import com.teamcore.android.core.FriendsActivity.FriendsActivity;
-import com.teamcore.android.core.LoginActivity.LoginActivity;
 import com.teamcore.android.core.MessageActivity.MessageActivity;
 import com.teamcore.android.core.ProfileModifyActivity.ProfileModifyActivity;
 import com.teamcore.android.core.R;
@@ -127,17 +123,17 @@ public class MainActivity extends BaseActivity
 
         setSupportActionBar(toolbar);
         mAdView = (AdView) findViewById(R.id.adView);
-        Log.d("ads",String.valueOf(mAdView.isLoading()));
+        Log.d("ads", String.valueOf(mAdView.isLoading()));
         checkCorePlus().done(isPlus -> {
             if (!isPlus) {
                 AdRequest adRequest = new AdRequest.Builder()
                         .build();
                 mAdView.loadAd(adRequest);
-                Log.d("ads",String.valueOf(mAdView.isLoading()));
+                Log.d("ads", String.valueOf(mAdView.isLoading()));
             } else {
                 mAdView.destroy();
                 mAdView.setVisibility(View.GONE);
-                Log.d("ads",String.valueOf(mAdView.isLoading()));
+                Log.d("ads", String.valueOf(mAdView.isLoading()));
             }
         });
 
@@ -226,7 +222,7 @@ public class MainActivity extends BaseActivity
         User mUser = getUser();
         if (mUser == null || mUser.getEmail().isEmpty() || mUser.getEmail().equals("")) {
             Toast.makeText(getApplicationContext(), "Sorry Login again please", Toast.LENGTH_SHORT).show();
-            logout();
+            appRestert();
             return;
         }
 
@@ -562,7 +558,6 @@ public class MainActivity extends BaseActivity
     }
 
 
-
     @Override
     public void onPause() {
 
@@ -570,7 +565,7 @@ public class MainActivity extends BaseActivity
             navAlarmDialog.Pause();
         }
 
-        if(mAdView.isLoading()){
+        if (mAdView.isLoading()) {
             mAdView.pause();
         }
 
@@ -586,7 +581,7 @@ public class MainActivity extends BaseActivity
         }
         super.onResume();
 
-        if(mAdView.isLoading()){
+        if (mAdView.isLoading()) {
             mAdView.resume();
         }
         SPUtil.setBlockMeUserCurrentActivity(getString(R.string.currentActivity), null);
@@ -612,12 +607,13 @@ public class MainActivity extends BaseActivity
             navAlarmDialog.Destroy();
         }
 
-        if(mAdView.isLoading()){
+        if (mAdView.isLoading()) {
             mAdView.destroy();
         }
         super.onDestroy();
         UiUtil.getInstance().stopProgressDialog();
     }
+
     private void showWeeklyTopicDialog() {
         try {
             if (SPUtil.isWeeklyTopicPossible(MainActivity.this)) {

@@ -126,7 +126,7 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     public User getUser() {
-        return DataContainer.getInstance().getUser(this::logout);
+        return DataContainer.getInstance().getUser(this::appRestert);
     }
 
     public void appRestert() {
