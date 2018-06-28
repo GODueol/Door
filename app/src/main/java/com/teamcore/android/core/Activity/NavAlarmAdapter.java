@@ -240,6 +240,7 @@ public class NavAlarmAdapter extends RecyclerView.Adapter<NavAlarmAdapter.ViewHo
 
         @Override
         public void onRewarded(RewardItem rewardItem) {
+            loadRewardedVideoAd();
             FirebaseDatabase.getInstance().getReference(context.getString(R.string.admob)).child(DataContainer.getInstance().getUid(context)).child(context.getString(R.string.navAlarmCount)).setValue(rewardItem.getAmount());
         }
 

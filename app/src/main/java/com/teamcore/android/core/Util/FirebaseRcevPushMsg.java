@@ -48,8 +48,6 @@ public class FirebaseRcevPushMsg extends FirebaseMessagingService {
     public void onMessageReceived(RemoteMessage remoteMessage) {
         SPUtil = new SharedPreferencesUtil(getApplicationContext());
         boolean isCheck;
-
-
         // Check if message contains a data payload.
 
         if (remoteMessage.getData().size() > 0) {

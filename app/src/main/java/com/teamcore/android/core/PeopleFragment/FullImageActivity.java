@@ -750,6 +750,7 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
 
         @Override
         public void onRewarded(RewardItem rewardItem) {
+            loadRewardedVideoAd();
             FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid(getApplication())).child(getString(R.string.blockCount)).setValue(rewardItem.getAmount());
         }
 

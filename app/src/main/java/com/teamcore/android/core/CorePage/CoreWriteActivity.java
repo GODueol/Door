@@ -396,6 +396,7 @@ public class CoreWriteActivity extends BlockBaseActivity {
 
         @Override
         public void onRewarded(RewardItem rewardItem) {
+            loadRewardedVideoAd();
             FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid(getApplication())).child(getString(R.string.mCorePostCount)).setValue(rewardItem.getAmount());
         }
 

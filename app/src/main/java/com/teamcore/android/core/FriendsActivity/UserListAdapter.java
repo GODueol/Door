@@ -656,6 +656,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
 
         @Override
         public void onRewarded(RewardItem rewardItem) {
+            loadRewardedVideoAd();
             FirebaseDatabase.getInstance().getReference(context.getString(R.string.admob)).child(DataContainer.getInstance().getUid(context)).child(context.getString(R.string.blockCount)).setValue(rewardItem.getAmount());
         }
 
@@ -746,6 +747,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
 
         @Override
         public void onRewarded(RewardItem rewardItem) {
+            loadRewardedVideoAd2();
             FirebaseDatabase.getInstance().getReference(context.getString(R.string.admob)).child(DataContainer.getInstance().getUid(context)).child(context.getString(R.string.findUserCount)).setValue(rewardItem.getAmount());
         }
 

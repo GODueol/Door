@@ -883,6 +883,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
 
         @Override
         public void onRewarded(RewardItem rewardItem) {
+            loadRewardedVideoAd2();
             FirebaseDatabase.getInstance().getReference(context.getString(R.string.admob)).child(DataContainer.getInstance().getUid(context)).child(context.getString(R.string.coreCloudProfileCount)).setValue(rewardItem.getAmount());
         }
 

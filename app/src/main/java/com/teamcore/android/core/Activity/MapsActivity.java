@@ -290,6 +290,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.OnConn
 
         @Override
         public void onRewarded(RewardItem rewardItem) {
+            loadRewardedVideoAd();
             FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid(getApplication())).child(getString(R.string.mapSearchCount)).setValue(rewardItem.getAmount());
         }
 
