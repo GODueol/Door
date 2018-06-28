@@ -31,6 +31,7 @@ import com.teamcore.android.core.Entity.AlarmSummary;
 import com.teamcore.android.core.Exception.NotSetAutoTimeException;
 import com.teamcore.android.core.MessageActivity.util.DateUtil;
 import com.teamcore.android.core.R;
+import com.teamcore.android.core.Util.BaseActivity.BaseActivity;
 import com.teamcore.android.core.Util.DataContainer;
 import com.teamcore.android.core.Util.GlideApp;
 import com.teamcore.android.core.Util.UiUtil;
@@ -39,6 +40,8 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.teamcore.android.core.Util.RemoteConfig.CorePossibleOldFriendCount;
 
 /**
  * Created by Administrator on 2018-03-25.
@@ -120,6 +123,14 @@ public class NavAlarmAdapter extends RecyclerView.Adapter<NavAlarmAdapter.ViewHo
                 alarmItem = item;
                 positionItem = position;
                 if (!isPlus) {
+
+                    if(!isPossibleViewPost(item.getcUuid())){
+                        FirebaseDatabase.getInstance().getReference(context.getString(R.string.alarm)).child(DataContainer.getInstance().getUid(context)).child(item.getKey()).removeValue();
+                        items.remove(position);
+                        notifyDataSetChanged();
+                        return;
+                    }
+
                     FirebaseDatabase.getInstance().getReference(context.getString(R.string.admob)).child(DataContainer.getInstance().getUid(context)).child(context.getString(R.string.navAlarmCount)).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -352,6 +363,18 @@ public class NavAlarmAdapter extends RecyclerView.Adapter<NavAlarmAdapter.ViewHo
         p.putExtra("postId", item.getPostId());
         context.startActivity(p);
         notifyDataSetChanged();
+    }
+
+    private boolean isPossibleViewPost(String cUuid){
+        if (DataContainer.getInstance().isBlockWithMe(cUuid)) {
+            Toast.makeText(context, "포스트를 볼 수 없습니다.", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if( ((BaseActivity) context).isOldFriends(cUuid)){
+            Toast.makeText(context, "일반 회원은 " + CorePossibleOldFriendCount + "명의 오래된 친구까지 코어 열람이 가능합니다 :(", Toast.LENGTH_LONG).show();
+            return false;
+        }
+        return true;
     }
 
 

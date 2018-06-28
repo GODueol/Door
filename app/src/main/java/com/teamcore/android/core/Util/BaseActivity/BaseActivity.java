@@ -23,6 +23,7 @@ import com.teamcore.android.core.Entity.User;
 import com.teamcore.android.core.LoginActivity.LoginActivity;
 import com.teamcore.android.core.R;
 import com.teamcore.android.core.Util.DataContainer;
+import com.teamcore.android.core.Util.FireBaseUtil;
 import com.teamcore.android.core.Util.NetworkUtil;
 import com.teamcore.android.core.Util.UiUtil;
 import com.teamcore.android.core.Util.bilingUtil.IabHelper;
@@ -223,5 +224,9 @@ public class BaseActivity extends AppCompatActivity {
             mDefaultUEH.uncaughtException(thread, ex);
         }
     };
+
+    public boolean isOldFriends(String cUuid) {
+        return DataContainer.getInstance().isPlus || FireBaseUtil.getInstance().isOldFriends(cUuid, getUser()) || DataContainer.getInstance().getUid(getApplication()).equals(cUuid);
+    }
 
 }

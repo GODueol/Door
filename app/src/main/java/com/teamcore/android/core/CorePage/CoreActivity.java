@@ -9,12 +9,9 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
-import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -34,8 +31,6 @@ import android.widget.Toast;
 import com.android.vending.billing.IInAppBillingService;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -168,10 +163,6 @@ public class CoreActivity extends BlockBaseActivity {
 
         addPostsToList(list);
 
-    }
-
-    public boolean isOldFriends(String cUuid) {
-        return DataContainer.getInstance().isPlus || FireBaseUtil.getInstance().isOldFriends(cUuid, getUser()) || DataContainer.getInstance().getUid(getApplication()).equals(cUuid);
     }
 
     public void setContentView() {
