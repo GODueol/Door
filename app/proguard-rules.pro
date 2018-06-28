@@ -77,7 +77,7 @@
 -keep class org.jdeferred.**  { *; }
 
 # For Google Play Services
--keep public class com.google.android.gms.ads.**{
+-keep public class com.google.android.gms.ads.** {
    public *;
 }
 
