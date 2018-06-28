@@ -43,7 +43,7 @@ public class FindUserActivity extends UserListBaseActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true); //홈 아이콘을 숨김처리합니다.
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
         mAdView = (AdView) findViewById(R.id.adView);
-        checkCorePlus().done(isPlus -> {
+        checkCorePlus().addOnSuccessListener(isPlus -> {
             if (!isPlus) {
                 AdRequest adRequest = new AdRequest.Builder()
                         .build();
@@ -81,12 +81,7 @@ public class FindUserActivity extends UserListBaseActivity {
         });
 
         ImageButton save = (ImageButton) findViewById(R.id.save);
-        save.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                findUserSetQuery(search_view.getQuery().toString());
-            }
-        });
+        save.setOnClickListener(view -> findUserSetQuery(search_view.getQuery().toString()));
     }
 
     private void findUserSetQuery(String id) {

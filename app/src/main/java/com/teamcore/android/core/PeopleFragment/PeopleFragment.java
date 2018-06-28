@@ -32,6 +32,7 @@ import com.teamcore.android.core.Event.RefreshLocationEvent;
 import com.teamcore.android.core.Event.SomeoneBlocksMeEvent;
 import com.teamcore.android.core.Exception.NotSetAutoTimeException;
 import com.teamcore.android.core.R;
+import com.teamcore.android.core.Util.BaseActivity.BaseActivity;
 import com.teamcore.android.core.Util.BaseActivity.BaseFragment;
 import com.teamcore.android.core.Util.BusProvider;
 import com.teamcore.android.core.Util.DataContainer;
@@ -72,8 +73,8 @@ public class PeopleFragment extends BaseFragment {
             p.putExtra("id", position);
             p.putExtra("item", item);
             startActivity(p);
-            checkCorePlus().done(isPlus ->{
-                if(!isPlus){
+            checkCorePlus((BaseActivity) getActivity()).addOnCompleteListener(task -> {
+                if (!task.getResult()) {
                     if(!item.getUuid().equals(DataContainer.getInstance().getUid(getContext()))) {
                         //본인이 아니면
                         SPUtil.increaseAds(mInterstitialAd, "FMainGrid");
@@ -288,10 +289,7 @@ public class PeopleFragment extends BaseFragment {
 
         geoFire.setLocation(DataContainer.getInstance().getUid(getActivity()), new GeoLocation(location.getLatitude(), location.getLongitude()), (key, error) -> {
             if (error != null) {
-                if (getActivity() != null)
-                {
-//                    Toast.makeText(getActivity(), "There was an error saving the location to GeoFire: " + error, Toast.LENGTH_SHORT).show();
-                }
+                getActivity();
             } else {
                 if (getActivity() != null)
                    Log.d("KBJ","Location saved on server successfully!");

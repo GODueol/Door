@@ -124,7 +124,7 @@ public class MainActivity extends BaseActivity
         setSupportActionBar(toolbar);
         mAdView = (AdView) findViewById(R.id.adView);
         Log.d("ads", String.valueOf(mAdView.isLoading()));
-        checkCorePlus().done(isPlus -> {
+        checkCorePlus().addOnSuccessListener(isPlus -> {
             if (!isPlus) {
                 AdRequest adRequest = new AdRequest.Builder()
                         .build();
@@ -150,7 +150,7 @@ public class MainActivity extends BaseActivity
 
         toggle.setToolbarNavigationClickListener(v -> {
             SPUtil.setMainIcon(getString(R.string.mainAlarm), false);
-            new Thread(() -> runOnUiThread(() -> changeToggleIcon())).start();
+            new Thread(() -> runOnUiThread(this::changeToggleIcon)).start();
         });
 
         //Navigation view
@@ -205,7 +205,7 @@ public class MainActivity extends BaseActivity
 
         nav_alarm.setOnClickListener(v -> {
             SPUtil.setAlarmIcon(getString(R.string.navAlarm), false);
-            checkCorePlus().done(isPlus -> {
+            checkCorePlus().addOnSuccessListener(isPlus -> {
                 navAlarmDialog.setIsPlus(isPlus);
                 navAlarmDialog.show();
             });
@@ -589,7 +589,7 @@ public class MainActivity extends BaseActivity
         ScreenshotSetApplication.getInstance().registerScreenshotObserver();
 
         //툴바 이미지 붙이기 (코어 회원이면 drawable : tb_core / 코어플러스 회원이면 tb_coreplus)
-        checkCorePlus().done(isPlus -> {
+        checkCorePlus().addOnSuccessListener(isPlus -> {
             int res;
             if (isPlus) res = R.drawable.tb_coreplus;
             else res = R.drawable.tb_core;
@@ -653,8 +653,6 @@ public class MainActivity extends BaseActivity
                 DisplayMetrics displayMetrics = new DisplayMetrics();
                 getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
 //                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.WHITE)); //다이얼로그 배경 색을 설정해줌으로써 다이얼로그 가로를 매치로 맞췄을 때 패딩이 안보이게 해줌
-                int displayWidth = displayMetrics.widthPixels;
-                int displayHeight = displayMetrics.heightPixels;
                 WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
                 layoutParams.copyFrom(dialog.getWindow().getAttributes());
                 int dialogWindowWidth = WindowManager.LayoutParams.MATCH_PARENT;

@@ -88,7 +88,7 @@ public class MessageActivity extends BaseActivity implements SharedPreferences.O
                                     intent.putExtra("userUuid", item.getTargetUuid());
                                     SPUtil.removeChatRoomBadge(item.getChatRoomid());
                                     startActivity(intent);
-                                    checkCorePlus().done(isPlus -> {
+                                    checkCorePlus().addOnSuccessListener(isPlus -> {
                                         if (!isPlus) {
                                             SPUtil.increaseAds(mInterstitialAd, "ChatList");
                                         }

@@ -294,7 +294,7 @@ public class ChattingActivity extends BlockBaseActivity {
                 UiUtil.getInstance().showDialog(ChattingActivity.this, "유저 차단", "해당 유저를 차단하시겠습니까?", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
 
-                        checkCorePlus().done(isPlus -> {
+                        checkCorePlus().addOnSuccessListener(isPlus -> {
                             if (!isPlus) {
                                 FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid(getApplication())).child(getString(R.string.blockCount)).addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override

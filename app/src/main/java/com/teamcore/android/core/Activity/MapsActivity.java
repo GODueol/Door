@@ -56,7 +56,6 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.OnConn
     private GPSInfo mGPSInfo;
     public SearchView addrText;
     public ImageButton search;
-    private Toolbar toolbar;
     private RewardedVideoAd mRewardedVideoAd;
     private InterstitialAd noFillInterstitialAd;
     boolean isFillReward = false;
@@ -67,7 +66,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.OnConn
         super.onCreate(savedInstanceState);
         setContentView(R.layout.google_map_activity);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         // 툴바 뒤로가기 버튼
@@ -81,7 +80,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.OnConn
         mRewardedVideoAd.setRewardedVideoAdListener(rewardedVideoAdListener);
 
                 mAdView = (AdView) findViewById(R.id.adView);
-        checkCorePlus().done(isPlus -> {
+        checkCorePlus().addOnSuccessListener(isPlus -> {
             if (!isPlus) {
                 AdRequest adRequest = new AdRequest.Builder()
                         .build();
@@ -202,8 +201,8 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.OnConn
             i= new Intent(getApplicationContext(), MainActivity.class);
             i.putExtra("latLng", latLng);
 
-            checkCorePlus().done(isPlus -> {
-               if (!isPlus) {
+            checkCorePlus().addOnSuccessListener(isPlus -> {
+                if (!isPlus) {
                     FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid(getApplication())).child(getString(R.string.mapSearchCount)).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {

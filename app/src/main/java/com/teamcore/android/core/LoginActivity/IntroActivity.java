@@ -73,9 +73,9 @@ public class IntroActivity extends BaseActivity {
             @Override
             public void onPermissionGranted() {
                 if (isHaveAllPermission()) {
-                    checkCorePlus()
-                            .done(isPlus -> getUserInfo(FirebaseAuth.getInstance().getCurrentUser()))
-                            .fail(str -> {
+                    checkCorePlus().addOnSuccessListener(isPlus ->
+                        getUserInfo(FirebaseAuth.getInstance().getCurrentUser()))
+                            .addOnFailureListener(e -> {
                                 Toast.makeText(IntroActivity.this, "플레이 스토어에 계정을 연결하고 다시 시도해주세요", Toast.LENGTH_SHORT).show();
                                 finish();
                             });
@@ -137,9 +137,7 @@ public class IntroActivity extends BaseActivity {
                             }
                         });
                 builder.setNegativeButton("아니오",
-                        (dialog, which) -> {
-                            finish();
-                        });
+                        (dialog, which) -> finish());
                 builder.show();
             }
 
@@ -261,7 +259,7 @@ public class IntroActivity extends BaseActivity {
     }
 
     public int getAppVersionCode() {
-        PackageInfo packageInfo = null;         //패키지에 대한 전반적인 정보
+        PackageInfo packageInfo;         //패키지에 대한 전반적인 정보
         //PackageInfo 초기화
         try {
             packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);

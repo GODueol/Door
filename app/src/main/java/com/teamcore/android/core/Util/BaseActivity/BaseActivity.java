@@ -15,6 +15,8 @@ import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 import com.teamcore.android.core.Entity.User;
@@ -25,9 +27,6 @@ import com.teamcore.android.core.Util.NetworkUtil;
 import com.teamcore.android.core.Util.UiUtil;
 import com.teamcore.android.core.Util.bilingUtil.IabHelper;
 import com.teamcore.android.core.Util.bilingUtil.Purchase;
-
-import org.jdeferred.Promise;
-import org.jdeferred.impl.DeferredObject;
 
 @SuppressLint("Registered")
 public class BaseActivity extends AppCompatActivity {
@@ -61,51 +60,48 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     // 구독 결제 확인
-    public Promise<Boolean, String, Integer> checkCorePlus() {
-        DeferredObject deferred = new DeferredObject();
-        Promise promise = deferred.promise();
+    public Task<Boolean> checkCorePlus() {
+        TaskCompletionSource<Boolean> taskCompletionSource = new TaskCompletionSource<>();
+
 
         // 핼퍼 setup
         IabHelper iaphelper = new IabHelper(this, getString(R.string.GP_LICENSE_KEY));
-
-        IabHelper.QueryInventoryFinishedListener mGotInventoryListener = (result, inv) -> {
-            if (result.isFailure()) {
-                //getPurchases() 실패했을때
-                deferred.reject("getPurchases 실패");
-                return;
-            }
-
-            //해당 아이템 구매 여부 체크
-            Purchase purchase = inv.getPurchase(getString(R.string.subscribe));
-
-            if (purchase != null && verifyDeveloperPayload(purchase)) {
-                //해당 아이템을 가지고 있는 경우.
-                //아이템에대한 처리를 한다.
-                //alreadyBuyedItem();
-                deferred.resolve(true);
-
-            } else {
-//                deferred.resolve(false);
-                deferred.resolve(false);
-            }
-        };
-
         iaphelper.startSetup(result -> {
             if (!result.isSuccess()) {
-                deferred.reject(result.getMessage());
+                taskCompletionSource.setException(new Exception(result.getMessage()));
                 return;
             }
 
             try {
-                iaphelper.queryInventoryAsync(mGotInventoryListener);
+                iaphelper.queryInventoryAsync((result2, inv) -> {
+                    if (result2.isFailure()) {
+                        //getPurchases() 실패했을때
+                        taskCompletionSource.setException(new Exception("getPurchases 실패"));
+                        return;
+                    }
+
+                    //해당 아이템 구매 여부 체크
+                    Purchase purchase = inv.getPurchase(getString(R.string.subscribe));
+
+                    if (purchase != null && verifyDeveloperPayload(purchase)) {
+                        //해당 아이템을 가지고 있는 경우.
+                        //아이템에대한 처리를 한다.
+                        //alreadyBuyedItem();
+                        taskCompletionSource.setResult(true);
+                    } else {
+//                deferred.resolve(false);
+                        taskCompletionSource.setResult(false);
+                    }
+                });
             } catch (IabHelper.IabAsyncInProgressException e) {
                 e.printStackTrace();
-                deferred.reject(e.getMessage());
+                taskCompletionSource.setException(e);
             }
         });
 
-        return promise.done(isPlus -> DataContainer.getInstance().isPlus = (boolean) isPlus);
+        return taskCompletionSource.getTask().addOnCompleteListener(task -> DataContainer.getInstance().isPlus = task.getResult());
     }
+
 
     boolean verifyDeveloperPayload(Purchase p) {
         String payload = p.getDeveloperPayload();
@@ -148,7 +144,7 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     interface OnChangeNetworkStatusListener {
-        public void OnChanged(int status);
+        void OnChanged(int status);
     }
 
     OnChangeNetworkStatusListener listener = status -> {

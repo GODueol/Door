@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -159,7 +160,7 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
         SPUtil.setBlockMeUserCurrentActivity(getString(R.string.currentActivity), item.getUuid());
         DataContainer.getInstance().getMyUserRef().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 mUser = dataSnapshot.getValue(User.class);
 
                 // 차단된 경우
@@ -172,7 +173,7 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
                 // 리스너를 달아서 실시간 정보 변경
                 listener = new ValueEventListener() {
                     @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                         // viewedMeUser
                         oUser = dataSnapshot.getValue(User.class);
@@ -183,7 +184,7 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
                     }
 
                     @Override
-                    public void onCancelled(DatabaseError databaseError) {
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
                         UiUtil.getInstance().stopProgressDialog();
                     }
                 };
@@ -192,7 +193,7 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
         });
@@ -210,7 +211,7 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
                 intent.putExtra("userUuid", item.getUuid());
                 intent.putExtra("userPicuri", item.getPicUrl());
                 startActivity(intent);
-                checkCorePlus().done(isPlus -> {
+                checkCorePlus().addOnSuccessListener(isPlus -> {
                     if (!isPlus) {
                         SPUtil.increaseAds(mInterstitialAd, "ProfileChat");
                     }
@@ -327,7 +328,7 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
         final DatabaseReference viewedMeUsersRef = DataContainer.getInstance().getUserRef(item.getUuid()).child("viewedMeUsers");
         viewedMeUsersRef.runTransaction(new Transaction.Handler() {
             @Override
-            public Transaction.Result doTransaction(MutableData mutableData) {
+            public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
                 Map map = (Map) mutableData.getValue();
 
                 if (map == null) {
@@ -469,11 +470,11 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
                         return;
                     }
 
-                    checkCorePlus().done(isPlus -> {
+                    checkCorePlus().addOnSuccessListener(isPlus -> {
                         if (!isPlus) {
                             FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid(getApplication())).child(getString(R.string.blockCount)).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                                     int value;
                                     try {
@@ -524,7 +525,7 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
                             UiUtil.getInstance().startProgressDialog(FullImageActivity.this);
                             // blockUsers 추가
                             try {
-                                FireBaseUtil.getInstance().block(item.getUuid()).addOnSuccessListener(aVoid -> finish()).addOnCompleteListener(task -> UiUtil.getInstance().stopProgressDialog());
+                                FireBaseUtil.getInstance().block(item.getUuid()).addOnSuccessListener(aVoid -> finish()).addOnCompleteListener(task2 -> UiUtil.getInstance().stopProgressDialog());
                             } catch (ChildSizeMaxException e) {
                                 Toast.makeText(FullImageActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                                 UiUtil.getInstance().stopProgressDialog();
@@ -724,7 +725,7 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
             loadRewardedVideoAd();
             FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid(getApplication())).child(getString(R.string.blockCount)).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     if (dataSnapshot.exists()) {
                         int value = Integer.valueOf(dataSnapshot.getValue().toString());
                         Log.d("test", "몇개 : " + value);
@@ -743,7 +744,7 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
                 }
 
                 @Override
-                public void onCancelled(DatabaseError databaseError) {
+                public void onCancelled(@NonNull DatabaseError databaseError) {
 
                 }
             });
