@@ -121,7 +121,7 @@ public class IntroActivity extends BaseActivity {
                 }
             } else {
                 // 버전 미달 또는 이상이 있을 경우
-                AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+                AlertDialog.Builder builder = new AlertDialog.Builder(IntroActivity.this);
                 builder.setTitle("업데이트");
                 builder.setMessage("업데이트가 필요합니다.");
                 builder.setPositiveButton("업데이트",

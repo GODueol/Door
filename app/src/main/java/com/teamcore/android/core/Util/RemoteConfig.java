@@ -33,7 +33,7 @@ public class RemoteConfig {
     public static String WtSubEn = "";
 
     public static int MinAppVersion = 68;
-    public static int MaxAppVersion = 90;
+    public static int MaxAppVersion = 99999;
 
     // 결재 아이템 관련
     public static String CoreCloudItemId = "";
