@@ -321,7 +321,7 @@ public class MainActivity extends BaseActivity
             }*/
 
             //해당 아이템 구매 여부 체크
-            Purchase purchase = inv.getPurchase(getString(R.string.subscribe));
+            Purchase purchase = inv.getPurchase(RemoteConfig.CorePlusItemId);
 
             if (purchase != null && purchase.getPurchaseState() == 0 && verifyDeveloperPayload(purchase)) {
                 //해당 아이템을 가지고 있는 경우.

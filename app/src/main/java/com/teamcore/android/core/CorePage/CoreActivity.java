@@ -577,7 +577,7 @@ public class CoreActivity extends BlockBaseActivity {
             Bundle buyIntentBundle = mService.getBuyIntent(3, getPackageName(), item, "inapp", payLoad);
             PendingIntent pendingIntent = buyIntentBundle.getParcelable("BUY_INTENT");
             if (pendingIntent != null) {
-                iaphelper.launchPurchaseFlow(this, getString(R.string.purchase), 1001, mPurchaseFinishedListener, payLoad);
+                iaphelper.launchPurchaseFlow(this, item, 1001, mPurchaseFinishedListener, payLoad);
             } else {
                 Toast.makeText(getApplicationContext(), "클라우드 결제가 취소됬습니다", Toast.LENGTH_SHORT).show();            }
         } catch (RemoteException e) {
@@ -608,7 +608,7 @@ public class CoreActivity extends BlockBaseActivity {
                 return;
             }
             //해당 아이템 구매 여부 체크
-            Purchase purchase = inv.getPurchase(getString(R.string.purchase));
+            Purchase purchase = inv.getPurchase(RemoteConfig.CoreCloudItemId);
 
             if (purchase != null && verifyDeveloperPayload(purchase)) {
                 //해당 아이템을 가지고 있는 경우.
@@ -617,14 +617,14 @@ public class CoreActivity extends BlockBaseActivity {
                 Toast.makeText(getApplicationContext(), "onQueryInventoryFinished Already had", Toast.LENGTH_SHORT).show();
 
                 try {
-                    iaphelper.consumeAsync(inv.getPurchase(getString(R.string.purchase)), mConsumeFinishedListener);
+                    iaphelper.consumeAsync(inv.getPurchase(RemoteConfig.CoreCloudItemId), mConsumeFinishedListener);
                 } catch (IabHelper.IabAsyncInProgressException e) {
                     e.printStackTrace();
                 }
 
             } else {
                 // 가지고있지 않다면 구입
-                buyItem(getString(R.string.purchase));
+                buyItem(RemoteConfig.CoreCloudItemId);
             }
         }
     };
@@ -644,7 +644,7 @@ public class CoreActivity extends BlockBaseActivity {
 
                 if (verifyDeveloperPayload(info)) {
                     //보낸 신호와 맞는경우
-                    if (info.getSku().equals(getString(R.string.purchase))) {
+                    if (info.getSku().equals(RemoteConfig.CoreCloudItemId)) {
                         Toast.makeText(getApplicationContext(), "포스트가 클라우드에 올라갔습니다", Toast.LENGTH_SHORT).show();
 
                         try {

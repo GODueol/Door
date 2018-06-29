@@ -1,5 +1,6 @@
 package com.teamcore.android.core.Util;
 
+import com.teamcore.android.core.BuildConfig;
 import com.teamcore.android.core.Entity.User;
 import com.teamcore.android.core.R;
 import com.google.firebase.database.DataSnapshot;
@@ -19,7 +20,7 @@ import java.net.URL;
 public class FirebaseSendPushMsg {
 
     private static final String FCM_MESSAGE_URL = "https://fcm.googleapis.com/fcm/send";
-    private static final String SERVER_KEY = "AAAAosxzawM:APA91bHueqSnwuxBizof90IP8CtUPYo9WS8tjScyi0wNX0aoysNil8z-pinrUFtZOO5lFyk5BTY7qC0Uod1JfBipng5RfyvgkzpzI7VmMgt4XO8C7ST97agxHEWR2_Cg7TbPQxVnntiZ";
+    private static final String SERVER_KEY = BuildConfig.SERVER_KEY;
 
 
     public static void sendPostToFCM(final String type, final String targetUuid, final String currentUserNick, final String message,final String room) {

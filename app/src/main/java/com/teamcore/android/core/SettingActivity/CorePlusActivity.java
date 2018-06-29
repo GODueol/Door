@@ -28,6 +28,7 @@ import com.teamcore.android.core.R;
 import com.teamcore.android.core.Util.BaseActivity.BaseActivity;
 import com.teamcore.android.core.Util.DataContainer;
 import com.teamcore.android.core.Util.GlideApp;
+import com.teamcore.android.core.Util.RemoteConfig;
 import com.teamcore.android.core.Util.UiUtil;
 import com.teamcore.android.core.Util.bilingUtil.IabHelper;
 import com.teamcore.android.core.Util.bilingUtil.IabResult;
@@ -77,7 +78,7 @@ public class CorePlusActivity extends BaseActivity {
         setBilingService();
 
         Button btn_cp_subs = (Button) findViewById(R.id.btn_cp_subs);
-        btn_cp_subs.setOnClickListener(view -> buyItem(getString(R.string.subscribe)));
+        btn_cp_subs.setOnClickListener(view -> buyItem(RemoteConfig.CorePlusItemId));
 
         TextView sub_txt2 = (TextView) findViewById(R.id.sub_txt2);
         sub_txt2.setText(getUser().getId() + sub_txt2.getText().toString());
@@ -134,7 +135,7 @@ public class CorePlusActivity extends BaseActivity {
             Bundle buyIntentBundle = mService.getBuyIntent(3, getPackageName(), item, "subs", payLoad);
             PendingIntent pendingIntent = buyIntentBundle.getParcelable("BUY_INTENT");
             if (pendingIntent != null) {
-                iaphelper.launchSubscriptionPurchaseFlow(this, getString(R.string.subscribe), 1001, mPurchaseFinishedListener, payLoad);
+                iaphelper.launchSubscriptionPurchaseFlow(this, item, 1001, mPurchaseFinishedListener, payLoad);
             } else {
                 // 결제가 막혔다면 왜 결제가 막혀있찌 대체????
                 Toast.makeText(CorePlusActivity.this, "다시 시도해주세요", Toast.LENGTH_SHORT).show();
@@ -207,7 +208,7 @@ public class CorePlusActivity extends BaseActivity {
             }*/
 
             //해당 아이템 구매 여부 체크
-            Purchase purchase = inv.getPurchase(getString(R.string.subscribe));
+            Purchase purchase = inv.getPurchase(RemoteConfig.CorePlusItemId);
 
             if (purchase != null && purchase.getPurchaseState() == 0 && verifyDeveloperPayload(purchase)) {
                 //해당 아이템을 가지고 있는 경우.
@@ -226,7 +227,7 @@ public class CorePlusActivity extends BaseActivity {
             } else {
                 if (verifyDeveloperPayload(info)) {
                     //보낸 신호와 맞는경우
-                    if (info.getSku().equals(getString(R.string.subscribe))) {
+                    if (info.getSku().equals(RemoteConfig.CorePlusItemId)) {
                         // 구매 성공
                         DataContainer.getInstance().isPlus = true;
                         setContentViewByPlus();

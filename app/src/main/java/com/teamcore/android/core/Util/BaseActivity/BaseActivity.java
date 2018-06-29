@@ -25,6 +25,7 @@ import com.teamcore.android.core.R;
 import com.teamcore.android.core.Util.DataContainer;
 import com.teamcore.android.core.Util.FireBaseUtil;
 import com.teamcore.android.core.Util.NetworkUtil;
+import com.teamcore.android.core.Util.RemoteConfig;
 import com.teamcore.android.core.Util.UiUtil;
 import com.teamcore.android.core.Util.bilingUtil.IabHelper;
 import com.teamcore.android.core.Util.bilingUtil.Purchase;
@@ -82,7 +83,7 @@ public class BaseActivity extends AppCompatActivity {
                     }
 
                     //해당 아이템 구매 여부 체크
-                    Purchase purchase = inv.getPurchase(getString(R.string.subscribe));
+                    Purchase purchase = inv.getPurchase(RemoteConfig.CorePlusItemId);
 
                     if (purchase != null && verifyDeveloperPayload(purchase)) {
                         //해당 아이템을 가지고 있는 경우.
