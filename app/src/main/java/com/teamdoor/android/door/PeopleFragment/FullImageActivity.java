@@ -765,7 +765,7 @@ public class FullImageActivity extends BlockBaseActivity implements View.OnClick
 
         @Override
         public void onRewardedVideoAdFailedToLoad(int i) {
-            Toast.makeText(getApplicationContext(),"에러코드block"+String.valueOf(i),Toast.LENGTH_LONG).show();
+            //Toast.makeText(getApplicationContext(),"에러코드block"+String.valueOf(i),Toast.LENGTH_LONG).show();
             switch (i) {
                 case 0:
                     // 에드몹 내부서버에러

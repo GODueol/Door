@@ -411,7 +411,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.OnConn
 
     @Override
     public void onResume() {
-        Toast.makeText(this,"onResume",Toast.LENGTH_LONG).show();
+        //Toast.makeText(this,"onResume",Toast.LENGTH_LONG).show();
         if(mRewardedVideoAd!=null) {
             mRewardedVideoAd.resume(this);
             mRewardedVideoAd.setRewardedVideoAdListener(rewardedVideoAdListener);
@@ -424,7 +424,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.OnConn
 
     @Override
     public void onPause() {
-        Toast.makeText(this,"onPause",Toast.LENGTH_LONG).show();
+        //Toast.makeText(this,"onPause",Toast.LENGTH_LONG).show();
         if(mRewardedVideoAd!=null) {
             mRewardedVideoAd.pause(this);
         }

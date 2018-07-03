@@ -575,7 +575,7 @@ public class ChattingActivity extends BlockBaseActivity {
 
         @Override
         public void onRewardedVideoAdFailedToLoad(int i) {
-            Toast.makeText(getApplicationContext(), "에러코드chattingList" + String.valueOf(i), Toast.LENGTH_LONG).show();
+            //Toast.makeText(getApplicationContext(), "에러코드chattingList" + String.valueOf(i), Toast.LENGTH_LONG).show();
             switch (i) {
                 case 0:
                     // 에드몹 내부서버에러

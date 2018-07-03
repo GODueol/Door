@@ -672,7 +672,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
 
         @Override
         public void onRewardedVideoAdFailedToLoad(int i) {
-            Toast.makeText(context, "에러코드block" + String.valueOf(i), Toast.LENGTH_LONG).show();
+            //Toast.makeText(context, "에러코드block" + String.valueOf(i), Toast.LENGTH_LONG).show();
             switch (i) {
                 case 0:
                     // 에드몹 내부서버에러
@@ -763,7 +763,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
 
         @Override
         public void onRewardedVideoAdFailedToLoad(int i) {
-            Toast.makeText(context, "에러코드UserSearching" + String.valueOf(i), Toast.LENGTH_LONG).show();
+            //Toast.makeText(context, "에러코드UserSearching" + String.valueOf(i), Toast.LENGTH_LONG).show();
             switch (i) {
                 case 0:
                     // 에드몹 내부서버에러
