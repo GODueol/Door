@@ -486,10 +486,58 @@
                 android:theme="@style/ColorSwitchStyle" />
 
             <RelativeLayout
+                android:id="@+id/SEX_FILTER"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignTop="@+id/radio_sex"
+                >
+
+                <TextView
+                    android:id="@+id/SEX_NOUSE"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dip"
+                    android:text="SEX"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16dp"
+                    android:textStyle="bold" />
+
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:id="@+id/radio_sex"
+                android:layout_below="@+id/filter_switch"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="20dp"
+                android:layout_toEndOf="@+id/filter_nouse"
+                android:layout_toRightOf="@+id/filter_nouse"
+                android:gravity="right"
+                >
+                <CheckBox
+                    android:id="@+id/maleCheckBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="20dp"
+                    android:layout_toLeftOf="@id/femaleCheckBox"
+                    android:text="남성"/>
+                <CheckBox
+                    android:id="@+id/femaleCheckBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="여성"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
                 android:id="@+id/AGE_FILTER"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/filter_switch"
+                android:layout_below="@+id/SEX_FILTER"
                 android:layout_marginTop="20dp">
 
                 <TextView
@@ -509,7 +557,7 @@
                 android:id="@+id/AGE_FILTER1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/filter_switch"
+                android:layout_below="@+id/SEX_FILTER"
                 android:layout_marginLeft="30dp"
                 android:layout_marginTop="20dp"
                 android:layout_toEndOf="@+id/filter_nouse"

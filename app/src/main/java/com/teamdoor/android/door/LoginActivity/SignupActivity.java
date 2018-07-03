@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.NumberPicker;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -46,6 +48,9 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
     DatabaseReference userRef = DataContainer.getInstance().getUsersRef();
 
     User mUser;
+
+    @BindView(R.id.radio_sex)
+    RadioGroup _radioSex;
 
     @BindView(R.id.input_email)
     EditText _emailText;
@@ -221,13 +226,14 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
         UiUtil.getInstance().startProgressDialog(this);
 
         final String email = _emailText.getText().toString();
+        final String sex = ((RadioButton) findViewById(_radioSex.getCheckedRadioButtonId())).getText().toString();
         final String password = _passwordText.getText().toString();
         final String id = _IDText.getText().toString();
         final int age = Integer.parseInt(_ageText.getText().toString());
         final int height = Integer.parseInt(_heightText.getText().toString());
         final int weight = Integer.parseInt(_weightText.getText().toString());
         final String bodyType = _bodyType.getText().toString();
-        mUser = new User(email, id, age, height, weight, bodyType);
+        mUser = new User(email, id, age, height, weight, bodyType, sex);
         FirebaseDatabase.getInstance().getReference("identifier").child(deviceIdentifier).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -297,6 +303,8 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
     public void validate() throws Exception {
 
         String email = _emailText.getText().toString();
+        if(_radioSex.getCheckedRadioButtonId() == -1) throw new Exception("성별을 선택해주세요.");
+        String sex = ((RadioButton) findViewById(_radioSex.getCheckedRadioButtonId())).getText().toString();
         String password = _passwordText.getText().toString();
         String reEnterPassword = _reEnterPasswordText.getText().toString();
         String ID = _IDText.getText().toString();
@@ -304,7 +312,6 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
         String Height = _heightText.getText().toString();
         String Weight = _weightText.getText().toString();
         String Bodytype = _bodyType.getText().toString();
-
 
         if (email.isEmpty()){
             throw new Exception("이메일을 입력해주세요.");

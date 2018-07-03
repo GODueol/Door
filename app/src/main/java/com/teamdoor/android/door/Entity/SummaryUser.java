@@ -16,11 +16,12 @@ public class SummaryUser implements Serializable {
     private int corePostCount;
 
     private long loginDate;
+    private String sex;
 
     public SummaryUser() {
     }
 
-    SummaryUser(String pictureUrl, int age, int height, int weight, String bodyType, int corePostCount, long loginDate) {
+    SummaryUser(String pictureUrl, int age, int height, int weight, String bodyType, int corePostCount, long loginDate, String sex) {
         this.pictureUrl = pictureUrl;
         this.age = age;
         this.height = height;
@@ -28,6 +29,15 @@ public class SummaryUser implements Serializable {
         this.bodyType = bodyType;
         this.corePostCount = corePostCount;
         this.loginDate = loginDate;
+        this.sex = sex;
+    }
+
+    public String getSex() {
+        return sex;
+    }
+
+    public void setSex(String sex) {
+        this.sex = sex;
     }
 
     public String getPictureUrl() {
@@ -96,6 +106,7 @@ public class SummaryUser implements Serializable {
                 ", bodyType='" + bodyType + '\'' +
                 ", corePostCount=" + corePostCount +
                 ", loginDate=" + loginDate +
+                ", sex='" + sex + '\'' +
                 '}';
     }
 }

@@ -15,6 +15,7 @@ public class User implements Serializable {
     private int height;
     private int weight;
     private String bodyType;
+    private String sex;
 
     private String intro;
 
@@ -24,6 +25,9 @@ public class User implements Serializable {
     private IntBoundary heightBoundary;
     private IntBoundary weightBoundary;
     private StringBoundary bodyTypeBoundary;
+
+    private boolean filterMale = true;
+    private boolean filterFemale = true;
 
     private PictureUrls picUrls = new PictureUrls();
     private IsLockPictures isLockPics = new IsLockPictures();
@@ -35,6 +39,22 @@ public class User implements Serializable {
     private long loginDate;
     private boolean isUseFilter;
     private boolean isAnonymityProhibition;
+
+    public boolean isFilterMale() {
+        return filterMale;
+    }
+
+    public void setFilterMale(boolean filterMale) {
+        this.filterMale = filterMale;
+    }
+
+    public boolean isFilterFemale() {
+        return filterFemale;
+    }
+
+    public void setFilterFemale(boolean filterFemale) {
+        this.filterFemale = filterFemale;
+    }
 
     private Map<String, Long> unLockUsers = new HashMap<>();    // uuid, 추가 시간
 
@@ -54,6 +74,14 @@ public class User implements Serializable {
 
     private String accountType;
 
+    public String getSex() {
+        return sex;
+    }
+
+    public void setSex(String sex) {
+        this.sex = sex;
+    }
+
     public String getAccountType() {
         return accountType;
     }
@@ -71,7 +99,7 @@ public class User implements Serializable {
     }
 
     public SummaryUser getSummaryUser() {
-        return new SummaryUser(getPicUrls().getThumbNail_picUrl1(), age, height, weight, bodyType, corePostCount, loginDate);
+        return new SummaryUser(getPicUrls().getThumbNail_picUrl1(), age, height, weight, bodyType, corePostCount, loginDate, sex);
     }
 
     public Map<String, Long> getBlockMeUsers() {
@@ -227,13 +255,14 @@ public class User implements Serializable {
         this.bodyType = bodyType;
     }
 
-    public User(String email, String id, int age, int height, int weight, String bodyType) {
+    public User(String email, String id, int age, int height, int weight, String bodyType, String sex) {
         this.email = email;
         this.id = id;
         this.age = age;
         this.height = height;
         this.weight = weight;
         this.bodyType = bodyType;
+        this.sex = sex;
     }
 
     public String getEmail() {

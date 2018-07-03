@@ -269,6 +269,9 @@ public class PeopleFragment extends BaseFragment {
             return false;
         if (!(mUser.getWeightBoundary().getMin() <= summaryUser.getWeight() && summaryUser.getWeight() <= mUser.getWeightBoundary().getMax()))
             return false;
+        if(!((mUser.isFilterMale() && summaryUser.getSex().equals("남성")) || mUser.isFilterFemale() && summaryUser.getSex().equals("여성")))
+            return false;
+
         int minBodyType = Arrays.asList(DataContainer.bodyTypes).indexOf(mUser.getBodyTypeBoundary().getMin());
         int maxBodyType = Arrays.asList(DataContainer.bodyTypes).indexOf(mUser.getBodyTypeBoundary().getMax());
         int bodyType = Arrays.asList(DataContainer.bodyTypes).indexOf(summaryUser.getBodyType());

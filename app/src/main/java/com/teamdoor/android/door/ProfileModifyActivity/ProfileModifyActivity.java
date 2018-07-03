@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -113,6 +114,9 @@ public class ProfileModifyActivity extends BaseActivity implements NumberPicker.
     @BindView(R.id.BODY_TYPE_FILTER1)
     RelativeLayout bodyTypeFilterLayout1;
 
+    @BindView(R.id.radio_sex)
+    RelativeLayout radio_sex;
+
     @BindView(R.id.lock2)
     ToggleButton lock2Toggle;
 
@@ -135,6 +139,13 @@ public class ProfileModifyActivity extends BaseActivity implements NumberPicker.
 
     @BindView(R.id.age_nouse)
     EditText introduce_focus;
+
+    @BindView(R.id.maleCheckBox)
+    CheckBox maleCheckBox;
+
+    @BindView(R.id.femaleCheckBox)
+    CheckBox femaleCheckBox;
+
 
     // filter boundary
     enum FILTER {
@@ -283,6 +294,9 @@ public class ProfileModifyActivity extends BaseActivity implements NumberPicker.
             max_bodytype_filter.setText(user.getBodyTypeBoundary().getMax());
             min_bodytype_filter.setText(user.getBodyTypeBoundary().getMin());
 
+            maleCheckBox.setChecked(user.isFilterMale());
+            femaleCheckBox.setChecked(user.isFilterFemale());
+
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -299,6 +313,7 @@ public class ProfileModifyActivity extends BaseActivity implements NumberPicker.
 
             max_bodytype_filter.setText(DataContainer.bodyTypes[4]);
             min_bodytype_filter.setText(DataContainer.bodyTypes[0]);
+
         }
 
         /* filter_switch */
@@ -378,12 +393,12 @@ public class ProfileModifyActivity extends BaseActivity implements NumberPicker.
     private void setVisibilityFilterLayout(boolean isChecked) {
         int FLAG;
         if (isChecked) FLAG = View.VISIBLE;
-        else FLAG = View.GONE;
+        else FLAG = View.INVISIBLE;
         ageFilterLayout1.setVisibility(FLAG);
         heightFilterLayout1.setVisibility(FLAG);
         weightFilterLayout1.setVisibility(FLAG);
         bodyTypeFilterLayout1.setVisibility(FLAG);
-
+        radio_sex.setVisibility(FLAG);
     }
 
     //implements 부분 구현
@@ -720,6 +735,9 @@ public class ProfileModifyActivity extends BaseActivity implements NumberPicker.
                 max_bodytype_filter.getText().toString(),
                 min_bodytype_filter.getText().toString()
         ));
+        user.setFilterMale(maleCheckBox.isChecked());
+        user.setFilterFemale(femaleCheckBox.isChecked());
+
 
         // Save User Info
         user.setId(_idText.getText().toString());
