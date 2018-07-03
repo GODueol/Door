@@ -172,7 +172,7 @@
                 android:orientation="horizontal"
                 android:weightSum="4">
 
-                <com.teamcore.android.core.PeopleFragment.SquareImageView
+                <com.teamdoor.android.door.PeopleFragment.SquareImageView
                     android:id="@+id/image1"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -180,7 +180,7 @@
                     android:scaleType="centerCrop"
                     android:src="@drawable/a" />
 
-                <com.teamcore.android.core.PeopleFragment.SquareImageView
+                <com.teamdoor.android.door.PeopleFragment.SquareImageView
                     android:id="@+id/image2"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -188,7 +188,7 @@
                     android:scaleType="centerCrop"
                     android:src="@drawable/a" />
 
-                <com.teamcore.android.core.PeopleFragment.SquareImageView
+                <com.teamdoor.android.door.PeopleFragment.SquareImageView
                     android:id="@+id/image3"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -196,7 +196,7 @@
                     android:scaleType="centerCrop"
                     android:src="@drawable/a" />
 
-                <com.teamcore.android.core.PeopleFragment.SquareImageView
+                <com.teamdoor.android.door.PeopleFragment.SquareImageView
                     android:id="@+id/image4"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"

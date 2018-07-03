@@ -106,7 +106,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="75dp"
                 android:gravity="center"
-                android:text="__님은 현재 코어 플러스 구독 중이십니다."
+                android:text="__님은 현재 도어 플러스 구독 중이십니다."
                 android:textColor="@color/skyblue"
                 android:textStyle="bold"
                 android:visibility="invisible" />

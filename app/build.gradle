@@ -26,7 +26,7 @@ android {
     buildToolsVersion '27.0.3'
 
     defaultConfig {
-        applicationId "com.teamcore.android.core"
+        applicationId "com.teamdoor.android.door"
         minSdkVersion 19
         //noinspection OldTargetApi
         targetSdkVersion 26
@@ -62,7 +62,7 @@ android {
             debuggable false
             minifyEnabled true
             // Core Korea 푸시 서버 API키
-            buildConfigField "String","SERVER_KEY",'"AAAAaItT8gI:APA91bFfKjeyj7FygFSoecz41UbIUfA3h_p4GxwgoU6iCu6Dfe4lVK3PuAUc7g771vn1d_vGLP_45WALfl3OJriBxnErOmQf1L5iRvBZHZNPnRN179W5xQj-uuoD9KYwaYNlo4aUKz44f1PjGBsDc85OrbLr-KPb8A"'
+            buildConfigField "String","SERVER_KEY",'"AAAAHS64s0k:APA91bFTJjzeDPaQ2_kpsFydXEMPhtRT3WsyC2J5Jz7FG2G7yRZsefOb8O-QuFN3Y7K8hoxfS5dB0ESpWTJacIF2BVg7rynsMqcYNEqnrrFOJqkjRtes456Ig53z3BCAh6nOZB3ozq_uFn2tRmTIfH2jWw5Xa7WurQ"'
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
 
@@ -70,7 +70,7 @@ android {
             debuggable true
             minifyEnabled false
             // Core 푸시 서버 API키
-            buildConfigField "String","SERVER_KEY",'"AAAAosxzawM:APA91bHueqSnwuxBizof90IP8CtUPYo9WS8tjScyi0wNX0aoysNil8z-pinrUFtZOO5lFyk5BTY7qC0Uod1JfBipng5RfyvgkzpzI7VmMgt4XO8C7ST97agxHEWR2_Cg7TbPQxVnntiZ"'
+            buildConfigField "String","SERVER_KEY",'"AAAAHS64s0k:APA91bFTJjzeDPaQ2_kpsFydXEMPhtRT3WsyC2J5Jz7FG2G7yRZsefOb8O-QuFN3Y7K8hoxfS5dB0ESpWTJacIF2BVg7rynsMqcYNEqnrrFOJqkjRtes456Ig53z3BCAh6nOZB3ozq_uFn2tRmTIfH2jWw5Xa7WurQ"'
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }

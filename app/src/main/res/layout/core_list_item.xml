@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         >
 
-        <com.teamcore.android.core.PeopleFragment.SquareImageView
+        <com.teamdoor.android.door.PeopleFragment.SquareImageView
             android:id="@+id/core_pic"
             android:layout_width="49dp"
             android:layout_height="49dp"

@@ -23,10 +23,10 @@
 
 # Firebase Realtime database
 -keepattributes Signature
--keepclassmembers class com.teamcore.android.core.Entity.** {
+-keepclassmembers class com.teamdoor.android.door.Entity.** {
   *;
 }
--keepclassmembers class com.teamcore.android.core.MessageActivity.util.** {
+-keepclassmembers class com.teamdoor.android.door.MessageActivity.util.** {
   *;
 }
 

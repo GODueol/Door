@@ -16,7 +16,7 @@
         android:layout_marginLeft="5dp"
         android:layout_marginTop="5dp">
 
-        <com.teamcore.android.core.PeopleFragment.SquareImageView
+        <com.teamdoor.android.door.PeopleFragment.SquareImageView
             android:id="@+id/profile_image"
             android:layout_width="75dp"
             android:layout_height="75dp"

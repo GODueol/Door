@@ -1,39 +1,35 @@
 {
   "project_info": {
-    "project_number": "699214818051",
-    "firebase_url": "https://core-865fc.firebaseio.com",
-    "project_id": "core-865fc",
-    "storage_bucket": "core-865fc.appspot.com"
+    "project_number": "125337908041",
+    "firebase_url": "https://door-cb1cf.firebaseio.com",
+    "project_id": "door-cb1cf",
+    "storage_bucket": "door-cb1cf.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:699214818051:android:a90a127f73344b7d",
+        "mobilesdk_app_id": "1:125337908041:android:46bd1cb1e7dae43e",
         "android_client_info": {
-          "package_name": "com.teamcore.android.core"
+          "package_name": "com.teamdoor.android.door"
         }
       },
       "oauth_client": [
         {
-          "client_id": "699214818051-08n5376s2r9t3fdqiehvpoaf61ii60bc.apps.googleusercontent.com",
+          "client_id": "125337908041-rga4copu91ocap9th1vhlsfe23us9018.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.teamcore.android.core",
+            "package_name": "com.teamdoor.android.door",
             "certificate_hash": "0d3e5b3fcfe1125bf940a2faa1f1d12880470008"
           }
         },
         {
-          "client_id": "699214818051-lhcvvtjeul47t4btjqjamncenb3r1ls0.apps.googleusercontent.com",
-          "client_type": 3
-        },
-        {
-          "client_id": "699214818051-lhcvvtjeul47t4btjqjamncenb3r1ls0.apps.googleusercontent.com",
+          "client_id": "125337908041-69uj4f827jqb89redr0i7d0t71dhlkh2.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBMdjE2cRcQOhDYEQs4tleeHrTtTrHCXn4"
+          "current_key": "AIzaSyDkg0nfWwzhUfn_fGn28NIkPVabvutpGNY"
         }
       ],
       "services": {
@@ -44,7 +40,7 @@
           "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "699214818051-lhcvvtjeul47t4btjqjamncenb3r1ls0.apps.googleusercontent.com",
+              "client_id": "125337908041-69uj4f827jqb89redr0i7d0t71dhlkh2.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

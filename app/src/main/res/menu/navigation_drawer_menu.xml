@@ -16,7 +16,7 @@
         <item
             android:id="@+id/nav_mycore"
             android:icon="@drawable/core"
-            android:title="My Core"
+            android:title="My Door"
             app:actionViewClass="android.widget.TextView"
             app:theme="@style/NavigationViewStyle"
             />

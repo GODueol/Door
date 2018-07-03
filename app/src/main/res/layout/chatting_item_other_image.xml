@@ -77,7 +77,7 @@
                 android:layout_marginRight="5dp"
                 android:layout_marginTop="5dp" />
 
-            <com.teamcore.android.core.MessageActivity.util.ChatMessageView
+            <com.teamdoor.android.door.MessageActivity.util.ChatMessageView
                 android:id="@+id/chatMessageView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -99,7 +99,7 @@
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                     android:textSize="15.5dp"
                     android:textStyle="bold" />
-            </com.teamcore.android.core.MessageActivity.util.ChatMessageView>
+            </com.teamdoor.android.door.MessageActivity.util.ChatMessageView>
 
 
             <LinearLayout
