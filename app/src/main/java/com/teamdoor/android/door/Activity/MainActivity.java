@@ -308,7 +308,7 @@ public class MainActivity extends BaseActivity
             Log.d(getClass().getSimpleName(), "onQueryInventoryFinished");
             if (iaphelper == null) return;
             if (result.isFailure()) {
-                Toast.makeText(getApplicationContext(), "onQueryInventoryFinished Failed", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(), "onQueryInventoryFinished Failed", Toast.LENGTH_SHORT).show();
                 //getPurchases() 실패했을때
                 return;
             }
@@ -326,7 +326,7 @@ public class MainActivity extends BaseActivity
             if (purchase != null && purchase.getPurchaseState() == 0 && verifyDeveloperPayload(purchase)) {
                 //해당 아이템을 가지고 있는 경우.
                 //아이템에대한 처리를 한다.
-                Toast.makeText(getApplicationContext(), purchase.getPurchaseState() + "onQueryInventoryFinished Already had", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(), purchase.getPurchaseState() + "onQueryInventoryFinished Already had", Toast.LENGTH_SHORT).show();
             }
         }
     };

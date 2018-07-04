@@ -323,7 +323,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.OnConn
 
         @Override
         public void onRewardedVideoCompleted() {
-            Toast.makeText(getApplicationContext(), "onRewardedVideoCompleted", Toast.LENGTH_LONG).show();
+            //Toast.makeText(getApplicationContext(), "onRewardedVideoCompleted", Toast.LENGTH_LONG).show();
         }
     };
 
