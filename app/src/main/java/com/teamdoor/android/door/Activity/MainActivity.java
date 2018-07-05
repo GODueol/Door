@@ -297,7 +297,6 @@ public class MainActivity extends BaseActivity
                 e.printStackTrace();
             }
         });
-        Toast.makeText(this,"test3",Toast.LENGTH_SHORT).show();
         navAlarmDialog = new NavAlarmDialog(MainActivity.this);
         showWeeklyTopicDialog();
     }
