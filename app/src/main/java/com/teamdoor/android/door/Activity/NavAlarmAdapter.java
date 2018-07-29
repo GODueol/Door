@@ -58,6 +58,7 @@ public class NavAlarmAdapter extends RecyclerView.Adapter<NavAlarmAdapter.ViewHo
     private AlarmSummary alarmItem;
     private int positionItem;
 
+
     NavAlarmAdapter(Context context, List<AlarmSummary> items, boolean isPlus) {
         this.context = context;
         this.items = items;
