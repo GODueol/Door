@@ -143,7 +143,7 @@
             tools:ignore="InnerclassSeparator" />
         <activity
             android:name=".Activity.MapsActivity"
-            android:launchMode="singleTask"
+            android:launchMode="singleInstance"
             android:screenOrientation="portrait"
             tools:ignore="InnerclassSeparator" />
         <activity
@@ -214,6 +214,4 @@
             android:value="7a7fde1f668ce339bb6eba14d924657ed6e31a17" />
     </application>
 
-
-    // Admod : ca-app-pub-4410935111031067~7345603486
 </manifest>
