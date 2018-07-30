@@ -99,7 +99,7 @@ public class ImageAdapter extends BaseAdapter {
 
         // 도어 카운트 출력
         holder.textView.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD_ITALIC));
-        holder.textView.setText(item.getSummaryUser().getCorePostCount() + " DOOR ");
+        holder.textView.setText(item.getSummaryUser().getCorePostCount() + " CORE ");
         holder.textView.setTextSize((float) 15.5);
 
 

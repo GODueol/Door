@@ -136,7 +136,7 @@ public class UiUtil {
         if(isAutoTimeSet(context)){
             return System.currentTimeMillis();
         } else {
-            throw new NotSetAutoTimeException("디바이스 시간을 수동으로 설정 시 도어를 사용할 수 없습니다");
+            throw new NotSetAutoTimeException("디바이스 시간을 수동으로 설정 시 코어를 사용할 수 없습니다");
         }
 
     }

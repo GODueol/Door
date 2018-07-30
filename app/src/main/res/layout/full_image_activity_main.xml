@@ -62,7 +62,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="17dp"
-                android:text="DOOR"
+                android:text="CORE"
                 android:textColor="@color/skyblue"
                 android:textSize="18sp"
                 android:textStyle="italic|bold" />

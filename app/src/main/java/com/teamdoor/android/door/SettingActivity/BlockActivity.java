@@ -44,7 +44,7 @@ public class BlockActivity extends UserListBaseActivity {
         // 일반 유저 블럭 리스트 볼 수 없음
         if(!DataContainer.getInstance().isPlus)
         {
-            Toast.makeText(BlockActivity.this, "DOOR PLUS 구독 시 차단한 회원을 볼 수 있습니다", Toast.LENGTH_LONG).show();
+            Toast.makeText(BlockActivity.this, "CORE PLUS 구독 시 차단한 회원을 볼 수 있습니다", Toast.LENGTH_LONG).show();
             finish();
         }
 

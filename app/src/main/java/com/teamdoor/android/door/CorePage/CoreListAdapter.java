@@ -584,7 +584,7 @@ public class CoreListAdapter extends RecyclerView.Adapter<CoreListAdapter.CorePo
                     case R.id.block:
                         // 일반 유저는 익명 유저를 차단 불가
                         if (coreListItem.getUser() == null && !DataContainer.getInstance().isPlus) {
-                            Toast.makeText(context, "DOOR PLUS 회원만 익명 질문 회원을 차단할 수 있습니다", Toast.LENGTH_LONG).show();
+                            Toast.makeText(context, "CORE PLUS 회원만 익명 질문 회원을 차단할 수 있습니다", Toast.LENGTH_LONG).show();
                             break;
                         }
 

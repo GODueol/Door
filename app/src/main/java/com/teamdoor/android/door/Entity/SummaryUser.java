@@ -12,11 +12,11 @@ public class SummaryUser implements Serializable {
     private int height;
     private int weight;
     private String bodyType;
+    private String sex;
 
     private int corePostCount;
 
     private long loginDate;
-    private String sex;
 
     public SummaryUser() {
     }

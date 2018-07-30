@@ -475,9 +475,9 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
                         break;
                     case "friendUsers":
                         header_title.setText("친구 목록");
-                        friends_contents.setText(mUser.getId() + " 님은 DOOR 일반 회원입니다");
+                        friends_contents.setText(mUser.getId() + " 님은 CORE 일반 회원입니다");
                         core_open_count.setText("" + CorePossibleOldFriendCount);
-                        friends_contents2.setText(" 명의 오래된 친구까지 도어를 열어볼 수 있습니다");
+                        friends_contents2.setText(" 명의 오래된 친구까지 코어를 열어볼 수 있습니다");
                         header_count.setText((items.size() - 1) + "");
                         break;
                 }

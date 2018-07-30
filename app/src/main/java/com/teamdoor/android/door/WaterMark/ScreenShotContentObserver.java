@@ -27,7 +27,7 @@ public class ScreenShotContentObserver extends ContentObserver {
     private static final String SORT_ORDER = MediaStore.Images.Media.DATE_ADDED + " DESC";
 
     public static final String FILE_POSTFIX = "FROM_ASS";
-    private static final String WATERMARK = "이 화면은 DOOR 앱에서 캡쳐된 화면입니다";
+    private static final String WATERMARK = "이 화면은 CORE 앱에서 캡쳐된 화면입니다";
     private ScreenShotListener mListener;
     private ContentResolver mContentResolver;
     private String lastPath;

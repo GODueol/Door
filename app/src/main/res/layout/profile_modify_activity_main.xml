@@ -524,12 +524,20 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="20dp"
                     android:layout_toLeftOf="@id/femaleCheckBox"
-                    android:text="남성"/>
+                    android:text="남성"
+                    android:textColor="@color/white"
+                    android:buttonTint="@color/white"
+                    />
+
                 <CheckBox
                     android:id="@+id/femaleCheckBox"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="여성"/>
+                    android:layout_marginRight="20dp"
+                    android:text="여성"
+                    android:textColor="@color/white"
+                    android:buttonTint="@color/white"
+                    />
 
             </RelativeLayout>
 

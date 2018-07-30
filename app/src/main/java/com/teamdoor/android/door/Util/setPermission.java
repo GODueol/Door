@@ -21,7 +21,7 @@ public class setPermission {
         mContext = context;
         String message;
         // 퍼미션에 따른 에러메세지 설정
-        message = "필수 권한 거부 시 도어를 사용할 수 없습니다\n\n설정 방법 [설정] > [권한]";
+        message = "필수 권한 거부 시 코어를 사용할 수 없습니다\n\n설정 방법 [설정] > [권한]";
 
         /*      switch (permission) {
                 case Manifest.permission.ACCESS_FINE_LOCATION:

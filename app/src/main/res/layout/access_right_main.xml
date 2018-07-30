@@ -33,7 +33,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:text="도어 권한 접근 안내"
+                    android:text="코어 권한 접근 안내"
                     android:textColor="@color/black"
                     android:textSize="18sp"
                     android:textStyle="bold" />

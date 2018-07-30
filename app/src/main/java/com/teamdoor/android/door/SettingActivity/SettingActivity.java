@@ -40,7 +40,7 @@ public class SettingActivity extends AppCompatActivity {
 
         setting_list = (ListView) findViewById(R.id.setting_list);
 
-        String[] setting_contents = new String[]{"DOOR PLUS", "공지사항", "계정", "알림", "블럭", "앱 정보", "로그아웃",""};
+        String[] setting_contents = new String[]{"CORE PLUS", "공지사항", "계정", "알림", "블럭", "앱 정보", "로그아웃",""};
 
         ArrayList<String> setting = new ArrayList<>();
         setting.addAll(Arrays.asList(setting_contents));

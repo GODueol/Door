@@ -98,7 +98,7 @@ public class CoreActivity extends BlockBaseActivity {
 
         // 일반유저, 가장 오래된 친구 3명 이외에 다른 회원 도어 확인 불가능
         if (!isOldFriends(cUuid)) {
-            Toast.makeText(this, "일반 회원은 " + CorePossibleOldFriendCount + "명의 오래된 친구까지 도어 열람이 가능합니다 :(", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "일반 회원은 " + CorePossibleOldFriendCount + "명의 오래된 친구까지 코어 열람이 가능합니다 :(", Toast.LENGTH_LONG).show();
             finish();
         }
 
