@@ -49,9 +49,6 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
 
     User mUser;
 
-    @BindView(R.id.radio_sex)
-    RadioGroup _radioSex;
-
     @BindView(R.id.input_email)
     EditText _emailText;
 
@@ -66,6 +63,9 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
 
     @BindView(R.id.input_age)
     EditText _ageText;
+
+    @BindView(R.id.input_sex)
+    EditText _sex;
 
     @BindView(R.id.input_height)
     EditText _heightText;
@@ -95,9 +95,12 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
     TextView _loginLink;
 
     private EditText bodytype;
+    private EditText sex;
+
     private String deviceIdentifier;
 
     final String[] values = {"Slim", "Light", "Normal", "Muscular", "Heavy", "Fat"};
+    final String[] values2 = {"남성","여성"};
 
     @SuppressLint("HardwareIds")
     @Override
@@ -112,6 +115,11 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
         bodytype.setFocusable(false);
         bodytype.setClickable(false);
         bodytype.setOnClickListener(v -> show4());
+
+        sex = (EditText) findViewById(R.id.input_sex);
+        sex.setFocusable(false);
+        sex.setClickable(false);
+        sex.setOnClickListener(v -> show());
 
         access_terms1.setPaintFlags(access_terms1.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         access_terms2.setPaintFlags(access_terms2.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
@@ -191,7 +199,7 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
 
         np.setMinValue(0); //from array first value
         np.setMaxValue(values.length - 1); //to array last value
-        np.setValue(values.length - 4); //normal 체형이 디폴트
+        np.setValue(1); //normal 체형이 디폴트
         np.setDisplayedValues(values);
         np.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
         np.setWrapSelectorWheel(false);
@@ -210,6 +218,46 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
         d.show();
     }
 
+    public void show() {
+
+        final Dialog d = new Dialog(SignupActivity.this);
+        d.setContentView(R.layout.login_signup_sex_dialog);
+
+        // Dialog 사이즈 조절 하기
+        ViewGroup.LayoutParams params = d.getWindow().getAttributes();
+        params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        d.getWindow().setAttributes((android.view.WindowManager.LayoutParams) params);
+
+        d.show();
+
+        TextView b1 = d.findViewById(R.id.button1);
+        TextView b2 = d.findViewById(R.id.button2);
+
+        final NumberPicker np = d.findViewById(R.id.numberPicker1);
+
+        np.setMinValue(0); //from array first value
+        np.setMaxValue(values2.length - 1); //to array last value
+        np.setValue(1); //normal 체형이 디폴트
+        np.setDisplayedValues(values2);
+        np.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+        np.setWrapSelectorWheel(false);
+        np.setOnValueChangedListener(this);
+
+
+        b1.setOnClickListener(v -> {
+            //Value 위치 값을 숫자가 아닌 해당 텍스트로 가져옴
+            int pos = np.getValue();
+            sex.setText(values2[pos]); //set the value to textview
+            d.dismiss();
+
+        });
+
+        b2.setOnClickListener(v -> d.dismiss());
+        d.show();
+    }
+
+
 
     public void signup() {
         Log.d(TAG, "Signup");
@@ -226,10 +274,11 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
         UiUtil.getInstance().startProgressDialog(this);
 
         final String email = _emailText.getText().toString();
-        final String sex = ((RadioButton) findViewById(_radioSex.getCheckedRadioButtonId())).getText().toString();
+//        final String sex = ((RadioButton) findViewById(_radioSex.getCheckedRadioButtonId())).getText().toString();
         final String password = _passwordText.getText().toString();
         final String id = _IDText.getText().toString();
         final int age = Integer.parseInt(_ageText.getText().toString());
+        final String sex = _sex.getText().toString();
         final int height = Integer.parseInt(_heightText.getText().toString());
         final int weight = Integer.parseInt(_weightText.getText().toString());
         final String bodyType = _bodyType.getText().toString();
@@ -303,11 +352,12 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
     public void validate() throws Exception {
 
         String email = _emailText.getText().toString();
-        if(_radioSex.getCheckedRadioButtonId() == -1) throw new Exception("성별을 선택해주세요.");
-        String sex = ((RadioButton) findViewById(_radioSex.getCheckedRadioButtonId())).getText().toString();
+//        if(_radioSex.getCheckedRadioButtonId() == -1) throw new Exception("성별을 선택해주세요.");
+//        String sex = ((EditText) findViewById(_radioSex.getCheckedRadioButtonId())).getText().toString();
         String password = _passwordText.getText().toString();
         String reEnterPassword = _reEnterPasswordText.getText().toString();
         String ID = _IDText.getText().toString();
+        String sex = _sex.getText().toString();
         String Age = _ageText.getText().toString();
         String Height = _heightText.getText().toString();
         String Weight = _weightText.getText().toString();
@@ -341,6 +391,9 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
         if (Age.isEmpty() || Age.length() != 2 || Integer.parseInt(Age) > 100) {
             focusEditText(_ageText);
             throw new Exception("올바른 나이를 작성해주세요.");
+        }
+        if (sex.isEmpty()) {
+            throw new Exception("성별을 선택해주세요.");
         }
         if (Integer.parseInt(Age) < 20) {
             focusEditText(_ageText);

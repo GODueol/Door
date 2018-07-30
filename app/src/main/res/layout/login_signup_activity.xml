@@ -100,24 +100,22 @@
                     android:maxLines="1" />
             </android.support.design.widget.TextInputLayout>
 
-            <!-- Sex Label -->
-            <RadioGroup
+
+            <!-- bodytype -->
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:id="@+id/radio_sex"
-                >
-                <RadioButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="20dp"
-                    android:text="남성"/>
-                <RadioButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="여성"/>
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
+                android:theme="@style/TextLabel2">
 
-            </RadioGroup>
+                <EditText
+                    android:id="@+id/input_sex"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="성별"
+                    android:inputType="none" />
+            </android.support.design.widget.TextInputLayout>
 
             <!-- age -->
             <android.support.design.widget.TextInputLayout
