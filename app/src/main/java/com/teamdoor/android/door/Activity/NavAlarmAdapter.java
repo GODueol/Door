@@ -67,6 +67,7 @@ public class NavAlarmAdapter extends RecyclerView.Adapter<NavAlarmAdapter.ViewHo
         mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(context);
         loadRewardedVideoAd();
         mRewardedVideoAd.setRewardedVideoAdListener(rewardedVideoAdListener);
+
         setnoFillInterstitialAd();
     }
 
