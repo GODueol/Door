@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -37,6 +38,8 @@ public class AppInfoActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //액션바 아이콘을 업 네비게이션 형태로 표시합니다.
         getSupportActionBar().setDisplayShowHomeEnabled(true); //홈 아이콘을 숨김처리합니다.
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
+
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN); //status bar 없앰
 
 
         access_terms1 = (RelativeLayout) findViewById(R.id.layout2);
@@ -79,7 +82,7 @@ public class AppInfoActivity extends AppCompatActivity {
             }
         });
 
-       ((TextView)findViewById(R.id.appVersion)).setText(String.valueOf("Version "+BuildConfig.VERSION_CODE));
+        ((TextView)findViewById(R.id.appVersion)).setText(String.valueOf(BuildConfig.VERSION_CODE));
     }
 
 
