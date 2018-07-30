@@ -590,8 +590,8 @@ public class MainActivity extends BaseActivity
         //툴바 이미지 붙이기 (도어 회원이면 drawable : tb_core / 코어플러스 회원이면 tb_coreplus)
         checkCorePlus().addOnSuccessListener(isPlus -> {
             int res;
-            if (isPlus) res = R.drawable.tb_doorplus;
-            else res = R.drawable.tb_door;
+            if (isPlus) res = R.drawable.tb_coreplus;
+            else res = R.drawable.tb_core;
             GlideApp.with(this)
                     .load(UiUtil.resourceToUri(this, res))
                     .fitCenter()
