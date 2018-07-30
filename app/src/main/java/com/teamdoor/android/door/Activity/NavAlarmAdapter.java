@@ -372,7 +372,7 @@ public class NavAlarmAdapter extends RecyclerView.Adapter<NavAlarmAdapter.ViewHo
             return false;
         }
         if( ((BaseActivity) context).isOldFriends(cUuid)){
-            Toast.makeText(context, "일반 회원은 " + CorePossibleOldFriendCount + "명의 오래된 친구까지 도어 열람이 가능합니다 :(", Toast.LENGTH_LONG).show();
+            Toast.makeText(context, "일반 회원은 " + CorePossibleOldFriendCount + "명의 오래된 친구까지 코어 열람이 가능합니다 :(", Toast.LENGTH_LONG).show();
             return false;
         }
         return true;

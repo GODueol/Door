@@ -121,7 +121,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="75dp"
                 android:gravity="center"
-                android:text="__님은 현재 도어 플러스 구독 중이십니다."
+                android:text="__님은 현재 코어 플러스 구독 중이십니다."
                 android:textColor="@color/skyblue"
                 android:textStyle="bold"
                 android:visibility="visible" />
@@ -136,7 +136,7 @@
                 android:layout_marginRight="25dp"
                 android:layout_marginTop="40dp"
                 android:gravity="center"
-                android:text="DOOR PLUS를 구독해주신 회원님께 진심으로 감사드리며, 더 나은 서비스를 제공하기 위해 노력하겠습니다."
+                android:text="CORE PLUS를 구독해주신 회원님께 진심으로 감사드리며, 더 나은 서비스를 제공하기 위해 노력하겠습니다."
                 android:textColor="@color/black"
                 android:visibility="visible" />
 
@@ -566,7 +566,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
                         android:layout_toRightOf="@+id/sub_txt17"
-                        android:text="DOOR PLUS 구독 중"
+                        android:text="CORE PLUS 구독 중"
                         android:textColor="@color/black" />
 
                 </RelativeLayout>

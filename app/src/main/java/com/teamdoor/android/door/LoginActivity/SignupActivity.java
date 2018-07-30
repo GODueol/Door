@@ -282,7 +282,7 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
     }
 
     public void onSignupSuccess() {
-        Toast.makeText(getBaseContext(), "도어에 오신 것을 환영합니다!", Toast.LENGTH_LONG).show();
+        Toast.makeText(getBaseContext(), "환영합니다!", Toast.LENGTH_LONG).show();
         _signupButton.setEnabled(true);
         Intent i = new Intent(this, MainActivity.class);
         startActivity(i);
@@ -355,7 +355,7 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
             throw new Exception("올바른 몸무게로 작성해주세요.");
         }
         if (Bodytype.isEmpty()) {
-            throw new Exception("바디타입을 설정해주세요.");
+            throw new Exception("체형을 선택해주세요.");
         }
         if (!access_agree.isChecked()){
             throw new Exception("약관에 동의합니다를 눌러주세요.");

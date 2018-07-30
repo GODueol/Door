@@ -79,7 +79,7 @@ public class LoginActivity extends AppCompatActivity {
 
         ImageView cor2 = (ImageView) findViewById(R.id.CORE_LOGO);
         Glide.with(this)
-                .load(UiUtil.resourceToUri(this, R.drawable.login_core))
+                .load(UiUtil.resourceToUri(this, R.drawable.login_core_ani))
                 .into(cor2);
 
 

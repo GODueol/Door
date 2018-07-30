@@ -93,7 +93,7 @@
             android:layout_below="@+id/layout"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="15dp"
-            android:text="Nickname 님은 DOOR 일반 회원입니다"
+            android:text="Nickname 님은 코어 일반 회원입니다"
             android:textColor="@color/white" />
 
         <LinearLayout
@@ -121,7 +121,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:text="명의 친구까지 도어를 열어볼 수 있습니다"
+            android:text="명의 친구까지 코어를 열어볼 수 있습니다"
             android:textColor="@color/white" />
 
         </LinearLayout>
