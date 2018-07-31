@@ -67,6 +67,8 @@ import java.util.ArrayList;
 import static com.teamdoor.android.door.Util.RemoteConfig.CorePossibleOldFriendCount;
 
 
+//ㅁㄴ이ㅏㄹ;ㅓㅁㄴㅇ라ㅣㅓㄴ
+
 public class CoreActivity extends BlockBaseActivity {
 
     private static final int WRITE_SUCC = 1;
