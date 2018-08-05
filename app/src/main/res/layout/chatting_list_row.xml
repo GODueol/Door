@@ -3,10 +3,8 @@
     android:id="@+id/layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/gray"
     android:orientation="horizontal"
     android:padding="3dp">
-
 
     <RelativeLayout
         android:id="@+id/profile_layout"

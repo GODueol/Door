@@ -283,6 +283,7 @@ public class SignupActivity extends AppCompatActivity implements NumberPicker.On
         final int weight = Integer.parseInt(_weightText.getText().toString());
         final String bodyType = _bodyType.getText().toString();
         mUser = new User(email, id, age, height, weight, bodyType, sex);
+        Log.v("TT",deviceIdentifier);
         FirebaseDatabase.getInstance().getReference("identifier").child(deviceIdentifier).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

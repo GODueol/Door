@@ -52,7 +52,7 @@ import com.teamdoor.android.door.Event.TargetUserBlocksMeEvent;
 import com.teamdoor.android.door.Exception.ChildSizeMaxException;
 import com.teamdoor.android.door.Exception.NotSetAutoTimeException;
 import com.teamdoor.android.door.MessageActivity.ChattingMessageAdapter.OnImesageLoadingCallback;
-import com.teamdoor.android.door.MessageActivity.util.MessageVO;
+import com.teamdoor.android.door.Entity.MessageVO;
 import com.teamdoor.android.door.PeopleFragment.FullImageActivity;
 import com.teamdoor.android.door.R;
 import com.teamdoor.android.door.Util.BaseActivity.BlockBaseActivity;

@@ -1,6 +1,6 @@
 package com.teamdoor.android.door.MessageActivity;
 
-import com.teamdoor.android.door.MessageActivity.util.MessageVO;
+import com.teamdoor.android.door.Entity.MessageVO;
 import com.teamdoor.android.door.PeopleFragment.GridItem;
 
 /**

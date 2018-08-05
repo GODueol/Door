@@ -16,7 +16,7 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.teamdoor.android.door.Activity.MainActivity;
 import com.teamdoor.android.door.FriendsActivity.FriendsActivity;
-import com.teamdoor.android.door.MessageActivity.MessageActivity;
+import com.teamdoor.android.door.MessageList.MessageActivity;
 import com.teamdoor.android.door.R;
 
 import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;

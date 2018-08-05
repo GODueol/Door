@@ -19,8 +19,8 @@ import com.teamdoor.android.door.Entity.CorePost;
 import com.teamdoor.android.door.Entity.User;
 import com.teamdoor.android.door.Exception.ChildSizeMaxException;
 import com.teamdoor.android.door.Exception.NotSetAutoTimeException;
-import com.teamdoor.android.door.MessageActivity.util.MessageVO;
-import com.teamdoor.android.door.MessageActivity.util.RoomVO;
+import com.teamdoor.android.door.Entity.MessageVO;
+import com.teamdoor.android.door.Entity.RoomVO;
 import com.teamdoor.android.door.R;
 import com.teamdoor.android.door.Util.BaseActivity.BaseActivity;
 

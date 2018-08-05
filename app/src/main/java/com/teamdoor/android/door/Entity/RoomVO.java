@@ -1,6 +1,4 @@
-package com.teamdoor.android.door.MessageActivity.util;
-
-import android.support.annotation.NonNull;
+package com.teamdoor.android.door.Entity;
 
 /**
  * Created by godueol on 2017. 12. 23..
@@ -9,24 +7,23 @@ import android.support.annotation.NonNull;
 public class RoomVO {
 
 
-
     private String targetUuid;
     private String chatRoomid;
     private String targetNickName;
     private String targetProfile;
     private String targetUrl;
     private String lastChat;
-    private int badgeCount=0;
+    private int badgeCount = 0;
     private long lastChatTime;
 
 
     private long lastViewTime;
 
 
-    public RoomVO(){
+    public RoomVO() {
     }
 
-    public RoomVO(String chatRoomid, String lastChat, String targetUuid, long lastChatTime){
+    public RoomVO(String chatRoomid, String lastChat, String targetUuid, long lastChatTime) {
         this.chatRoomid = chatRoomid;
         this.lastChat = lastChat;
         this.targetUuid = targetUuid;

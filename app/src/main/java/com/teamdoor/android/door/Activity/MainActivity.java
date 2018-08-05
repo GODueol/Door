@@ -52,7 +52,7 @@ import com.teamdoor.android.door.Entity.User;
 import com.teamdoor.android.door.Event.TargetUserBlocksMeEvent;
 import com.teamdoor.android.door.Exception.NotSetAutoTimeException;
 import com.teamdoor.android.door.FriendsActivity.FriendsActivity;
-import com.teamdoor.android.door.MessageActivity.MessageActivity;
+import com.teamdoor.android.door.MessageList.MessageActivity;
 import com.teamdoor.android.door.ProfileModifyActivity.ProfileModifyActivity;
 import com.teamdoor.android.door.R;
 import com.teamdoor.android.door.SettingActivity.CorePlusActivity;

@@ -1,10 +1,11 @@
-package com.teamdoor.android.door.MessageActivity;
+package com.teamdoor.android.door.MessageList;
 
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,7 +18,7 @@ import android.widget.Toast;
 
 import com.teamdoor.android.door.Exception.NotSetAutoTimeException;
 import com.teamdoor.android.door.MessageActivity.util.DateUtil;
-import com.teamdoor.android.door.MessageActivity.util.RoomVO;
+import com.teamdoor.android.door.Entity.RoomVO;
 import com.teamdoor.android.door.R;
 import com.teamdoor.android.door.Util.GlideApp;
 
@@ -34,6 +35,7 @@ public class messageRecyclerAdapter extends RecyclerView.Adapter<messageRecycler
     private int itemLayout;
     private OnRemoveChattingListCallback onRemoveChattingListCallback;
     private Context context;
+    TypedValue typedValue;
 
     public interface OnRemoveChattingListCallback {
         void onRemove(String s);
@@ -45,6 +47,9 @@ public class messageRecyclerAdapter extends RecyclerView.Adapter<messageRecycler
         this.onRemoveChattingListCallback = onRemoveChattingListCallback;
         mListener = listener;
         this.context = context;
+
+        typedValue = new TypedValue();
+        context.getTheme().resolveAttribute(R.attr.selectableItemBackground, typedValue, true);
     }
 
     @Override
@@ -67,7 +72,7 @@ public class messageRecyclerAdapter extends RecyclerView.Adapter<messageRecycler
         Long lastChatTime = room.getLastChatTime();
         Long lastViewTime = room.getLastViewTime();
         if (lastViewTime >= lastChatTime) {
-            holder.layout.setBackgroundColor(Color.WHITE);
+            holder.layout.setBackgroundResource(typedValue.resourceId);
         } else {
             holder.layout.setBackgroundColor(Color.GRAY);
         }
@@ -170,13 +175,12 @@ public class messageRecyclerAdapter extends RecyclerView.Adapter<messageRecycler
 
         @Override
         public void onClick(View view) {
-            mListener.onClick(view, getAdapterPosition());
+            mListener.onClick(getAdapterPosition());
         }
 
     }
 
     public interface RecyclerViewClickListener {
-
-        void onClick(View view, int position);
+        void onClick(int position);
     }
 }

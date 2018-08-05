@@ -1,4 +1,4 @@
-package com.teamdoor.android.door.MessageActivity.util;
+package com.teamdoor.android.door.Entity;
 
 /**
  * Created by Administrator on 2017-12-04.
@@ -16,11 +16,11 @@ public class MessageVO {
 
     private int isImage;
 
-    public MessageVO(){
+    public MessageVO() {
     }
 
 
-    public MessageVO(String image, String writer, String nickname, String content, Long time, int check){
+    public MessageVO(String image, String writer, String nickname, String content, Long time, int check) {
         this.image = image;
         this.writer = writer;
         this.nickname = nickname;
@@ -28,7 +28,8 @@ public class MessageVO {
         this.time = time;
         this.check = check;
     }
-    public MessageVO(String image, String writer, String nickname, String content, Long time, int check,int isImage){
+
+    public MessageVO(String image, String writer, String nickname, String content, Long time, int check, int isImage) {
         this.image = image;
         this.writer = writer;
         this.nickname = nickname;
