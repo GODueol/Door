@@ -102,7 +102,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
 
     public UserListAdapter(BaseActivity context, List<Item> items, Boolean isPlus) {
         this(context, items);
-        this.isPlus = !isPlus;
+        this.isPlus = isPlus;
     }
 
     public void setItemMenu(int itemMenu, String tabName) {
