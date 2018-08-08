@@ -10,6 +10,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.teamdoor.android.door.Entity.MessageVO;
@@ -27,13 +28,16 @@ public class MessagePresenter implements MessageContract.Presenter, SharedPrefer
     private MessageContract.View mMeesageView;
     private List<RoomVO> listrowItem;
     private List<String> uuidList;
+    private DatabaseReference databaseReference;
     private DatabaseReference chatRoomListRef;
     private String userId;
     private SharedPreferencesUtil SPUtil;
     int BadgeCount = 0;
+    private RxFirebaseModel rxFirebaseModel;
 
     MessagePresenter(MessageContract.View MessageView, SharedPreferencesUtil SPUtil) {
-        chatRoomListRef = FirebaseDatabase.getInstance().getReference("chatRoomList");
+        databaseReference = FirebaseDatabase.getInstance().getReference();
+        chatRoomListRef = databaseReference.child("chatRoomList");
 
         this.SPUtil = SPUtil;
         SPUtil.getChatListPreferences().registerOnSharedPreferenceChangeListener(this);
@@ -44,6 +48,8 @@ public class MessagePresenter implements MessageContract.Presenter, SharedPrefer
         uuidList = new ArrayList<>();
         mMeesageView = MessageView;
         mMeesageView.setPresenter(this);
+
+        rxFirebaseModel = new RxFirebaseModel();
     }
 
     @Override
@@ -61,42 +67,30 @@ public class MessagePresenter implements MessageContract.Presenter, SharedPrefer
         FireBaseUtil.getInstance().queryBlockWithMe(item.getTargetUuid(), isBlockWithMe -> {
             //블럭이 아니면
             if (!isBlockWithMe) {
-                FirebaseDatabase.getInstance().getReference("users").child(item.getTargetUuid()).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        User user = dataSnapshot.getValue(User.class);
-                        Bundle bundle = new Bundle();
-                        bundle.putSerializable("user", user);
-                        bundle.putString("userUuid", item.getTargetUuid());
-                        SPUtil.removeChatRoomBadge(item.getChatRoomid());
-                        mMeesageView.startChattingActivity(bundle);
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                    }
-                });
+                Query query = databaseReference.child("users").child(item.getTargetUuid());
+                rxFirebaseModel.getFirebaseSingleData(query, User.class, RxFirebaseModel.CHILD_SINGLE)
+                        .subscribe(user -> {
+                            Bundle bundle = new Bundle();
+                            bundle.putSerializable("user", user);
+                            bundle.putString("userUuid", item.getTargetUuid());
+                            SPUtil.removeChatRoomBadge(item.getChatRoomid());
+                            mMeesageView.startChattingActivity(bundle);
+                        });
             } else {// 블럭이면
+                // 채팅 리스트 아이템 삭
                 chatRoomListRef.child(userId).child(item.getTargetUuid()).removeValue();
-                mMeesageView.refreshMessageListView();
                 // 채팅방 이미지 전체 삭제 및 채팅 로그 삭제
                 final String roomId = item.getChatRoomid();
                 SPUtil.removeChatRoomBadge(roomId);
-                FirebaseDatabase.getInstance().getReference("chat").child(roomId).orderByChild("isImage").equalTo(1).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        for (DataSnapshot ds : dataSnapshot.getChildren()) {//마찬가지로 중복 유무 확인
-                            MessageVO message = ds.getValue(MessageVO.class);
+
+                Query query = databaseReference.child("chat").child(roomId).orderByChild("isImage").equalTo(1);
+                rxFirebaseModel.getFirebaseSingleData(query, MessageVO.class, RxFirebaseModel.CHILD_MULTI)
+                        .subscribe(message -> {
                             FirebaseStorage.getInstance().getReferenceFromUrl(message.getImage()).delete();
-                        }
-                        FirebaseDatabase.getInstance().getReference("chat").child(roomId).removeValue();
-                    }
+                            FirebaseDatabase.getInstance().getReference("chat").child(roomId).removeValue();
+                        });
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
+                mMeesageView.refreshMessageListView();
             }
         });
     }
