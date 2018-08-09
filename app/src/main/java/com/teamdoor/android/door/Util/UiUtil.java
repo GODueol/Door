@@ -22,7 +22,7 @@ import com.teamdoor.android.door.Entity.CorePost;
 import com.teamdoor.android.door.Entity.User;
 import com.teamdoor.android.door.Exception.NotSetAutoTimeException;
 import com.teamdoor.android.door.LoginActivity.IntroActivity;
-import com.teamdoor.android.door.MessageActivity.util.DateUtil;
+import com.teamdoor.android.door.Chatting.util.DateUtil;
 import com.teamdoor.android.door.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;

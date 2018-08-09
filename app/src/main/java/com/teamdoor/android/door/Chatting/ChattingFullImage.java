@@ -1,4 +1,4 @@
-package com.teamdoor.android.door.MessageActivity;
+package com.teamdoor.android.door.Chatting;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,11 +8,6 @@ import android.support.v7.widget.Toolbar;
 import com.github.chrisbanes.photoview.PhotoView;
 import com.teamdoor.android.door.R;
 import com.teamdoor.android.door.Util.GlideApp;
-
-
-/**
- * Created by Administrator on 2018-01-28.
- */
 
 public class ChattingFullImage extends AppCompatActivity {
 

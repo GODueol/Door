@@ -1,4 +1,4 @@
-package com.teamdoor.android.door.MessageActivity;
+package com.teamdoor.android.door.Chatting;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -31,12 +31,13 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
+import com.teamdoor.android.door.Entity.ChatMessage;
 import com.teamdoor.android.door.Entity.User;
 import com.teamdoor.android.door.Exception.NotSetAutoTimeException;
-import com.teamdoor.android.door.MessageActivity.util.CryptoImeageName;
+import com.teamdoor.android.door.Chatting.util.CryptoImeageName;
 import com.teamdoor.android.door.Entity.MessageVO;
 import com.teamdoor.android.door.Entity.RoomVO;
-import com.teamdoor.android.door.MessageList.MessageActivity;
+import com.teamdoor.android.door.ChattingRoomList.ChattingRoomListActivity;
 import com.teamdoor.android.door.PeopleFragment.GridItem;
 import com.teamdoor.android.door.R;
 import com.teamdoor.android.door.Util.FireBaseUtil;
@@ -52,10 +53,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-/**
- * Created by Administrator on 2018-01-08.
- */
 
 public class ChatFirebaseUtil {
 
@@ -544,7 +541,7 @@ public class ChatFirebaseUtil {
                 chattingRecyclerview.getRecycledViewPool().clear();
                 chattingMessageAdapter.notifyDataSetChanged();
             } catch (Exception e) {
-                Intent p = new Intent(context.getApplicationContext(), MessageActivity.class);
+                Intent p = new Intent(context.getApplicationContext(), ChattingRoomListActivity.class);
                 p.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 context.getApplicationContext().startActivity(p);
             }

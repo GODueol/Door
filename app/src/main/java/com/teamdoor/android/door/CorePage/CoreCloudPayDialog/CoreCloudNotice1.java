@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.teamdoor.android.door.MessageActivity.util.DateUtil;
+import com.teamdoor.android.door.Chatting.util.DateUtil;
 import com.teamdoor.android.door.R;
 import com.teamdoor.android.door.Util.DataContainer;
 import com.teamdoor.android.door.Util.GlideApp;

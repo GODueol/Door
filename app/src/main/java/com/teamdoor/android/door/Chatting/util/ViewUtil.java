@@ -1,4 +1,4 @@
-package com.teamdoor.android.door.MessageActivity.util;
+package com.teamdoor.android.door.Chatting.util;
 
 import java.util.concurrent.atomic.AtomicInteger;
 

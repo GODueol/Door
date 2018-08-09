@@ -1,4 +1,4 @@
-package com.teamdoor.android.door.MessageList;
+package com.teamdoor.android.door.ChattingRoomList;
 
 import android.os.Bundle;
 
@@ -12,11 +12,11 @@ import java.util.List;
 // 메세지 보여주기
 // 클릭하면 -> 채팅으로 넘어가기
 // 뱃지
-public interface MessageContract {
+public interface ChattingRoomListContract {
 
     interface View extends BaseView<Presenter> {
         // 메세지리스트뷰 새로고침
-        void refreshMessageListView();
+        void refreshChattingRoomListView();
 
         // 채팅방activity 시작
         void startChattingActivity(Bundle bundle);
@@ -32,19 +32,19 @@ public interface MessageContract {
         void setListItem(List<RoomVO> listrowItem);
 
         // 메세지 리스트 가져오기
-        void setMessageList();
+        void setRoomItemList();
 
         // 처음 가져올때 데이터 셋팅
-        void realTimeMessageListChange(User target, RoomVO roomList);
+        void realTimeChattingRoomChange(User target, RoomVO roomList);
 
         // 존재하던 리스트가 변경되었을때
-        void realTimeMessageListChange(User target, RoomVO roomList, boolean changeFlag);
+        void realTimeChattingRoomChange(User target, RoomVO roomList, boolean changeFlag);
 
         // 접속할 채팅방이 접근가능한지 판단
         void enterChatRoom(RoomVO item);
 
         // 메세지 리스트 지우기
-        void removeMessageList(String target);
+        void removeChattingRoomList(String target);
 
         void removeDisposable();
     }

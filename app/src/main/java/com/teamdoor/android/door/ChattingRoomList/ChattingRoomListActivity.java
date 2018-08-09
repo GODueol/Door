@@ -1,4 +1,4 @@
-package com.teamdoor.android.door.MessageList;
+package com.teamdoor.android.door.ChattingRoomList;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,8 +12,8 @@ import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 import com.teamdoor.android.door.Entity.RoomVO;
-import com.teamdoor.android.door.MessageActivity.ChattingActivity;
-import com.teamdoor.android.door.MessageList.messageRecyclerAdapter.OnRemoveChattingListCallback;
+import com.teamdoor.android.door.Chatting.ChattingActivity;
+import com.teamdoor.android.door.ChattingRoomList.ChattingRoomListeRecyclerAdapter.OnRemoveChattingListCallback;
 import com.teamdoor.android.door.R;
 import com.teamdoor.android.door.Util.BaseActivity.BaseActivity;
 import com.teamdoor.android.door.Util.SharedPreferencesUtil;
@@ -22,11 +22,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class MessageActivity extends BaseActivity implements MessageContract.View {
+public class ChattingRoomListActivity extends BaseActivity implements ChattingRoomListContract.View {
 
-    private messageRecyclerAdapter messageRecyclerAdapter;
-    private List<RoomVO> listrowItem;
-    private MessageContract.Presenter mPresenter;
+    private ChattingRoomListeRecyclerAdapter chattingRoomListeRecyclerAdapter;
+    private List<RoomVO> RoomItemList;
+    private ChattingRoomListContract.Presenter mPresenter;
 
     private SharedPreferencesUtil SPUtil;
     private InterstitialAd mInterstitialAd;
@@ -40,17 +40,17 @@ public class MessageActivity extends BaseActivity implements MessageContract.Vie
         setmInterstitialAd();
 
         // setPresenter <-> MessageView
-        new MessagePresenter(this, SPUtil);
+        new ChattingRoomListPresenter(this, SPUtil);
 
-        listrowItem = new ArrayList<>();
-        mPresenter.setListItem(listrowItem);
+        RoomItemList = new ArrayList<>();
+        mPresenter.setListItem(RoomItemList);
 
         setListView();
-        mPresenter.setMessageList();
+        mPresenter.setRoomItemList();
     }
 
     @Override
-    public void setPresenter(MessageContract.Presenter presenter) {
+    public void setPresenter(ChattingRoomListContract.Presenter presenter) {
         mPresenter = presenter;
     }
 
@@ -66,22 +66,22 @@ public class MessageActivity extends BaseActivity implements MessageContract.Vie
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setReverseLayout(true);
         linearLayoutManager.setStackFromEnd(true);
-        messageRecyclerAdapter = new messageRecyclerAdapter(MessageActivity.this, listrowItem, R.layout.chatting_list_row, listener, chatlistener);
-        messageRecyclerAdapter.setHasStableIds(true);
+        chattingRoomListeRecyclerAdapter = new ChattingRoomListeRecyclerAdapter(ChattingRoomListActivity.this, RoomItemList, R.layout.chatting_list_row, listener, chatlistener);
+        chattingRoomListeRecyclerAdapter.setHasStableIds(true);
         RecyclerView messageList = findViewById(R.id.messagelist);
-        messageList.setAdapter(messageRecyclerAdapter);
+        messageList.setAdapter(chattingRoomListeRecyclerAdapter);
         messageList.setLayoutManager(linearLayoutManager);
-        messageList.addItemDecoration(new DividerItemDecoration(MessageActivity.this, DividerItemDecoration.VERTICAL)); //리사이클뷰 구분선
+        messageList.addItemDecoration(new DividerItemDecoration(ChattingRoomListActivity.this, DividerItemDecoration.VERTICAL)); //리사이클뷰 구분선
         messageList.setItemAnimator(new DefaultItemAnimator());
     }
 
-    com.teamdoor.android.door.MessageList.messageRecyclerAdapter.RecyclerViewClickListener listener = this::onClick;
+    ChattingRoomListeRecyclerAdapter.RecyclerViewClickListener listener = this::onClick;
 
 
     OnRemoveChattingListCallback chatlistener = new OnRemoveChattingListCallback() {
         @Override
         public void onRemove(String target) {
-            mPresenter.removeMessageList(target);
+            mPresenter.removeChattingRoomList(target);
         }
     };
 
@@ -108,8 +108,8 @@ public class MessageActivity extends BaseActivity implements MessageContract.Vie
     }
 
     @Override
-    public void refreshMessageListView() {
-        messageRecyclerAdapter.notifyDataSetChanged();
+    public void refreshChattingRoomListView() {
+        chattingRoomListeRecyclerAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -137,7 +137,7 @@ public class MessageActivity extends BaseActivity implements MessageContract.Vie
     }
 
     private void onClick(int position) {
-        mPresenter.enterChatRoom(messageRecyclerAdapter.getItemRoomVO(position));
+        mPresenter.enterChatRoom(chattingRoomListeRecyclerAdapter.getItemRoomVO(position));
     }
 
 

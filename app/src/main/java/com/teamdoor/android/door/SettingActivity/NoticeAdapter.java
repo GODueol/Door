@@ -9,17 +9,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.bitmap.CenterCrop;
-import com.github.chrisbanes.photoview.PhotoView;
 import com.teamdoor.android.door.Entity.Notice;
-import com.teamdoor.android.door.MessageActivity.util.DateUtil;
+import com.teamdoor.android.door.Chatting.util.DateUtil;
 import com.teamdoor.android.door.R;
-import com.teamdoor.android.door.Util.GlideApp;
 import com.teamdoor.android.door.Util.SharedPreferencesUtil;
 
 import java.util.List;
-
-import static java.security.AccessController.getContext;
 
 public class NoticeAdapter extends RecyclerView.Adapter<NoticeAdapter.NoticeHolder> {
 

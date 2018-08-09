@@ -41,7 +41,7 @@ import com.teamdoor.android.door.Entity.User;
 import com.teamdoor.android.door.Event.TargetUserBlocksMeEvent;
 import com.teamdoor.android.door.Exception.ChildSizeMaxException;
 import com.teamdoor.android.door.Exception.NotSetAutoTimeException;
-import com.teamdoor.android.door.MessageActivity.ChattingActivity;
+import com.teamdoor.android.door.Chatting.ChattingActivity;
 import com.teamdoor.android.door.PeopleFragment.FullImageViewPager.DetailImageActivity;
 import com.teamdoor.android.door.R;
 import com.teamdoor.android.door.Util.BaseActivity.BlockBaseActivity;
@@ -59,7 +59,7 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.teamdoor.android.door.MessageActivity.ChatFirebaseUtil.sendEventMessage;
+import static com.teamdoor.android.door.Chatting.ChatFirebaseUtil.sendEventMessage;
 
 
 public class FullImageActivity extends BlockBaseActivity implements View.OnClickListener {

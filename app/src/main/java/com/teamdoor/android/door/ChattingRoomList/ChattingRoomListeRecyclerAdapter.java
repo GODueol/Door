@@ -1,4 +1,4 @@
-package com.teamdoor.android.door.MessageList;
+package com.teamdoor.android.door.ChattingRoomList;
 
 import android.app.Activity;
 import android.content.Context;
@@ -18,17 +18,17 @@ import android.widget.Toast;
 
 import com.teamdoor.android.door.Entity.RoomVO;
 import com.teamdoor.android.door.Exception.NotSetAutoTimeException;
-import com.teamdoor.android.door.MessageActivity.util.DateUtil;
+import com.teamdoor.android.door.Chatting.util.DateUtil;
 import com.teamdoor.android.door.R;
 import com.teamdoor.android.door.Util.GlideApp;
 
 import java.util.List;
 
-public class messageRecyclerAdapter extends RecyclerView.Adapter<messageRecyclerAdapter.ViewHolder> {
+public class ChattingRoomListeRecyclerAdapter extends RecyclerView.Adapter<ChattingRoomListeRecyclerAdapter.ViewHolder> {
 
     private RecyclerViewClickListener mListener;
     private List<RoomVO> roomList;
-    private int itemLayout;
+    private int roomitemLayout;
     private OnRemoveChattingListCallback onRemoveChattingListCallback;
     private Context context;
     TypedValue typedValue;
@@ -37,9 +37,9 @@ public class messageRecyclerAdapter extends RecyclerView.Adapter<messageRecycler
         void onRemove(String s);
     }
 
-    public messageRecyclerAdapter(Context context, List<RoomVO> items, int itemLayout, RecyclerViewClickListener listener, OnRemoveChattingListCallback onRemoveChattingListCallback) {
+    public ChattingRoomListeRecyclerAdapter(Context context, List<RoomVO> items, int roomitemLayout, RecyclerViewClickListener listener, OnRemoveChattingListCallback onRemoveChattingListCallback) {
         this.roomList = items;
-        this.itemLayout = itemLayout;
+        this.roomitemLayout = roomitemLayout;
         this.onRemoveChattingListCallback = onRemoveChattingListCallback;
         mListener = listener;
         this.context = context;
@@ -49,13 +49,13 @@ public class messageRecyclerAdapter extends RecyclerView.Adapter<messageRecycler
     }
 
     @Override
-    public messageRecyclerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(itemLayout, parent, false);
+    public ChattingRoomListeRecyclerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(roomitemLayout, parent, false);
         return new ViewHolder(view, mListener);
     }
 
     @Override
-    public void onBindViewHolder(messageRecyclerAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(ChattingRoomListeRecyclerAdapter.ViewHolder holder, int position) {
         final RoomVO room = roomList.get(position);
 
         holder.content.setText(room.getLastChat());

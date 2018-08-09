@@ -1,9 +1,8 @@
-package com.teamdoor.android.door.MessageList;
+package com.teamdoor.android.door.ChattingRoomList;
 
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -24,17 +23,17 @@ import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 
-import static com.teamdoor.android.door.MessageList.RxFirebaseModel.CHILD_ADD;
-import static com.teamdoor.android.door.MessageList.RxFirebaseModel.CHILD_CHANGE;
-import static com.teamdoor.android.door.MessageList.RxFirebaseModel.CHILD_MOVE;
-import static com.teamdoor.android.door.MessageList.RxFirebaseModel.CHILD_REMOVE;
+import static com.teamdoor.android.door.ChattingRoomList.RxFirebaseModel.CHILD_ADD;
+import static com.teamdoor.android.door.ChattingRoomList.RxFirebaseModel.CHILD_CHANGE;
+import static com.teamdoor.android.door.ChattingRoomList.RxFirebaseModel.CHILD_MOVE;
+import static com.teamdoor.android.door.ChattingRoomList.RxFirebaseModel.CHILD_REMOVE;
 
-public class MessagePresenter implements MessageContract.Presenter, SharedPreferences.OnSharedPreferenceChangeListener {
+public class ChattingRoomListPresenter implements ChattingRoomListContract.Presenter, SharedPreferences.OnSharedPreferenceChangeListener {
 
 
-    private MessageContract.View mMeesageView;
-    private List<RoomVO> listrowItem;
-    private List<String> uuidList;
+    private ChattingRoomListContract.View mMeesageView;
+    private List<RoomVO> RoomItemList;
+    private List<String> UserUuidList;
     private DatabaseReference databaseReference;
     private DatabaseReference chatRoomListRef;
     private String userId;
@@ -43,7 +42,7 @@ public class MessagePresenter implements MessageContract.Presenter, SharedPrefer
     private int BadgeCount = 0;
     private RxFirebaseModel rxFirebaseModel;
 
-    MessagePresenter(MessageContract.View MessageView, SharedPreferencesUtil SPUtil) {
+    ChattingRoomListPresenter(ChattingRoomListContract.View MessageView, SharedPreferencesUtil SPUtil) {
         databaseReference = FirebaseDatabase.getInstance().getReference();
         chatRoomListRef = databaseReference.child("chatRoomList");
 
@@ -53,7 +52,7 @@ public class MessagePresenter implements MessageContract.Presenter, SharedPrefer
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         userId = mAuth.getUid();
 
-        uuidList = new ArrayList<>();
+        UserUuidList = new ArrayList<>();
         mMeesageView = MessageView;
         mMeesageView.setPresenter(this);
 
@@ -62,8 +61,8 @@ public class MessagePresenter implements MessageContract.Presenter, SharedPrefer
     }
 
     private Query addListItem_ReturnQuery(RoomVO roomInfo) {
-        uuidList.add(roomInfo.getTargetUuid());
-        listrowItem.add(roomInfo);
+        UserUuidList.add(roomInfo.getTargetUuid());
+        RoomItemList.add(roomInfo);
         return databaseReference.child("users").child(roomInfo.getTargetUuid());
     }
 
@@ -73,7 +72,7 @@ public class MessagePresenter implements MessageContract.Presenter, SharedPrefer
 
     @Override
     public void setListItem(List<RoomVO> listrowItem) {
-        this.listrowItem = listrowItem;
+        this.RoomItemList = listrowItem;
     }
 
     @SuppressLint("CheckResult")
@@ -106,7 +105,7 @@ public class MessagePresenter implements MessageContract.Presenter, SharedPrefer
                             FirebaseDatabase.getInstance().getReference("chat").child(roomId).removeValue();
                         });
 
-                mMeesageView.refreshMessageListView();
+                mMeesageView.refreshChattingRoomListView();
             }
         });
     }
@@ -125,7 +124,7 @@ public class MessagePresenter implements MessageContract.Presenter, SharedPrefer
 
     @SuppressLint("CheckResult")
     @Override
-    public void setMessageList() {
+    public void setRoomItemList() {
         Query query = chatRoomListRef.child(userId).orderByChild("lastChatTime");
         Disposable event = rxFirebaseModel.getFirebaseChildeEvent(query, RoomVO.class).subscribe(
                 data -> {
@@ -140,7 +139,7 @@ public class MessagePresenter implements MessageContract.Presenter, SharedPrefer
                                     .filter(DataSnapshot::exists)
                                     .filter(userDataSnapshot -> !userDataSnapshot.getKey().equals(mMeesageView.getResourceTeamCore()))
                                     .map(userDataSnapshot -> userDataSnapshot.getValue(User.class));
-                            observable.subscribe(userinfo -> realTimeMessageListChange(userinfo, roomInfo));
+                            observable.subscribe(userinfo -> realTimeChattingRoomChange(userinfo, roomInfo));
                             break;
 
                         case CHILD_CHANGE:
@@ -154,32 +153,32 @@ public class MessagePresenter implements MessageContract.Presenter, SharedPrefer
                                     .subscribe(userDataSnapshot -> {
                                         try {
                                             roomInfo.setBadgeCount(SPUtil.getChatRoomBadge(roomInfo.getChatRoomid()));
-                                            realTimeMessageListChange(userDataSnapshot, roomInfo, true);
+                                            realTimeChattingRoomChange(userDataSnapshot, roomInfo, true);
                                         } catch (Exception e) {
-                                            uuidList.add(roomInfo.getTargetUuid());
-                                            listrowItem.add(roomInfo);
-                                            realTimeMessageListChange(userDataSnapshot, roomInfo);
+                                            UserUuidList.add(roomInfo.getTargetUuid());
+                                            RoomItemList.add(roomInfo);
+                                            realTimeChattingRoomChange(userDataSnapshot, roomInfo);
                                         }
                                     });
 
                             Observable.just(roomInfo)
                                     .filter(data1 -> data1.getLastChat() == null)
-                                    .map(roomInfo1 -> uuidList.indexOf(roomInfo1.getTargetUuid()))
+                                    .map(roomInfo1 -> UserUuidList.indexOf(roomInfo1.getTargetUuid()))
                                     .filter(key -> key > 0)
                                     .subscribe(key -> {
-                                        listrowItem.remove(key);
-                                        uuidList.remove(key);
-                                        mMeesageView.refreshMessageListView();
+                                        RoomItemList.remove(key);
+                                        UserUuidList.remove(key);
+                                        mMeesageView.refreshChattingRoomListView();
                                     });
                             break;
 
                         case CHILD_REMOVE:
-                            Observable.just(uuidList.indexOf(roomInfo.getTargetUuid()))
+                            Observable.just(UserUuidList.indexOf(roomInfo.getTargetUuid()))
                                     .filter(index -> index > 0)
                                     .subscribe(key -> {
-                                        listrowItem.remove(key);
-                                        uuidList.remove(key);
-                                        mMeesageView.refreshMessageListView();
+                                        RoomItemList.remove(key);
+                                        UserUuidList.remove(key);
+                                        mMeesageView.refreshChattingRoomListView();
                                     });
                             break;
 
@@ -192,31 +191,31 @@ public class MessagePresenter implements MessageContract.Presenter, SharedPrefer
     }
 
     @Override
-    public void realTimeMessageListChange(User target, RoomVO roomList, boolean changeFlag) {
-        int key = uuidList.indexOf(roomList.getTargetUuid());
-        Long startTime = listrowItem.get(key).getLastChatTime();
+    public void realTimeChattingRoomChange(User target, RoomVO roomList, boolean changeFlag) {
+        int key = UserUuidList.indexOf(roomList.getTargetUuid());
+        Long startTime = RoomItemList.get(key).getLastChatTime();
         Long endTime = roomList.getLastChatTime();
-        listrowItem.remove(key);
+        RoomItemList.remove(key);
 
         if (startTime.equals(endTime)) {
             // 새로고침
-            listrowItem.add(key, roomList);
-            realTimeMessageListChange(target, roomList);
+            RoomItemList.add(key, roomList);
+            realTimeChattingRoomChange(target, roomList);
         } else {      // 맨위로 올림
-            uuidList.remove(key);
-            uuidList.add(roomList.getTargetUuid());
-            listrowItem.add(roomList);
-            realTimeMessageListChange(target, roomList);
+            UserUuidList.remove(key);
+            UserUuidList.add(roomList.getTargetUuid());
+            RoomItemList.add(roomList);
+            realTimeChattingRoomChange(target, roomList);
         }
     }
 
     @Override
-    public void removeMessageList(String target) {
+    public void removeChattingRoomList(String target) {
         chatRoomListRef.child(userId).child(target).child("lastChat").removeValue();
     }
 
     @Override
-    public void realTimeMessageListChange(User target, RoomVO roomList) {
+    public void realTimeChattingRoomChange(User target, RoomVO roomList) {
         try {
             if (target.getId() != null && !target.getId().equals(roomList.getTargetNickName())) {
                 roomList.setTargetNickName(target.getId());
@@ -235,18 +234,18 @@ public class MessagePresenter implements MessageContract.Presenter, SharedPrefer
         } catch (Exception ignore) {
         }
 
-        mMeesageView.refreshMessageListView();
+        mMeesageView.refreshChattingRoomListView();
     }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         int num = sharedPreferences.getInt(key, 0);
         //리스트 아이템 뱃지 동기화
-        for (RoomVO r : listrowItem) {
+        for (RoomVO r : RoomItemList) {
             if (r.getChatRoomid().equals(key)) {
-                int i = listrowItem.indexOf(r);
-                listrowItem.get(i).setBadgeCount(num);
-                mMeesageView.refreshMessageListView();
+                int i = RoomItemList.indexOf(r);
+                RoomItemList.get(i).setBadgeCount(num);
+                mMeesageView.refreshChattingRoomListView();
                 break;
             }
         }

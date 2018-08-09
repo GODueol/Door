@@ -90,7 +90,7 @@
                 android:background="@color/white" />
 
 
-            <com.teamdoor.android.door.MessageActivity.util.ChatMessageView
+            <com.teamdoor.android.door.Chatting.util.ChatMessageView
                 android:id="@+id/chatMessageView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -111,7 +111,7 @@
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                     android:textSize="15.5dp"
                     android:textStyle="bold" />
-            </com.teamdoor.android.door.MessageActivity.util.ChatMessageView>
+            </com.teamdoor.android.door.Chatting.util.ChatMessageView>
 
         </LinearLayout>
     </LinearLayout>

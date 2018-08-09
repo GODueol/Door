@@ -1,4 +1,4 @@
-package com.teamdoor.android.door.MessageActivity;
+package com.teamdoor.android.door.Chatting;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,8 +18,9 @@ import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
-import com.teamdoor.android.door.MessageActivity.util.ChatMessageView;
-import com.teamdoor.android.door.MessageActivity.util.DateUtil;
+import com.teamdoor.android.door.Chatting.util.ChatMessageView;
+import com.teamdoor.android.door.Chatting.util.DateUtil;
+import com.teamdoor.android.door.Entity.ChatMessage;
 import com.teamdoor.android.door.PeopleFragment.FullImageActivity;
 import com.teamdoor.android.door.PeopleFragment.GridItem;
 import com.teamdoor.android.door.R;
@@ -28,11 +28,6 @@ import com.teamdoor.android.door.Util.GlideApp;
 import com.teamdoor.android.door.Util.UiUtil;
 
 import java.util.List;
-
-
-/**
- * Created by Administrator on 2018-01-12.
- */
 
 public class ChattingMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 

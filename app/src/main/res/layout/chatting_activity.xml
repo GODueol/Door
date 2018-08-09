@@ -7,7 +7,7 @@
     android:fitsSystemWindows="true"
     android:orientation="vertical"
     android:windowSoftInputMode="adjustResize"
-    tools:context=".MessageActivity.ChattingActivity">
+    tools:context=".Chatting.ChattingActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"

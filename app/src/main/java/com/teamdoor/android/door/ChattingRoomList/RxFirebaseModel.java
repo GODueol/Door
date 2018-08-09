@@ -1,4 +1,4 @@
-package com.teamdoor.android.door.MessageList;
+package com.teamdoor.android.door.ChattingRoomList;
 
 import android.annotation.SuppressLint;
 import android.support.annotation.NonNull;

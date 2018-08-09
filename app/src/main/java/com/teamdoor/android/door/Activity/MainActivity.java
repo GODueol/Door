@@ -52,7 +52,7 @@ import com.teamdoor.android.door.Entity.User;
 import com.teamdoor.android.door.Event.TargetUserBlocksMeEvent;
 import com.teamdoor.android.door.Exception.NotSetAutoTimeException;
 import com.teamdoor.android.door.FriendsActivity.FriendsActivity;
-import com.teamdoor.android.door.MessageList.MessageActivity;
+import com.teamdoor.android.door.ChattingRoomList.ChattingRoomListActivity;
 import com.teamdoor.android.door.ProfileModifyActivity.ProfileModifyActivity;
 import com.teamdoor.android.door.R;
 import com.teamdoor.android.door.SettingActivity.CorePlusActivity;
@@ -487,7 +487,7 @@ public class MainActivity extends BaseActivity
             UiUtil.getInstance().goToCoreActivity(MainActivity.this, DataContainer.getInstance().getUid(getApplication()));
         } else if (id == R.id.nav_message) {
 
-            Intent i = new Intent(MainActivity.this, MessageActivity.class);
+            Intent i = new Intent(MainActivity.this, ChattingRoomListActivity.class);
             startActivity(i);
 
         } else if (id == R.id.nav_friends) {

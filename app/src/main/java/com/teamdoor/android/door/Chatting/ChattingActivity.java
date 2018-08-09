@@ -1,4 +1,4 @@
-package com.teamdoor.android.door.MessageActivity;
+package com.teamdoor.android.door.Chatting;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -47,11 +47,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.otto.Subscribe;
+import com.teamdoor.android.door.Entity.ChatMessage;
 import com.teamdoor.android.door.Entity.User;
 import com.teamdoor.android.door.Event.TargetUserBlocksMeEvent;
 import com.teamdoor.android.door.Exception.ChildSizeMaxException;
 import com.teamdoor.android.door.Exception.NotSetAutoTimeException;
-import com.teamdoor.android.door.MessageActivity.ChattingMessageAdapter.OnImesageLoadingCallback;
+import com.teamdoor.android.door.Chatting.ChattingMessageAdapter.OnImesageLoadingCallback;
 import com.teamdoor.android.door.Entity.MessageVO;
 import com.teamdoor.android.door.PeopleFragment.FullImageActivity;
 import com.teamdoor.android.door.R;
@@ -66,8 +67,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ChattingActivity extends BlockBaseActivity {
-
-    private static final int REQUEST_FIRST_ENTER = 1;
 
     private Toolbar toolbar = null;
     private RecyclerView chattingRecyclerview;

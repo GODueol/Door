@@ -16,7 +16,7 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.teamdoor.android.door.Activity.MainActivity;
 import com.teamdoor.android.door.FriendsActivity.FriendsActivity;
-import com.teamdoor.android.door.MessageList.MessageActivity;
+import com.teamdoor.android.door.ChattingRoomList.ChattingRoomListActivity;
 import com.teamdoor.android.door.R;
 
 import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
@@ -131,7 +131,7 @@ public class FirebaseRcevPushMsg extends FirebaseMessagingService {
         // 플레그에 따른 뷰 스택 조절
         switch (flag) {
             case CHATING_FALG:
-                Intent ChattingView = new Intent(this, MessageActivity.class);
+                Intent ChattingView = new Intent(this, ChattingRoomListActivity.class);
                 stackBuilder.addNextIntent(ChattingView);
                 break;
             case FRIENDS_FALG:

@@ -29,7 +29,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.teamdoor.android.door.CorePage.CoreActivity;
 import com.teamdoor.android.door.Entity.AlarmSummary;
 import com.teamdoor.android.door.Exception.NotSetAutoTimeException;
-import com.teamdoor.android.door.MessageActivity.util.DateUtil;
+import com.teamdoor.android.door.Chatting.util.DateUtil;
 import com.teamdoor.android.door.R;
 import com.teamdoor.android.door.Util.BaseActivity.BaseActivity;
 import com.teamdoor.android.door.Util.DataContainer;
