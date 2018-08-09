@@ -1,17 +1,15 @@
 package com.teamdoor.android.door.MessageList;
 
+import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.teamdoor.android.door.Entity.MessageVO;
 import com.teamdoor.android.door.Entity.RoomVO;
@@ -21,6 +19,15 @@ import com.teamdoor.android.door.Util.SharedPreferencesUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import io.reactivex.Observable;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+
+import static com.teamdoor.android.door.MessageList.RxFirebaseModel.CHILD_ADD;
+import static com.teamdoor.android.door.MessageList.RxFirebaseModel.CHILD_CHANGE;
+import static com.teamdoor.android.door.MessageList.RxFirebaseModel.CHILD_MOVE;
+import static com.teamdoor.android.door.MessageList.RxFirebaseModel.CHILD_REMOVE;
 
 public class MessagePresenter implements MessageContract.Presenter, SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -32,7 +39,8 @@ public class MessagePresenter implements MessageContract.Presenter, SharedPrefer
     private DatabaseReference chatRoomListRef;
     private String userId;
     private SharedPreferencesUtil SPUtil;
-    int BadgeCount = 0;
+    private CompositeDisposable compositeDisposable;
+    private int BadgeCount = 0;
     private RxFirebaseModel rxFirebaseModel;
 
     MessagePresenter(MessageContract.View MessageView, SharedPreferencesUtil SPUtil) {
@@ -50,6 +58,13 @@ public class MessagePresenter implements MessageContract.Presenter, SharedPrefer
         mMeesageView.setPresenter(this);
 
         rxFirebaseModel = new RxFirebaseModel();
+        compositeDisposable = new CompositeDisposable();
+    }
+
+    private Query addListItem_ReturnQuery(RoomVO roomInfo) {
+        uuidList.add(roomInfo.getTargetUuid());
+        listrowItem.add(roomInfo);
+        return databaseReference.child("users").child(roomInfo.getTargetUuid());
     }
 
     @Override
@@ -61,6 +76,7 @@ public class MessagePresenter implements MessageContract.Presenter, SharedPrefer
         this.listrowItem = listrowItem;
     }
 
+    @SuppressLint("CheckResult")
     @Override
     public void enterChatRoom(RoomVO item) {
 
@@ -68,7 +84,7 @@ public class MessagePresenter implements MessageContract.Presenter, SharedPrefer
             //블럭이 아니면
             if (!isBlockWithMe) {
                 Query query = databaseReference.child("users").child(item.getTargetUuid());
-                rxFirebaseModel.getFirebaseSingleData(query, User.class, RxFirebaseModel.CHILD_SINGLE)
+                rxFirebaseModel.getFirebaseForSingleValue(query, User.class, RxFirebaseModel.CHILD_SINGLE)
                         .subscribe(user -> {
                             Bundle bundle = new Bundle();
                             bundle.putSerializable("user", user);
@@ -84,7 +100,7 @@ public class MessagePresenter implements MessageContract.Presenter, SharedPrefer
                 SPUtil.removeChatRoomBadge(roomId);
 
                 Query query = databaseReference.child("chat").child(roomId).orderByChild("isImage").equalTo(1);
-                rxFirebaseModel.getFirebaseSingleData(query, MessageVO.class, RxFirebaseModel.CHILD_MULTI)
+                rxFirebaseModel.getFirebaseForSingleValue(query, MessageVO.class, RxFirebaseModel.CHILD_MULTI)
                         .subscribe(message -> {
                             FirebaseStorage.getInstance().getReferenceFromUrl(message.getImage()).delete();
                             FirebaseDatabase.getInstance().getReference("chat").child(roomId).removeValue();
@@ -95,107 +111,84 @@ public class MessagePresenter implements MessageContract.Presenter, SharedPrefer
         });
     }
 
+    public void syncronizeBadgeCount(RoomVO roomInfo) {
+        try {
+            // 뱃지 수 동기화
+            int c = SPUtil.getChatRoomBadge(roomInfo.getChatRoomid());
+            roomInfo.setBadgeCount(c);
+            BadgeCount += c;
+            SPUtil.setBadgeCount(mMeesageView.getResourceBadge(), BadgeCount);
+        } catch (Exception e) {
+            roomInfo.setBadgeCount(0);
+        }
+    }
+
+    @SuppressLint("CheckResult")
     @Override
     public void setMessageList() {
-        chatRoomListRef.child(userId).orderByChild("lastChatTime").addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                final RoomVO roomList = dataSnapshot.getValue(RoomVO.class);
-                try {
-                    // 뱃지 수 동기화
-                    int c = SPUtil.getChatRoomBadge(roomList.getChatRoomid());
-                    roomList.setBadgeCount(c);
-                    BadgeCount += c;
-                    SPUtil.setBadgeCount(mMeesageView.getResourceBadge(), BadgeCount);
-                } catch (Exception e) {
-                    roomList.setBadgeCount(0);
-                }
-                if (roomList.getLastChat() != null) {
-                    if (roomList.getTargetUuid() != null) {
-                        uuidList.add(roomList.getTargetUuid());
-                        listrowItem.add(roomList);
-                        FirebaseDatabase.getInstance().getReference("users").child(roomList.getTargetUuid()).addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                if (!dataSnapshot.getKey().equals(mMeesageView.getResourceTeamCore())) {
-                                    realTimeMessageListChange(dataSnapshot.getValue(User.class), roomList);
-                                }
-                            }
+        Query query = chatRoomListRef.child(userId).orderByChild("lastChatTime");
+        Disposable event = rxFirebaseModel.getFirebaseChildeEvent(query, RoomVO.class).subscribe(
+                data -> {
+                    RoomVO roomInfo = (RoomVO) data.getVaule();
+                    switch (data.getType()) {
+                        case CHILD_ADD:
+                            syncronizeBadgeCount(roomInfo);
+                            Observable<User> observable = Observable.just(roomInfo)
+                                    .filter(RoomVO::hasTargetUuid_LastChat)
+                                    .map(this::addListItem_ReturnQuery)
+                                    .concatMap(inquery -> rxFirebaseModel.getFirebaseForSingleValue(inquery))
+                                    .filter(DataSnapshot::exists)
+                                    .filter(userDataSnapshot -> !userDataSnapshot.getKey().equals(mMeesageView.getResourceTeamCore()))
+                                    .map(userDataSnapshot -> userDataSnapshot.getValue(User.class));
+                            observable.subscribe(userinfo -> realTimeMessageListChange(userinfo, roomInfo));
+                            break;
 
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-                            }
-                        });
-                    } else {
-                        FirebaseDatabase.getInstance().getReference("chatRoomList").child(userId).child(dataSnapshot.getKey()).removeValue();
+                        case CHILD_CHANGE:
+                            roomInfo.setBadgeCount(SPUtil.getChatRoomBadge(roomInfo.getChatRoomid()));
+                            Observable.just(roomInfo)
+                                    .filter(data1 -> data1.getLastChat() != null)
+                                    .map(data2 -> databaseReference.child("users").child(data2.getTargetUuid()))
+                                    .concatMap(inquery -> rxFirebaseModel.getFirebaseForSingleValue(inquery))
+                                    .filter(DataSnapshot::exists)
+                                    .map(dataSnapshot -> dataSnapshot.getValue(User.class))
+                                    .subscribe(userDataSnapshot -> {
+                                        try {
+                                            roomInfo.setBadgeCount(SPUtil.getChatRoomBadge(roomInfo.getChatRoomid()));
+                                            realTimeMessageListChange(userDataSnapshot, roomInfo, true);
+                                        } catch (Exception e) {
+                                            uuidList.add(roomInfo.getTargetUuid());
+                                            listrowItem.add(roomInfo);
+                                            realTimeMessageListChange(userDataSnapshot, roomInfo);
+                                        }
+                                    });
+
+                            Observable.just(roomInfo)
+                                    .filter(data1 -> data1.getLastChat() == null)
+                                    .map(roomInfo1 -> uuidList.indexOf(roomInfo1.getTargetUuid()))
+                                    .filter(key -> key > 0)
+                                    .subscribe(key -> {
+                                        listrowItem.remove(key);
+                                        uuidList.remove(key);
+                                        mMeesageView.refreshMessageListView();
+                                    });
+                            break;
+
+                        case CHILD_REMOVE:
+                            Observable.just(uuidList.indexOf(roomInfo.getTargetUuid()))
+                                    .filter(index -> index > 0)
+                                    .subscribe(key -> {
+                                        listrowItem.remove(key);
+                                        uuidList.remove(key);
+                                        mMeesageView.refreshMessageListView();
+                                    });
+                            break;
+
+                        case CHILD_MOVE:
+                            break;
                     }
                 }
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                final RoomVO roomList = dataSnapshot.getValue(RoomVO.class);
-                try {
-                    roomList.setBadgeCount(SPUtil.getChatRoomBadge(roomList.getChatRoomid()));
-                } catch (Exception e) {
-                    roomList.setBadgeCount(0);
-                }
-                if (roomList.getLastChat() != null) {
-                    try {
-                        FirebaseDatabase.getInstance().getReference("users").child(roomList.getTargetUuid()).addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                try {
-                                    roomList.setBadgeCount(SPUtil.getChatRoomBadge(roomList.getChatRoomid()));
-                                    realTimeMessageListChange(dataSnapshot.getValue(User.class), roomList, true);
-                                } catch (Exception e) {
-                                    uuidList.add(roomList.getTargetUuid());
-                                    listrowItem.add(roomList);
-                                    realTimeMessageListChange(dataSnapshot.getValue(User.class), roomList);
-                                }
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-                            }
-                        });
-                    } catch (Exception e) {
-                        FirebaseDatabase.getInstance().getReference("chatRoomList").child(userId).child(dataSnapshot.getKey()).removeValue();
-                    }
-                } else if (roomList.getLastChat() == null) {
-                    try {
-                        int key = uuidList.indexOf(roomList.getTargetUuid());
-                        listrowItem.remove(key);
-                        uuidList.remove(key);
-                        mMeesageView.refreshMessageListView();
-                    } catch (Exception e) {
-
-                    }
-                }
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-                RoomVO roomList = dataSnapshot.getValue(RoomVO.class);
-                try {
-                    int key = uuidList.indexOf(roomList.getTargetUuid());
-                    listrowItem.remove(key);
-                    uuidList.remove(key);
-                } catch (Exception e) {
-                }
-                mMeesageView.refreshMessageListView();
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+        );
+        compositeDisposable.add(event);
     }
 
     @Override
@@ -224,10 +217,7 @@ public class MessagePresenter implements MessageContract.Presenter, SharedPrefer
 
     @Override
     public void realTimeMessageListChange(User target, RoomVO roomList) {
-
         try {
-            Log.d("test", target.getId());
-
             if (target.getId() != null && !target.getId().equals(roomList.getTargetNickName())) {
                 roomList.setTargetNickName(target.getId());
                 chatRoomListRef.child(userId).child(roomList.getTargetUuid()).child("targetNickName").setValue(target.getId());
@@ -259,6 +249,13 @@ public class MessagePresenter implements MessageContract.Presenter, SharedPrefer
                 mMeesageView.refreshMessageListView();
                 break;
             }
+        }
+    }
+
+    @Override
+    public void removeDisposable() {
+        if (!compositeDisposable.isDisposed()) {
+            compositeDisposable.dispose();
         }
     }
 }

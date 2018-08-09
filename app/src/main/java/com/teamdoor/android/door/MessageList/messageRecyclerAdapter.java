@@ -16,17 +16,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.teamdoor.android.door.Entity.RoomVO;
 import com.teamdoor.android.door.Exception.NotSetAutoTimeException;
 import com.teamdoor.android.door.MessageActivity.util.DateUtil;
-import com.teamdoor.android.door.Entity.RoomVO;
 import com.teamdoor.android.door.R;
 import com.teamdoor.android.door.Util.GlideApp;
 
 import java.util.List;
-
-/**
- * Created by Administrator on 2017-12-04.
- */
 
 public class messageRecyclerAdapter extends RecyclerView.Adapter<messageRecyclerAdapter.ViewHolder> {
 
@@ -66,7 +62,7 @@ public class messageRecyclerAdapter extends RecyclerView.Adapter<messageRecycler
         holder.nickname.setText(room.getTargetNickName());
         holder.profile.setText(room.getTargetProfile());
         holder.badge.setText(Integer.toString(room.getBadgeCount()));
-        if(holder.badge.getText().equals("0")){
+        if (holder.badge.getText().equals("0")) {
             holder.badge.setText("");
         }
         Long lastChatTime = room.getLastChatTime();

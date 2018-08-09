@@ -34,6 +34,14 @@ public class RoomVO {
         return targetUuid;
     }
 
+    public boolean hasTargetUuid(){
+        if(targetUuid == null)return false;
+        else return true;
+    }
+
+    public boolean hasTargetUuid_LastChat(){
+        return hasTargetUuid()||hasLastChat();
+    }
     public void setTargetUuid(String targetUuid) {
         this.targetUuid = targetUuid;
     }
@@ -66,6 +74,11 @@ public class RoomVO {
 
     public String getLastChat() {
         return lastChat;
+    }
+
+    public boolean hasLastChat() {
+        if (lastChat == null) return false;
+        else return true;
     }
 
     public void setLastChat(String lastChat) {

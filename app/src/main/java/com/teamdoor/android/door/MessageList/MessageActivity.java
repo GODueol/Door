@@ -34,7 +34,6 @@ public class MessageActivity extends BaseActivity implements MessageContract.Vie
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Get the view from new_activity.xml
         setContentView(R.layout.chatting_list_activity);
         setToolbar();
         SPUtil = new SharedPreferencesUtil(getApplicationContext());
@@ -139,5 +138,12 @@ public class MessageActivity extends BaseActivity implements MessageContract.Vie
 
     private void onClick(int position) {
         mPresenter.enterChatRoom(messageRecyclerAdapter.getItemRoomVO(position));
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        mPresenter.removeDisposable();
+        super.onDestroy();
     }
 }

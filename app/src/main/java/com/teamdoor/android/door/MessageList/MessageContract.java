@@ -23,6 +23,7 @@ public interface MessageContract {
 
         // context접근 String
         String getResourceBadge();
+
         // context접근 String
         String getResourceTeamCore();
     }
@@ -44,5 +45,7 @@ public interface MessageContract {
 
         // 메세지 리스트 지우기
         void removeMessageList(String target);
+
+        void removeDisposable();
     }
 }
