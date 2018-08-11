@@ -102,7 +102,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
 
     public UserListAdapter(BaseActivity context, List<Item> items, Boolean isPlus) {
         this(context, items);
-        this.isPlus = isPlus;
+        this.isPlus = !isPlus;
     }
 
     public void setItemMenu(int itemMenu, String tabName) {
@@ -475,17 +475,10 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserHo
                         break;
                     case "friendUsers":
                         header_title.setText("친구 목록");
-                        if(isPlus) {
-                            friends_contents.setText(mUser.getId() + " 님은 CORE 구독 회원입니다");
-                            core_open_count.setText("");
-                            friends_contents2.setText("코어를 제한없이 열어볼 수 있습니다");
-                        }
-                        else {
-                            friends_contents.setText(mUser.getId() + " 님은 CORE 일반 회원입니다");
-                            core_open_count.setText("" + CorePossibleOldFriendCount);
-                            friends_contents2.setText(" 명의 오래된 친구까지 코어를 열어볼 수 있습니다");
-                        }
-
+                        if(isPlus) friends_contents.setText(mUser.getId() + " 님은 CORE Plus 회원입니다");
+                        else friends_contents.setText(mUser.getId() + " 님은 CORE 일반 회원입니다");
+                        core_open_count.setText("" + CorePossibleOldFriendCount);
+                        friends_contents2.setText(" 명의 오래된 친구까지 코어를 열어볼 수 있습니다");
                         header_count.setText((items.size() - 1) + "");
                         break;
                 }
