@@ -122,6 +122,8 @@ public class MainActivity extends BaseActivity
         Intent p = getIntent();
 
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(null); // 툴바 앱네임 사라지게
+
         mAdView = (AdView) findViewById(R.id.adView);
         Log.d("ads", String.valueOf(mAdView.isLoading()));
         checkCorePlus().addOnSuccessListener(isPlus -> {
