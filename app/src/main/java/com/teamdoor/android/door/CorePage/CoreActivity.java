@@ -67,7 +67,7 @@ import java.util.ArrayList;
 import static com.teamdoor.android.door.Util.RemoteConfig.CorePossibleOldFriendCount;
 
 
-//작업을했어 테스트
+//작업을했어 테스트12
 
 public class CoreActivity extends BlockBaseActivity {
 
