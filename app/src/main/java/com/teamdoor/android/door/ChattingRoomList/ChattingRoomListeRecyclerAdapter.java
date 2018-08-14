@@ -72,6 +72,10 @@ public class ChattingRoomListeRecyclerAdapter extends RecyclerView.Adapter<Chatt
         } else {
             holder.layout.setBackgroundColor(Color.GRAY);
         }
+        // 답장받은 시간이 없을때
+        if(lastChatTime ==0){
+           lastChatTime = lastViewTime;
+        }
         DateUtil dateUtil = new DateUtil(lastChatTime);
         String preTime = null;
         try {

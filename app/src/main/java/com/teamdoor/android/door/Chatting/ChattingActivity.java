@@ -60,13 +60,14 @@ import com.teamdoor.android.door.Util.BaseActivity.BlockBaseActivity;
 import com.teamdoor.android.door.Util.DataContainer;
 import com.teamdoor.android.door.Util.FireBaseUtil;
 import com.teamdoor.android.door.Util.GalleryPick;
+import com.teamdoor.android.door.Util.SharedPreferencesUtil;
 import com.teamdoor.android.door.Util.UiUtil;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChattingActivity extends BlockBaseActivity {
+public class ChattingActivity extends BlockBaseActivity implements ChattingContract.View{
 
     private Toolbar toolbar = null;
     private RecyclerView chattingRecyclerview;
@@ -91,32 +92,22 @@ public class ChattingActivity extends BlockBaseActivity {
     private RewardedVideoAd mRewardedVideoAd;
     private InterstitialAd noFillInterstitialAd;
     boolean isFillReward = false;
+    /***************************************************************/
 
+    private ChattingContract.Presenter mPresenter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setLayout();
 
-        Window window = getWindow();
-        window.setContentView(R.layout.chatting_activity);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true); //액션바 아이콘을 업 네비게이션 형태로 표시합니다.
-        getSupportActionBar().setDisplayShowHomeEnabled(true); //홈 아이콘을 숨김처리합니다.
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
-
-        TypedValue tv = new TypedValue();
-        int actionBarHeight = 150;
-        if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
-            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
-        }
-
-        Intent p = getIntent();
         // 상대방 데이터 셋
+        Intent p = getIntent();
         targetUser = (User) p.getSerializableExtra("user");
         targetUuid = (String) p.getSerializableExtra("userUuid");
-        mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(getApplicationContext());
+
         loadRewardedVideoAd();
         setnoFillInterstitialAd();
+
         // 엑티비티 Uuid 저장
         SPUtil.setBlockMeUserCurrentActivity(getString(R.string.currentActivity), targetUuid);
         // 내정보 데이터 셋
@@ -124,35 +115,16 @@ public class ChattingActivity extends BlockBaseActivity {
         user = getUser();
         userUuid = mAuth.getUid();
 
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-
-        imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-        chattingRecyclerview = (RecyclerView) findViewById(R.id.listView);
-        mButtonSend = (ImageButton) findViewById(R.id.btn_send);
-        mEditTextMessage = (EditText) findViewById(R.id.et_message);
-        mImageView = (ImageButton) findViewById(R.id.iv_image);
-
-        LayoutInflater inflater = (LayoutInflater) getSystemService(getApplicationContext().LAYOUT_INFLATER_SERVICE);
-        LinearLayout linear = (LinearLayout) inflater.inflate(R.layout.chatting_list_overlay, null);
-        LinearLayout.LayoutParams paramlinear = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT
-        );
-        send_message_layout = (LinearLayout) findViewById(R.id.send_message_layout);
 
         // TeamCore 메세지의 경우
         if (targetUuid.equals(getApplicationContext().getString(R.string.TeamCore))) {
             send_message_layout.setVisibility(View.GONE);
         }
-        send_message_layout.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-        int layout_height = send_message_layout.getMeasuredHeight();
 
-        paramlinear.setMargins(0, actionBarHeight + 5, 0, layout_height);
-        window.addContentView(linear, paramlinear);
-        custom_top_container = (LinearLayout) findViewById(R.id.custom_top_container);
-        overlay = (LinearLayout) findViewById(R.id.scrollDown);
-        topDateText = (TextView) findViewById(R.id.topDate);
-        hideText = (TextView) findViewById(R.id.hideText);
+        custom_top_container = findViewById(R.id.custom_top_container);
+        overlay = findViewById(R.id.scrollDown);
+        topDateText = findViewById(R.id.topDate);
+        hideText = findViewById(R.id.hideText);
 
         fadeout = AnimationUtils.loadAnimation(this, R.anim.fadeout);
         hide = AnimationUtils.loadAnimation(this, R.anim.hide);
@@ -167,10 +139,14 @@ public class ChattingActivity extends BlockBaseActivity {
         chattingRecyclerview.setOnTouchListener(onTouchListener);
 
         // 블락이면 안들어가지게
-        chatFirebaseUtil = new ChatFirebaseUtil(this, user, targetUser, userUuid, targetUuid, overlay, hideText);
-        chatFirebaseUtil.setchatRoom(chattingRecyclerview, chatListItem);
+        chatFirebaseUtil = new ChatFirebaseUtil(this, overlay, hideText);
+
+        chatFirebaseUtil.setUserInfo(targetUser,targetUuid);
+        chatFirebaseUtil.setchatRoom(userUuid,targetUuid,chattingRecyclerview, chatListItem);
         chattingRecyclerview.addOnScrollListener(dateToastListener);
 
+//        userPickurl = user.getPicUrls().getThumbNail_picUrl1();
+//        targetPicurl = targetUser.getPicUrls().getThumbNail_picUrl1();
         // 메세지 보내기
         mButtonSend.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -183,7 +159,7 @@ public class ChattingActivity extends BlockBaseActivity {
                 long currentTime = 0;
                 try {
                     currentTime = UiUtil.getInstance().getCurrentTime(ChattingActivity.this);
-                    writeMessage(null, userUuid, user.getId(), message, currentTime, 1);
+                    writeMessage("-LJnZGVGTUK2GiyawCb5",null, userUuid, user.getId(), message, currentTime, 1);
                 } catch (NotSetAutoTimeException e) {
                     e.printStackTrace();
                     Toast.makeText(ChattingActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -207,6 +183,45 @@ public class ChattingActivity extends BlockBaseActivity {
                 sendImageMessage();
             }
         });
+        /******************************************/
+        SPUtil = new SharedPreferencesUtil(this);
+        new ChattingPresenter(this,SPUtil);
+    }
+
+
+    public void setLayout(){
+        Window window = getWindow();
+        window.setContentView(R.layout.chatting_activity);
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true); //액션바 아이콘을 업 네비게이션 형태로 표시합니다.
+        getSupportActionBar().setDisplayShowHomeEnabled(true); //홈 아이콘을 숨김처리합니다.
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_black_36dp);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        TypedValue tv = new TypedValue();
+        int actionBarHeight = 150;
+        if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
+            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
+        }
+
+        imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        chattingRecyclerview = findViewById(R.id.listView);
+        mButtonSend = findViewById(R.id.btn_send);
+        mEditTextMessage = findViewById(R.id.et_message);
+        mImageView = findViewById(R.id.iv_image);
+
+        LayoutInflater inflater = (LayoutInflater) getSystemService(getApplicationContext().LAYOUT_INFLATER_SERVICE);
+        LinearLayout linear = (LinearLayout) inflater.inflate(R.layout.chatting_list_overlay, null);
+        LinearLayout.LayoutParams paramlinear = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT
+        );
+
+        send_message_layout = findViewById(R.id.send_message_layout);
+        send_message_layout.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+        int layout_height = send_message_layout.getMeasuredHeight();
+        paramlinear.setMargins(0, actionBarHeight + 5, 0, layout_height);
+        window.addContentView(linear, paramlinear);
     }
 
     @Override
@@ -217,8 +232,8 @@ public class ChattingActivity extends BlockBaseActivity {
 
             try {
                 galleryPick.invoke(data);
-                Uri outputFileUri = galleryPick.getUri();
-                chatFirebaseUtil.sendImageMessage(outputFileUri, galleryPick);
+//                Uri outputFileUri = galleryPick.getUri();
+                chatFirebaseUtil.sendImageMessage("-LJnZGVGTUK2GiyawCb5",user.getId(),userUuid,targetUuid, galleryPick);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
                 Toast.makeText(ChattingActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -231,7 +246,6 @@ public class ChattingActivity extends BlockBaseActivity {
 
     @Override
     protected void onResume() {
-
         mRewardedVideoAd.resume(this);
         mRewardedVideoAd.setRewardedVideoAdListener(rewardedVideoAdListener);
         chatFirebaseUtil.Resume();
@@ -254,23 +268,20 @@ public class ChattingActivity extends BlockBaseActivity {
         super.onDestroy();
         SPUtil.removeCurrentChat(getString(R.string.currentRoom));
         chatFirebaseUtil.deleteFirebaseRef();
-        FireBaseUtil.getInstance().queryBlockWithMe(targetUuid, new FireBaseUtil.BlockListener() {
-            @Override
-            public void isBlockCallback(boolean isBlockWithMe) {
-                if (isBlockWithMe) {
-                    Log.d("test", "ture");
-                    chatFirebaseUtil.clearChatLog();
-                } else {
-                    Log.d("test", "false");
-                    chatFirebaseUtil.setLastChatView();
-                }
+        FireBaseUtil.getInstance().queryBlockWithMe(targetUuid, isBlockWithMe -> {
+            if (isBlockWithMe) {
+                Log.d("test", "ture");
+                chatFirebaseUtil.clearChatLog("-LJnZGVGTUK2GiyawCb5",userUuid,targetUuid);
+            } else {
+                Log.d("test", "false");
+                chatFirebaseUtil.setLastChatView(userUuid,targetUuid);
             }
         });
     }
 
-    private void writeMessage(String image, String userId, String nickname, String content, long currentTime, int check) throws NotSetAutoTimeException {
-        MessageVO message = new MessageVO(image, userId, nickname, content, currentTime, check);
-        chatFirebaseUtil.sendMessage(message);
+    private void writeMessage(String Room,String image, String userUuid, String nickname, String content, long currentTime, int check) throws NotSetAutoTimeException {
+        MessageVO message = new MessageVO(image, userUuid, nickname, content, currentTime, check);
+        chatFirebaseUtil.sendMessage(Room,nickname, userUuid,targetUuid,message);
     }
 
     private void sendImageMessage() {
@@ -429,7 +440,7 @@ public class ChattingActivity extends BlockBaseActivity {
 
         @Override
         public void onRemove(String parent, int i) {
-            chatFirebaseUtil.removeImeageMessage(parent, i);
+            chatFirebaseUtil.removeImeageMessage("-LJnZGVGTUK2GiyawCb5",parent, i);
         }
     };
 
@@ -490,6 +501,7 @@ public class ChattingActivity extends BlockBaseActivity {
     }
 
     private void loadRewardedVideoAd() {
+        mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(getApplicationContext());
         mRewardedVideoAd.loadAd(getString(R.string.adsBlockUser),
                 new AdRequest.Builder()
                         .build());
@@ -599,4 +611,19 @@ public class ChattingActivity extends BlockBaseActivity {
         }
     };
 
+    /*******************************View Impelements*******************************/
+    @Override
+    public void refreshChatLogView() {
+
+    }
+
+    @Override
+    public String getResourceCurrentRoom() {
+        return getString(R.string.currentRoom);
+    }
+
+    @Override
+    public void setPresenter(ChattingContract.Presenter presenter) {
+        mPresenter = presenter;
+    }
 }

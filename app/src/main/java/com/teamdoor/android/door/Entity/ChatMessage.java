@@ -1,6 +1,4 @@
 package com.teamdoor.android.door.Entity;
-
-import com.teamdoor.android.door.Entity.MessageVO;
 import com.teamdoor.android.door.PeopleFragment.GridItem;
 
 public class ChatMessage {

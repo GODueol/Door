@@ -31,13 +31,13 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
-import com.teamdoor.android.door.Entity.ChatMessage;
-import com.teamdoor.android.door.Entity.User;
-import com.teamdoor.android.door.Exception.NotSetAutoTimeException;
 import com.teamdoor.android.door.Chatting.util.CryptoImeageName;
+import com.teamdoor.android.door.ChattingRoomList.ChattingRoomListActivity;
+import com.teamdoor.android.door.Entity.ChatMessage;
 import com.teamdoor.android.door.Entity.MessageVO;
 import com.teamdoor.android.door.Entity.RoomVO;
-import com.teamdoor.android.door.ChattingRoomList.ChattingRoomListActivity;
+import com.teamdoor.android.door.Entity.User;
+import com.teamdoor.android.door.Exception.NotSetAutoTimeException;
 import com.teamdoor.android.door.PeopleFragment.GridItem;
 import com.teamdoor.android.door.R;
 import com.teamdoor.android.door.Util.FireBaseUtil;
@@ -63,17 +63,12 @@ public class ChatFirebaseUtil {
     private final static String strDelete = "DELETE";
 
     private Context context;
-    private String userUuid, targetUuid;
-    private User currentUser, targetUser;
-    private String userPickurl, targetPicurl;
-    private String roomName;
     private String childChatKey;
-    private DatabaseReference databaseRef, chatDatabaseRef;
+    private DatabaseReference databaseRef;
     private FirebaseStorage storage;
 
     ///////////////////////
     private int messageWeight = 1;
-    private String lastMessage;
     private GridItem item;
     private ChattingMessageAdapter chattingMessageAdapter;
     private RecyclerView chattingRecyclerview;
@@ -85,60 +80,34 @@ public class ChatFirebaseUtil {
     private List<ChatMessage> uncheckMessageList;
 
     private SharedPreferencesUtil SPUtil;
-    private boolean first;
 
-    public ChatFirebaseUtil(Context context, User currentUser, User targetUser, String userUuid, String targetUuid, LinearLayout overlay, TextView hideText) {
+    public ChatFirebaseUtil(Context context, LinearLayout overlay, TextView hideText) {
         databaseRef = FirebaseDatabase.getInstance().getReference();
         storage = FirebaseStorage.getInstance();
         childKeyList = new ArrayList<String>();
         chatMessageKeyList = new ArrayList<String>();
         uncheckMessageList = new ArrayList<ChatMessage>();
         this.context = context;
-        this.currentUser = currentUser;
-        this.targetUser = targetUser;
-        this.userUuid = userUuid;
-        this.targetUuid = targetUuid;
         this.hideText = hideText;
         this.overlay = overlay;
-        try {
-            userPickurl = currentUser.getPicUrls().getThumbNail_picUrl1();
-            targetPicurl = targetUser.getPicUrls().getThumbNail_picUrl1();
-        } catch (Exception e) {
-
-        }
         SPUtil = new SharedPreferencesUtil(context);
-        first = true;
     }
 
-    public void setLastChatView() {
-        final DatabaseReference chatRoomRef = FirebaseDatabase.getInstance().getReference(chatRoomList);
-        chatRoomRef.child(userUuid).child(targetUuid).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    Long currentTime = null;
-                    try {
-                        currentTime = getTime();
-                    } catch (NotSetAutoTimeException e) {
-                        e.printStackTrace();
-                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-                        ActivityCompat.finishAffinity((Activity) context);
-                    }
-                    databaseRef.child(chatRoomList).child(userUuid).child(targetUuid).child("lastViewTime").setValue(currentTime);
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
+    // 방을 본 시간을 업데이트
+    public void setLastChatView(String userUuid, String targetUuid) {
+        Long currentTime = null;
+        try {
+            currentTime = getTime();
+        } catch (NotSetAutoTimeException e) {
+            e.printStackTrace();
+        }
+        databaseRef.child(chatRoomList).child(userUuid).child(targetUuid).child("lastViewTime").setValue(currentTime);
     }
 
-    public void clearChatLog() {
+    // 채팅방 삭제
+    public void clearChatLog(String Room, String userUuid, String targetUuid) {
 
-        final String roomId = roomName;
+        final String roomId = Room;
         SPUtil.removeChatRoomBadge(roomId);
 
         // 방제거
@@ -163,48 +132,42 @@ public class ChatFirebaseUtil {
         });
     }
 
-    public void sendMessage(MessageVO message) throws NotSetAutoTimeException {
 
-        String room = roomName;
+    // 메세지 보내기
+    public void sendMessage(String Room, String id, String userUuid, String targetUuid, MessageVO message) throws NotSetAutoTimeException {
+
+        String room = Room;
         String key = databaseRef.child(chat).child(room).push().getKey();
 
         Long currentTime = getTime();
         Map<String, Object> childUpdates = new HashMap<>();
 
-
         if (message.getImage() == null) {        // 메세지일 경우
             childUpdates.put("/" + chat + "/" + room + "/" + key, message);
-
             childUpdates.put("/" + chatRoomList + "/" + targetUuid + "/" + userUuid + "/" + "lastChatTime", currentTime);
             childUpdates.put("/" + chatRoomList + "/" + targetUuid + "/" + userUuid + "/" + "lastChat", message.getContent());
-
             childUpdates.put("/" + chatRoomList + "/" + userUuid + "/" + targetUuid + "/" + "lastViewTime", currentTime);
             childUpdates.put("/" + chatRoomList + "/" + userUuid + "/" + targetUuid + "/" + "lastChat", message.getContent());
         } else {          // 이미지일 경우
-
             childUpdates.put("/" + chat + "/" + room + "/" + key, message);
-
             childUpdates.put("/" + chatRoomList + "/" + targetUuid + "/" + userUuid + "/" + "lastChatTime", currentTime);
             childUpdates.put("/" + chatRoomList + "/" + targetUuid + "/" + userUuid + "/" + "lastChat", "사진");
             childUpdates.put("/" + chatRoomList + "/" + userUuid + "/" + targetUuid + "/" + "lastViewTime", currentTime);
             childUpdates.put("/" + chatRoomList + "/" + userUuid + "/" + targetUuid + "/" + "lastChat", "사진");
         }
-        databaseRef.updateChildren(childUpdates).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                // 상대방에게 내정보를 담아서 메세지를 보냄
-                FirebaseSendPushMsg.sendPostToFCM(chat, targetUuid, currentUser.getId(), context.getString(R.string.alertChat), roomName);
-            }
+        databaseRef.updateChildren(childUpdates).addOnSuccessListener(aVoid -> {
+            // 상대방에게 내정보를 담아서 메세지를 보냄
+            FirebaseSendPushMsg.sendPostToFCM(chat, targetUuid, id, context.getString(R.string.alertChat), room);
         });
     }
 
-    public void sendImageMessage(Uri outputFileUri, GalleryPick galleryPick) throws NotSetAutoTimeException {
+    // 메세지 보내기 (이미지)
+    public void sendImageMessage(String Room, String id, String userUuid, String targetUuid, GalleryPick galleryPick) throws NotSetAutoTimeException {
 
         StorageReference imagesRef = storage.getReference().child(chat);
         long currentTime = UiUtil.getInstance().getCurrentTime(context);
         final String imageName = CryptoImeageName.md5(Long.toString(currentTime) + userUuid);
-        final StorageReference imageMessageRef = imagesRef.child(image + "/" + roomName + "/" + imageName);
-//        UploadTask uploadTask = imageMessageRef.putFile(outputFileUri);
+        final StorageReference imageMessageRef = imagesRef.child(image + "/" + Room + "/" + imageName);
 
         try {
             StorageTask<UploadTask.TaskSnapshot> uploadTask = galleryPick.upload(imageMessageRef);
@@ -223,8 +186,8 @@ public class ChatFirebaseUtil {
                             long currentTime = 0;
                             try {
                                 currentTime = getTime();
-                                MessageVO message = new MessageVO(uri.toString(), userUuid, currentUser.getId(), imageName, currentTime, 1, 1);
-                                sendMessage(message);
+                                MessageVO message = new MessageVO(uri.toString(), userUuid, id, imageName, currentTime, 1, 1);
+                                sendMessage(Room, id, userUuid, targetUuid, message);
                             } catch (NotSetAutoTimeException e) {
                                 e.printStackTrace();
                                 Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -247,178 +210,160 @@ public class ChatFirebaseUtil {
         }
     }
 
-    public void setchatRoom(RecyclerView chattingRecyclerview, List<ChatMessage> chatMessageList) {
+
+    // 처음접속시 채팅방 설정
+    public void setchatRoom(String userUuid, String targetUuid, RecyclerView chattingRecyclerview, List<ChatMessage> chatMessageList) {
+
+        final String[] Room = {null};
         final DatabaseReference chatRoomRef = FirebaseDatabase.getInstance().getReference(chatRoomList);
         this.chattingRecyclerview = chattingRecyclerview;
         chattingMessageAdapter = (ChattingMessageAdapter) chattingRecyclerview.getAdapter();
         this.chatMessageList = chatMessageList;
-        chattingRecyclerview.addOnScrollListener(detectTopPosition);
-        // 채팅방 세팅
-        chatRoomRef.child(userUuid).child(targetUuid).addListenerForSingleValueEvent(new ValueEventListener() {
+        chattingRecyclerview.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onScrollStateChanged(RecyclerView absListView, int i) {
+            }
 
-                final RoomVO checkRoomVO = dataSnapshot.getValue(RoomVO.class);
-                long currentTime = System.currentTimeMillis();
-
-                if (dataSnapshot.exists()) {
-                    roomName = checkRoomVO.getChatRoomid();
-                    chatRoomRef.child(userUuid).child(targetUuid).child("lastViewTime").setValue(currentTime);
-                } else {
-                    roomName = FirebaseDatabase.getInstance().getReference(chat).push().getKey();
-                    Map<String, Object> childUpdates = new HashMap<>();
-                    RoomVO roomVO = new RoomVO(roomName, null, userUuid, currentTime);
-                    childUpdates.put("/" + chatRoomList + "/" + targetUuid + "/" + userUuid, roomVO);
-                    roomVO = new RoomVO(roomName, null, targetUuid, currentTime);
-                    childUpdates.put("/" + chatRoomList + "/" + userUuid + "/" + targetUuid, roomVO);
-                    databaseRef.updateChildren(childUpdates);
-                    chatRoomRef.child(userUuid).child(targetUuid).child("lastViewTime").setValue(currentTime);
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (recyclerView.computeVerticalScrollOffset() == 0) {
+                    addChatLog(Room[0], userUuid);
                 }
+            }
+        });
 
-                SPUtil.setCurrentChat(context.getString(R.string.currentRoom), roomName);
-                try {
-                    item = new GridItem(0, targetUuid, targetUser.getSummaryUser(), targetPicurl);
-                    // 상대방과의 거리 셋팅
-                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference(FireBaseUtil.currentLocationPath);
-                    GeoFire geoFire = new GeoFire(ref);
-                    final Location location = GPSInfo.getmInstance(context).getGPSLocation();
-                    geoFire.getLocation(targetUuid, new LocationCallback() {
-                        @SuppressLint("DefaultLocale")
+        long currentTime = System.currentTimeMillis();
+        Map<String, Object> childUpdates = new HashMap<>();
+
+        childUpdates.put("/" + chatRoomList + "/" + targetUuid + "/" + userUuid + "/" + "targetUuid", userUuid);
+        childUpdates.put("/" + chatRoomList + "/" + userUuid + "/" + targetUuid + "/" + "targetUuid", targetUuid);
+        childUpdates.put("/" + chatRoomList + "/" + userUuid + "/" + targetUuid + "/" + "lastViewTime", currentTime);
+        databaseRef.updateChildren(childUpdates).addOnCompleteListener(task -> {
+            // 채팅방 세팅
+            chatRoomRef.child(userUuid).child(targetUuid).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    final RoomVO checkRoomVO = dataSnapshot.getValue(RoomVO.class);
+                    if (checkRoomVO.getChatRoomid() != null) {
+                        Room[0] = checkRoomVO.getChatRoomid();
+                    } else {
+                        Room[0] = FirebaseDatabase.getInstance().getReference(chat).push().getKey();
+                        childUpdates.put("/" + chatRoomList + "/" + targetUuid + "/" + userUuid + "/" + "chatRoomid", Room[0]);
+                        childUpdates.put("/" + chatRoomList + "/" + userUuid + "/" + targetUuid + "/" + "chatRoomid", Room[0]);
+                        databaseRef.updateChildren(childUpdates);
+                    }
+                    //Room 보내줘야함
+                    SPUtil.setCurrentChat(context.getString(R.string.currentRoom), Room[0]);
+                    // 처음 모든 메세지 읽음처리
+                    databaseRef.child(chat).child(Room[0]).orderByChild("check").equalTo(1).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
-                        public void onLocationResult(String s, GeoLocation geoLocation) {
-                            Location targetLocation = new Location("");//provider name is unnecessary
-                            targetLocation.setLatitude(geoLocation.latitude);//your coords of course
-                            targetLocation.setLongitude(geoLocation.longitude);
-                            final float distance = location.distanceTo(targetLocation);
-                            item.setDistance(distance);
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            for (DataSnapshot ds : dataSnapshot.getChildren()) {//마찬가지로 중복 유무 확인
+                                MessageVO message = ds.getValue(MessageVO.class);
+                                message.setParent(ds.getKey());
+                                if (message != null && !message.getWriter().equals(userUuid)) {
+                                    databaseRef.child(chat).child(Room[0]).child(ds.getKey()).child("check").setValue(0);
+                                }
+                            }
                         }
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
                         }
                     });
-                } catch (Exception e) {
-                    item = new GridItem(0, null, null, null);
-                    item.setUuid(targetUuid);
+                    // 그후 메세지 통신
+                    databaseRef.child(chat).child(Room[0]).limitToLast(RemoteConfig.MessageCount).addChildEventListener(new ChildEventListener() {
+                        public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
+                            childChatKey = dataSnapshot.getKey();
+                            if (!childKeyList.contains(childChatKey)) {
+                                childKeyList.add(childChatKey);
+                                MessageVO message = dataSnapshot.getValue(MessageVO.class);
+                                message.setParent(childChatKey);
+                                initMessage(Room[0], userUuid, message, childChatKey);
+                            }
+                        }
+
+                        @Override
+                        public void onChildChanged(DataSnapshot dataSnapshot, String previousChildName) {
+                            MessageVO messageVO = dataSnapshot.getValue(MessageVO.class);
+                            if (messageVO.getImage() != null && messageVO.getImage().equals(strDelete) && !messageVO.getWriter().equals(userUuid)) {
+                                try {
+                                    String key = dataSnapshot.getKey();
+                                    int position = chatMessageKeyList.indexOf(key);
+                                    chatMessageList.get(position).setImage(strDelete);
+                                    chattingRecyclerview.getRecycledViewPool().clear();
+                                    chattingMessageAdapter.notifyDataSetChanged();
+                                } catch (Exception e) {
+
+                                }
+                            } else if (messageVO.getCheck() == 0) {
+                                checkRefreshChatLog();
+                            }
+                        }
+
+                        @Override
+                        public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+                        }
+
+                        @Override
+                        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
                 }
 
-
-                chatDatabaseRef = FirebaseDatabase.getInstance().getReference().child(chat).child(roomName);
-                // 처음 모든 메세지 읽음처리
-                chatDatabaseRef.orderByChild("check").equalTo(1).addListenerForSingleValueEvent(checkChatListener);
-                chatDatabaseRef.removeEventListener(checkChatListener);
-
-
-                chatDatabaseRef.limitToLast(1).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-
-                        for (DataSnapshot ds : dataSnapshot.getChildren()) {//마찬가지로 중복 유무 확인
-                            lastMessage = ds.getKey();
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
-                chatDatabaseRef.removeEventListener(this);
-                // 그후 메세지 통신
-                chatDatabaseRef.limitToLast(RemoteConfig.MessageCount).addChildEventListener(chatInitListener);
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            });
         });
+
     }
 
-    // 첫 채팅방 초기화
-    ChildEventListener chatInitListener = new ChildEventListener() {
-        public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
-            childChatKey = dataSnapshot.getKey();
-            if (!childKeyList.contains(childChatKey)) {
-                childKeyList.add(childChatKey);
-                MessageVO message = dataSnapshot.getValue(MessageVO.class);
-                message.setParent(childChatKey);
-                initMessage(message, childChatKey);
-            }
-        }
 
-        @Override
-        public void onChildChanged(DataSnapshot dataSnapshot, String previousChildName) {
-            MessageVO messageVO = dataSnapshot.getValue(MessageVO.class);
-            if (messageVO.getImage() != null && messageVO.getImage().equals(strDelete) && !messageVO.getWriter().equals(userUuid)) {
-                try {
-                    String key = dataSnapshot.getKey();
-                    int position = chatMessageKeyList.indexOf(key);
-                    chatMessageList.get(position).setImage(strDelete);
-                    chattingRecyclerview.getRecycledViewPool().clear();
-                    chattingMessageAdapter.notifyDataSetChanged();
-                } catch (Exception e) {
-
+    // 상대방 프로필 정보 셋팅
+    void setUserInfo(User targetUser, String targetUuid) {
+        try {
+            item = new GridItem(0, targetUuid, targetUser.getSummaryUser(), targetUser.getPicUrls().getThumbNail_picUrl1());
+            // 상대방과의 거리 셋팅
+            DatabaseReference ref = FirebaseDatabase.getInstance().getReference(FireBaseUtil.currentLocationPath);
+            GeoFire geoFire = new GeoFire(ref);
+            final Location location = GPSInfo.getmInstance(context).getGPSLocation();
+            geoFire.getLocation(targetUuid, new LocationCallback() {
+                @SuppressLint("DefaultLocale")
+                @Override
+                public void onLocationResult(String s, GeoLocation geoLocation) {
+                    Location targetLocation = new Location("");//provider name is unnecessary
+                    targetLocation.setLatitude(geoLocation.latitude);//your coords of course
+                    targetLocation.setLongitude(geoLocation.longitude);
+                    final float distance = location.distanceTo(targetLocation);
+                    item.setDistance(distance);
                 }
-            } else if (messageVO.getCheck() == 0) {
-                checkRefreshChatLog();
-            }
-        }
 
-        @Override
-        public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-        }
-
-        @Override
-        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-        }
-
-        @Override
-        public void onCancelled(DatabaseError databaseError) {
-
-        }
-    };
-    // 처음 메세지 읽음 처리
-    ValueEventListener checkChatListener = new ValueEventListener() {
-        @Override
-        public void onDataChange(DataSnapshot dataSnapshot) {
-            Iterator<DataSnapshot> child = dataSnapshot.getChildren().iterator();
-            while (child.hasNext()) {//마찬가지로 중복 유무 확인
-                DataSnapshot ds = child.next();
-                MessageVO message = ds.getValue(MessageVO.class);
-                message.setParent(dataSnapshot.getKey());
-                if (message != null && !message.getWriter().equals(userUuid)) {
-                    databaseRef.child(chat).child(roomName).child(ds.getKey()).child("check").setValue(0);
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
                 }
-            }
+            });
+        } catch (Exception e) {
+            item = new GridItem(0, null, null, null);
+            item.setUuid(targetUuid);
         }
-
-        @Override
-        public void onCancelled(DatabaseError databaseError) {
-        }
-    };
-    // 채팅로그 로딩
-    ValueEventListener chatLoadListener = new ValueEventListener() {
-        @Override
-        public void onDataChange(DataSnapshot dataSnapshot) {
-            Iterator<DataSnapshot> child = dataSnapshot.getChildren().iterator();
-            loadMessage(child);
-        }
-
-        @Override
-        public void onCancelled(DatabaseError databaseError) {
-        }
-    };
+    }
 
     public Long getTime() throws NotSetAutoTimeException {
         return UiUtil.getInstance().getCurrentTime(context);
     }
 
     // 채팅 초기화
-    public void initMessage(MessageVO message, String key) {
+    public void initMessage(String Room, String userUuid, MessageVO message, String key) {
 
         ChatMessage chatMessage;
         int check = message.getCheck();
@@ -426,7 +371,7 @@ public class ChatFirebaseUtil {
         // 체크버튼
         if (check != 0 && !message.getWriter().equals(userUuid)) {
             message.setCheck(0);
-            databaseRef.child(chat).child(roomName).child(key).child("check").setValue(check - 1);
+            databaseRef.child(chat).child(Room).child(key).child("check").setValue(check - 1);
         }
 
         if (message.getWriter().equals(userUuid) && message.getImage() == null) {
@@ -443,12 +388,8 @@ public class ChatFirebaseUtil {
             }
         } else {
             chatMessage = new ChatMessage(message, false, true, item);
-
         }
 
-        // 포지션 다루기
-        int pos = chattingMessageAdapter.getItemCount() - 2;
-        int visiblieCompLastPosition = ((LinearLayoutManager) chattingRecyclerview.getLayoutManager()).findLastVisibleItemPosition();
 
         //데이터 추가
         chatMessageList.add(chatMessage);
@@ -456,31 +397,33 @@ public class ChatFirebaseUtil {
         chattingRecyclerview.getRecycledViewPool().clear();
         chattingMessageAdapter.notifyDataSetChanged();
 
+        // 스크롤 다루기
+        chattingRecyclerview.post(() -> {
+            int pos = chattingMessageAdapter.getItemCount() - 1;
+            LinearLayoutManager lm = (LinearLayoutManager) chattingRecyclerview.getLayoutManager();
+            int visiblieCompLastPosition = lm.findLastVisibleItemPosition();
 
-        if (pos <= visiblieCompLastPosition || first && !key.equals(lastMessage)) {
-            //맨마지막에서 2이내에 있을경우
-            chattingRecyclerview.scrollToPosition(chattingMessageAdapter.getItemCount() - 1);
-        } else if (!chatMessage.isMine() && !chatMessage.isImage()) {
-            // 내것이 아니고 텍스트
-            hideText.setText(message.getContent());
-            overlay.setVisibility(View.VISIBLE);
-        } else if (!chatMessage.isMine()) {
-            // 내것이 아니고 이미지
-            hideText.setText("사진");
-            overlay.setVisibility(View.VISIBLE);
-        } else {
-            // 내 메세지일경우
-            chattingRecyclerview.scrollToPosition(chattingMessageAdapter.getItemCount() - 1);
-        }
+            if (pos <= visiblieCompLastPosition) {
+                //맨마지막에서 2이내에 있을경우
+                chattingRecyclerview.scrollToPosition(pos);
+            } else if (!chatMessage.isMine() && !chatMessage.isImage()) {
+                // 내것이 아니고 텍스트
+                hideText.setText(message.getContent());
+                overlay.setVisibility(View.VISIBLE);
+            } else if (!chatMessage.isMine()) {
+                // 내것이 아니고 이미지
+                hideText.setText("사진");
+                overlay.setVisibility(View.VISIBLE);
+            } else {
+                // 내 메세지일경우
+                chattingRecyclerview.scrollToPosition(chattingMessageAdapter.getItemCount() - 1);
+            }
+        });
 
-        if (key.equals(lastMessage)) {
-            chattingRecyclerview.scrollToPosition(chattingMessageAdapter.getItemCount() - 1);
-            first = false;
-        }
     }
 
     // 채팅 로딩
-    public void loadMessage(Iterator<DataSnapshot> child) {
+    public void loadMessage(String Room, String userUuid,Iterator<DataSnapshot> child) {
 
         ChatMessage chatMessage;
         int visilbeCompFirstPosition = ((LinearLayoutManager) chattingRecyclerview.getLayoutManager()).findFirstCompletelyVisibleItemPosition();
@@ -514,22 +457,32 @@ public class ChatFirebaseUtil {
 
 
         //로딩 후 제거
-        if (detectTopPosition != null) {
+//        if (detectTopPosition != null) {
             chattingRecyclerview.getRecycledViewPool().clear();
             chattingMessageAdapter.notifyDataSetChanged();
             int messageViewCount = childKeyList.size() + (visiblieCompLastPosition - visilbeCompFirstPosition) - 2;
             chattingRecyclerview.scrollToPosition(messageViewCount);
-            chattingRecyclerview.addOnScrollListener(detectTopPosition);
-        }
-        chatDatabaseRef.removeEventListener(chatLoadListener);
+//            chattingRecyclerview.addOnScrollListener(detectTopPosition);
+//        }
+        databaseRef.child(chat).child(Room).removeEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Iterator<DataSnapshot> child = dataSnapshot.getChildren().iterator();
+                loadMessage(Room,userUuid,child);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
     }
 
     // 채팅 로딩 발생 메소드
-    public void addChatLog() {
+    public void addChatLog(String Room, String userUuid) {
         if (!childKeyList.isEmpty() && childKeyList.size() != 1) {
-            chattingRecyclerview.removeOnScrollListener(detectTopPosition);
+//            chattingRecyclerview.removeOnScrollListener(detectTopPosition);
             if (childKeyList.size() < RemoteConfig.MessageCount) {
-                detectTopPosition = null;
+//                detectTopPosition = null;
                 return;
             }
             // 마지막으로 불러온 채팅 아이디
@@ -546,33 +499,32 @@ public class ChatFirebaseUtil {
                 context.getApplicationContext().startActivity(p);
             }
             messageWeight *= 1;
-            chatDatabaseRef.orderByKey().endAt(lastChildChatKey).limitToLast(RemoteConfig.MessageCount * messageWeight).addValueEventListener(chatLoadListener);
+            databaseRef.child(chat).child(Room).orderByKey().endAt(lastChildChatKey).limitToLast(RemoteConfig.MessageCount * messageWeight).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    Iterator<DataSnapshot> child = dataSnapshot.getChildren().iterator();
+                    loadMessage(Room,userUuid,child);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            });
         }
     }
 
     // 채팅 로딩 리스너 (상단 포지션 탐지)
-    RecyclerView.OnScrollListener detectTopPosition = new RecyclerView.OnScrollListener() {
-        @Override
-        public void onScrollStateChanged(RecyclerView absListView, int i) {
-        }
-
-        @Override
-        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-            super.onScrolled(recyclerView, dx, dy);
-            if (recyclerView.computeVerticalScrollOffset() == 0) {
-                addChatLog();
-            }
-        }
-    };
+//    RecyclerView.OnScrollListener detectTopPosition =
 
 
-    public void removeImeageMessage(final String parent, final int position) {
+    // 이미지 제거 루팅
+    public void removeImeageMessage(String Room,final String parent, final int position) {
         String url = chatMessageList.get(position).getImage();
         FirebaseStorage.getInstance().getReferenceFromUrl(url).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                FirebaseDatabase.getInstance().getReference("chat").child(roomName).child(parent).child("image").setValue(strDelete);
-                FirebaseDatabase.getInstance().getReference("chat").child(roomName).child(parent).child("isImage").setValue(0);
+                FirebaseDatabase.getInstance().getReference("chat").child(Room).child(parent).child("image").setValue(strDelete);
+                FirebaseDatabase.getInstance().getReference("chat").child(Room).child(parent).child("isImage").setValue(0);
                 chatMessageList.get(position).setImage(strDelete);
                 chattingRecyclerview.getRecycledViewPool().clear();
                 chattingMessageAdapter.notifyDataSetChanged();
@@ -597,8 +549,8 @@ public class ChatFirebaseUtil {
     }
 
     public void deleteFirebaseRef() {
-        chatDatabaseRef.removeEventListener(chatInitListener);
-        chatDatabaseRef.removeEventListener(chatLoadListener);
+        //databaseRef.child(chat).child(roomName).removeEventListener(chatInitListener);
+        //databaseRef.child(chat).child(roomName).removeEventListener(chatLoadListener);
     }
 
     public GridItem getItem() {
@@ -606,6 +558,7 @@ public class ChatFirebaseUtil {
     }
 
 
+    // static 메세지
     public static void sendEventMessage(final String mUuid, final String nickName, final String oUuid, final String message, final Context context) {
         final DatabaseReference chatRoomRef = FirebaseDatabase.getInstance().getReference(chatRoomList);
         final String[] RoomName = new String[1];
@@ -647,6 +600,7 @@ public class ChatFirebaseUtil {
         });
     }
 
+    // 메세지 보내기
     private static void sendMessage(final String room, final String mUuid, final String nickName, final String oUuid, final String message) {
         Long currentTime = System.currentTimeMillis();
         MessageVO messageVO = new MessageVO(null, mUuid, nickName, message, currentTime, 1);
@@ -680,11 +634,12 @@ public class ChatFirebaseUtil {
         });
     }
 
-    public void Pause(){
+    public void Pause() {
         SPUtil.removeCurrentChat(context.getString(R.string.currentRoom));
     }
-    public void  Resume(){
-        SPUtil.setCurrentChat(context.getString(R.string.currentRoom), roomName);
+
+    public void Resume() {
+        SPUtil.setCurrentChat(context.getString(R.string.currentRoom), "-LJnZGVGTUK2GiyawCb5");
     }
 
 }
