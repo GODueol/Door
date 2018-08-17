@@ -121,7 +121,7 @@ public class RxFirebaseModel {
     }
 
 
-    class FirebaseData<T> {
+    public class FirebaseData<T> {
         private T vaule;
         private String key;
         private int Type;

@@ -1,12 +1,11 @@
 package com.teamdoor.android.door.Chatting;
 
-import android.content.DialogInterface;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
-import android.net.Uri;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -45,20 +44,23 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.otto.Subscribe;
+import com.teamdoor.android.door.Chatting.ChattingMessageAdapter.OnImesageLoadingCallback;
 import com.teamdoor.android.door.Entity.ChatMessage;
+import com.teamdoor.android.door.Entity.MessageVO;
 import com.teamdoor.android.door.Entity.User;
 import com.teamdoor.android.door.Event.TargetUserBlocksMeEvent;
 import com.teamdoor.android.door.Exception.ChildSizeMaxException;
 import com.teamdoor.android.door.Exception.NotSetAutoTimeException;
-import com.teamdoor.android.door.Chatting.ChattingMessageAdapter.OnImesageLoadingCallback;
-import com.teamdoor.android.door.Entity.MessageVO;
 import com.teamdoor.android.door.PeopleFragment.FullImageActivity;
+import com.teamdoor.android.door.PeopleFragment.GridItem;
 import com.teamdoor.android.door.R;
 import com.teamdoor.android.door.Util.BaseActivity.BlockBaseActivity;
 import com.teamdoor.android.door.Util.DataContainer;
 import com.teamdoor.android.door.Util.FireBaseUtil;
+import com.teamdoor.android.door.Util.GPSInfo;
 import com.teamdoor.android.door.Util.GalleryPick;
 import com.teamdoor.android.door.Util.SharedPreferencesUtil;
 import com.teamdoor.android.door.Util.UiUtil;
@@ -67,7 +69,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChattingActivity extends BlockBaseActivity implements ChattingContract.View{
+public class ChattingActivity extends BlockBaseActivity implements ChattingContract.View {
 
     private Toolbar toolbar = null;
     private RecyclerView chattingRecyclerview;
@@ -77,12 +79,14 @@ public class ChattingActivity extends BlockBaseActivity implements ChattingContr
     private TextView hideText, topDateText;
     private ChattingMessageAdapter chattingMessageAdapter;
     private LinearLayoutManager linearLayoutManager;
-    private List<ChatMessage> chatListItem;
+
+    private List<String> chatKeyList;
+    private List<ChatMessage> chatList;
+    private List<ChatMessage> uncheckList;
+
     private FirebaseAuth mAuth;
     private InputMethodManager imm;
     private Animation hide, fadeout;
-
-    private ChatFirebaseUtil chatFirebaseUtil;
 
     private User user;
     private String userUuid;
@@ -91,105 +95,92 @@ public class ChattingActivity extends BlockBaseActivity implements ChattingContr
     private GalleryPick galleryPick;
     private RewardedVideoAd mRewardedVideoAd;
     private InterstitialAd noFillInterstitialAd;
+    private GridItem Item;
     boolean isFillReward = false;
+    private String room;
     /***************************************************************/
 
     private ChattingContract.Presenter mPresenter;
+
+    @SuppressLint("CheckResult")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setLayout();
+
+        chatKeyList = new ArrayList<>();
+        chatList = new ArrayList<>();
+        uncheckList = new ArrayList<>();
 
         // 상대방 데이터 셋
         Intent p = getIntent();
         targetUser = (User) p.getSerializableExtra("user");
         targetUuid = (String) p.getSerializableExtra("userUuid");
 
+        setLayout();
+        // 광고 셋
         loadRewardedVideoAd();
         setnoFillInterstitialAd();
 
         // 엑티비티 Uuid 저장
         SPUtil.setBlockMeUserCurrentActivity(getString(R.string.currentActivity), targetUuid);
+
         // 내정보 데이터 셋
         mAuth = FirebaseAuth.getInstance();
         user = getUser();
         userUuid = mAuth.getUid();
 
-
-        // TeamCore 메세지의 경우
-        if (targetUuid.equals(getApplicationContext().getString(R.string.TeamCore))) {
-            send_message_layout.setVisibility(View.GONE);
-        }
-
-        custom_top_container = findViewById(R.id.custom_top_container);
-        overlay = findViewById(R.id.scrollDown);
-        topDateText = findViewById(R.id.topDate);
-        hideText = findViewById(R.id.hideText);
-
-        fadeout = AnimationUtils.loadAnimation(this, R.anim.fadeout);
-        hide = AnimationUtils.loadAnimation(this, R.anim.hide);
-
-
-        chatListItem = new ArrayList<ChatMessage>();
-        linearLayoutManager = new LinearLayoutManager(this);
-        linearLayoutManager.setStackFromEnd(true);
-        chattingMessageAdapter = new ChattingMessageAdapter(chatListItem, litener);
-        chattingRecyclerview.setAdapter(chattingMessageAdapter);
-        chattingRecyclerview.setLayoutManager(linearLayoutManager);
-        chattingRecyclerview.setOnTouchListener(onTouchListener);
-
-        // 블락이면 안들어가지게
-        chatFirebaseUtil = new ChatFirebaseUtil(this, overlay, hideText);
-
-        chatFirebaseUtil.setUserInfo(targetUser,targetUuid);
-        chatFirebaseUtil.setchatRoom(userUuid,targetUuid,chattingRecyclerview, chatListItem);
         chattingRecyclerview.addOnScrollListener(dateToastListener);
 
-//        userPickurl = user.getPicUrls().getThumbNail_picUrl1();
-//        targetPicurl = targetUser.getPicUrls().getThumbNail_picUrl1();
         // 메세지 보내기
-        mButtonSend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String message = mEditTextMessage.getText().toString();
+        mButtonSend.setOnClickListener(v -> {
+            String message = mEditTextMessage.getText().toString();
 
-                if (TextUtils.isEmpty(message.replace(System.getProperty("line.separator"), "").replace(" ", ""))) {
-                    return;
-                }
-                long currentTime = 0;
-                try {
-                    currentTime = UiUtil.getInstance().getCurrentTime(ChattingActivity.this);
-                    writeMessage("-LJnZGVGTUK2GiyawCb5",null, userUuid, user.getId(), message, currentTime, 1);
-                } catch (NotSetAutoTimeException e) {
-                    e.printStackTrace();
-                    Toast.makeText(ChattingActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                    ActivityCompat.finishAffinity(ChattingActivity.this);
-                }
-
-                mEditTextMessage.setText("");
+            if (TextUtils.isEmpty(message.replace(System.getProperty("line.separator"), "").replace(" ", ""))) {
+                return;
             }
+
+            long currentTime = getCleanTime();
+            writeMessage(room, null, userUuid, user.getId(), message, currentTime, 1);
+
+            mEditTextMessage.setText("");
         });
 
-        overlay.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                chattingRecyclerview.scrollToPosition(chattingMessageAdapter.getItemCount() - 1);
-            }
-        });
+        overlay.setOnClickListener(view -> chattingRecyclerview.scrollToPosition(chattingMessageAdapter.getItemCount() - 1));
 
-        mImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sendImageMessage();
-            }
-        });
+        mImageView.setOnClickListener(v -> sendImageMessage());
         /******************************************/
         SPUtil = new SharedPreferencesUtil(this);
-        new ChattingPresenter(this,SPUtil);
+        new ChattingPresenter(this, SPUtil);
+
+
+        Item = mPresenter.setUserInfo(targetUser, targetUuid);
+        mPresenter.setchatRoom(userUuid, targetUuid).subscribe(
+                chatRoom -> {
+                    room = chatRoom;
+                    mPresenter.checkReadChat(chatRoom, userUuid);
+                    mPresenter.getChattingLog(chatRoom, userUuid);
+                }
+        );
+
+        chattingRecyclerview.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView absListView, int i) {
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (recyclerView.computeVerticalScrollOffset() == 0) {
+                    mPresenter.getPastChattingLog(room, userUuid);
+                }
+            }
+        });
+
+
     }
 
 
-    public void setLayout(){
+    public void setLayout() {
         Window window = getWindow();
         window.setContentView(R.layout.chatting_activity);
         toolbar = findViewById(R.id.toolbar);
@@ -222,6 +213,26 @@ public class ChattingActivity extends BlockBaseActivity implements ChattingContr
         int layout_height = send_message_layout.getMeasuredHeight();
         paramlinear.setMargins(0, actionBarHeight + 5, 0, layout_height);
         window.addContentView(linear, paramlinear);
+
+        custom_top_container = findViewById(R.id.custom_top_container);
+        overlay = findViewById(R.id.scrollDown);
+        topDateText = findViewById(R.id.topDate);
+        hideText = findViewById(R.id.hideText);
+
+        fadeout = AnimationUtils.loadAnimation(this, R.anim.fadeout);
+        hide = AnimationUtils.loadAnimation(this, R.anim.hide);
+
+        // TeamCore 메세지의 경우
+        if (targetUuid.equals(getApplicationContext().getString(R.string.TeamCore))) {
+            send_message_layout.setVisibility(View.GONE);
+        }
+
+        linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setStackFromEnd(true);
+        chattingMessageAdapter = new ChattingMessageAdapter(chatList, litener);
+        chattingRecyclerview.setAdapter(chattingMessageAdapter);
+        chattingRecyclerview.setLayoutManager(linearLayoutManager);
+        chattingRecyclerview.setOnTouchListener(onTouchListener);
     }
 
     @Override
@@ -232,8 +243,7 @@ public class ChattingActivity extends BlockBaseActivity implements ChattingContr
 
             try {
                 galleryPick.invoke(data);
-//                Uri outputFileUri = galleryPick.getUri();
-                chatFirebaseUtil.sendImageMessage("-LJnZGVGTUK2GiyawCb5",user.getId(),userUuid,targetUuid, galleryPick);
+                mPresenter.sendImageMessage(room, user.getId(), userUuid, targetUuid, galleryPick);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
                 Toast.makeText(ChattingActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -248,7 +258,7 @@ public class ChattingActivity extends BlockBaseActivity implements ChattingContr
     protected void onResume() {
         mRewardedVideoAd.resume(this);
         mRewardedVideoAd.setRewardedVideoAdListener(rewardedVideoAdListener);
-        chatFirebaseUtil.Resume();
+//        chatFirebaseUtil.Resume();
         super.onResume();
         mImageView.setClickable(true);
     }
@@ -256,7 +266,7 @@ public class ChattingActivity extends BlockBaseActivity implements ChattingContr
     @Override
     public void onPause() {
         mRewardedVideoAd.pause(this);
-        chatFirebaseUtil.Pause();
+//        chatFirebaseUtil.Pause();
         super.onPause();
     }
 
@@ -267,21 +277,20 @@ public class ChattingActivity extends BlockBaseActivity implements ChattingContr
         mRewardedVideoAd.setRewardedVideoAdListener(null);
         super.onDestroy();
         SPUtil.removeCurrentChat(getString(R.string.currentRoom));
-        chatFirebaseUtil.deleteFirebaseRef();
         FireBaseUtil.getInstance().queryBlockWithMe(targetUuid, isBlockWithMe -> {
             if (isBlockWithMe) {
                 Log.d("test", "ture");
-                chatFirebaseUtil.clearChatLog("-LJnZGVGTUK2GiyawCb5",userUuid,targetUuid);
+                mPresenter.clearChatLog(room, userUuid, targetUuid);
             } else {
                 Log.d("test", "false");
-                chatFirebaseUtil.setLastChatView(userUuid,targetUuid);
+                mPresenter.setLastChatView(userUuid, targetUuid);
             }
         });
     }
 
-    private void writeMessage(String Room,String image, String userUuid, String nickname, String content, long currentTime, int check) throws NotSetAutoTimeException {
+    private void writeMessage(String Room, String image, String userUuid, String nickname, String content, long currentTime, int check) {
         MessageVO message = new MessageVO(image, userUuid, nickname, content, currentTime, check);
-        chatFirebaseUtil.sendMessage(Room,nickname, userUuid,targetUuid,message);
+        mPresenter.sendMessage(Room, nickname, userUuid, targetUuid, message);
     }
 
     private void sendImageMessage() {
@@ -296,16 +305,15 @@ public class ChattingActivity extends BlockBaseActivity implements ChattingContr
         switch (id) {
             case R.id.profile:
                 Intent p = new Intent(ChattingActivity.this, FullImageActivity.class);
-                p.putExtra("item", chatFirebaseUtil.getItem());
+                p.putExtra("item", Item);
                 ChattingActivity.this.startActivity(p);
                 break;
             case R.id.block:
                 // 다이얼로그
-                UiUtil.getInstance().showDialog(ChattingActivity.this, "유저 차단", "해당 유저를 차단하시겠습니까?", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-
+                UiUtil.getInstance().showDialog(ChattingActivity.this, "유저 차단", "해당 유저를 차단하시겠습니까?", (dialog, whichButton) ->
                         checkCorePlus().addOnSuccessListener(isPlus -> {
                             if (!isPlus) {
+                                Query query =  FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid(getApplication())).child(getString(R.string.blockCount));
                                 FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid(getApplication())).child(getString(R.string.blockCount)).addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -317,22 +325,15 @@ public class ChattingActivity extends BlockBaseActivity implements ChattingContr
                                         }
                                         if (value > 0) {
                                             FirebaseDatabase.getInstance().getReference(getString(R.string.admob)).child(DataContainer.getInstance().getUid(getApplication())).child(getString(R.string.blockCount)).setValue(value - 1);
-
                                             UiUtil.getInstance().startProgressDialog(ChattingActivity.this);
                                             // blockUsers 추가
                                             try {
-                                                FireBaseUtil.getInstance().block(chatFirebaseUtil.getItem().getUuid()).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                    @Override
-                                                    public void onSuccess(Void aVoid) {
-                                                        finish();
-                                                    }
-                                                }).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<Void> task) {
-                                                        UiUtil.getInstance().stopProgressDialog();
-                                                        finish();
-                                                    }
-                                                });
+                                                FireBaseUtil.getInstance().block(Item.getUuid())
+                                                        .addOnSuccessListener(aVoid -> finish())
+                                                        .addOnCompleteListener(task -> {
+                                                            UiUtil.getInstance().stopProgressDialog();
+                                                            finish();
+                                                        });
                                             } catch (ChildSizeMaxException e) {
                                                 Toast.makeText(ChattingActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                                                 UiUtil.getInstance().stopProgressDialog();
@@ -342,17 +343,11 @@ public class ChattingActivity extends BlockBaseActivity implements ChattingContr
                                                 UiUtil.getInstance().startProgressDialog(ChattingActivity.this);
                                                 // blockUsers 추가
                                                 try {
-                                                    FireBaseUtil.getInstance().block(chatFirebaseUtil.getItem().getUuid()).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                        @Override
-                                                        public void onSuccess(Void aVoid) {
-                                                            finish();
-                                                        }
-                                                    }).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                        @Override
-                                                        public void onComplete(@NonNull Task<Void> task) {
-                                                            UiUtil.getInstance().stopProgressDialog();
-                                                            finish();
-                                                        }
+                                                    FireBaseUtil.getInstance().block(Item.getUuid())
+                                                            .addOnSuccessListener(aVoid -> finish())
+                                                            .addOnCompleteListener(task -> {
+                                                        UiUtil.getInstance().stopProgressDialog();
+                                                        finish();
                                                     });
                                                 } catch (ChildSizeMaxException e) {
                                                     Toast.makeText(ChattingActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -360,7 +355,7 @@ public class ChattingActivity extends BlockBaseActivity implements ChattingContr
                                                 }
                                                 noFillInterstitialAd.show();
                                             } else {
-                                                if(mRewardedVideoAd.isLoaded()) {
+                                                if (mRewardedVideoAd.isLoaded()) {
                                                     mRewardedVideoAd.show();
                                                 }
                                             }
@@ -376,33 +371,21 @@ public class ChattingActivity extends BlockBaseActivity implements ChattingContr
                                 UiUtil.getInstance().startProgressDialog(ChattingActivity.this);
                                 // blockUsers 추가
                                 try {
-                                    FireBaseUtil.getInstance().block(chatFirebaseUtil.getItem().getUuid()).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            finish();
-                                        }
-                                    }).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            UiUtil.getInstance().stopProgressDialog();
-                                            finish();
-                                        }
-                                    });
+                                    FireBaseUtil.getInstance().block(Item.getUuid())
+                                            .addOnSuccessListener(aVoid -> finish())
+                                            .addOnCompleteListener(task -> {
+                                                UiUtil.getInstance().stopProgressDialog();
+                                                finish();
+                                            });
                                 } catch (ChildSizeMaxException e) {
                                     Toast.makeText(ChattingActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                                     UiUtil.getInstance().stopProgressDialog();
                                 }
                             }
-                        });
-
-                    }
-                }, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                    }
+                        }), (dialog, whichButton) -> {
                 });
                 break;
             case android.R.id.home:
-                // NavUtils.navigateUpFromSameTask(this);
                 finish();
                 return true;
         }
@@ -432,15 +415,12 @@ public class ChattingActivity extends BlockBaseActivity implements ChattingContr
     OnImesageLoadingCallback litener = new OnImesageLoadingCallback() {
         @Override
         public void onReady() {
-            // 처음으로 가려는 리스너
-            //chattingRecyclerview.scrollToPosition(chattingMessageAdapter.getItemCount()-1);
             chattingRecyclerview.smoothScrollToPosition(View.FOCUS_DOWN);
-            //chattingRecyclerview.scrollToPosition(View.FOCUS_DOWN);
         }
 
         @Override
         public void onRemove(String parent, int i) {
-            chatFirebaseUtil.removeImeageMessage("-LJnZGVGTUK2GiyawCb5",parent, i);
+            mPresenter.removeImeageMessage(room, parent, i);
         }
     };
 
@@ -544,7 +524,7 @@ public class ChattingActivity extends BlockBaseActivity implements ChattingContr
                         UiUtil.getInstance().startProgressDialog(ChattingActivity.this);
                         // blockUsers 추가
                         try {
-                            FireBaseUtil.getInstance().block(chatFirebaseUtil.getItem().getUuid()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            FireBaseUtil.getInstance().block(Item.getUuid()).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
                                     finish();
@@ -580,7 +560,6 @@ public class ChattingActivity extends BlockBaseActivity implements ChattingContr
 
         @Override
         public void onRewardedVideoAdLeftApplication() {
-
             Log.d("test", "onRewardedVideoAdLeftApplication");
         }
 
@@ -611,15 +590,111 @@ public class ChattingActivity extends BlockBaseActivity implements ChattingContr
         }
     };
 
+    @Override
+    public Long getCleanTime() {
+        try {
+            return UiUtil.getInstance().getCurrentTime(this);
+        } catch (NotSetAutoTimeException e) {
+            finish();
+            return null;
+        }
+    }
+
+    @Override
+    public void ToastMessage(String msg) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+    }
+
     /*******************************View Impelements*******************************/
     @Override
     public void refreshChatLogView() {
-
+        chattingRecyclerview.getRecycledViewPool().clear();
+        chattingMessageAdapter.notifyDataSetChanged();
     }
 
     @Override
     public String getResourceCurrentRoom() {
+
         return getString(R.string.currentRoom);
+    }
+
+    @Override
+    public String getResourceAlert() {
+        return getString(R.string.alertChat);
+    }
+
+    @Override
+    public List<ChatMessage> getChatList() {
+        return chatList;
+    }
+
+    @Override
+    public List<String> getChatKeyList() {
+        return chatKeyList;
+    }
+
+    @Override
+    public List<ChatMessage> getUnCheckList() {
+        return uncheckList;
+    }
+
+    @Override
+    public void setScrollControl(String message, boolean isMine, boolean isImage) {
+        chattingRecyclerview.post(() -> {
+            int pos = chattingMessageAdapter.getItemCount() - 1;
+            LinearLayoutManager lm = (LinearLayoutManager) chattingRecyclerview.getLayoutManager();
+            int visiblieCompLastPosition = lm.findLastVisibleItemPosition();
+
+            if (pos - 2 <= visiblieCompLastPosition) {
+                //맨마지막에서 2이내에 있을경우
+                chattingRecyclerview.scrollToPosition(pos);
+            } else if (!isMine && !isImage) {
+                // 내것이 아니고 텍스트
+                showBottomOverlay(message);
+            } else if (!isMine) {
+                // 내것이 아니고 이미지
+                showBottomOverlay("사진");
+            } else {
+                // 내 메세지일경우
+                chattingRecyclerview.scrollToPosition(chattingMessageAdapter.getItemCount() - 1);
+            }
+        });
+    }
+
+    public void showBottomOverlay(String str) {
+        hideText.setText(str);
+        overlay.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void scrollToPosition(int position) {
+        chattingRecyclerview.scrollToPosition(position);
+    }
+
+
+    @Override
+    public int findFirstCompletelyVisibleItemPosition() {
+        return linearLayoutManager.findFirstCompletelyVisibleItemPosition();
+    }
+
+    @Override
+    public int findLastCompletelyVisibleItemPosition() {
+        return linearLayoutManager.findLastCompletelyVisibleItemPosition();
+    }
+
+    @Override
+    public Location getLocation() {
+        return GPSInfo.getmInstance(this).getGPSLocation();
+    }
+
+    @Override
+    public GridItem getGridItem() {
+        return Item;
+    }
+
+    @Override
+    public void setGridItemDistance(float distance) {
+        Item.setDistance(distance);
     }
 
     @Override
