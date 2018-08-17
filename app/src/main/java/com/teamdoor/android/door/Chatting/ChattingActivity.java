@@ -157,6 +157,7 @@ public class ChattingActivity extends BlockBaseActivity implements ChattingContr
         mPresenter.setchatRoom(userUuid, targetUuid).subscribe(
                 chatRoom -> {
                     room = chatRoom;
+                    SPUtil.setCurrentChat(getString(R.string.currentRoom),room);
                     mPresenter.checkReadChat(chatRoom, userUuid);
                     mPresenter.getChattingLog(chatRoom, userUuid);
                 }
@@ -275,6 +276,7 @@ public class ChattingActivity extends BlockBaseActivity implements ChattingContr
     protected void onDestroy() {
         mRewardedVideoAd.destroy(this);
         mRewardedVideoAd.setRewardedVideoAdListener(null);
+        mPresenter.removeDisposable();
         super.onDestroy();
         SPUtil.removeCurrentChat(getString(R.string.currentRoom));
         FireBaseUtil.getInstance().queryBlockWithMe(targetUuid, isBlockWithMe -> {
@@ -610,12 +612,6 @@ public class ChattingActivity extends BlockBaseActivity implements ChattingContr
     public void refreshChatLogView() {
         chattingRecyclerview.getRecycledViewPool().clear();
         chattingMessageAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public String getResourceCurrentRoom() {
-
-        return getString(R.string.currentRoom);
     }
 
     @Override

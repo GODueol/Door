@@ -40,9 +40,6 @@ public interface ChattingContract {
         Location getLocation();
 
         // context접근 String
-        String getResourceCurrentRoom();
-
-        // context접근 String
         String getResourceAlert();
 
         void finish();
@@ -58,8 +55,6 @@ public interface ChattingContract {
 
         void setGridItemDistance(float distance);
     }
-
-    ;
 
     interface Presenter extends BasePresenter {
         // 메세지 룸 초기화
@@ -91,5 +86,8 @@ public interface ChattingContract {
 
         // 과거 채팅기록 가져오기(페이징)
         void getPastChattingLog(String Room, String userUuid);
+
+        // disposable disepose
+        void removeDisposable();
     }
 }

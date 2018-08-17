@@ -34,6 +34,8 @@ import java.util.Iterator;
 import java.util.Map;
 
 import io.reactivex.Observable;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Function;
 import io.reactivex.processors.PublishProcessor;
 import io.reactivex.schedulers.Schedulers;
@@ -50,8 +52,9 @@ public class ChattingPresenter implements ChattingContract.Presenter {
     private final static String strDelete = "DELETE";
     private int messageWeight = 1;
 
+    private CompositeDisposable compositeDisposable;
     private SharedPreferencesUtil SPUtil;
-    ChattingContract.View mChattingView;
+    private ChattingContract.View mChattingView;
 
     private DatabaseReference databaseRef;
     private FirebaseStorage storage;
@@ -66,9 +69,10 @@ public class ChattingPresenter implements ChattingContract.Presenter {
         storage = FirebaseStorage.getInstance();
 
         rxFirebaseModel = new RxFirebaseModel();
+        compositeDisposable = new CompositeDisposable();
     }
 
-    Function<DataSnapshot, MessageVO> makeMessage = dataSnapshot -> {
+    private Function<DataSnapshot, MessageVO> makeMessage = dataSnapshot -> {
         MessageVO msg = dataSnapshot.getValue(MessageVO.class);
         msg.setParent(dataSnapshot.getKey());
         return msg;
@@ -79,7 +83,7 @@ public class ChattingPresenter implements ChattingContract.Presenter {
 
     }
 
-    public String setRoom(String targetUuid, String userUuid) {
+    private String setRoom(String targetUuid, String userUuid) {
         String Room = databaseRef.child(chat).push().getKey();
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put("/" + chatRoomList + "/" + targetUuid + "/" + userUuid + "/" + "chatRoomid", Room);
@@ -94,7 +98,6 @@ public class ChattingPresenter implements ChattingContract.Presenter {
     public Observable<String> setchatRoom(String userUuid, String targetUuid) {
 
         PublishSubject<String> subject = PublishSubject.create();
-        String Room = null;
         long currentTime = mChattingView.getCleanTime();
         Map<String, Object> childUpdates = new HashMap<>();
 
@@ -118,7 +121,7 @@ public class ChattingPresenter implements ChattingContract.Presenter {
         // 처음 모든 메세지 읽음처리
         Query query = databaseRef.child(chat).child(Room).orderByChild("check").equalTo(1);
         rxFirebaseModel.getFirebaseForSingleValue(query)
-                .concatMapIterable(dataSnapshot -> dataSnapshot.getChildren())
+                .concatMapIterable(DataSnapshot::getChildren)
                 .map(makeMessage)
                 .filter(data -> !data.getWriter().equals(userUuid))
                 .subscribe(data -> databaseRef.child(chat).child(Room).child(data.getParent()).child("check").setValue(0));
@@ -130,45 +133,28 @@ public class ChattingPresenter implements ChattingContract.Presenter {
 
         PublishProcessor<RxFirebaseModel.FirebaseData> publish = PublishProcessor.create();
 
-        publish.filter(firebaseData -> firebaseData.getType() == CHILD_ADD)
+        Disposable event1 = publish.filter(firebaseData -> firebaseData.getType() == CHILD_ADD)
                 .subscribe(data -> {
                     MessageVO message = (MessageVO) data.getVaule();
                     message.setParent(data.getKey());
                     initMessage(Room, userUuid, message);
                 });
 
-        publish.filter(firebaseData -> firebaseData.getType() == CHILD_CHANGE)
+        Disposable event2 = publish.filter(firebaseData -> firebaseData.getType() == CHILD_CHANGE)
                 .subscribe(data -> {
                     MessageVO message = (MessageVO) data.getVaule();
                     if (message.getImage() != null && message.getImage().equals(strDelete) && !message.getWriter().equals(userUuid)) {
                         int position = mChattingView.getChatKeyList().indexOf(data.getKey());
                         mChattingView.getChatList().get(position).setImage(strDelete);
                         mChattingView.refreshChatLogView();
-                    }
-                });
-
-        Query query = databaseRef.child(chat).child(Room).limitToLast(RemoteConfig.MessageCount);
-        rxFirebaseModel.getFirebaseChildeEvent(query, MessageVO.class).subscribe(publish::onNext);
-
-        publish.filter(firebaseData -> firebaseData.getType() == CHILD_ADD)
-                .subscribe(data -> {
-                    MessageVO message = (MessageVO) data.getVaule();
-                    message.setParent(data.getKey());
-                    initMessage(Room, userUuid, message);
-                });
-
-        publish.filter(firebaseData -> firebaseData.getType() == CHILD_CHANGE)
-                .subscribe(data -> {
-                    MessageVO message = (MessageVO) data.getVaule();
-                    if (message.getImage() != null && message.getImage().equals(strDelete) && !message.getWriter().equals(userUuid)) {
-                        int position = mChattingView.getChatKeyList().indexOf(data.getKey());
-                        mChattingView.getChatList().get(position).setImage(strDelete);
-                        mChattingView.refreshChatLogView();
-                    } else if (message.getCheck() == 0) {
+                    }else if(message.getCheck()==0){
                         checkRefreshChatLog();
                     }
                 });
 
+        Query query = databaseRef.child(chat).child(Room).limitToLast(RemoteConfig.MessageCount);
+        Disposable event3 = rxFirebaseModel.getFirebaseChildeEvent(query, MessageVO.class).subscribe(publish::onNext);
+        compositeDisposable.addAll(event1, event2, event3);
     }
 
 
@@ -208,20 +194,19 @@ public class ChattingPresenter implements ChattingContract.Presenter {
     public void sendMessage(String Room, String id, String userUuid, String
             targetUuid, MessageVO message) {
 
-        String room = Room;
-        String key = databaseRef.child(chat).child(room).push().getKey();
+        String key = databaseRef.child(chat).child(Room).push().getKey();
 
         Long currentTime = mChattingView.getCleanTime();
         Map<String, Object> childUpdates = new HashMap<>();
 
         if (message.getImage() == null) {        // 메세지일 경우
-            childUpdates.put("/" + chat + "/" + room + "/" + key, message);
+            childUpdates.put("/" + chat + "/" + Room + "/" + key, message);
             childUpdates.put("/" + chatRoomList + "/" + targetUuid + "/" + userUuid + "/" + "lastChatTime", currentTime);
             childUpdates.put("/" + chatRoomList + "/" + targetUuid + "/" + userUuid + "/" + "lastChat", message.getContent());
             childUpdates.put("/" + chatRoomList + "/" + userUuid + "/" + targetUuid + "/" + "lastViewTime", currentTime);
             childUpdates.put("/" + chatRoomList + "/" + userUuid + "/" + targetUuid + "/" + "lastChat", message.getContent());
         } else {          // 이미지일 경우
-            childUpdates.put("/" + chat + "/" + room + "/" + key, message);
+            childUpdates.put("/" + chat + "/" + Room + "/" + key, message);
             childUpdates.put("/" + chatRoomList + "/" + targetUuid + "/" + userUuid + "/" + "lastChatTime", currentTime);
             childUpdates.put("/" + chatRoomList + "/" + targetUuid + "/" + userUuid + "/" + "lastChat", "사진");
             childUpdates.put("/" + chatRoomList + "/" + userUuid + "/" + targetUuid + "/" + "lastViewTime", currentTime);
@@ -229,7 +214,7 @@ public class ChattingPresenter implements ChattingContract.Presenter {
         }
         databaseRef.updateChildren(childUpdates).addOnSuccessListener(aVoid -> {
             // 상대방에게 내정보를 담아서 메세지를 보냄
-            FirebaseSendPushMsg.sendPostToFCM(chat, targetUuid, id, mChattingView.getResourceAlert(), room);
+            FirebaseSendPushMsg.sendPostToFCM(chat, targetUuid, id, mChattingView.getResourceAlert(), Room);
         });
     }
 
@@ -244,14 +229,13 @@ public class ChattingPresenter implements ChattingContract.Presenter {
 
         try {
             StorageTask<UploadTask.TaskSnapshot> uploadTask = galleryPick.upload(imageMessageRef);
-            uploadTask.addOnFailureListener(e -> Log.d("chatError", e.getMessage())).addOnSuccessListener(taskSnapshot -> {
-                imageMessageRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                    Long currentTime1 = mChattingView.getCleanTime();
-                    MessageVO message = new MessageVO(uri.toString(), userUuid, id, imageName, currentTime1, 1, 1);
-                    sendMessage(Room, id, userUuid, targetUuid, message);
-                }).addOnFailureListener(exception -> {
-                });
-            });
+            uploadTask.addOnFailureListener(e -> Log.d("chatError", e.getMessage())).addOnSuccessListener(taskSnapshot ->
+                    imageMessageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                        Long currentTime1 = mChattingView.getCleanTime();
+                        MessageVO message = new MessageVO(uri.toString(), userUuid, id, imageName, currentTime1, 1, 1);
+                        sendMessage(Room, id, userUuid, targetUuid, message);
+                    }).addOnFailureListener(exception -> {
+                    }));
         } catch (Exception e) {
             e.printStackTrace();
             mChattingView.ToastMessage(e.getMessage());
@@ -321,8 +305,15 @@ public class ChattingPresenter implements ChattingContract.Presenter {
         }
     }
 
+    @Override
+    public void removeDisposable() {
+        if (!compositeDisposable.isDisposed()) {
+            compositeDisposable.dispose();
+        }
+    }
+
     // 읽음 처리 (클라이언트)
-    public void checkRefreshChatLog() {
+    private void checkRefreshChatLog() {
         for (ChatMessage chatMessage : mChattingView.getUnCheckList()) {
             chatMessage.setCheck(0);
         }
@@ -331,7 +322,7 @@ public class ChattingPresenter implements ChattingContract.Presenter {
     }
 
 
-    public ChatMessage makeChatMessage(String userUuid, MessageVO message) {
+    private ChatMessage makeChatMessage(String userUuid, MessageVO message) {
 
         ChatMessage chatMessage;
         if (message.getWriter().equals(userUuid) && message.getImage() == null) {
@@ -353,7 +344,7 @@ public class ChattingPresenter implements ChattingContract.Presenter {
     }
 
     // 채팅 초기화
-    public void initMessage(String Room, String userUuid, MessageVO message) {
+    private void initMessage(String Room, String userUuid, MessageVO message) {
 
         ChatMessage chatMessage;
         int check = message.getCheck();
@@ -375,7 +366,7 @@ public class ChattingPresenter implements ChattingContract.Presenter {
     }
 
     // 채팅 로딩
-    public void loadMessage(String userUuid, Iterator<DataSnapshot> child) {
+    private void loadMessage(String userUuid, Iterator<DataSnapshot> child) {
 
         int size = 0;
         int visilbeCompFirstPosition = mChattingView.findFirstCompletelyVisibleItemPosition();
