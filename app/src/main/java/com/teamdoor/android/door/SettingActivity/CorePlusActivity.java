@@ -83,6 +83,9 @@ public class CorePlusActivity extends BaseActivity {
         TextView sub_txt2 = (TextView) findViewById(R.id.sub_txt2);
         sub_txt2.setText(getUser().getId() + sub_txt2.getText().toString());
 
+        TextView price_txt = (TextView) findViewById(R.id.price1);
+        price_txt.setText(RemoteConfig.CorePlusItemPrice);
+
     }
 
     private void setContentViewByPlus() {

@@ -95,7 +95,7 @@ public class MapsActivity extends BaseActivity implements GoogleApiClient.OnConn
         addrText.onActionViewExpanded();
 
         search = (ImageButton) findViewById(R.id.search_map);
-        mGPSInfo = new GPSInfo(getApplicationContext());
+        mGPSInfo = GPSInfo.getmInstance(getApplicationContext());
 
         MapFragment mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);

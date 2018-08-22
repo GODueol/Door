@@ -38,7 +38,7 @@ public class RemoteConfig {
     // 결재 아이템 관련
     public static String CoreCloudItemId = "";
     public static String CorePlusItemId = "";
-
+    public static String CorePlusItemPrice = "";
     static public Task<Void> getConfig(Activity activity){
         // Remote Config
         FirebaseRemoteConfig mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
@@ -95,6 +95,7 @@ public class RemoteConfig {
 
         CoreCloudItemId = mFirebaseRemoteConfig.getString("CoreCloudItemId");
         CorePlusItemId = mFirebaseRemoteConfig.getString("CorePlusItemId");
+        CorePlusItemPrice = mFirebaseRemoteConfig.getString("CorePlusItemPrice");
 
     }
 }

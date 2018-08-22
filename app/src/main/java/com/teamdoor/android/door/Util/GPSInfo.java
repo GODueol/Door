@@ -53,7 +53,7 @@ public class GPSInfo extends Service implements LocationListener {
 
     protected LocationManager locationManager;
 
-    public GPSInfo(Context context) {
+    private GPSInfo(Context context) {
         this.mContext = context;
         locationManager = (LocationManager) mContext.getSystemService(LOCATION_SERVICE);
         location = getknownLocation();
