@@ -22,10 +22,10 @@ import java.util.List;
 import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.processors.PublishProcessor;
 
 import static com.teamdoor.android.door.ChattingRoomList.RxFirebaseModel.CHILD_ADD;
 import static com.teamdoor.android.door.ChattingRoomList.RxFirebaseModel.CHILD_CHANGE;
-import static com.teamdoor.android.door.ChattingRoomList.RxFirebaseModel.CHILD_MOVE;
 import static com.teamdoor.android.door.ChattingRoomList.RxFirebaseModel.CHILD_REMOVE;
 
 public class ChattingRoomListPresenter implements ChattingRoomListContract.Presenter, SharedPreferences.OnSharedPreferenceChangeListener {
@@ -125,69 +125,71 @@ public class ChattingRoomListPresenter implements ChattingRoomListContract.Prese
     @SuppressLint("CheckResult")
     @Override
     public void setRoomItemList() {
+        PublishProcessor<RxFirebaseModel.FirebaseData> publish = PublishProcessor.create();
         Query query = chatRoomListRef.child(userId).orderByChild("lastChatTime");
-        Disposable event = rxFirebaseModel.getFirebaseChildeEvent(query, RoomVO.class).subscribe(
-                data -> {
-                    RoomVO roomInfo = (RoomVO) data.getVaule();
-                    switch (data.getType()) {
-                        case CHILD_ADD:
-                            syncronizeBadgeCount(roomInfo);
-                            Observable<User> observable = Observable.just(roomInfo)
-                                    .filter(RoomVO::hasTargetUuid_LastChat)
-                                    .map(this::addListItem_ReturnQuery)
-                                    .concatMap(inquery -> rxFirebaseModel.getFirebaseForSingleValue(inquery))
-                                    .filter(DataSnapshot::exists)
-                                    .filter(userDataSnapshot -> !userDataSnapshot.getKey().equals(mMeesageView.getResourceTeamCore()))
-                                    .map(userDataSnapshot -> userDataSnapshot.getValue(User.class));
-                            observable.subscribe(userinfo -> realTimeChattingRoomChange(userinfo, roomInfo));
-                            break;
 
-                        case CHILD_CHANGE:
-                            roomInfo.setBadgeCount(SPUtil.getChatRoomBadge(roomInfo.getChatRoomid()));
-                            Observable.just(roomInfo)
-                                    .filter(data1 -> data1.getLastChat() != null)
-                                    .map(data2 -> databaseReference.child("users").child(data2.getTargetUuid()))
-                                    .concatMap(inquery -> rxFirebaseModel.getFirebaseForSingleValue(inquery))
-                                    .filter(DataSnapshot::exists)
-                                    .map(dataSnapshot -> dataSnapshot.getValue(User.class))
-                                    .subscribe(userDataSnapshot -> {
-                                        try {
-                                            roomInfo.setBadgeCount(SPUtil.getChatRoomBadge(roomInfo.getChatRoomid()));
-                                            realTimeChattingRoomChange(userDataSnapshot, roomInfo, true);
-                                        } catch (Exception e) {
-                                            UserUuidList.add(roomInfo.getTargetUuid());
-                                            RoomItemList.add(roomInfo);
-                                            realTimeChattingRoomChange(userDataSnapshot, roomInfo);
-                                        }
-                                    });
+        Disposable event1 = publish.filter(firebaseData -> firebaseData.getType() == CHILD_ADD)
+                .map(firebaseData -> (RoomVO) firebaseData.getVaule())
+                .subscribe(data -> {
+                    syncronizeBadgeCount(data);
+                    Observable<User> observable = Observable.just(data)
+                            .filter(RoomVO::hasTargetUuid_LastChat)
+                            .map(this::addListItem_ReturnQuery)
+                            .concatMap(inquery -> rxFirebaseModel.getFirebaseForSingleValue(inquery))
+                            .filter(DataSnapshot::exists)
+                            .filter(userDataSnapshot -> !userDataSnapshot.getKey().equals(mMeesageView.getResourceTeamCore()))
+                            .map(userDataSnapshot -> userDataSnapshot.getValue(User.class));
+                    observable.subscribe(userinfo -> realTimeChattingRoomChange(userinfo, data));
+                });
 
-                            Observable.just(roomInfo)
-                                    .filter(data1 -> data1.getLastChat() == null)
-                                    .map(roomInfo1 -> UserUuidList.indexOf(roomInfo1.getTargetUuid()))
-                                    .filter(key -> key > 0)
-                                    .subscribe(key -> {
-                                        RoomItemList.remove(key);
-                                        UserUuidList.remove(key);
-                                        mMeesageView.refreshChattingRoomListView();
-                                    });
-                            break;
+        Disposable event2 = publish.filter(firebaseData -> firebaseData.getType() == CHILD_CHANGE)
+                .map(firebaseData -> (RoomVO) firebaseData.getVaule())
+                .subscribe(roomInfo -> {
+                    roomInfo.setBadgeCount(SPUtil.getChatRoomBadge(roomInfo.getChatRoomid()));
 
-                        case CHILD_REMOVE:
-                            Observable.just(UserUuidList.indexOf(roomInfo.getTargetUuid()))
-                                    .filter(index -> index > 0)
-                                    .subscribe(key -> {
-                                        RoomItemList.remove(key);
-                                        UserUuidList.remove(key);
-                                        mMeesageView.refreshChattingRoomListView();
-                                    });
-                            break;
+                    Observable.just(roomInfo)
+                            .filter(data1 -> data1.getLastChat() != null)
+                            .map(data2 -> databaseReference.child("users").child(data2.getTargetUuid()))
+                            .concatMap(inquery -> rxFirebaseModel.getFirebaseForSingleValue(inquery))
+                            .filter(DataSnapshot::exists)
+                            .map(dataSnapshot -> dataSnapshot.getValue(User.class))
+                            .subscribe(userDataSnapshot -> {
+                                try {
+                                    roomInfo.setBadgeCount(SPUtil.getChatRoomBadge(roomInfo.getChatRoomid()));
+                                    realTimeChattingRoomChange(userDataSnapshot, roomInfo, true);
+                                } catch (Exception e) {
+                                    UserUuidList.add(roomInfo.getTargetUuid());
+                                    RoomItemList.add(roomInfo);
+                                    realTimeChattingRoomChange(userDataSnapshot, roomInfo);
+                                }
+                            });
 
-                        case CHILD_MOVE:
-                            break;
-                    }
-                }
-        );
-        compositeDisposable.add(event);
+                    Observable.just(roomInfo)
+                            .filter(data1 -> data1.getLastChat() == null)
+                            .map(roomInfo1 -> UserUuidList.indexOf(roomInfo1.getTargetUuid()))
+                            .filter(key -> key > 0)
+                            .subscribe(key -> {
+                                RoomItemList.remove(key);
+                                UserUuidList.remove(key);
+                                mMeesageView.refreshChattingRoomListView();
+                            });
+
+                });
+
+        Disposable event3 = publish.filter(firebaseData -> firebaseData.getType() == CHILD_REMOVE)
+                .map(firebaseData -> (RoomVO) firebaseData.getVaule())
+                .subscribe(roomInfo -> {
+                    Observable.just(UserUuidList.indexOf(roomInfo.getTargetUuid()))
+                            .filter(index -> index > 0)
+                            .subscribe(key -> {
+                                RoomItemList.remove(key);
+                                UserUuidList.remove(key);
+                                mMeesageView.refreshChattingRoomListView();
+                            });
+                });
+
+        Disposable event = rxFirebaseModel.getFirebaseChildeEvent(query, RoomVO.class).subscribe(publish::onNext);
+        compositeDisposable.addAll(event,event1,event2,event3);
     }
 
     @Override
