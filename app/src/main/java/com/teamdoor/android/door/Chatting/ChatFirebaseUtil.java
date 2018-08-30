@@ -1,57 +1,22 @@
 package com.teamdoor.android.door.Chatting;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.location.Location;
-import android.net.Uri;
-import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.firebase.geofire.GeoFire;
-import com.firebase.geofire.GeoLocation;
-import com.firebase.geofire.LocationCallback;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.StorageTask;
-import com.google.firebase.storage.UploadTask;
-import com.teamdoor.android.door.Chatting.util.CryptoImeageName;
-import com.teamdoor.android.door.ChattingRoomList.ChattingRoomListActivity;
-import com.teamdoor.android.door.Entity.ChatMessage;
 import com.teamdoor.android.door.Entity.MessageVO;
 import com.teamdoor.android.door.Entity.RoomVO;
-import com.teamdoor.android.door.Entity.User;
 import com.teamdoor.android.door.Exception.NotSetAutoTimeException;
-import com.teamdoor.android.door.PeopleFragment.GridItem;
-import com.teamdoor.android.door.R;
-import com.teamdoor.android.door.Util.FireBaseUtil;
 import com.teamdoor.android.door.Util.FirebaseSendPushMsg;
-import com.teamdoor.android.door.Util.GPSInfo;
-import com.teamdoor.android.door.Util.GalleryPick;
-import com.teamdoor.android.door.Util.RemoteConfig;
-import com.teamdoor.android.door.Util.SharedPreferencesUtil;
 import com.teamdoor.android.door.Util.UiUtil;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 public class ChatFirebaseUtil {

@@ -163,14 +163,13 @@ public class ChattingRoomListPresenter implements ChattingRoomListContract.Prese
                                     realTimeChattingRoomChange(userDataSnapshot, roomInfo);
                                 }
                             });
-
                     Observable.just(roomInfo)
                             .filter(data1 -> data1.getLastChat() == null)
                             .map(roomInfo1 -> UserUuidList.indexOf(roomInfo1.getTargetUuid()))
-                            .filter(key -> key > 0)
+                            .filter(key -> key >= 0)
                             .subscribe(key -> {
-                                RoomItemList.remove(key);
-                                UserUuidList.remove(key);
+                                RoomItemList.remove((int) key);
+                                UserUuidList.remove((int) key);
                                 mMeesageView.refreshChattingRoomListView();
                             });
 
@@ -182,14 +181,14 @@ public class ChattingRoomListPresenter implements ChattingRoomListContract.Prese
                     Observable.just(UserUuidList.indexOf(roomInfo.getTargetUuid()))
                             .filter(index -> index > 0)
                             .subscribe(key -> {
-                                RoomItemList.remove(key);
-                                UserUuidList.remove(key);
+                                RoomItemList.remove((int) key);
+                                UserUuidList.remove((int) key);
                                 mMeesageView.refreshChattingRoomListView();
                             });
                 });
 
         Disposable event = rxFirebaseModel.getFirebaseChildeEvent(query, RoomVO.class).subscribe(publish::onNext);
-        compositeDisposable.addAll(event,event1,event2,event3);
+        compositeDisposable.addAll(event, event1, event2, event3);
     }
 
     @Override

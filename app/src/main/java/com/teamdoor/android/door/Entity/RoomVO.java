@@ -40,7 +40,7 @@ public class RoomVO {
     }
 
     public boolean hasTargetUuid_LastChat(){
-        return hasTargetUuid()||hasLastChat();
+        return hasTargetUuid()&&hasLastChat();
     }
     public void setTargetUuid(String targetUuid) {
         this.targetUuid = targetUuid;
